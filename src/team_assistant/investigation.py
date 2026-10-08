@@ -55,14 +55,20 @@ class Investigation:
                     raise ValueError('Query object required')
                 observations.append(self.snapshot.query(query.get('tool'), query.get('arguments')))
             except (ValueError, TypeError) as exc:
-                self.tool_errors.append({'query': query, 'error_type': type(exc).__name__})
+                self.tool_errors.append({'query': query, 'error_type': type(exc).__name__,
+                                         'message': 'Query rejected by the read-only tool schema; revise using the advertised schema.'})
         return observations
 
     async def model_step(self, name, instruction, dependencies, use_memory):
         common = {'question': self.snapshot.question, 'tools': self.snapshot.specifications(),
                   'namespace': 'boutique', 'allowed_causes': self.targets}
         async def backend(request):
-            return await self.provider.complete(instruction, {**common, **request})
+            outcome = await self.provider.complete(instruction, {**common, **request})
+            current = self.snapshot.fingerprint()
+            if current != self.snapshot.source_version:
+                self.incident.store.source_versions[self.source] = current
+                self.incident.store.invalidate([])
+            return outcome
         return await self.runtime.step(self.identifier, name, backend, dependencies,
                                        use_memory, reservation=self.reservation)
 
@@ -70,14 +76,15 @@ class Investigation:
         initial = self.execute_queries([
             {'tool': 'GetResources', 'arguments': {'resource_type': 'pods', 'namespace': 'boutique'}},
             {'tool': 'GetAlerts', 'arguments': {}}])
-        self.artifact('initial', {'observations': initial})
+        self.artifact('initial', {'observations': initial, 'tool_errors': list(self.tool_errors)})
         async def specialist(role):
             plan = await self.model_step(role + '_plan', PLAN + '\nSpecialty: ' + role, ('initial',), True)
             queries = plan.payload.get('queries', [])
             if not isinstance(queries, list) or len(queries) > 3:
                 raise ValueError('Specialist query contract violated')
+            error_start = len(self.tool_errors)
             observations = self.execute_queries(queries)
-            self.artifact(role + '_evidence', {'observations': observations}, (role + '_plan',))
+            self.artifact(role + '_evidence', {'observations': observations, 'tool_errors': self.tool_errors[error_start:]}, (role + '_plan',))
         await asyncio.gather(specialist('configuration'), specialist('telemetry'))
         dependencies = ['initial', 'configuration_evidence', 'telemetry_evidence']
         answer, errors = None, []
@@ -90,8 +97,9 @@ class Investigation:
                 if turn == 2 or not isinstance(queries, list) or len(queries) > 2:
                     answer = {'status': 'uncertain', 'reasoning': 'Query contract/budget exhausted'}
                     break
+                error_start = len(self.tool_errors)
                 observations = self.execute_queries(queries)
-                self.artifact(f'additional_{turn}', {'observations': observations}, (f'diagnosis_{turn}',))
+                self.artifact(f'additional_{turn}', {'observations': observations, 'tool_errors': self.tool_errors[error_start:]}, (f'diagnosis_{turn}',))
                 dependencies.append(f'additional_{turn}')
                 continue
             errors = check_diagnosis(answer, self.snapshot.observations, self.targets, self.objects)

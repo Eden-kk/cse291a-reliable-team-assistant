@@ -10,6 +10,8 @@ def check_diagnosis(answer, observations, targets, valid_objects):
     errors = []
     if answer.get("status") == "uncertain":
         return ["uncertain: not a successful diagnosis"]
+    if answer.get("status") != "diagnosed":
+        errors.append("status must be diagnosed or uncertain")
     cause = answer.get("root_cause")
     subject = answer.get("fault_object", "")
     if not isinstance(subject, str) or subject not in valid_objects:

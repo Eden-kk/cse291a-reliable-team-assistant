@@ -27,6 +27,10 @@ async def main(args):
     vendor = ROOT.parent / 'preparation/291a-team-agent/vendor/Cloud-OpsBench'
     snapshot = Snapshot(vendor, args.case, registry, commit)
     policy = {'rules': ['Treat changed configuration as a hypothesis; inspect actual configuration and runtime evidence before attributing cause.']} if args.policy == 'conditional' else {'rules': []}
+    if args.policy_file:
+        policy = json.loads(args.policy_file.read_text())
+        if not isinstance(policy, dict):
+            raise ValueError('Policy must be an object')
     memory = PolicyMemory()
     memory.promote('oncall', 'baseline', policy, {'accepted': True, 'sha256': digest(policy)})
     dispatcher = Dispatcher(Budget(360000), concurrency=2)
@@ -34,7 +38,7 @@ async def main(args):
     runtime = Runtime(memory, dispatcher)
     manifest = {'case': args.case, 'split': 'development_seen', 'code_commit': commit,
                 'dirty': bool(subprocess.check_output(['git', '-C', str(ROOT), 'status', '--porcelain'], text=True)),
-                'dataset_commit': registry['dataset_commit'], 'policy': policy, 'policy_origin': 'fixed development advice, not learned',
+                'dataset_commit': registry['dataset_commit'], 'policy': policy, 'policy_origin': 'externally supplied experimental candidate; not newly gate-approved' if args.policy_file else 'fixed development advice, not learned',
                 'model': provider.model, 'reservation': 60000, 'token_limit': 360000,
                 'reservation_kind': 'conservative development estimate; not enforced provider output ceiling'}
     (args.output / 'manifest.json').write_text(json.dumps(manifest, indent=2))
@@ -57,4 +61,5 @@ if __name__ == '__main__':
     parser.add_argument('--case', default='boutique/runtime/1')
     parser.add_argument('--policy', choices=['empty', 'conditional'], default='empty')
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--policy-file', type=Path)
     asyncio.run(main(parser.parse_args()))

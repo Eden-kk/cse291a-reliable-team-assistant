@@ -1,0 +1,20 @@
+{
+  "title": "Verify mechanisms, timing, and dependency scope",
+  "rules": [
+    {
+      "when": "Containers restart and health probes may be involved.",
+      "check": "Compare the effective probe protocol, port, path, and timing with the actual listener. Correlate termination times and previous-container logs with explicit probe-failure and restart events; identify missing or truncated evidence.",
+      "avoid": "Treating matching ports, exit codes, startup logs, or differing readiness and liveness protocols as proof of probe-triggered restarts. Do not rely on events quoted only by a model answer."
+    },
+    {
+      "when": "Requests fail while accessing dependencies.",
+      "check": "Trace each error to the dependency hop and failure stage: name resolution, connection, or application operation. Compare the attempted address with configuration, namespace, Service ports, and endpoints at the failure time. Verify recovery with subsequent successful requests.",
+      "avoid": "Assuming current Service existence proves earlier DNS availability, attributing all error patterns to one address mismatch, or claiming recovery or a DNS infrastructure cause without supporting observations."
+    },
+    {
+      "when": "Latency increases alongside CPU or throttling alerts.",
+      "check": "Align latency, CPU usage, throttling measurement intervals, and effective container limits. Compare absolute node utilization and dependency latency to distinguish local pressure from downstream delays. Verify traffic changes or code behavior separately.",
+      "avoid": "Equating relative utilization growth with saturation, excluding burst throttling because average CPU is below its limit, or treating request logs and absent errors as proof of increased traffic or health. Correlation alone does not establish the latency cause."
+    }
+  ]
+}

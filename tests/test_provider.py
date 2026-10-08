@@ -24,3 +24,13 @@ class ProviderTests(unittest.IsolatedAsyncioTestCase):
         outcome, _ = decode([{'type': 'item.completed', 'item': {'type': 'command_execution'}}], 0)
         self.assertIsNotNone(outcome.error)
         self.assertIsNone(outcome.tokens)
+
+    async def test_invalid_status_cannot_pass_contract(self):
+        from team_assistant.contracts import check_diagnosis
+        observations = [{'id': 'a', 'tool': 't1', 'arguments': {}, 'text': 'first evidence', 'sha256': '1'},
+                        {'id': 'b', 'tool': 't2', 'arguments': {}, 'text': 'second evidence', 'sha256': '2'}]
+        value = {'fault_object': 'app/a', 'root_cause': 'cause',
+                 'evidence': [{'observation_id': 'a', 'quote': 'first evidence'},
+                              {'observation_id': 'b', 'quote': 'second evidence'}]}
+        self.assertIn('status must be diagnosed or uncertain',
+                      check_diagnosis(value, observations, {'cause': 'app'}, {'app/a'}))
