@@ -66,8 +66,13 @@ class InvestigationTests(unittest.IsolatedAsyncioTestCase):
         inject_claim(investigation, 'configuration_evidence', {'wrong': True})
         await investigation.diagnose()
         self.assertIn('specialist_claim', provider.records[-1]['inputs']['configuration_evidence'])
+        old_config_id = runtime.incidents['incident-1'].store.results['configuration_evidence'].payload['observations'][0]['id']
         runtime.incidents['incident-1'].store.invalidate(['configuration_evidence'])
+        investigation.max_tools = 1
         result = await investigation.run(reuse=True)
+        self.assertEqual(len(result['observation_archive']), 5)
+        self.assertNotIn(old_config_id, {obs['id'] for obs in result['observations']})
+        self.assertEqual(len(result['observations']), 4)
         self.assertEqual(len(provider.records), 4)
         self.assertNotIn('specialist_claim', provider.records[-1]['inputs']['configuration_evidence'])
         self.assertEqual(runtime.incidents['incident-1'].store.results['telemetry_evidence'].version, 1)

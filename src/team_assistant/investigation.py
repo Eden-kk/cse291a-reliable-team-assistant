@@ -35,6 +35,7 @@ class Investigation:
         self.objects = ({'app/' + n for n in contracts.SYSTEM_VALID_SERVICES['boutique']}
                         | {'node/' + n for n in contracts.VALID_NODES} | {'namespace/boutique'})
         self.tool_errors = []
+        self.tool_budget_start = 0
 
     def artifact(self, name, payload, dependencies=()):
         store = self.incident.store
@@ -48,7 +49,7 @@ class Investigation:
             raise ValueError('Query list required')
         observations = []
         for query in queries:
-            if len(self.snapshot.observations) + len(self.tool_errors) >= self.max_tools:
+            if len(self.snapshot.observations) + len(self.tool_errors) - self.tool_budget_start >= self.max_tools:
                 break
             try:
                 if not isinstance(query, dict):
@@ -92,7 +93,14 @@ class Investigation:
             error_start = len(self.tool_errors)
             observations = self.execute_queries(queries)
             self.artifact(role + '_evidence', {'observations': observations, 'tool_errors': self.tool_errors[error_start:]}, (role + '_plan',))
-        await asyncio.gather(specialist('configuration'), specialist('telemetry'))
+        results = await asyncio.gather(specialist('configuration'), specialist('telemetry'), return_exceptions=True)
+        for result in results:
+            if isinstance(result, BaseException):
+                raise result
+
+    def active_observations(self, dependencies):
+        active = {obs['id'] for name in dependencies for obs in self.incident.store.results[name].payload.get('observations', [])}
+        return [obs for obs in self.snapshot.observations if obs['id'] in active]
 
     async def diagnose(self):
         dependencies = ['initial', 'configuration_evidence', 'telemetry_evidence']
@@ -111,18 +119,20 @@ class Investigation:
                 self.artifact(f'additional_{turn}', {'observations': observations, 'tool_errors': self.tool_errors[error_start:]}, (f'diagnosis_{turn}',))
                 dependencies.append(f'additional_{turn}')
                 continue
-            errors = check_diagnosis(answer, self.snapshot.observations, self.targets, self.objects)
+            errors = check_diagnosis(answer, self.active_observations(dependencies), self.targets, self.objects)
             if not errors or answer.get('status') == 'uncertain':
                 break
         await self.runtime.dispatcher.join()
-        errors = check_diagnosis(answer, self.snapshot.observations, self.targets, self.objects)
+        errors = check_diagnosis(answer, self.active_observations(dependencies), self.targets, self.objects)
         return {'answer': answer, 'contract_errors': errors, 'tool_errors': self.tool_errors,
-                'observations': self.snapshot.observations, 'source_version': self.snapshot.source_version,
+                'observations': self.active_observations(dependencies), 'observation_archive': self.snapshot.observations,
+                'source_version': self.snapshot.source_version,
                 'runtime_events': self.runtime.events, 'dispatch_events': self.runtime.dispatcher.events,
                 'budget': {'spent': self.runtime.dispatcher.budget.spent,
                            'halted': self.runtime.dispatcher.budget.halted},
                 'model_calls': self.provider.records}
 
     async def run(self, reuse=False):
+        self.tool_budget_start = len(self.snapshot.observations) + len(self.tool_errors)
         await self.collect(reuse)
         return await self.diagnose()
