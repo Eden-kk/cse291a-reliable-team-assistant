@@ -15,7 +15,7 @@ class PropagationTests(unittest.TestCase):
         store = ExecutionStore()
         store.commit(Result('configuration_evidence', 1, {'observations': [copy.deepcopy(obs)]}), 0)
         return SimpleNamespace(incident=SimpleNamespace(store=store),
-                               snapshot=SimpleNamespace(observations=[obs], fingerprint=lambda: 'v', source_version='v'))
+                               snapshot=SimpleNamespace(observations=[{**obs, "raw_text": "hidden complete text", "source_version": "v"}], fingerprint=lambda: 'v', source_version='v'))
 
     def test_corruption_reaches_contract_and_source_stays_clean(self):
         inv = self.fixture()
@@ -27,6 +27,14 @@ class PropagationTests(unittest.TestCase):
         self.assertEqual(len(audit['repairs']), 1)
         self.assertEqual(Investigation.active_observations(inv, ['configuration_evidence'])[0]['text'], 'port: 9555')
         self.assertFalse(verify_inputs(inv, ['configuration_evidence'])['repairs'])
+
+    def test_clean_visible_record_is_not_repaired_or_expanded(self):
+        inv = self.fixture()
+        audit = verify_inputs(inv, ["configuration_evidence"])
+        self.assertFalse(audit["repairs"])
+        payload = inv.incident.store.results["configuration_evidence"].payload
+        self.assertNotIn("raw_text", payload["observations"][0])
+        self.assertEqual(inv.incident.store.results["configuration_evidence"].version, 1)
 
     def test_absent_port_does_not_invent_fault(self):
         inv = self.fixture()

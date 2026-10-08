@@ -1,6 +1,7 @@
 """Controlled evidence handoff damage and source-integrity verification experiment."""
 import copy
 import time
+from .cloudops import Snapshot
 from .dispatch import Budget, Dispatcher
 from .investigation import Investigation
 from .runtime import Runtime
@@ -28,7 +29,8 @@ def corrupt_port(inv):
 
 def verify_inputs(inv, dependencies):
     started = time.perf_counter()
-    pristine = {o['id']: o for o in inv.snapshot.observations}
+    cpu_start = time.process_time()
+    pristine = {o['id']: Snapshot.visible(o) for o in inv.snapshot.observations}
     checked, repaired = 0, []
     store = inv.incident.store
     if inv.snapshot.fingerprint() != inv.snapshot.source_version:
@@ -48,7 +50,8 @@ def verify_inputs(inv, dependencies):
             result.version += 1
             store.commit(result, store.epoch)
     return {'checked_observations': checked, 'repairs': repaired,
-            'wall_seconds': time.perf_counter() - started, 'extra_model_calls': 0,
+            'wall_seconds': time.perf_counter() - started,
+            'cpu_seconds': time.process_time() - cpu_start, 'extra_model_calls': 0,
             'method': 'full record equality against pristine static source archive; not semantic validation'}
 
 
