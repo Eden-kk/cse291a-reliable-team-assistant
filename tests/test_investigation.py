@@ -43,3 +43,33 @@ class InvestigationTests(unittest.IsolatedAsyncioTestCase):
         invalid = runtime.revoke('oncall', 'v1')['incident-1']
         self.assertIn('diagnosis_0', invalid)
         self.assertNotIn('initial', invalid)
+
+    async def test_selective_repair_retains_valid_branch_and_plan(self):
+        from team_assistant.faults import inject_claim
+        class Provider:
+            def __init__(self):
+                self.records = []
+            async def complete(self, instruction, request):
+                self.records.append(request)
+                value = {'queries': [{'tool': 'GetAppYAML', 'arguments': {'app_name': 'adservice'}}]} if request['step'].endswith('_plan') else {'status': 'uncertain'}
+                return Outcome(value, 10)
+        registry = json.loads((ROOT / 'configs/splits.json').read_text())
+        commit = subprocess.check_output(['git', '-C', str(ROOT), 'rev-parse', 'HEAD'], text=True).strip()
+        snapshot = Snapshot(VENDOR, 'boutique/runtime/1', registry, commit)
+        memory = PolicyMemory()
+        policy = {'rules': []}
+        memory.promote('oncall', 'v1', policy, {'accepted': True, 'sha256': digest(policy)})
+        runtime = Runtime(memory, Dispatcher(Budget(1000)))
+        provider = Provider()
+        investigation = Investigation(runtime, provider, snapshot, reservation=100)
+        await investigation.collect()
+        inject_claim(investigation, 'configuration_evidence', {'wrong': True})
+        await investigation.diagnose()
+        self.assertIn('specialist_claim', provider.records[-1]['inputs']['configuration_evidence'])
+        runtime.incidents['incident-1'].store.invalidate(['configuration_evidence'])
+        result = await investigation.run(reuse=True)
+        self.assertEqual(len(provider.records), 4)
+        self.assertNotIn('specialist_claim', provider.records[-1]['inputs']['configuration_evidence'])
+        self.assertEqual(runtime.incidents['incident-1'].store.results['telemetry_evidence'].version, 1)
+        self.assertEqual(runtime.incidents['incident-1'].store.results['configuration_plan'].version, 1)
+        self.assertEqual(result['budget']['spent'], 40)

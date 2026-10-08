@@ -72,13 +72,20 @@ class Investigation:
         return await self.runtime.step(self.identifier, name, backend, dependencies,
                                        use_memory, reservation=self.reservation)
 
-    async def run(self):
-        initial = self.execute_queries([
+    async def collect(self, reuse=False):
+        store = self.incident.store
+        if not reuse or "initial" not in store.results or "initial" in store.invalid():
+            initial = self.execute_queries([
             {'tool': 'GetResources', 'arguments': {'resource_type': 'pods', 'namespace': 'boutique'}},
             {'tool': 'GetAlerts', 'arguments': {}}])
-        self.artifact('initial', {'observations': initial, 'tool_errors': list(self.tool_errors)})
+            self.artifact('initial', {'observations': initial, 'tool_errors': list(self.tool_errors)})
         async def specialist(role):
-            plan = await self.model_step(role + '_plan', PLAN + '\nSpecialty: ' + role, ('initial',), True)
+            if reuse and role + '_evidence' in store.results and role + '_evidence' not in store.invalid():
+                return
+            if reuse and role + '_plan' in store.results and role + '_plan' not in store.invalid():
+                plan = store.results[role + '_plan']
+            else:
+                plan = await self.model_step(role + '_plan', PLAN + '\nSpecialty: ' + role, ('initial',), True)
             queries = plan.payload.get('queries', [])
             if not isinstance(queries, list) or len(queries) > 3:
                 raise ValueError('Specialist query contract violated')
@@ -86,6 +93,8 @@ class Investigation:
             observations = self.execute_queries(queries)
             self.artifact(role + '_evidence', {'observations': observations, 'tool_errors': self.tool_errors[error_start:]}, (role + '_plan',))
         await asyncio.gather(specialist('configuration'), specialist('telemetry'))
+
+    async def diagnose(self):
         dependencies = ['initial', 'configuration_evidence', 'telemetry_evidence']
         answer, errors = None, []
         for turn in range(3):
@@ -113,3 +122,7 @@ class Investigation:
                 'budget': {'spent': self.runtime.dispatcher.budget.spent,
                            'halted': self.runtime.dispatcher.budget.halted},
                 'model_calls': self.provider.records}
+
+    async def run(self, reuse=False):
+        await self.collect(reuse)
+        return await self.diagnose()
