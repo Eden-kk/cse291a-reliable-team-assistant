@@ -81,6 +81,8 @@ class Dispatcher:
         self._next_id += 1
         job = Job(self._next_id, group, kind, reservation, invoke, future, self.clock(), deadline)
         self.pending.append(job)
+        self.events.append({"event": "queued", "job": job.identifier, "group": group,
+                            "kind": kind, "time": job.arrived, "deadline": deadline})
         # Coalesce submissions from the same event-loop turn before selecting priority.
         loop.call_soon(self._drain)
         try:
@@ -128,7 +130,8 @@ class Dispatcher:
             self.running[job.identifier] = job
             self.events.append({"event": "start", "job": job.identifier, "group": job.group,
                                 "kind": job.kind, "reservation": job.reservation,
-                                "active": len(self.running), "time": self.clock()})
+                                "active": len(self.running), "time": self.clock(),
+                                "queue_seconds": self.clock() - job.arrived})
             task = asyncio.create_task(self._execute(job))
             self.tasks.add(task)
             task.add_done_callback(self.tasks.discard)

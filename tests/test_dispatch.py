@@ -24,6 +24,19 @@ class BudgetTests(unittest.TestCase):
 
 
 class DispatchTests(unittest.IsolatedAsyncioTestCase):
+    async def test_queue_timestamps_use_ready_time(self):
+        now = [10.0]
+        d = Dispatcher(Budget(100), clock=lambda: now[0])
+        async def invoke():
+            now[0] = 14.0
+            return Outcome({}, 5)
+        await d.call("A", "response", 20, invoke, deadline=40)
+        queued, started, finished = d.events
+        self.assertEqual(queued["event"], "queued")
+        self.assertEqual(queued["deadline"], 40)
+        self.assertEqual(started["queue_seconds"], 0)
+        self.assertEqual(finished["time"] - started["time"], 4)
+
     async def test_concurrency_and_all_costs(self):
         d = Dispatcher(Budget(100), concurrency=2)
         active = 0;peak = 0
