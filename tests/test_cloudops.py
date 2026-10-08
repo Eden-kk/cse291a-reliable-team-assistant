@@ -39,3 +39,7 @@ class SnapshotTests(unittest.TestCase):
                                     {'namespace': 'boutique', 'service_name': 'adservice', 'port': 65534})
         self.assertEqual(result['availability'], 'missing')
         self.assertNotEqual(result['text'], 'Connection failed')
+
+    def test_vendor_returned_error_is_not_successful_observation(self):
+        result = self.snapshot.query('GetResources', {'resource_type': 'endpointslices', 'namespace': 'boutique'})
+        self.assertEqual(result['availability'], 'error')

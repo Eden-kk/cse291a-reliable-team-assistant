@@ -36,6 +36,8 @@ class Investigation:
                         | {'node/' + n for n in contracts.VALID_NODES} | {'namespace/boutique'})
         self.tool_errors = []
         self.tool_budget_start = 0
+        self.kind = 'response'
+        self.deadline = None
 
     def artifact(self, name, payload, dependencies=()):
         store = self.incident.store
@@ -71,7 +73,7 @@ class Investigation:
                 self.incident.store.invalidate([])
             return outcome
         return await self.runtime.step(self.identifier, name, backend, dependencies,
-                                       use_memory, reservation=self.reservation)
+                                       use_memory, kind=self.kind, reservation=self.reservation, deadline=self.deadline)
 
     async def collect(self, reuse=False):
         store = self.incident.store
@@ -125,6 +127,7 @@ class Investigation:
         await self.runtime.dispatcher.join()
         errors = check_diagnosis(answer, self.active_observations(dependencies), self.targets, self.objects)
         return {'answer': answer, 'contract_errors': errors, 'tool_errors': self.tool_errors,
+                'returned_tool_failures': [obs['id'] for obs in self.snapshot.observations if obs.get('availability') in ('missing', 'error')],
                 'observations': self.active_observations(dependencies), 'observation_archive': self.snapshot.observations,
                 'source_version': self.snapshot.source_version,
                 'runtime_events': self.runtime.events, 'dispatch_events': self.runtime.dispatcher.events,

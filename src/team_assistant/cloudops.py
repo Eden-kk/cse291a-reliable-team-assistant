@@ -92,7 +92,7 @@ class Snapshot:
             raw = 'Snapshot unavailable: this connectivity query has no recorded measurement.' 
         text = raw if isinstance(raw, str) else json.dumps(raw)
         record = {'id': f'observation-{len(self.observations) + 1}', 'tool': name,
-                  'arguments': args, 'availability': 'missing' if missing else 'returned', 'text': text[:10000], 'raw_text': text,
+                  'arguments': args, 'availability': 'missing' if missing else ('error' if text.lstrip().lower().startswith(('error:', 'an unexpected error')) else 'returned'), 'text': text[:10000], 'raw_text': text,
                   'truncated': len(text) > 10000, 'sha256': hashlib.sha256(text.encode()).hexdigest(),
                   'source_version': self.source_version}
         self.observations.append(record)

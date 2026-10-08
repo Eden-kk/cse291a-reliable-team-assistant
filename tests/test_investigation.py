@@ -69,6 +69,7 @@ class InvestigationTests(unittest.IsolatedAsyncioTestCase):
         old_config_id = runtime.incidents['incident-1'].store.results['configuration_evidence'].payload['observations'][0]['id']
         runtime.incidents['incident-1'].store.invalidate(['configuration_evidence'])
         investigation.max_tools = 1
+        investigation.kind = 'recovery'
         result = await investigation.run(reuse=True)
         self.assertEqual(len(result['observation_archive']), 5)
         self.assertNotIn(old_config_id, {obs['id'] for obs in result['observations']})
@@ -78,3 +79,5 @@ class InvestigationTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(runtime.incidents['incident-1'].store.results['telemetry_evidence'].version, 1)
         self.assertEqual(runtime.incidents['incident-1'].store.results['configuration_plan'].version, 1)
         self.assertEqual(result['budget']['spent'], 40)
+        starts = [e for e in result['dispatch_events'] if e['event'] == 'start']
+        self.assertEqual(starts[-1]['kind'], 'recovery')
