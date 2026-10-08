@@ -70,3 +70,20 @@ class RegressionTests(unittest.IsolatedAsyncioTestCase):
             with self.assertRaisesRegex(ValueError, 'cycle'):
                 store.commit(Result('A', 2, {}, inputs=inputs), 0)
         self.assertFalse(store.invalid())
+
+
+    async def test_simultaneous_burst_is_ranked_before_starting_work(self):
+        dispatcher = Dispatcher(Budget(1000), concurrency=2)
+        order = []
+        async def invoke(label):
+            order.append(label)
+            await asyncio.sleep(0)
+            return Outcome({}, 1)
+        await asyncio.gather(
+            dispatcher.call('A', 'recovery', 40, lambda: invoke('A1')),
+            dispatcher.call('A', 'recovery', 40, lambda: invoke('A2')),
+            dispatcher.call('C', 'response', 40, lambda: invoke('C1')),
+            dispatcher.call('C', 'response', 40, lambda: invoke('C2')))
+        self.assertEqual(order[:2], ['C1', 'C2'])
+        await dispatcher.join()
+        self.assertEqual(dispatcher.budget.spent, 4)

@@ -81,7 +81,8 @@ class Dispatcher:
         self._next_id += 1
         job = Job(self._next_id, group, kind, reservation, invoke, future, self.clock(), deadline)
         self.pending.append(job)
-        self._drain()
+        # Coalesce submissions from the same event-loop turn before selecting priority.
+        loop.call_soon(self._drain)
         try:
             # Cancelling a waiter must not make a request already sent to a provider free.
             return await asyncio.shield(future)
@@ -155,8 +156,11 @@ class Dispatcher:
             job.future.set_exception(error)
         else:
             job.future.set_result(result)
-        self._drain()
+        asyncio.get_running_loop().call_soon(self._drain)
 
     async def join(self):
-        while self.tasks:
-            await asyncio.shield(asyncio.gather(*list(self.tasks)))
+        while self.tasks or self.pending:
+            if self.tasks:
+                await asyncio.shield(asyncio.gather(*list(self.tasks)))
+            else:
+                await asyncio.sleep(0)
