@@ -81,3 +81,36 @@ class InvestigationTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result['budget']['spent'], 40)
         starts = [e for e in result['dispatch_events'] if e['event'] == 'start']
         self.assertEqual(starts[-1]['kind'], 'recovery')
+
+
+    async def test_diagnosis_does_not_wait_for_unrelated_incident(self):
+        import asyncio
+        class Provider:
+            records = []
+            async def complete(self, instruction, request):
+                value = {'queries': []} if request['step'].endswith('_plan') else {'status': 'uncertain'}
+                return Outcome(value, 10)
+        registry = json.loads((ROOT / 'configs/splits.json').read_text())
+        commit = subprocess.check_output(['git', '-C', str(ROOT), 'rev-parse', 'HEAD'], text=True).strip()
+        snapshot = Snapshot(VENDOR, 'boutique/runtime/1', registry, commit)
+        memory = PolicyMemory()
+        policy = {'rules': []}
+        memory.promote('oncall', 'v1', policy, {'accepted': True, 'sha256': digest(policy)})
+        dispatcher = Dispatcher(Budget(1000), concurrency=2)
+        investigation = Investigation(Runtime(memory, dispatcher), Provider(), snapshot, reservation=100)
+        await investigation.collect()
+        entered, release = asyncio.Event(), asyncio.Event()
+        async def blocked():
+            entered.set()
+            await release.wait()
+            return Outcome({}, 10)
+        unrelated = asyncio.create_task(dispatcher.call('other', 'recovery', 100, blocked))
+        await entered.wait()
+        try:
+            result = await asyncio.wait_for(investigation.diagnose(), 0.5)
+            self.assertEqual(result['answer']['status'], 'uncertain')
+            self.assertFalse(unrelated.done())
+        finally:
+            release.set()
+            await unrelated
+            await dispatcher.join()

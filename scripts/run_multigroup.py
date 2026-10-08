@@ -68,7 +68,9 @@ async def main(output, scheduling):
         async def finish(inv, reuse):
             try:
                 result = await inv.run(reuse=reuse)
-                result['window_latency_seconds'] = time.monotonic() - begun
+                result['completed_monotonic'] = time.monotonic()
+                result['window_latency_seconds'] = result['completed_monotonic'] - begun
+                result['incident_tokens'] = sum(record['tokens'] for record in inv.provider.records if record['tokens'] is not None)
                 write(output / inv.identifier / 'result.json', result)
                 return {'group': inv.identifier, 'seconds': result['window_latency_seconds'],
                         'contract_valid': not result['contract_errors'], 'state': 'completed',
@@ -78,7 +80,7 @@ async def main(output, scheduling):
                 return {'group': inv.identifier, 'state': 'failed', 'error': repr(exc), 'slo_met_contract_only': False}
         outcomes = await asyncio.gather(finish(a, True), finish(b, True), finish(c, False))
         await dispatcher.join()
-        summary = {'outcomes': outcomes, 'affected': affected, 'prefix_tokens': prefix_spent,
+        summary = {'window_origin_monotonic': begun, 'outcomes': outcomes, 'affected': affected, 'prefix_tokens': prefix_spent,
                    'total_tokens': dispatcher.budget.spent, 'post_revocation_tokens': dispatcher.budget.spent - prefix_spent,
                    'peak_concurrency': max(e['active'] for e in dispatcher.events if e['event'] == 'start'),
                    'initial_versions': {i: inv.incident.store.results['initial'].version for i, inv in investigations.items()},

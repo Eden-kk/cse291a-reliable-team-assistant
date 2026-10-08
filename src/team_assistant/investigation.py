@@ -124,7 +124,6 @@ class Investigation:
             errors = check_diagnosis(answer, self.active_observations(dependencies), self.targets, self.objects)
             if not errors or answer.get('status') == 'uncertain':
                 break
-        await self.runtime.dispatcher.join()
         errors = check_diagnosis(answer, self.active_observations(dependencies), self.targets, self.objects)
         return {'answer': answer, 'contract_errors': errors, 'tool_errors': self.tool_errors,
                 'returned_tool_failures': [obs['id'] for obs in self.snapshot.observations if obs.get('availability') in ('missing', 'error')],
