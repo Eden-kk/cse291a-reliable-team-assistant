@@ -1,0 +1,7 @@
+case,policy,state,calls,tools,tokens,JRA,ECR,contract_valid,commit
+runtime/1,empty,completed,3,7,51475,1.0,1.0,True,4df2312304ec08029cfaaf5ff88414f9b22c2004
+runtime/1,candidate,completed,3,7,50253,1.0,1.0,True,4df2312304ec08029cfaaf5ff88414f9b22c2004
+service/1,empty,completed,4,10,80662,1.0,1.0,True,4df2312304ec08029cfaaf5ff88414f9b22c2004
+service/1,candidate,completed,4,10,80072,1.0,1.0,True,4df2312304ec08029cfaaf5ff88414f9b22c2004
+performance/1,empty,completed,3,8,56845,1.0,1.0,True,4df2312304ec08029cfaaf5ff88414f9b22c2004
+performance/1,candidate,completed,3,8,59259,1.0,1.0,True,4df2312304ec08029cfaaf5ff88414f9b22c2004
