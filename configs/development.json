@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "provider": "controlled",
+  "concurrency": 2,
+  "total_token_budget": 2000,
+  "default_call_reservation": 200,
+  "scheduler": "fair",
+  "age_seconds": 10,
+  "max_active_incidents": 4,
+  "dataset_repository": "../preparation/291a-team-agent/vendor/Cloud-OpsBench",
+  "dataset_commit": "ea05dafbc87b5985df8721622d63d4229c2b4224",
+  "allow_final": false
+}
