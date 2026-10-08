@@ -1,7 +1,7 @@
 项目状态 — 2026-10-08
 
 已完成
-- 正式repo、实验计划、代码/数据split；31项测试通过。代码已分阶段本地提交，无远程推送。
+- 正式repo、实验计划、代码/数据split；43项测试通过。代码已分阶段本地提交，无远程推送。
 - Cloud-OpsBench真实只读工具和现有订阅Codex推理适配器；模型只接收question/工具合同/实际观察及policy，原生评分在推理后独立运行。
 - 三角色真实调查，memory进入查询阶段；实际依赖/source版本捕获、版本撤回与选择性重算。
 - 预算预留/actual结算、失败/取消计费、多群共享队列、单群完成时间和SLO记录。
@@ -37,3 +37,11 @@ PYTHONPATH=src .venv/bin/python -m team_assistant.demo --output runs/new-control
 .venv/bin/python scripts/run_development.py --case boutique/runtime/1 --output runs/new-development-run
 .venv/bin/python scripts/score_run.py runs/new-development-run
 后两个命令会消耗现有Codex订阅额度；输出目录存在时拒绝覆盖。
+
+后续推进：独立promotion gate与固定trace回放
+- learning_gate.py要求6个gate_validation案例完整配对、相同执行条件、逐例无JRA/ECR退化、绑定原始产物的语义审核、质量提升或至少10% token节省且总token不增加。生成成本未知不能接受。
+- 历史候选被拒绝：只有development案例，不足独立验证、缺少绑定审核和生成成本，且本批token增加约0.32%。这不是新验证集的失败结果。
+- 新增ready/queue时间戳；旧trace规划完成到协调开始的间隔只能视为等待上界。
+- 固定trace回放：fair零交接延迟C22.65s，20ms交接延迟39.30s；是固定输出/耗时假设，不是新实测。
+- opt-in --handoff-seconds 0.02允许response完成后短暂等待下一阶段；默认0。aging/过期后台任务绕过等待；无后续response时定时释放。尚未真实模型复验。
+- 本次没有新增模型调用/AWS资源；完整说明见learning-and-handoff.txt。

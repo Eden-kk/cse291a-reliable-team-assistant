@@ -1,0 +1,44 @@
+记忆验收与阶段衔接实验
+
+一、记忆验收
+预声明configs/learning-gate.json：逐case的JRA/ECR不得下降；合同、预算、语义支持都须通过；整体联合成功数量增加或至少10% token节省，且总token不得增加。要求registry中的6例gate_validation完整配对，不允许重复case替代缺失case。模型、代码、数据、预算相同，工作区干净；policy内容绑定哈希。
+这些是保守的研究门槛，并非通过6例即可证明生产安全。阈值尚未用独立验证集调优。
+
+scripts/evaluate_learning.py读取配对run目录。spec需candidate、baseline两个policy路径、generation_tokens，以及pairs中case/baseline/candidate目录。输出用x模式创建，拒绝覆盖。
+每个run的semantic-audit.json需supported=true、reviewer、rationale和evidence_sha256；后者为digest({manifest, result, scores})，绑定确切产物。现有文字审核不自动冒充该文件。
+门槛回执可交给PolicyMemory.promote，系统尚未自动生成自然候选并串起全套学习/验证。实验脚本仍显式激活测试policy，不能说已是生产gate。
+
+成本分为验证baseline+candidate、生成成本和总学习开销。未知成本返回null，不把未知当0，也不报告虚假的回本案例数。全组合/拒绝候选的费用在上层研究总账汇总，本回执只覆盖传入候选及配对运行。回本案例数仅由验证集平均节省外推，非实际净收益。
+历史候选diagnostic receipt：historical-candidate-gate.json。读取3对development运行是拒绝路径检查，并非独立gate实验；它们不满足6例验证要求。候选成本相比baseline增加0.32%，无完成数收益，生成成本未知，因此保持不接受。
+
+二、C的39.34秒在哪里
+multigroup-fair-v3中C的规划分别运行8.81/8.29秒，最后诊断13.84秒。并行规划的关键路径服务合计约22.65秒。最后规划完成至诊断开始相隔16.65秒，包含本地证据处理、事件循环交接和排队。旧trace缺少enqueue时间，不能全归因于queue。
+新dispatch事件记录queued时间、deadline和start时queue_seconds，用于下轮直接测量。
+
+三、固定trace敏感性回放
+命令：
+.venv/bin/python scripts/replay_multigroup.py runs/multigroup-fair-v3 --output runs/new-replay.json
+已保存的有效结果：runs/multigroup-fair-v3-replay-v2.json。
+首版replay.json使用原trace的job ID充当重排后的入队顺序，FIFO不正确；保留但不用于结论。v2按实际模拟ready顺序重新编号。
+
+方法/交接假设           A完成       B完成       C完成
+FIFO / 0ms              36.53s      48.14s      48.69s
+FIFO / 20ms             36.53s      48.14s      48.69s
+Fair / 0ms              41.81s      55.02s      22.65s
+Fair / 20ms             45.92s      50.91s      39.30s
+
+固定DAG、返回内容、tokens和service时长；两个planner并行，后续coordinator按记录串行。root同时ready，包含实际prefix tokens与历史service。生产FIFO/fair选择逻辑不读取未来耗时。这个回放没有模拟API缓存/模型随机性/真实工具CPU时间，没有用未来输出做线上优先级，亦不能当成真实任务质量/时延结果。
+脚本使用ready-delay标记依赖解除到入队的延迟；它没有模拟新加的background hold开关，两者不能混为同一参数。
+公平调度的零间隔结果说明潜在空间；20ms间隔暴露非抢占式后台调用抢占槽位的离散效应。单trace不提供p95、无饥饿或泛化保证。
+
+四、可关闭的候选改动
+run_multigroup.py新增--handoff-seconds，默认0保持当前行为；可试0.02。
+response完成后最长100ms范围内暂缓年轻的后台任务，让刚解除依赖的response后续阶段进入队列；aging和已过期后台任务可绕过等待。当前等待窗口不会被期间其他response完成延长。计时器会在没有后续任务时释放后台，不依赖一定出现continuation。
+新增回归覆盖后续response先运行、后台最终运行且所有调用计费。它不是抢占，也不是保证30秒的SLO控制器。真实模型对照尚未运行，不能声明优化成功。
+
+下一步
+1. 以同一prompt、模型、案例和总预算随机化baseline/handoff顺序，小批live复验，报告A/B恢复代价和C全程时延；不只挑C达标的窗口。
+2. 在learning集生成自然候选，保留生成记录/成本后再用独立gate_validation评分和语义审核；不得用final/shakedown答案训练。
+3. 自动学习链路仍要接入回执，实际发布与撤回闭环及持久恢复继续作为未完成项。
+
+验证：43项测试通过；代码分阶段本地提交，无新增模型调用。

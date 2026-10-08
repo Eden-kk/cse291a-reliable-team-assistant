@@ -1,0 +1,37 @@
+{
+  "accepted": false,
+  "sha256": "323a616023f2ab45eca2d954ab2261f525679dffd45b068e940d0aebc3933b25",
+  "baseline_sha256": "af4fc1e3a66777e55c55972accbc027937a8a5cdb88591254bec551bd74b8ac7",
+  "reasons": [
+    "boutique/performance/1:baseline:missing_or_failed_semantic_audit",
+    "boutique/performance/1:baseline:wrong_case_split_or_policy",
+    "boutique/performance/1:candidate:missing_or_failed_semantic_audit",
+    "boutique/performance/1:candidate:wrong_case_split_or_policy",
+    "boutique/runtime/1:baseline:missing_or_failed_semantic_audit",
+    "boutique/runtime/1:baseline:wrong_case_split_or_policy",
+    "boutique/runtime/1:candidate:missing_or_failed_semantic_audit",
+    "boutique/runtime/1:candidate:wrong_case_split_or_policy",
+    "boutique/service/1:baseline:missing_or_failed_semantic_audit",
+    "boutique/service/1:baseline:wrong_case_split_or_policy",
+    "boutique/service/1:candidate:missing_or_failed_semantic_audit",
+    "boutique/service/1:candidate:wrong_case_split_or_policy",
+    "cost_regression",
+    "incomplete_or_duplicate_validation_cases",
+    "no_measurable_benefit",
+    "unknown_candidate_generation_cost"
+  ],
+  "registry_sha256": "980c16f738cf7957b0ad294fc57cdf88d4515b407b021060141666195acb1b66",
+  "thresholds": {
+    "min_token_saving": 0.1,
+    "max_token_ratio": 1.0
+  },
+  "evidence_sha256": "aee064fa13098983172c0537033cbfc89e203189cdea91cefb406db834683df3",
+  "validation_tokens": 378566,
+  "generation_tokens": null,
+  "total_learning_tokens": null,
+  "relative_token_saving": -0.003185488565048523,
+  "baseline_success": 3,
+  "candidate_success": 3,
+  "estimated_break_even_future_cases": null,
+  "scope": "validation decision only; extrapolated break-even is not measured net benefit"
+}
