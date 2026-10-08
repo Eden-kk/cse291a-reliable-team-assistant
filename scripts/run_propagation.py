@@ -12,7 +12,7 @@ from team_assistant.cloudops import Snapshot
 from team_assistant.dispatch import Budget, Dispatcher
 from team_assistant.investigation import Investigation
 from team_assistant.memory import PolicyMemory, digest
-from team_assistant.propagation import IntegrityInvestigation, corrupt_port, fork
+from team_assistant.propagation import IntegrityInvestigation, corrupt_port, fork, inject_spec
 from team_assistant.provider import CodexProvider
 from team_assistant.runtime import Runtime
 
@@ -24,7 +24,7 @@ def write(path, value):
     path.write_text(json.dumps(value, indent=2, default=list))
 
 
-async def main(output, preventive_only=False):
+async def main(output, preventive_only=False, spec_path=None):
     if output.exists():
         raise ValueError('Refuse overwrite')
     output.mkdir(parents=True)
@@ -32,11 +32,16 @@ async def main(output, preventive_only=False):
         raise ValueError('Commit experimental code before live inference')
     registry = json.loads((ROOT / 'configs/splits.json').read_text())
     commit = subprocess.check_output(['git', '-C', str(ROOT), 'rev-parse', 'HEAD'], text=True).strip()
-    case = 'boutique/runtime/1'
+    spec = json.loads(spec_path.read_text()) if spec_path else None
+    case = spec['case'] if spec else 'boutique/runtime/1'
+    if case not in registry['splits']['development_seen']:
+        raise ValueError('Phase1 pilot only uses predeclared seen development cases')
+    def inject(inv):
+        return inject_spec(inv, spec) if spec else corrupt_port(inv)
     manifest = {'case': case, 'split': 'development_seen', 'code_commit': commit, 'dirty': False,
                 'dataset_commit': registry['dataset_commit'], 'model': 'gpt-6-astra',
                 'reservation': 60000, 'initial_token_limit': 360000, 'recovery_token_limit': 360000,
-                'fault': 'all 9555->9556 in configuration_evidence; no adaptive retargeting',
+                'fault': spec or 'all 9555->9556 in configuration_evidence; no adaptive retargeting',
                 'tools_per_phase': 12, 'publication': 'none; no real operational writes',
                 'verification': 'source integrity only, not semantic always-verify'}
     write(output / 'manifest.json', manifest)
@@ -69,7 +74,7 @@ async def main(output, preventive_only=False):
         verified = build('always-verify', verify=True)
         started = time.perf_counter()
         await verified.collect()
-        fault = corrupt_port(verified)
+        fault = inject(verified)
         result = await finish('always-verify', verified)
         write(output / 'summary.json', {'state': 'completed' if fault['injected'] else 'not_injected',
               'fault': fault, 'seconds': time.perf_counter() - started,
@@ -90,7 +95,7 @@ async def main(output, preventive_only=False):
         clean_result = await finish('clean', clean)
         damaged = branch(base, 'damaged')
         damaged.runtime.dispatcher.budget.limit -= collection_tokens
-        fault = corrupt_port(damaged)
+        fault = inject(damaged)
         write(output / 'fault.json', fault)
         if not fault['injected']:
             write(output / 'summary.json', {'state': 'not_injected', 'fault': fault, 'collection_tokens': collection_tokens})
@@ -109,7 +114,7 @@ async def main(output, preventive_only=False):
         verified = build('always-verify', verify=True)
         verify_start = time.perf_counter()
         await verified.collect()
-        verify_fault = corrupt_port(verified)
+        verify_fault = inject(verified)
         preventive = await finish('always-verify', verified)
         verify_seconds = time.perf_counter() - verify_start
         def cost(result):
@@ -142,5 +147,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--preventive-only', action='store_true')
+    parser.add_argument('--spec', type=Path)
     args = parser.parse_args()
-    asyncio.run(main(args.output, args.preventive_only))
+    asyncio.run(main(args.output, args.preventive_only, args.spec))

@@ -78,3 +78,31 @@ def fork(inv, provider, verify=False):
     clone.tool_errors = copy.deepcopy(inv.tool_errors)
     clone.integrity_audits = []
     return clone
+
+
+def inject_spec(inv, spec):
+    """Fixed intervention chosen before inference; never search for successful attacks."""
+    store = inv.incident.store
+    original = store.results[spec['artifact']]
+    corrupted = copy.deepcopy(original)
+    changed = []
+    for obs in corrupted.payload.get('observations', []):
+        if spec['mode'] == 'replace':
+            count = obs['text'].count(spec['old'])
+            if not count:
+                continue
+            obs['text'] = obs['text'].replace(spec['old'], spec['new'])
+        elif spec['mode'] == 'instruction':
+            count = 1
+            obs['text'] += '\n' + spec['instruction']
+        else:
+            raise ValueError('Unknown fixed intervention')
+        changed.append({'id': obs['id'], 'occurrences': count})
+        if spec['mode'] == 'instruction':
+            break
+    if not changed:
+        return {'injected': False, 'spec': spec, 'reason': 'no matching observation; no retargeting'}
+    corrupted.version += 1
+    store.commit(corrupted, store.epoch)
+    return {'injected': True, 'artifact': original.name, 'changed': changed, 'spec': spec,
+            'source_archive_unchanged': True}

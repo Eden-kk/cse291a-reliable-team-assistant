@@ -1,0 +1,8 @@
+{
+  "case": "boutique/service/1",
+  "mode": "replace",
+  "artifact": "configuration_evidence",
+  "old": "redis-cart-invalid",
+  "new": "redis-cart",
+  "category": "accidental"
+}

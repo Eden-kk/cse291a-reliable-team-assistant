@@ -1,0 +1,8 @@
+{
+  "case": "boutique/performance/1",
+  "mode": "replace",
+  "artifact": "configuration_evidence",
+  "old": "200m",
+  "new": "800m",
+  "category": "accidental"
+}
