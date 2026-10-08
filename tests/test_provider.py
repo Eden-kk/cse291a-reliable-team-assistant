@@ -34,3 +34,11 @@ class ProviderTests(unittest.IsolatedAsyncioTestCase):
                               {'observation_id': 'b', 'quote': 'second evidence'}]}
         self.assertIn('status must be diagnosed or uncertain',
                       check_diagnosis(value, observations, {'cause': 'app'}, {'app/a'}))
+
+    async def test_malformed_diagnosis_fields_return_errors(self):
+        from team_assistant.contracts import check_diagnosis
+        for cause, identifier, quote in [([], 'a', 'evidence'), ('cause', [], 'evidence'), ('cause', 'a', [])]:
+            errors = check_diagnosis({'status': 'diagnosed', 'root_cause': cause,
+                                     'fault_object': 'app/a', 'evidence': [{'observation_id': identifier, 'quote': quote}]},
+                                    [], {'cause': 'app'}, {'app/a'})
+            self.assertTrue(errors)
