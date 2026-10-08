@@ -55,7 +55,19 @@ class ExecutionStore:
                                      if name in self.results)
         return invalid
 
+    def validate_dependencies(self, name, inputs):
+        pending = list(inputs)
+        visited = set()
+        while pending:
+            parent = pending.pop()
+            if parent == name:
+                raise ValueError("Dependency cycle")
+            if parent not in visited and parent in self.results:
+                visited.add(parent)
+                pending.extend(self.results[parent].inputs)
+
     def commit(self, result, attempt_epoch):
+        self.validate_dependencies(result.name, result.inputs)
         if attempt_epoch != self.epoch:
             raise ValueError("Obsolete attempt cannot commit")
         if (result.name, result.version) in self.invalid_versions:

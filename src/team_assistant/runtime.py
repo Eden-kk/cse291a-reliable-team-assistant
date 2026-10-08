@@ -40,6 +40,7 @@ class Runtime:
         store = incident.store
         if any(p not in store.results or p in store.invalid() for p in dependencies):
             raise ValueError('Missing or invalid dependency')
+        store.validate_dependencies(name, dependencies)
         inputs = {p: store.results[p].version for p in dependencies}
         shared = {}
         request = {'incident': identifier, 'step': name,

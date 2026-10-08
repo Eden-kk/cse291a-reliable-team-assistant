@@ -97,9 +97,12 @@ class Dispatcher:
         if self.policy == "fifo":
             return min(feasible, key=lambda j: j.identifier)
         response_ready = any(j.kind == "response" for j in feasible)
+        now = self.clock()
         background = sum(j.kind != "response" for j in self.running.values())
         choices = [j for j in feasible if not (response_ready and background >= self.concurrency - 1
-                                               and j.kind != "response")]
+                                               and j.kind != "response"
+                                               and now - j.arrived < self.age_seconds
+                                               and (j.deadline is None or j.deadline > now))]
         now = self.clock()
         rank = {"response": 0, "recovery": 1, "learning": 2}
         return min(choices, key=lambda j: (
@@ -133,13 +136,16 @@ class Dispatcher:
         try:
             result = await job.invoke()
             actual = result.tokens
+        except asyncio.CancelledError:
+            result = None
+            error = RuntimeError("Provider cancelled; usage unknown; dispatch halted")
         except Exception as exc:
             result = None
             error = exc
         else:
             error = None
         self.budget.settle(job.reservation, actual)
-        self.service[job.group] = self.service.get(job.group, 0) + (actual if isinstance(actual, int) and actual >= 0 else job.reservation)
+        self.service[job.group] = self.service.get(job.group, 0) + (actual if isinstance(actual, int) and not isinstance(actual, bool) and actual >= 0 else job.reservation)
         del self.running[job.identifier]
         self.events.append({"event": "finish", "job": job.identifier, "actual": actual,
                             "halted": self.budget.halted, "error": repr(error) if error else None,
@@ -152,4 +158,4 @@ class Dispatcher:
 
     async def join(self):
         while self.tasks:
-            await asyncio.gather(*list(self.tasks))
+            await asyncio.shield(asyncio.gather(*list(self.tasks)))
