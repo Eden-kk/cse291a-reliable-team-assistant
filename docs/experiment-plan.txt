@@ -1,4 +1,4 @@
-CSE291A Team Assistant — 正式实验计划 v0.1
+CSE291A Team Assistant — 正式实验计划 v0.2（按课程Phase 1重排）
 已提交方向：Option 5；Learning, Recovery and Scheduling under API Budgets。
 
 1. 项目要回答什么
@@ -120,3 +120,12 @@ M6正式study：选择性恢复、学习/调度消融、E5及失败分析。
 预算未知/耗尽：停新派发并保留inflight账本，缩小样本而不删负例；不自动购买或用reset额度。
 主实验结果不理想：保留失败与机制解释，不能换case或训练到test成功。研究结论可为“该条件不值得复用/学习/优先前台”。
 工作任务与状态以docs/status.txt为准；未完成项不得写入简历为既成结果。
+
+11. 2026-10-08课程对齐修订（优先于此前实现顺序）
+课程Option5的Phase1重点是clean workflow、受控故障注入、传播/浪费/时延测量、full restart及有意义的always-verify对照。选择性恢复是Phase2核心；memory/scheduling仍保留为proposal主要内容，但暂缓继续调优，直至Phase1证据齐全。
+P0：固定已有runtime/1为开发案例，预登记中间证据端口9555→9556损坏；无匹配时记录not_injected，不更换故障直到出现成功传播。比较同一collection前缀的clean/损坏、通知后restart/selective，以及消费前完整证据一致性检查。该检查只是与可信只读源对比，不声称解决一般语义谎言。
+P1：逐份保存实际消费的payload、依赖、原始源和调用成本；分别报告暴露、引用、下游任务失败/错误结论和恢复。错误未传播也保留，不当作恢复成功。
+P2：先完成至少两种故障/两个注入阶段的开发矩阵，再扩样本；加入超时/过期、共享状态，偶发与对抗分开。always-verify额外模型调用若为0则明确记录0，同时测比较/重取证CPU与工具开销。
+P3：10/28前完成Phase1代码、可复现trace、1–2页报告和timeline附录。当前43个软件测试不替代故障实验。
+P4：Phase1材料可交后恢复E2学习及E4调度；保持Phase2 12/10日期不变。禁止将本项目自设30秒或10%节省目标当课程及格线。
+评估公平性：selective/restart使用相同已消费故障前缀及相同额外预算，端到端均包含前缀；always-verify在消费前检查，前缀不同，因此另报从开始的全成本，不冒充同一恢复分支。clean对照单列。
