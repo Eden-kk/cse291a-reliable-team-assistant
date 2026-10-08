@@ -1,5 +1,6 @@
 """Three-role investigation with memory supplied before query selection."""
 import asyncio
+import copy
 import importlib
 import re
 
@@ -101,8 +102,14 @@ class Investigation:
                 raise result
 
     def active_observations(self, dependencies):
-        active = {obs['id'] for name in dependencies for obs in self.incident.store.results[name].payload.get('observations', [])}
-        return [obs for obs in self.snapshot.observations if obs['id'] in active]
+        # Validate quotes against what downstream actually consumed, not a pristine archive.
+        active = {}
+        for name in dependencies:
+            for obs in self.incident.store.results[name].payload.get('observations', []):
+                if obs['id'] in active and active[obs['id']] != obs:
+                    raise ValueError('Conflicting consumed observation identity')
+                active[obs['id']] = copy.deepcopy(obs)
+        return list(active.values())
 
     async def diagnose(self):
         dependencies = ['initial', 'configuration_evidence', 'telemetry_evidence']
