@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "dataset_commit": "ea05dafbc87b5985df8721622d63d4229c2b4224",
+  "seed": 20261008,
+  "isolation": "case-ID only; generator/template overlap not yet audited",
+  "final_unlocked": false,
+  "splits": {
+    "development_seen": [
+      "boutique/runtime/1",
+      "boutique/runtime/2",
+      "boutique/runtime/5",
+      "boutique/runtime/21",
+      "boutique/runtime/16",
+      "boutique/service/1",
+      "boutique/service/2",
+      "boutique/service/18",
+      "boutique/service/31",
+      "boutique/service/34",
+      "boutique/performance/1",
+      "boutique/performance/2",
+      "boutique/performance/7",
+      "boutique/performance/11",
+      "boutique/performance/8"
+    ],
+    "learning": [
+      "boutique/runtime/22",
+      "boutique/runtime/26",
+      "boutique/service/47",
+      "boutique/service/37",
+      "boutique/performance/25",
+      "boutique/performance/27"
+    ],
+    "gate_validation": [
+      "boutique/runtime/14",
+      "boutique/runtime/44",
+      "boutique/service/52",
+      "boutique/service/51",
+      "boutique/performance/18",
+      "boutique/performance/10"
+    ],
+    "shakedown": [
+      "boutique/runtime/39",
+      "boutique/runtime/42",
+      "boutique/service/46",
+      "boutique/performance/28"
+    ],
+    "final_locked": [
+      "boutique/runtime/32",
+      "boutique/runtime/37",
+      "boutique/service/12",
+      "boutique/service/41",
+      "boutique/service/49",
+      "boutique/performance/5",
+      "boutique/performance/19",
+      "boutique/performance/6"
+    ]
+  }
+}
