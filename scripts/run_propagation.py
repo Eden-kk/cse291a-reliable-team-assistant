@@ -24,7 +24,7 @@ def write(path, value):
     path.write_text(json.dumps(value, indent=2, default=list))
 
 
-async def main(output):
+async def main(output, preventive_only=False):
     if output.exists():
         raise ValueError('Refuse overwrite')
     output.mkdir(parents=True)
@@ -65,6 +65,17 @@ async def main(output):
         write(output / name / 'result.json', result)
         write(output / name / 'state.json', {k: asdict(v) for k, v in inv.incident.store.results.items()})
         return result
+    if preventive_only:
+        verified = build('always-verify', verify=True)
+        started = time.perf_counter()
+        await verified.collect()
+        fault = corrupt_port(verified)
+        result = await finish('always-verify', verified)
+        write(output / 'summary.json', {'state': 'completed' if fault['injected'] else 'not_injected',
+              'fault': fault, 'seconds': time.perf_counter() - started,
+              'tokens': result['budget']['spent'], 'checks': verified.integrity_audits,
+              'limitations': 'Independent collection; compare exact injection exposure before prevention claims'})
+        return
     try:
         base = build('collection')
         start = time.perf_counter()
@@ -130,4 +141,6 @@ async def main(output):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--output', type=Path, required=True)
-    asyncio.run(main(parser.parse_args().output))
+    parser.add_argument('--preventive-only', action='store_true')
+    args = parser.parse_args()
+    asyncio.run(main(args.output, args.preventive_only))
