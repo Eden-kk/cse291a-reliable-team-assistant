@@ -12,6 +12,7 @@ class BudgetExhausted(RuntimeError):
 class Outcome:
     value: dict
     tokens: int | None
+    error: str | None = None
 
 
 class Budget:
@@ -143,7 +144,7 @@ class Dispatcher:
             result = None
             error = exc
         else:
-            error = None
+            error = RuntimeError(result.error) if result.error else None
         self.budget.settle(job.reservation, actual)
         self.service[job.group] = self.service.get(job.group, 0) + (actual if isinstance(actual, int) and not isinstance(actual, bool) and actual >= 0 else job.reservation)
         del self.running[job.identifier]
