@@ -22,21 +22,21 @@ def write(path, value):
     path.write_text(json.dumps(value, indent=2))
 
 
-async def main(output, scheduling):
+async def main(output, scheduling, handoff_seconds=0):
     if output.exists():
         raise ValueError('Refuse to overwrite window')
     output.mkdir(parents=True)
     registry = json.loads((ROOT / 'configs/splits.json').read_text())
     commit = subprocess.check_output(['git', '-C', str(ROOT), 'rev-parse', 'HEAD'], text=True).strip()
     vendor = ROOT.parent / 'preparation/291a-team-agent/vendor/Cloud-OpsBench'
-    dispatcher = Dispatcher(Budget(360000), concurrency=2, policy=scheduling)
+    dispatcher = Dispatcher(Budget(360000), concurrency=2, policy=scheduling, response_handoff_seconds=handoff_seconds)
     memory = PolicyMemory()
     initial_policy = {'rules': []}
     memory.promote('oncall', 'v1', initial_policy, {'accepted': True, 'sha256': digest(initial_policy)})
     runtime = Runtime(memory, dispatcher)
     investigations = {}
     manifest = {'split': 'development_seen', 'code_commit': commit, 'dataset_commit': registry['dataset_commit'],
-                'scheduler': scheduling, 'concurrency': 2, 'shared_token_limit': 360000,
+                'scheduler': scheduling, 'response_handoff_seconds': handoff_seconds, 'concurrency': 2, 'shared_token_limit': 360000,
                 'response_slo_seconds': 30, 'recovery_slo_seconds': 60,
                 'kind': 'live integration with externally triggered policy revocation; no claim v1 caused wrong diagnoses'}
     write(output / 'manifest.json', manifest)
@@ -100,5 +100,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--scheduler', choices=['fair', 'fifo'], default='fair')
+    parser.add_argument('--handoff-seconds', type=float, default=0)
     args = parser.parse_args()
-    asyncio.run(main(args.output, args.scheduler))
+    asyncio.run(main(args.output, args.scheduler, args.handoff_seconds))

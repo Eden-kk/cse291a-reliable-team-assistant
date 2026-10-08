@@ -24,6 +24,44 @@ class BudgetTests(unittest.TestCase):
 
 
 class DispatchTests(unittest.IsolatedAsyncioTestCase):
+    async def test_handoff_allows_response_continuation_and_releases_background(self):
+        d = Dispatcher(Budget(100), concurrency=1, response_handoff_seconds=.02)
+        entered, release = asyncio.Event(), asyncio.Event()
+        order = []
+        async def initial():
+            entered.set()
+            await release.wait()
+            return Outcome({}, 5)
+        async def run(label):
+            order.append(label)
+            return Outcome({}, 5)
+        async def chain():
+            await d.call("C", "response", 20, initial)
+            await asyncio.sleep(.002)
+            await d.call("C", "response", 20, lambda: run("response"))
+        task = asyncio.create_task(chain())
+        await entered.wait()
+        background = asyncio.create_task(d.call("A", "recovery", 20, lambda: run("background")))
+        await asyncio.sleep(0)
+        release.set()
+        await asyncio.wait_for(asyncio.gather(task, background), timeout=1)
+        self.assertEqual(order, ["response", "background"])
+        self.assertEqual(d.budget.spent, 15)
+
+    async def test_handoff_does_not_block_aged_or_overdue_recovery(self):
+        for overdue in (True, False):
+            now = [10.0]
+            d = Dispatcher(Budget(100), clock=lambda: now[0], response_handoff_seconds=.1)
+            d.background_hold_until = 100
+            async def invoke():
+                return Outcome({}, 5)
+            task = asyncio.create_task(d.call("A", "recovery", 20, invoke, deadline=9 if overdue else None))
+            await asyncio.sleep(0)
+            if not overdue:
+                now[0] = 25
+            await asyncio.wait_for(task, 1)
+            self.assertEqual(d.budget.spent, 5)
+
     async def test_queue_timestamps_use_ready_time(self):
         now = [10.0]
         d = Dispatcher(Budget(100), clock=lambda: now[0])

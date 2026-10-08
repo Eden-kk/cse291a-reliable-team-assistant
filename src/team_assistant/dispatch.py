@@ -58,9 +58,13 @@ class Job:
 
 
 class Dispatcher:
-    def __init__(self, budget, concurrency=2, policy="fair", age_seconds=10, clock=time.monotonic):
+    def __init__(self, budget, concurrency=2, policy="fair", age_seconds=10, clock=time.monotonic, response_handoff_seconds=0):
         if concurrency < 1 or policy not in {"fair", "fifo"} or age_seconds <= 0:
             raise ValueError("Invalid dispatcher configuration")
+        if not 0 <= response_handoff_seconds <= .1:
+            raise ValueError("Handoff must be bounded to 100ms")
+        self.response_handoff_seconds = response_handoff_seconds
+        self.background_hold_until = 0
         self.budget = budget
         self.concurrency = concurrency
         self.policy = policy
@@ -124,6 +128,12 @@ class Dispatcher:
                         self.events.append({"event": "rejected", "job": job.identifier})
                     self.pending.clear()
                 return
+            if self.clock() < self.background_hold_until:
+                feasible = [j for j in feasible if j.kind == "response"
+                            or self.clock() - j.arrived >= self.age_seconds
+                            or (j.deadline is not None and j.deadline <= self.clock())]
+                if not feasible:
+                    return
             job = self._choose(feasible)
             self.pending.remove(job)
             self.budget.reserve(job.reservation)
@@ -155,6 +165,10 @@ class Dispatcher:
         self.events.append({"event": "finish", "job": job.identifier, "actual": actual,
                             "halted": self.budget.halted, "error": repr(error) if error else None,
                             "time": self.clock()})
+        if (job.kind == "response" and self.response_handoff_seconds
+                and self.clock() >= self.background_hold_until):
+            self.background_hold_until = self.clock() + self.response_handoff_seconds
+            asyncio.get_running_loop().call_later(self.response_handoff_seconds, self._drain)
         if error is not None:
             job.future.set_exception(error)
         else:
