@@ -15,5 +15,5 @@ No cloud instance or paid API is started by tests/demo. Live providers and bench
 
 Historical evidence is outside this repository at ../preparation/291a-team-agent/.
 Do not modify its frozen datasets/results. Formal runs belong under runs/ and must capture config, code and dataset hashes.
-Dataset paths, secrets, raw third-party data and run output are not committed.
+Dataset contents, secrets and run output are not committed; relative dataset paths and case-ID splits are versioned.
 No remote repository is configured; publishing needs a separate request.

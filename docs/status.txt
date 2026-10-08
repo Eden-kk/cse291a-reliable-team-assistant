@@ -1,0 +1,38 @@
+项目状态 — 2026-10-08
+
+已完成
+- Project survey已提交；原文和回执保存在本仓库docs，保持不变。
+- 独立Python项目、开发配置、完整实验计划；无第三方运行依赖。
+- 共享dispatcher：并发限制，response/recovery/learning类别，FIFO或aging调度，调用前预留，调用后actual结算，未知usage/超额停发，已发请求取消仍计费。
+- 进程内版本化状态：实际父结果/共享policy版本依赖，失效闭包，普通升级pin旧版本，显式撤回，旧请求写回拒绝，外部验证回调与追加发布更正。
+- 受控三群demo：A/B旧版本失效，C新版本不受影响；保留独立telemetry；恢复与新响应共享dispatcher；废弃回复仍计费。
+- case-ID隔离清单：已见15、learning6、validation6、shakedown4、最终预留8。仅读取Git路径清单进行新划分，未读取这些预留案例的问题和答案。
+- final运行授权函数：需要显式解锁、代码/数据/清单匹配及prompt/memory/门槛/fault/arrival/budget文件hash匹配。尚无真实推理runner，接入时必须调用此函数。
+
+验证
+- 19项unittest全部通过，包含预算、取消、并发、旧回复、共享版本、发布更正、集成demo和final冻结检查。
+- runs/startup/result.json为最终受控运行记录（config/commit与dirty标志也在其中），events.jsonl为运行完成后的事件导出。
+- demo中的127 tokens是固定后端给出的模拟用量，不是实际API消耗。受控策略的gate通过也是假定输入，不构成学习效果证据。
+- 本轮没有请求付费模型、启动AWS、修改旧预实验结果或推送到远程。
+
+当前限制
+- 模型/Cloud-OpsBench工具适配器、candidate生成和真实validation evaluator尚未迁入新运行时。此前预实验仍位于preparation/291a-team-agent，不自动成为正式新系统结果。
+- 只有进程内状态；运行结束才导出日志，不支持崩溃后恢复。无持久消息队列、事务账本或真实群聊发布。
+- 请求捕获目前涵盖运行时提供的依赖及policy；外部工具source版本需由下一步适配器接入，缺失捕获保守失效仍需端到端验证。
+- 并发/总token约束已实现；RPM/TPM、真实tokenizer、美元账本、超时/重试、completion-aware调度尚待实现。不保证供应商actual不会超过预留。
+- 当前incident数量限制针对单次运行已创建的事件；活跃事件完成/关闭与连续流准入尚未实现。
+- policy字段是进程内可信对象，尚无多租户安全边界；发布validator回调必须由可信评估器提供，不能用模型自称正确代替。
+- 数据仅按case-ID隔离，未完成generator/template近重复审计。
+
+下一个实现单元（按顺序）
+1. 用已有development_seen案例接只读Cloud-OpsBench适配器：question允许字段、工具schema与观察、raw artifact hash、source版本；评估答案保持在独立评分路径。
+2. 接一个显式选择的模型provider，先校准2–3个开发案例，记录真实usage和延迟；余额/课程API权限不清楚时不扩批。新付费服务必须先确认属于课程允许资源。
+3. 三角色真实工作流，memory在工具选择前提供；以固定/候选策略比较实际查询路径，验证模型确实消费共享知识。
+4. 学习候选生成→独立gate→提升/回滚，保存被拒绝候选和完整成本；再接错误共享policy撤回与语义恢复。
+5. 跑E1门槛、真实fault注入与restart/always-verify对照；通过后冻结E2/E3，小批启动，不一次执行最大矩阵。
+
+复现
+cd /Users/yvette/26fall/cse291a-team-assistant
+.venv/bin/python -m unittest discover -s tests -v
+PYTHONPATH=src .venv/bin/python -m team_assistant.demo --output runs/my-first-run
+输出目录已存在时拒绝覆盖，请换新目录。
