@@ -1,4 +1,4 @@
-"""Bounded development run. Oracle scoring is a separate post-inference command."""
+"""Bounded development or shakedown run. Oracle scoring is a separate post-inference command."""
 import argparse
 import asyncio
 import json
@@ -18,8 +18,8 @@ ROOT = Path(__file__).resolve().parents[1]
 
 async def main(args):
     registry = json.loads((ROOT / 'configs/splits.json').read_text())
-    if args.case not in registry['splits']['development_seen']:
-        raise ValueError('Development runner only permits already-seen cases')
+    if args.case not in registry['splits'][args.split]:
+        raise ValueError('Case is outside the explicitly selected development/shakedown split')
     if args.output.exists():
         raise ValueError('Refuse to overwrite run')
     args.output.mkdir(parents=True)
@@ -36,7 +36,7 @@ async def main(args):
     dispatcher = Dispatcher(Budget(360000), concurrency=2)
     provider = CodexProvider(args.output / 'calls')
     runtime = Runtime(memory, dispatcher)
-    manifest = {'case': args.case, 'split': 'development_seen', 'code_commit': commit,
+    manifest = {'case': args.case, 'split': args.split, 'code_commit': commit,
                 'dirty': bool(subprocess.check_output(['git', '-C', str(ROOT), 'status', '--porcelain'], text=True)),
                 'dataset_commit': registry['dataset_commit'], 'policy': policy, 'policy_origin': 'externally supplied experimental candidate; not newly gate-approved' if args.policy_file else 'fixed development advice, not learned',
                 'model': provider.model, 'reservation': 60000, 'token_limit': 360000,
@@ -59,6 +59,7 @@ async def main(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--case', default='boutique/runtime/1')
+    parser.add_argument('--split', choices=['development_seen', 'shakedown'], default='development_seen')
     parser.add_argument('--policy', choices=['empty', 'conditional'], default='empty')
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--policy-file', type=Path)
