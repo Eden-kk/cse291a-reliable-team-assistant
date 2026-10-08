@@ -1,0 +1,97 @@
+{
+  "scope": "one seen case; fixed accidental evidence corruption; factual propagation, not incorrect root classification",
+  "rows": [
+    {
+      "method": "clean",
+      "native_JRA": 1.0,
+      "native_ECR": 1.0,
+      "contract_valid": true,
+      "source_mismatching_citations": [],
+      "false_port_in_reasoning": false,
+      "new_tools_in_this_phase": 0,
+      "model_calls_in_this_phase": 1,
+      "tokens_in_this_phase": 19339,
+      "phase_seconds": 10.444202208000206
+    },
+    {
+      "method": "damaged",
+      "native_JRA": 1.0,
+      "native_ECR": 1.0,
+      "contract_valid": true,
+      "source_mismatching_citations": [
+        {
+          "observation_id": "observation-7",
+          "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9556"
+        },
+        {
+          "observation_id": "observation-6",
+          "quote": "Readiness:  grpc <pod>:9556"
+        }
+      ],
+      "false_port_in_reasoning": true,
+      "new_tools_in_this_phase": 0,
+      "model_calls_in_this_phase": 1,
+      "tokens_in_this_phase": 19460,
+      "phase_seconds": 10.601456375003181
+    },
+    {
+      "method": "selective",
+      "native_JRA": 1.0,
+      "native_ECR": 1.0,
+      "contract_valid": true,
+      "source_mismatching_citations": [],
+      "false_port_in_reasoning": false,
+      "new_tools_in_this_phase": 2,
+      "model_calls_in_this_phase": 1,
+      "tokens_in_this_phase": 19341,
+      "phase_seconds": 9.138597749999462
+    },
+    {
+      "method": "restart",
+      "native_JRA": 1.0,
+      "native_ECR": 1.0,
+      "contract_valid": true,
+      "source_mismatching_citations": [],
+      "false_port_in_reasoning": false,
+      "new_tools_in_this_phase": 7,
+      "model_calls_in_this_phase": 3,
+      "tokens_in_this_phase": 50947,
+      "phase_seconds": 15.973952624997764
+    },
+    {
+      "method": "always-verify",
+      "native_JRA": 1.0,
+      "native_ECR": 1.0,
+      "contract_valid": true,
+      "source_mismatching_citations": [],
+      "false_port_in_reasoning": false,
+      "new_tools_in_this_phase": 7,
+      "model_calls_in_this_phase": 3,
+      "tokens_in_this_phase": 51532,
+      "phase_seconds": 15.357946291002008
+    }
+  ],
+  "same_consumed_prefix_tokens": 51458,
+  "logical_total_tokens": {
+    "clean": 51337,
+    "selective": 70799,
+    "restart": 102405,
+    "preventive": 51532
+  },
+  "preventive_injected": true,
+  "verification_cpu_seconds": 0.0017649999999999888,
+  "verification_wall_seconds": 0.0017651250018388964,
+  "verification_checked_observations": 11,
+  "verification_repaired_observations": 2,
+  "physical_model_tokens_including_invalid_arm": 247911,
+  "physical_calls_including_invalid_arm": 14,
+  "excluded": "v1 always-verify expanded visible records with raw archive fields; invalid comparison, costs retained",
+  "budget_limits": "initial phase 360k; recovery methods additionally 360k each; preventive 360k. Not equal end-to-end caps.",
+  "unmeasured": [
+    "real unauthorized actions: tools are read-only",
+    "tracking overhead benchmark",
+    "other fault types/stages",
+    "general semantic verification",
+    "multi-case robustness"
+  ]
+}

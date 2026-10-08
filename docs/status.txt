@@ -1,7 +1,7 @@
 项目状态 — 2026-10-08
 
 已完成
-- 正式repo、实验计划、代码/数据split；43项测试通过。代码已分阶段本地提交，无远程推送。
+- 正式repo、实验计划、代码/数据split；47项测试通过。代码已分阶段本地提交，无远程推送。
 - Cloud-OpsBench真实只读工具和现有订阅Codex推理适配器；模型只接收question/工具合同/实际观察及policy，原生评分在推理后独立运行。
 - 三角色真实调查，memory进入查询阶段；实际依赖/source版本捕获、版本撤回与选择性重算。
 - 预算预留/actual结算、失败/取消计费、多群共享队列、单群完成时间和SLO记录。
@@ -45,3 +45,12 @@ PYTHONPATH=src .venv/bin/python -m team_assistant.demo --output runs/new-control
 - 固定trace回放：fair零交接延迟C22.65s，20ms交接延迟39.30s；是固定输出/耗时假设，不是新实测。
 - opt-in --handoff-seconds 0.02允许response完成后短暂等待下一阶段；默认0。aging/过期后台任务绕过等待；无后续response时定时释放。尚未真实模型复验。
 - 本次没有新增模型调用/AWS资源；完整说明见learning-and-handoff.txt。
+
+课程Phase1优先级修订与首批传播证据
+- 当前执行计划v0.2：暂停继续memory/scheduling调优，优先故障传播和基线；已提交proposal不变。
+- 固定端口损坏9555→9556已进入协调者解释与两处引用，根因label保持正确；两种恢复都修复了错误事实。
+- selective新增19341 tokens/1call/2tools；restart 50947/3/7，共用51458 token前缀。单个已见案例，非一般优势。
+- corrected preventive完整性核对总51532 tokens，检查11次/修复2条，额外模型调用0；仅静态源一致性，不是语义验证。
+- v1 preventive输入格式错误已排除；费用仍计入14次真实调用、247911 tokens。本批已结束。
+- 下一步按课程：第二故障/阶段、always-verify适用边界、追踪开销和报告；不要继续先追30秒或10%自设门槛。
+- 细节见phase1-propagation-report.txt、phase1-propagation-results.json。Phase1尚未全部完成。
