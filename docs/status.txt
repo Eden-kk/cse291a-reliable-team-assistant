@@ -1,38 +1,39 @@
 项目状态 — 2026-10-08
 
 已完成
-- Project survey已提交；原文和回执保存在本仓库docs，保持不变。
-- 独立Python项目、开发配置、完整实验计划；无第三方运行依赖。
-- 共享dispatcher：并发限制，response/recovery/learning类别，FIFO或aging调度，调用前预留，调用后actual结算，未知usage/超额停发，已发请求取消仍计费。
-- 进程内版本化状态：实际父结果/共享policy版本依赖，失效闭包，普通升级pin旧版本，显式撤回，旧请求写回拒绝，外部验证回调与追加发布更正。
-- 受控三群demo：A/B旧版本失效，C新版本不受影响；保留独立telemetry；恢复与新响应共享dispatcher；废弃回复仍计费。
-- case-ID隔离清单：已见15、learning6、validation6、shakedown4、最终预留8。仅读取Git路径清单进行新划分，未读取这些预留案例的问题和答案。
-- final运行授权函数：需要显式解锁、代码/数据/清单匹配及prompt/memory/门槛/fault/arrival/budget文件hash匹配。尚无真实推理runner，接入时必须调用此函数。
+- 正式repo、实验计划、代码/数据split；31项测试通过。代码已分阶段本地提交，无远程推送。
+- Cloud-OpsBench真实只读工具和现有订阅Codex推理适配器；模型只接收question/工具合同/实际观察及policy，原生评分在推理后独立运行。
+- 三角色真实调查，memory进入查询阶段；实际依赖/source版本捕获、版本撤回与选择性重算。
+- 预算预留/actual结算、失败/取消计费、多群共享队列、单群完成时间和SLO记录。
+- 3个已见案例校准；3对开发memory对照；4对预留shakedown对照；一次有效错误结论注入/选择性修复对照；真实多群撤回/恢复/新任务窗口。
+- publication更正及旧在途写回拒绝有受控测试；真实模型窗口尚未覆盖已发布错误答案的更正。
 
-验证
-- 19项unittest全部通过，包含预算、取消、并发、旧回复、共享版本、发布更正、集成demo和final冻结检查。
-- runs/startup/result.json为最终受控运行记录（config/commit与dirty标志也在其中），events.jsonl为运行完成后的事件导出。
-- demo中的127 tokens是固定后端给出的模拟用量，不是实际API消耗。受控策略的gate通过也是假定输入，不构成学习效果证据。
-- 本轮没有请求付费模型、启动AWS、修改旧预实验结果或推送到远程。
+主要结果
+- 纯提示词memory：开发3对和shakedown4对均无完成率或调用数提升，不宣称学习收益。
+- shakedown两策略均3/4成功，performance/28因证据冲突/不足保持uncertain，计入未成功。
+- 有效恢复v2：选择性新增19352 tokens、1模型call，完整重启51035、3 calls；两者JRA/ECR1。前缀已抵抗错误claim，属于artifact修复，不是错误诊断恢复。
+- 多群v2：FIFO新C约42.96s，fair约37.76s；fair延迟A/B恢复；两者C均错过30s目标。只各一个窗口，不能声称普遍或统计显著优势。
+- v3确认C规划优先启动，但完整诊断39.34s仍超30s；A/B恢复45.96/50.95s。三组native检查通过，不能宣称端到端时延改善。
+- 旧恢复v1、旧多群计时v1保留但不用于正式结论；错误原因写入experiment-progress.txt。
 
-当前限制
-- 模型/Cloud-OpsBench工具适配器、candidate生成和真实validation evaluator尚未迁入新运行时。此前预实验仍位于preparation/291a-team-agent，不自动成为正式新系统结果。
-- 只有进程内状态；运行结束才导出日志，不支持崩溃后恢复。无持久消息队列、事务账本或真实群聊发布。
-- 请求捕获目前涵盖运行时提供的依赖及policy；外部工具source版本需由下一步适配器接入，缺失捕获保守失效仍需端到端验证。
-- 并发/总token约束已实现；RPM/TPM、真实tokenizer、美元账本、超时/重试、completion-aware调度尚待实现。不保证供应商actual不会超过预留。
-- 当前incident数量限制针对单次运行已创建的事件；活跃事件完成/关闭与连续流准入尚未实现。
-- policy字段是进程内可信对象，尚无多租户安全边界；发布validator回调必须由可信评估器提供，不能用模型自称正确代替。
-- 数据仅按case-ID隔离，未完成generator/template近重复审计。
+入口
+- 完整计划：experiment-plan.txt
+- 实验记录/负结果/语义复核：experiment-progress.txt
+- 自动汇总：development-summary.json；development-memory-results.csv
+- 原始请求、回复、usage、事件、manifest、scores：../runs/
+- 重新汇总：.venv/bin/python scripts/summarize_development.py；.venv/bin/python scripts/summarize_progress.py
 
-下一个实现单元（按顺序）
-1. 用已有development_seen案例接只读Cloud-OpsBench适配器：question允许字段、工具schema与观察、raw artifact hash、source版本；评估答案保持在独立评分路径。
-2. 接一个显式选择的模型provider，先校准2–3个开发案例，记录真实usage和延迟；余额/课程API权限不清楚时不扩批。新付费服务必须先确认属于课程允许资源。
-3. 三角色真实工作流，memory在工具选择前提供；以固定/候选策略比较实际查询路径，验证模型确实消费共享知识。
-4. 学习候选生成→独立gate→提升/回滚，保存被拒绝候选和完整成本；再接错误共享policy撤回与语义恢复。
-5. 跑E1门槛、真实fault注入与restart/always-verify对照；通过后冻结E2/E3，小批启动，不一次执行最大矩阵。
+限制和下一步
+1. 多群顺序/负载/模型时延需重复和随机化；加入completion-aware admission和过载队列，不能以单窗口宣布SLO达标。
+2. 先在learning集构造多个自然候选并执行独立gate-validation，纳入生成/验证成本；拒绝无收益或有回归的更新。现有实验memory为显式测试性激活。
+3. 扩展真正传播成错误答案的fault、变化的source、always-verify与来源遗漏；连接真实发布历史的模拟更正。
+4. 逐事件持久化/重启恢复尚未实现；当前模型请求/回复逐调用落盘，状态仍在内存。
+5. 课程AWS/API额度适用性、RPM/TPM、tokenizer、美元账本仍需验证。现有调用使用订阅，未新建收费API/AWS实例，也未使用重置额度。
+6. 最终8例保持锁定；shakedown已成为调试材料，不能重新声称未见测试。统计按case而非调用数计算。
 
-复现
-cd /Users/yvette/26fall/cse291a-team-assistant
+本地复现
 .venv/bin/python -m unittest discover -s tests -v
-PYTHONPATH=src .venv/bin/python -m team_assistant.demo --output runs/my-first-run
-输出目录已存在时拒绝覆盖，请换新目录。
+PYTHONPATH=src .venv/bin/python -m team_assistant.demo --output runs/new-controlled-run
+.venv/bin/python scripts/run_development.py --case boutique/runtime/1 --output runs/new-development-run
+.venv/bin/python scripts/score_run.py runs/new-development-run
+后两个命令会消耗现有Codex订阅额度；输出目录存在时拒绝覆盖。

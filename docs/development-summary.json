@@ -1,0 +1,396 @@
+{
+  "scope": "development/shakedown and integration, not final evaluation",
+  "all_recorded_inference": {
+    "calls": 142,
+    "tokens": 2677802,
+    "errors": 0,
+    "unknown_usage": 0,
+    "includes": "all attempts, including superseded timing/protocol v1 runs"
+  },
+  "shakedown": [
+    {
+      "case": "runtime-39",
+      "policy": "empty",
+      "state": "completed",
+      "tokens": 51286,
+      "answer_status": "diagnosed",
+      "scores": {
+        "CA": 1.0,
+        "FA": 1.0,
+        "JRA": 1.0,
+        "MC": 1.0,
+        "EOC": 1.0,
+        "ECR": 1.0,
+        "EE": 0.42857142857142855,
+        "contract_valid": true,
+        "budget_valid": true
+      }
+    },
+    {
+      "case": "runtime-39",
+      "policy": "candidate",
+      "state": "completed",
+      "tokens": 51787,
+      "answer_status": "diagnosed",
+      "scores": {
+        "CA": 1.0,
+        "FA": 1.0,
+        "JRA": 1.0,
+        "MC": 1.0,
+        "EOC": 1.0,
+        "ECR": 1.0,
+        "EE": 0.42857142857142855,
+        "contract_valid": true,
+        "budget_valid": true
+      }
+    },
+    {
+      "case": "runtime-42",
+      "policy": "empty",
+      "state": "completed",
+      "tokens": 49869,
+      "answer_status": "diagnosed",
+      "scores": {
+        "CA": 1.0,
+        "FA": 1.0,
+        "JRA": 1.0,
+        "MC": 1.0,
+        "EOC": 1.0,
+        "ECR": 1.0,
+        "EE": 0.42857142857142855,
+        "contract_valid": true,
+        "budget_valid": true
+      }
+    },
+    {
+      "case": "runtime-42",
+      "policy": "candidate",
+      "state": "completed",
+      "tokens": 50693,
+      "answer_status": "diagnosed",
+      "scores": {
+        "CA": 1.0,
+        "FA": 1.0,
+        "JRA": 1.0,
+        "MC": 1.0,
+        "EOC": 1.0,
+        "ECR": 1.0,
+        "EE": 0.42857142857142855,
+        "contract_valid": true,
+        "budget_valid": true
+      }
+    },
+    {
+      "case": "service-46",
+      "policy": "empty",
+      "state": "completed",
+      "tokens": 56882,
+      "answer_status": "diagnosed",
+      "scores": {
+        "CA": 1.0,
+        "FA": 1.0,
+        "JRA": 1.0,
+        "MC": 1.0,
+        "EOC": 1.0,
+        "ECR": 1.0,
+        "EE": 0.375,
+        "contract_valid": true,
+        "budget_valid": true
+      }
+    },
+    {
+      "case": "service-46",
+      "policy": "candidate",
+      "state": "completed",
+      "tokens": 57719,
+      "answer_status": "diagnosed",
+      "scores": {
+        "CA": 1.0,
+        "FA": 1.0,
+        "JRA": 1.0,
+        "MC": 1.0,
+        "EOC": 1.0,
+        "ECR": 1.0,
+        "EE": 0.5,
+        "contract_valid": true,
+        "budget_valid": true
+      }
+    },
+    {
+      "case": "performance-28",
+      "policy": "empty",
+      "state": "completed",
+      "tokens": 130529,
+      "answer_status": "uncertain",
+      "scores": {
+        "CA": 0.0,
+        "FA": 0.0,
+        "JRA": 0.0,
+        "MC": 0.5,
+        "EOC": 0.5,
+        "ECR": 0.0,
+        "EE": 0.25,
+        "contract_valid": false,
+        "budget_valid": true
+      }
+    },
+    {
+      "case": "performance-28",
+      "policy": "candidate",
+      "state": "completed",
+      "tokens": 131258,
+      "answer_status": "uncertain",
+      "scores": {
+        "CA": 0.0,
+        "FA": 0.0,
+        "JRA": 0.0,
+        "MC": 0.5,
+        "EOC": 0.5,
+        "ECR": 0.0,
+        "EE": 0.25,
+        "contract_valid": false,
+        "budget_valid": true
+      }
+    }
+  ],
+  "recovery": {
+    "fault": {
+      "kind": "constructed wrong intermediate claim",
+      "artifact": "configuration_evidence",
+      "clean_version": 1,
+      "corrupted_version": 2,
+      "claim": {
+        "fault_object": "app/adservice",
+        "root_cause": "pod_cpu_overload",
+        "reasoning": "Adservice CPU throttling is the cause of the application restarts."
+      },
+      "fault_identity_available_at_notification": true
+    },
+    "invalidated": [
+      "configuration_evidence",
+      "diagnosis_0"
+    ],
+    "retained_valid_artifacts": [
+      "initial",
+      "telemetry_plan",
+      "telemetry_evidence",
+      "configuration_plan"
+    ],
+    "prefix_tokens": 51397,
+    "recovery_ceiling_equal": {
+      "tokens_each": 360000,
+      "tools_each": 12
+    },
+    "selective_end_to_end_tokens": 70749,
+    "restart_end_to_end_tokens": 102432,
+    "selective_incremental_tokens": 19352,
+    "restart_incremental_tokens": 51035,
+    "selective_model_calls": 1,
+    "restart_model_calls": 3,
+    "selective_new_tools": 2,
+    "restart_new_tools": 7,
+    "valid_contracts": {
+      "prefix": true,
+      "selective": true,
+      "restart": true
+    },
+    "warning": "If prefix diagnosis already correct, this is contaminated-artifact repair, not recovery of an incorrect diagnosis. One seen case is not generalization."
+  },
+  "multigroup": {
+    "fifo-v2": {
+      "window_origin_monotonic": 18097.222769625,
+      "outcomes": [
+        {
+          "group": "A",
+          "seconds": 33.305361457998515,
+          "contract_valid": true,
+          "state": "completed",
+          "slo_met_contract_only": true
+        },
+        {
+          "group": "B",
+          "seconds": 48.4295132499974,
+          "contract_valid": true,
+          "state": "completed",
+          "slo_met_contract_only": true
+        },
+        {
+          "group": "C",
+          "seconds": 42.96020366599987,
+          "contract_valid": true,
+          "state": "completed",
+          "slo_met_contract_only": false
+        }
+      ],
+      "affected": {
+        "A": [
+          "configuration_evidence",
+          "configuration_plan",
+          "telemetry_evidence",
+          "telemetry_plan"
+        ],
+        "B": [
+          "configuration_evidence",
+          "configuration_plan",
+          "telemetry_evidence",
+          "telemetry_plan"
+        ]
+      },
+      "prefix_tokens": 63659,
+      "total_tokens": 255994,
+      "post_revocation_tokens": 192335,
+      "peak_concurrency": 2,
+      "initial_versions": {
+        "A": 1,
+        "B": 1,
+        "C": 1
+      },
+      "policies": {
+        "A": "v2",
+        "B": "v2",
+        "C": "v2"
+      },
+      "quality_scoring": "pending separate native/semantic scoring; contract-valid latency alone is not useful-response latency",
+      "publication": "No external messages or publication ledger exercised in this experiment",
+      "native_success_groups": [
+        "A",
+        "B",
+        "C"
+      ],
+      "native_quality_slo_groups": [
+        "A",
+        "B"
+      ]
+    },
+    "fair-v2": {
+      "window_origin_monotonic": 18163.293099708,
+      "outcomes": [
+        {
+          "group": "A",
+          "seconds": 38.34157874999801,
+          "contract_valid": true,
+          "state": "completed",
+          "slo_met_contract_only": true
+        },
+        {
+          "group": "B",
+          "seconds": 56.05084779200115,
+          "contract_valid": true,
+          "state": "completed",
+          "slo_met_contract_only": true
+        },
+        {
+          "group": "C",
+          "seconds": 37.76233199999842,
+          "contract_valid": true,
+          "state": "completed",
+          "slo_met_contract_only": false
+        }
+      ],
+      "affected": {
+        "A": [
+          "configuration_evidence",
+          "configuration_plan",
+          "telemetry_evidence",
+          "telemetry_plan"
+        ],
+        "B": [
+          "configuration_evidence",
+          "configuration_plan",
+          "telemetry_evidence",
+          "telemetry_plan"
+        ]
+      },
+      "prefix_tokens": 63313,
+      "total_tokens": 256219,
+      "post_revocation_tokens": 192906,
+      "peak_concurrency": 2,
+      "initial_versions": {
+        "A": 1,
+        "B": 1,
+        "C": 1
+      },
+      "policies": {
+        "A": "v2",
+        "B": "v2",
+        "C": "v2"
+      },
+      "quality_scoring": "pending separate native/semantic scoring; contract-valid latency alone is not useful-response latency",
+      "publication": "No external messages or publication ledger exercised in this experiment",
+      "native_success_groups": [
+        "A",
+        "B",
+        "C"
+      ],
+      "native_quality_slo_groups": [
+        "A",
+        "B"
+      ]
+    },
+    "fair-v3": {
+      "window_origin_monotonic": 18442.359889666,
+      "outcomes": [
+        {
+          "group": "A",
+          "seconds": 45.955408666999574,
+          "contract_valid": true,
+          "state": "completed",
+          "slo_met_contract_only": true
+        },
+        {
+          "group": "B",
+          "seconds": 50.95040841700029,
+          "contract_valid": true,
+          "state": "completed",
+          "slo_met_contract_only": true
+        },
+        {
+          "group": "C",
+          "seconds": 39.33663295899896,
+          "contract_valid": true,
+          "state": "completed",
+          "slo_met_contract_only": false
+        }
+      ],
+      "affected": {
+        "A": [
+          "configuration_evidence",
+          "configuration_plan",
+          "telemetry_evidence",
+          "telemetry_plan"
+        ],
+        "B": [
+          "configuration_evidence",
+          "configuration_plan",
+          "telemetry_evidence",
+          "telemetry_plan"
+        ]
+      },
+      "prefix_tokens": 63757,
+      "total_tokens": 257937,
+      "post_revocation_tokens": 194180,
+      "peak_concurrency": 2,
+      "initial_versions": {
+        "A": 1,
+        "B": 1,
+        "C": 1
+      },
+      "policies": {
+        "A": "v2",
+        "B": "v2",
+        "C": "v2"
+      },
+      "quality_scoring": "pending separate native/semantic scoring; contract-valid latency alone is not useful-response latency",
+      "publication": "No external messages or publication ledger exercised in this experiment",
+      "native_success_groups": [
+        "A",
+        "B",
+        "C"
+      ],
+      "native_quality_slo_groups": [
+        "A",
+        "B"
+      ]
+    }
+  }
+}
