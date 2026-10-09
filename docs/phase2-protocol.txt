@@ -1,0 +1,41 @@
+Phase 2 development protocol — v1, 2026-10-08
+
+Question
+When a previously valid source changes, does dependency-aware selective recovery preserve answer quality and freshness while doing less work than restart or consumption-time verification? Results may favor simple verification. No required speedup is assumed.
+
+Boundary and evidence
+Phase 1 stays frozen at output/phase1-submission.zip. Phase 2 uses only development_seen runtime/1 and performance/1 initially. Do not read final_locked data. These two cases were already seen; repetitions do not create independent cases or demonstrate generalization.
+Static Cloud-OpsBench contains no observed multi-version incident history. A controlled historical record uses the predeclared substitutions in configs/phase2/protocol.json. The current record is the unchanged original benchmark source. This is constructed workflow/source evolution, not a naturally captured production transition. Source authenticity means equality with a trusted in-memory revision archive, not cryptographic authentication.
+The old version's digest must be recomputed and remain internally consistent. Unchanged tool+arguments identify the same query source, scoped to tenant/incident. All observations from that query share its version, including other branches. Reject unknown identities/provenance. A query-level key does not discover dependencies between different queries about the same resource: resource-level cross-query freshness remains a limitation.
+
+Predeclared source conditions
+unchanged: no version/content change; no invalidation expected.
+version_only: new revision with identical content; measures refresh overhead, not wrong-answer recovery.
+trusted_stale: historical content -> original benchmark content, old record authentic but not current.
+dense_version_only: advance all query sources without changing content; tests conservative full invalidation and the boundary of selective benefit.
+No matching fixed content means not_injected; preserve it, do not retarget. Reject truncated transformations whose full-record digest cannot be reconstructed.
+
+Methods and logical barriers
+1. No recovery: diagnose from settled historical collection; measure whether old values appear, whether root/contract success changes, and whether actual inputs were consumed.
+2. Restart and selective: share the same historical collection plus diagnosis prefix; supply the same changed-source identity and current revision after diagnosis completes. Never supply a root-cause label. Restart discards all work; selective uses the actual dependency closure. New queries see the current source.
+3. Source verification before consumption: same registered source transition occurs before coordinator consumption; check current versions and retrieve current observations. Report from-start cost. Different notification timing makes this a prevention comparison, not a matched post-failure recovery arm.
+4. Verify then recover: initial consumption-time check cannot prevent a source transition after answer completion; run dependency invalidation when notified, then selectively recompute. Initially a mechanism control; require an actual integrated live trace before claiming a live result.
+Early/late barriers are separate conditions. Do not change fault timing according to answer quality or runtime. Native current-snapshot scoring applies only to post-transition current-state answers; historical-prefix output is a stale-context diagnostic, not a fair current-snapshot success score.
+
+Budget and accounting
+All end-to-end methods receive 240000 tokens and 24 attempted tools; model-call reservation 60000. Restart/selective remaining tokens/tools subtract the identical charged/attempted prefix. Failed tools, verification retrieval, discarded work, failed requests and retries count. Source-version metadata reads, equality checks, actual source re-reads and LLM requests have separate counters; metadata is not counted as zero-cost knowledge.
+A physical shared prefix is charged once in the batch ledger and included once in each method's logical total. Do not sum duplicated logical prefixes as physical cost. Physical batch cap 900000 conservatively charged tokens; unknown usage charges reservation and stops new dispatch across the batch. Exceeding a reservation records overrun and stops. Reservations are conservative, not a provider-enforced output cap; inability to reserve is reported as reservation_unaffordable.
+Provider errors remain eligible outcomes. No outcome-based repeated retries. Complete independent remaining arms only when usage is known and batch budget permits. A provider outage is an operational stop, not evidence that a recovery algorithm is incorrect. No new paid account or AWS resource is authorized by this protocol; use existing subscription only.
+
+Acceptance and metrics
+Separate: raw-source authenticity; source freshness; contract validity; root/object; evidence support; unauthorized attempted actions. Native JRA/ECR do not replace semantic review.
+Report per case: prefix/new/total tokens, known vs conservative usage, calls, attempted tools, metadata checks, source re-reads, invalidated vs retained artifacts, retained actual input versions, failed/late commit rejection, publication history, initial response and linked correction latency.
+Recovery success requires latest content in the actual coordinator request plus acceptable answer quality. Merely increasing a revision or reconstructing a Python artifact is a mechanism test, not live semantic recovery. Ignored injections are not recovered failures.
+Offline controls first; then one bounded live smoke trial. If correct, two fixed repeats per case, alternating restart/selective order. Different model draws and provider latency remain confounders; report descriptive values only. Freeze the next validation protocol before opening fresh development validation cases.
+
+Next gates
+G1: query-level revision archive and authentic-but-stale controls, missing provenance, unchanged/dense controls, old commit/publication rejection.
+G2: fair-budget live runner; verify prefix cannot reset budget, newest records enter actual request, all failures preserved; smoke one case before matrix.
+G3: paired repeated live recovery + prevention comparison with manual evidence review, including no-benefit conditions.
+G4: use newly collected traces for multi-group fixed-service replay, then a small live scheduling check. No future service times in online priorities.
+G5: candidate procedural learning, independent gate validation and revocation, with generation/validation costs included. Final evaluation remains locked until design freeze.
