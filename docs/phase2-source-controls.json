@@ -1,6 +1,6 @@
 {
   "study": "offline constructed source transitions over recorded collection graphs",
-  "code_commit": "37d9d637c7dd03fbcf4e91fd81677ba51a711130",
+  "code_commit": "4ab614a9c948829a7df3f2645e662a5d3df04886",
   "protocol_sha256": "1ca0e7888e2f2695f5c80790dc212df50289db62fae884b05bd4bfa8a87836d9",
   "inputs": [
     {
@@ -28,7 +28,7 @@
       "changed_sources": [],
       "authentic_observations": 7,
       "stale_observations": 0,
-      "metadata_checks": 7,
+      "local_record_checks": 7,
       "invalidated": [],
       "citation_only_invalidated": [],
       "retained_unchanged": [
@@ -68,7 +68,7 @@
       ],
       "authentic_observations": 7,
       "stale_observations": 2,
-      "metadata_checks": 7,
+      "local_record_checks": 7,
       "invalidated": [
         "configuration_evidence",
         "diagnosis"
@@ -115,7 +115,7 @@
       ],
       "authentic_observations": 7,
       "stale_observations": 2,
-      "metadata_checks": 7,
+      "local_record_checks": 7,
       "invalidated": [
         "configuration_evidence",
         "diagnosis"
@@ -197,7 +197,7 @@
       ],
       "authentic_observations": 7,
       "stale_observations": 7,
-      "metadata_checks": 7,
+      "local_record_checks": 7,
       "invalidated": [
         "configuration_evidence",
         "configuration_plan",
@@ -235,7 +235,7 @@
       "changed_sources": [],
       "authentic_observations": 8,
       "stale_observations": 0,
-      "metadata_checks": 8,
+      "local_record_checks": 8,
       "invalidated": [],
       "citation_only_invalidated": [],
       "retained_unchanged": [
@@ -282,7 +282,7 @@
       ],
       "authentic_observations": 8,
       "stale_observations": 3,
-      "metadata_checks": 8,
+      "local_record_checks": 8,
       "invalidated": [
         "configuration_evidence",
         "diagnosis"
@@ -336,7 +336,7 @@
       ],
       "authentic_observations": 8,
       "stale_observations": 3,
-      "metadata_checks": 8,
+      "local_record_checks": 8,
       "invalidated": [
         "configuration_evidence",
         "diagnosis"
@@ -425,7 +425,7 @@
       ],
       "authentic_observations": 8,
       "stale_observations": 8,
-      "metadata_checks": 8,
+      "local_record_checks": 8,
       "invalidated": [
         "configuration_evidence",
         "configuration_plan",
@@ -457,5 +457,6 @@
       "publication_history_preserved": true
     }
   ],
-  "raw_results": "runs/phase2-sources-v1/results.json"
+  "raw_results": "runs/phase2-sources-v2/results.json",
+  "supersedes": "runs/phase2-sources-v1/results.json: field name corrected from metadata_checks to local_record_checks; no experimental behavior change"
 }

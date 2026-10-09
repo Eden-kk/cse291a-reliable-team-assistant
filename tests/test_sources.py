@@ -69,3 +69,38 @@ class SourceTests(unittest.TestCase):
         store.publish('answer', 0, supersedes=1)
         self.assertEqual(len(store.ledger), 2)
         self.assertFalse(store.invalid())
+
+
+class SourceInflightTests(unittest.IsolatedAsyncioTestCase):
+    async def test_source_update_rejects_old_inflight_answer_but_charges_it(self):
+        import asyncio
+        from team_assistant.dispatch import Budget, Dispatcher, Outcome
+        from team_assistant.memory import PolicyMemory, digest
+        from team_assistant.runtime import Runtime, StaleAttempt
+        memory = PolicyMemory()
+        policy = {'rules': []}
+        memory.promote('team', 'v1', policy, {'accepted': True, 'sha256': digest(policy)})
+        runtime = Runtime(memory, Dispatcher(Budget(1000)))
+        incident = runtime.start('incident', 'team', 'group')
+        catalog = VersionedSources('team/incident')
+        raw = {'id': 'o1', 'tool': 'GetAppYAML', 'arguments': {}, 'text': 'old'}
+        old = catalog.record(raw)
+        catalog.sync(incident.store)
+        incident.store.commit(Result('config', 1, {'observations': [old]},
+                                     sources=catalog.dependencies([old])), 0)
+        entered, release = asyncio.Event(), asyncio.Event()
+        async def delayed(request):
+            self.assertEqual(request['inputs']['config']['observations'][0]['text'], 'old')
+            entered.set()
+            await release.wait()
+            return Outcome({'answer': 'old'}, 23)
+        task = asyncio.create_task(runtime.step('incident', 'answer', delayed, ('config',), reservation=100))
+        await entered.wait()
+        catalog.advance(old['source_key'], {**raw, 'text': 'new'}, 'update while request in flight')
+        catalog.sync(incident.store)
+        release.set()
+        with self.assertRaises(StaleAttempt):
+            await task
+        self.assertEqual(runtime.dispatcher.budget.spent, 23)
+        self.assertNotIn('answer', incident.store.results)
+        self.assertTrue(any(e['event'] == 'discard' for e in runtime.events))
