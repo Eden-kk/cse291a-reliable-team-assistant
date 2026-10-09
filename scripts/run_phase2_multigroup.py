@@ -42,8 +42,9 @@ def build(path, physical, runtime, vendor, registry, commit, case, identifier, o
 
 def save(path, inv):
     write(path / 'state.json', {k: asdict(v) for k, v in inv.incident.store.results.items()})
-    write(path / 'sources.json', {'heads': inv.revisions.heads, 'archive': inv.revisions.archive,
-                                 'events': inv.revision_events})
+    if hasattr(inv, 'revisions'):
+        write(path / 'sources.json', {'heads': inv.revisions.heads, 'archive': inv.revisions.archive,
+                                     'events': inv.revision_events})
     write(path / 'usage.json', {'calls': inv.provider.records,
                               'logical_total_tool_attempts': attempts(inv)})
 
@@ -52,8 +53,8 @@ async def execute(path, inv, reuse, origin):
     try:
         result = await inv.run(reuse=reuse)
         elapsed = time.monotonic() - origin
-        result.update(window_latency_seconds=elapsed, source_events=inv.revision_events,
-                      source_heads=inv.revisions.heads, logical_total_tool_attempts=attempts(inv))
+        result.update(window_latency_seconds=elapsed, source_events=getattr(inv, 'revision_events', []),
+                      source_heads=inv.revisions.heads if hasattr(inv, 'revisions') else {}, logical_total_tool_attempts=attempts(inv))
         write(path / 'result.json', result)
         return {'state': 'completed', 'seconds': elapsed,
                 'contract_errors': result['contract_errors'],
