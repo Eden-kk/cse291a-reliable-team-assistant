@@ -17,6 +17,7 @@ def fixture():
     inv.incident.store.source_versions['snapshot'] = 'snapshot-v1'
     inv.revisions = VersionedSources('test')
     inv.transform = ('9555', '9556')
+    inv.fault_scope = 'legacy-substring-v1'
     inv.old_phase, inv.originals, inv.revision_events = True, {}, []
     return inv
 

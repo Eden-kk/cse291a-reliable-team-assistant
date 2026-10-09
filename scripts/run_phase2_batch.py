@@ -20,13 +20,15 @@ def physical_usage(directory, reservation):
     return charged, unknown
 
 
-def run(output, smoke, vendor):
+def run(output, smoke, vendor, protocol_path):
     if output.exists():
         raise ValueError('Refuse overwrite')
     if subprocess.check_output(['git', 'status', '--porcelain'], cwd=ROOT, text=True).strip():
         raise ValueError('Commit experiment before batch')
-    protocol_path = ROOT / 'configs/phase2/protocol.json'
     protocol = json.loads(protocol_path.read_text())
+    smoke_manifest = json.loads((smoke/'manifest.json').read_text())
+    if smoke_manifest.get('fault_scope', 'legacy-substring-v1') != protocol.get('fault_scope', 'legacy-substring-v1'):
+        raise ValueError('Smoke and batch must use the same fault scope; do not reuse legacy smoke for v2')
     smoke_summary = json.loads((smoke/'summary.json').read_text())
     if smoke_summary['physical_halted'] or any(a['state'] != 'completed' for a in smoke_summary['arms'].values()):
         raise ValueError('Smoke must complete before repeating')
@@ -51,6 +53,7 @@ def run(output, smoke, vendor):
         else:
             command = [sys.executable, str(ROOT/'scripts/run_phase2_revision.py'),
                        '--output', str(directory), '--vendor', str(vendor), '--case', window['case'],
+                       '--fault-scope', protocol.get('fault_scope', 'legacy-substring-v1'),
                        '--repeat', str(window['repeat']), '--order', *window['order'],
                        '--tokens', str(protocol['logical_total_token_cap']),
                        '--tools', str(protocol['logical_total_tool_attempt_cap']),
@@ -82,6 +85,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--smoke', type=Path, required=True)
+    parser.add_argument('--protocol', type=Path, default=ROOT/'configs/phase2/protocol-v2.json')
     parser.add_argument('--vendor', type=Path, required=True)
     args = parser.parse_args()
-    run(args.output, args.smoke, args.vendor)
+    run(args.output, args.smoke, args.vendor, args.protocol)

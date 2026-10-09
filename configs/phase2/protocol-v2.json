@@ -1,0 +1,47 @@
+{
+  "schema": 2,
+  "study": "phase2-development-source-revision-fields-v2",
+  "dataset_split": "development_seen",
+  "cases": [
+    {
+      "case": "boutique/runtime/1",
+      "phase1_run": "runtime-port",
+      "current": "9555",
+      "historical": "9556"
+    },
+    {
+      "case": "boutique/performance/1",
+      "phase1_run": "performance-limit",
+      "current": "200m",
+      "historical": "800m"
+    }
+  ],
+  "fault_artifact": "configuration_evidence",
+  "controls": [
+    "unchanged",
+    "version_only",
+    "trusted_stale",
+    "dense_version_only"
+  ],
+  "live_repetitions_after_smoke": 2,
+  "recovery_orders": [
+    [
+      "selective",
+      "restart"
+    ],
+    [
+      "restart",
+      "selective"
+    ]
+  ],
+  "logical_total_token_cap": 240000,
+  "logical_total_tool_attempt_cap": 24,
+  "call_reservation": 60000,
+  "physical_charged_token_cap_per_batch": 900000,
+  "unknown_usage": "charge reservation and stop new dispatch in the entire batch",
+  "provider_error": "record all failures; no arm-specific success-seeking retries",
+  "final_locked": true,
+  "fault_scope": "query-fields-v2",
+  "intervention_note": "Only adservice query records; CPU change restricted to server container limits.cpu in YAML/pod describe. Node totals, requests, sidecars and substring matches excluded. Query-cache history only, not a consistent evolving environment.",
+  "previous_results": "v1 retained as broad record transformations; do not pool scopes"
+}

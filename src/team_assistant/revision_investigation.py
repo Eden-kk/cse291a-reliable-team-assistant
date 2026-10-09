@@ -1,19 +1,20 @@
 """Controlled trusted source updates for Phase 2; no benchmark labels are read."""
 import copy
-import hashlib
 from .investigation import Investigation
 from .sources import VersionedSources, source_key, content
 from .state import Result
+from .revision_faults import historical_record
 
 CASES = {'boutique/runtime/1': ('9555', '9556'),
          'boutique/performance/1': ('200m', '800m')}
 
 
 class RevisionInvestigation(Investigation):
-    def __init__(self, *args, case, **kwargs):
+    def __init__(self, *args, case, fault_scope="query-fields-v2", **kwargs):
         super().__init__(*args, **kwargs)
         self.revisions = VersionedSources(f'{self.incident.team}/{self.identifier}/{case}')
         self.transform = CASES[case]
+        self.fault_scope = fault_scope
         self.old_phase = True
         self.originals = {}
         self.revision_events = []
@@ -25,13 +26,10 @@ class RevisionInvestigation(Investigation):
         for index, observation in enumerate(observations):
             key = source_key(self.revisions.scope, observation)
             if self.old_phase and name == 'configuration_evidence':
-                old, replacement = self.transform
-                if old in observation['text']:
-                    if observation.get('truncated'):
-                        raise ValueError('Cannot construct faithful old revision from truncated record')
+                changed = historical_record(observation, self.transform, self.fault_scope)
+                if changed['text'] != observation['text']:
                     self.originals[key] = copy.deepcopy(observation)
-                    observation['text'] = observation['text'].replace(old, replacement)
-                    observation['sha256'] = hashlib.sha256(observation['text'].encode()).hexdigest()
+                observation = changed
             if key in self.revisions.heads and (not self.old_phase or name.startswith('additional_')):
                 stamped = self.revisions.current(key, observation['id'])
                 if not self.old_phase and content(stamped) != content(observation):

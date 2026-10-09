@@ -17,6 +17,7 @@ from team_assistant.propagation import fork
 from team_assistant.provider import CodexProvider
 from team_assistant.revision_investigation import RevisionInvestigation, CASES
 from team_assistant.runtime import Runtime
+from team_assistant.revision_faults import SCOPES
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -59,8 +60,8 @@ async def main(args):
                 'total_tokens': args.tokens, 'total_tool_attempts': args.tools,
                 'physical_token_cap': args.physical_tokens, 'reservation': 60000,
                 'order': args.order, 'transition': 'after shared historical diagnosis; before prevention diagnosis',
-                'transform': CASES[args.case], 'scoring': 'score only post-transition answers against current labels',
-                'limitations': 'constructed historical configuration, development case, trusted explicit change notification; no write tools'}
+                'transform': CASES[args.case], 'fault_scope': args.fault_scope, 'scoring': 'score only post-transition answers against current labels',
+                'limitations': 'constructed query-cache history, not a coherent full-environment timeline; seen development case, explicit change notification; no write tools'}
     write(args.output / 'manifest.json', manifest)
 
     def provider(name):
@@ -72,7 +73,7 @@ async def main(args):
         policy = {'rules': []}
         memory.promote('oncall', 'v1', policy, {'accepted': True, 'sha256': digest(policy)})
         inv = RevisionInvestigation(Runtime(memory, Dispatcher(Budget(args.tokens))),
-                                    provider(name), snapshot, case=args.case, max_tools=args.tools)
+                                    provider(name), snapshot, case=args.case, fault_scope=args.fault_scope, max_tools=args.tools)
         inv.old_phase = old
         arms[name] = inv
         write(args.output / name / 'manifest.json', manifest)
@@ -87,7 +88,7 @@ async def main(args):
         try:
             result = await operation()
             result.update(source_events=inv.revision_events,
-                          source_heads=inv.revisions.heads, source_rereads=inv.source_rereads,
+                          source_heads=inv.revisions.heads, verification_source_rereads=inv.source_rereads,
                           logical_total_tool_attempts=attempts(inv))
             write(args.output / name / 'result.json', result)
             summary = {'state': 'completed'}
@@ -156,6 +157,7 @@ if __name__ == '__main__':
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--vendor', type=Path, required=True)
     parser.add_argument('--case', choices=CASES, required=True)
+    parser.add_argument('--fault-scope', choices=SCOPES, default='query-fields-v2')
     parser.add_argument('--repeat', type=int, default=1)
     parser.add_argument('--tokens', type=int, default=240000)
     parser.add_argument('--tools', type=int, default=24)
