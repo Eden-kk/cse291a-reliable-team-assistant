@@ -68,6 +68,7 @@ class Dispatcher:
             raise ValueError("Foreground reservation must be a positive integer")
         self.foreground_reservation = foreground_reservation
         self.foreground_workflows = {}
+        self._guard_deferred = set()
         self.response_handoff_seconds = response_handoff_seconds
         self.background_hold_until = 0
         self.budget = budget
@@ -94,10 +95,15 @@ class Dispatcher:
         if type(calls) is not int or calls <= 0 or group in self.foreground_workflows:
             raise ValueError("Expected a positive call count and an inactive group")
         self.foreground_workflows[group] = calls
+        self.events.append({"event": "workflow_registered", "group": group,
+                            "calls_bound": calls, "reservation": self.foreground_reservation,
+                            "time": self.clock()})
         try:
             yield
         finally:
-            self.foreground_workflows.pop(group, None)
+            remaining = self.foreground_workflows.pop(group)
+            self.events.append({"event": "workflow_closed", "group": group,
+                                "unstarted_calls": remaining, "time": self.clock()})
             # No queued child may outlive its owner's lifecycle. In-flight usage
             # remains reserved and settles even when the owner was cancelled.
             for job in list(self.pending):
@@ -167,8 +173,19 @@ class Dispatcher:
                 return
             if self.foreground_reservation is not None:
                 held = self.foreground_reservation * sum(n > 0 for n in self.foreground_workflows.values())
-                feasible = [j for j in feasible if j.kind == "response"
-                            or self.budget.limit - self.budget.spent - self.budget.reserved - j.reservation >= held]
+                allowed = []
+                for job in feasible:
+                    free_after = self.budget.limit - self.budget.spent - self.budget.reserved - job.reservation
+                    if job.kind == "response" or free_after >= held:
+                        allowed.append(job)
+                    elif job.identifier not in self._guard_deferred:
+                        # First guard-induced deferral per job; polling cannot
+                        # inflate the log or turn repeated checks into new waits.
+                        self._guard_deferred.add(job.identifier)
+                        self.events.append({"event": "guard_deferred", "job": job.identifier,
+                                            "group": job.group, "held_tokens": held,
+                                            "free_after_tokens": free_after, "time": self.clock()})
+                feasible = allowed
                 if not feasible:
                     # The owner is between DAG calls; its next submission or
                     # lifecycle exit wakes dispatch without polling or a timer.

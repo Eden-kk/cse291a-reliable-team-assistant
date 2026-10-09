@@ -34,11 +34,25 @@ class WorkflowTests(unittest.IsolatedAsyncioTestCase):
         await handoff.wait()
         await asyncio.sleep(0)
         self.assertEqual(order, [])
+        d._drain()
+        d._drain()
         proceed.set()
         await asyncio.wait_for(asyncio.gather(task, bg), 1)
         self.assertEqual(order, ['next', 'background'])
         self.assertEqual((d.budget.spent, d.budget.reserved), (50, 0))
         self.assertEqual(d.foreground_workflows, {})
+        events = d.events
+        registered = [e for e in events if e['event'] == 'workflow_registered']
+        self.assertEqual(registered[0]['calls_bound'], 2)
+        self.assertEqual(registered[0]['reservation'], 40)
+        deferred = [e for e in events if e['event'] == 'guard_deferred']
+        self.assertEqual(len(deferred), 1)
+        self.assertEqual(deferred[0]['group'], 'bg')
+        self.assertEqual(deferred[0]['held_tokens'], 40)
+        self.assertLess(deferred[0]['free_after_tokens'], deferred[0]['held_tokens'])
+        self.assertEqual([e['unstarted_calls'] for e in events if e['event'] == 'workflow_closed'], [0])
+        background_start = next(e for e in events if e['event'] == 'start' and e['group'] == 'bg')
+        self.assertLessEqual(deferred[0]['time'], background_start['time'])
 
     async def test_no_unarrived_workflow_and_no_extra_hold_for_last_call(self):
         d = Dispatcher(Budget(80), foreground_reservation=40)
