@@ -58,9 +58,17 @@ async def window(path, base, physical, policy, manifest, make_foreground):
                     if e['event'] == 'admitted' and e['group'] == fresh.identifier), 0)
                 return result
 
-    outcomes = await asyncio.gather(execute(path / 'recovery', inv, True, origin),
-                                    *(foreground(s) for s in manifest['foregrounds']))
-    await dispatcher.join()
+    tasks = [asyncio.create_task(execute(path / 'recovery', inv, True, origin))]
+    tasks.extend(asyncio.create_task(foreground(s)) for s in manifest['foregrounds'])
+    try:
+        outcomes = await asyncio.gather(*tasks)
+    finally:
+        # Cancel workflow owners, then settle already-issued provider requests.
+        for task in tasks:
+            if not task.done():
+                task.cancel()
+        await asyncio.gather(*tasks, return_exceptions=True)
+        await dispatcher.join()
     for name, investigation in groups.items():
         save(path / name, investigation)
         result_path = path / name / 'result.json'
@@ -104,7 +112,9 @@ async def main(args):
             {'group':'runtime','case':'boutique/runtime/1','arrival_seconds':0}]:
         raise ValueError('Retest changed arrivals or cases')
     fixed = {'logical_token_cap':360000, 'physical_token_cap':600000,
-             'call_reservation':60000, 'concurrency':2, 'foreground_call_bound':5}
+             'call_reservation':60000, 'concurrency':2, 'foreground_call_bound':5,
+             'max_tools_per_group':24, 'response_slo_seconds':30, 'recovery_slo_seconds':60,
+             'recovery_case':'boutique/performance/1'}
     if any(protocol[k] != v for k,v in fixed.items()):
         raise ValueError('Retest runner before changing protocol constants')
     commit = subprocess.check_output(['git','-C',str(ROOT),'rev-parse','HEAD'], text=True).strip()

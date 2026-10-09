@@ -86,3 +86,33 @@ class LiveAdmissionRunnerTests(unittest.IsolatedAsyncioTestCase):
         result=await self.run_window('fair-reserve')
         self.assertEqual(result['admission_events'],[])
         self.assertEqual(result['incremental_physical_tokens'],70)
+
+    async def test_cancelled_window_settles_inflight_provider(self):
+        physical=Budget(600000)
+        started, release = asyncio.Event(),asyncio.Event()
+        shared=SimpleNamespace(dispatcher=Dispatcher(Budget(360000)),events=[])
+        base=SimpleNamespace(runtime=SimpleNamespace(dispatcher=Dispatcher(Budget(360000))))
+        class SlowInvestigation(FakeInvestigation):
+            async def run(self,reuse=False):
+                async def backend():
+                    physical.reserve(60000)
+                    started.set()
+                    await release.wait()
+                    physical.settle(60000,10)
+                    self.provider.records.append({'tokens':10})
+                    return Outcome({},10)
+                await self.runtime.dispatcher.call(self.identifier,'recovery' if reuse else 'response',60000,backend)
+                return {'contract_errors':[]}
+        manifest={'logical_token_cap':360000,'recovery_case':'boutique/performance/1','foregrounds':[]}
+        with tempfile.TemporaryDirectory() as directory, patch.object(MODULE,'provider',return_value=None), patch.object(MODULE,'recovery_branch',return_value=SlowInvestigation(shared,physical,'recovery')):
+            task=asyncio.create_task(MODULE.window(Path(directory),base,physical,'fair-admit-one',manifest,None))
+            await asyncio.wait_for(started.wait(), 1)
+            task.cancel()
+            await asyncio.sleep(0)
+            release.set()
+            with self.assertRaises(asyncio.CancelledError):
+                await task
+        self.assertEqual(physical.spent,10)
+        self.assertEqual(physical.reserved,0)
+        self.assertEqual(shared.dispatcher.budget.reserved,0)
+        self.assertFalse(shared.dispatcher.pending or shared.dispatcher.running)

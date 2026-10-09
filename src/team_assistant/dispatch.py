@@ -242,6 +242,9 @@ class Dispatcher:
     async def join(self):
         while self.tasks or self.pending:
             if self.tasks:
-                await asyncio.shield(asyncio.gather(*list(self.tasks)))
+                batch = list(self.tasks)
+                await asyncio.shield(asyncio.gather(*batch))
+                # Completed futures may resume immediately before done callbacks run.
+                self.tasks.difference_update(batch)
             else:
                 await asyncio.sleep(0)
