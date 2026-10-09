@@ -26,10 +26,9 @@ for name in ('src', 'scripts', 'tests', 'configs'):
     copy(ROOT / name, name)
 for name in ('README.txt', 'PHASE1_README.txt', '.gitignore', 'pyproject.toml', 'requirements.lock', 'requirements-report.txt'):
     copy(ROOT / name, name)
-for path in (ROOT / 'docs').glob('phase1*'):
-    copy(path, path.relative_to(ROOT))
-for name in ('experiment-plan.txt', 'submitted-proposal.txt'):
-    copy(ROOT / 'docs' / name, Path('docs') / name)
+for path in (ROOT / 'docs').iterdir():
+    if path.is_file() and path.name != 'survey-receipt.txt':
+        copy(path, path.relative_to(ROOT))
 copy(ROOT / 'output/pdf/phase1-report.pdf', 'output/pdf/phase1-report.pdf')
 for name in ('phase1-matrix', 'phase1-port-corruption-v1', 'phase1-integrity-v2'):
     copy(ROOT / 'runs' / name, Path('runs') / name)
