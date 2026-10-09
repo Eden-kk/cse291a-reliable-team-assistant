@@ -1,3 +1,7 @@
+最新进展：E5受控集成12条件通过 — 2026-10-09
+部分/全部污染及预算压力，selective/restart、guard开关共12条件已执行；候选拒绝、在途撤回、共享调度、关联更正与失败计费连通。153测试通过，0真实模型调用。
+详见e5-controlled.txt及results.json；这只是工程预检，真实E5未完成。默认memory不变、final8锁定、无后台任务。下一步预登记真实开发smoke与完整预算，不把模拟收益作为模型效果。
+
 最新进展：证据缺口定位与整批预算预检 — 2026-10-09
 学习performance/25主要缺少事故时机制测量，遗漏配置查询不能解决；保留uncertain。新增完整配对预算预检，原900k计划首次调用前即拒绝（当前调用图覆盖需3.6m预留，未授权/增加预算）。151测试通过，0新增模型调用。
 详情learning-evidence-gap.txt及learning-budget-preflight.json。默认memory不变、final8锁定、无后台任务。下一步E5集成失败路径或经预先预算审查的剩余learning采集。

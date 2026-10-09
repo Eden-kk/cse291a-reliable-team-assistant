@@ -1,0 +1,475 @@
+{
+  "manifest": {
+    "code_commit": "6a7cb8e97e4e48e6cd91905afcc8b5929bf6b50b",
+    "backend": "controlled synthetic",
+    "dataset_used": false,
+    "real_model_calls": 0,
+    "seed_policy": "fixture-approved",
+    "candidate_receipt": "fixture rejected",
+    "scope": "engineering checks only; no semantics, API-cost or latency evidence"
+  },
+  "conditions": [
+    {
+      "scope": "partial",
+      "recovery": "selective",
+      "foreground_guard": false,
+      "checks": {
+        "rejected_candidate_not_activated": true,
+        "stale_inflight_rejected": true,
+        "invalid_publications_blocked": true,
+        "discarded_call_charged": true,
+        "invalidation_scope_exact": true,
+        "fresh_group_unaffected": true,
+        "no_rejected_policy_consumed": true,
+        "reservations_drained": true,
+        "cost_reconciled": true,
+        "old_publications_preserved": true,
+        "corrections_valid_and_linked": true,
+        "cost_matches_dispatched_calls": true,
+        "only_budget_failures": true,
+        "completed_publications_match_outcome": true,
+        "fresh_publication_valid": true,
+        "all_work_completed": true,
+        "telemetry_reuse_matches_scope": true
+      },
+      "simulated_tokens": 127,
+      "outcomes": {
+        "A": {
+          "state": "completed",
+          "error": null
+        },
+        "B": {
+          "state": "completed",
+          "error": null
+        },
+        "C": {
+          "state": "completed",
+          "error": null
+        }
+      }
+    },
+    {
+      "scope": "partial",
+      "recovery": "selective",
+      "foreground_guard": true,
+      "checks": {
+        "rejected_candidate_not_activated": true,
+        "stale_inflight_rejected": true,
+        "invalid_publications_blocked": true,
+        "discarded_call_charged": true,
+        "invalidation_scope_exact": true,
+        "fresh_group_unaffected": true,
+        "no_rejected_policy_consumed": true,
+        "reservations_drained": true,
+        "cost_reconciled": true,
+        "old_publications_preserved": true,
+        "corrections_valid_and_linked": true,
+        "cost_matches_dispatched_calls": true,
+        "only_budget_failures": true,
+        "completed_publications_match_outcome": true,
+        "fresh_publication_valid": true,
+        "all_work_completed": true,
+        "telemetry_reuse_matches_scope": true
+      },
+      "simulated_tokens": 127,
+      "outcomes": {
+        "A": {
+          "state": "completed",
+          "error": null
+        },
+        "B": {
+          "state": "completed",
+          "error": null
+        },
+        "C": {
+          "state": "completed",
+          "error": null
+        }
+      }
+    },
+    {
+      "scope": "partial",
+      "recovery": "restart",
+      "foreground_guard": false,
+      "checks": {
+        "rejected_candidate_not_activated": true,
+        "stale_inflight_rejected": true,
+        "invalid_publications_blocked": true,
+        "discarded_call_charged": true,
+        "invalidation_scope_exact": true,
+        "fresh_group_unaffected": true,
+        "no_rejected_policy_consumed": true,
+        "reservations_drained": true,
+        "cost_reconciled": true,
+        "old_publications_preserved": true,
+        "corrections_valid_and_linked": true,
+        "cost_matches_dispatched_calls": true,
+        "only_budget_failures": true,
+        "completed_publications_match_outcome": true,
+        "fresh_publication_valid": true,
+        "all_work_completed": true,
+        "telemetry_reuse_matches_scope": true
+      },
+      "simulated_tokens": 147,
+      "outcomes": {
+        "A": {
+          "state": "completed",
+          "error": null
+        },
+        "B": {
+          "state": "completed",
+          "error": null
+        },
+        "C": {
+          "state": "completed",
+          "error": null
+        }
+      }
+    },
+    {
+      "scope": "partial",
+      "recovery": "restart",
+      "foreground_guard": true,
+      "checks": {
+        "rejected_candidate_not_activated": true,
+        "stale_inflight_rejected": true,
+        "invalid_publications_blocked": true,
+        "discarded_call_charged": true,
+        "invalidation_scope_exact": true,
+        "fresh_group_unaffected": true,
+        "no_rejected_policy_consumed": true,
+        "reservations_drained": true,
+        "cost_reconciled": true,
+        "old_publications_preserved": true,
+        "corrections_valid_and_linked": true,
+        "cost_matches_dispatched_calls": true,
+        "only_budget_failures": true,
+        "completed_publications_match_outcome": true,
+        "fresh_publication_valid": true,
+        "all_work_completed": true,
+        "telemetry_reuse_matches_scope": true
+      },
+      "simulated_tokens": 147,
+      "outcomes": {
+        "A": {
+          "state": "completed",
+          "error": null
+        },
+        "B": {
+          "state": "completed",
+          "error": null
+        },
+        "C": {
+          "state": "completed",
+          "error": null
+        }
+      }
+    },
+    {
+      "scope": "full",
+      "recovery": "selective",
+      "foreground_guard": false,
+      "checks": {
+        "rejected_candidate_not_activated": true,
+        "stale_inflight_rejected": true,
+        "invalid_publications_blocked": true,
+        "discarded_call_charged": true,
+        "invalidation_scope_exact": true,
+        "fresh_group_unaffected": true,
+        "no_rejected_policy_consumed": true,
+        "reservations_drained": true,
+        "cost_reconciled": true,
+        "old_publications_preserved": true,
+        "corrections_valid_and_linked": true,
+        "cost_matches_dispatched_calls": true,
+        "only_budget_failures": true,
+        "completed_publications_match_outcome": true,
+        "fresh_publication_valid": true,
+        "all_work_completed": true,
+        "telemetry_reuse_matches_scope": true
+      },
+      "simulated_tokens": 147,
+      "outcomes": {
+        "A": {
+          "state": "completed",
+          "error": null
+        },
+        "B": {
+          "state": "completed",
+          "error": null
+        },
+        "C": {
+          "state": "completed",
+          "error": null
+        }
+      }
+    },
+    {
+      "scope": "full",
+      "recovery": "selective",
+      "foreground_guard": true,
+      "checks": {
+        "rejected_candidate_not_activated": true,
+        "stale_inflight_rejected": true,
+        "invalid_publications_blocked": true,
+        "discarded_call_charged": true,
+        "invalidation_scope_exact": true,
+        "fresh_group_unaffected": true,
+        "no_rejected_policy_consumed": true,
+        "reservations_drained": true,
+        "cost_reconciled": true,
+        "old_publications_preserved": true,
+        "corrections_valid_and_linked": true,
+        "cost_matches_dispatched_calls": true,
+        "only_budget_failures": true,
+        "completed_publications_match_outcome": true,
+        "fresh_publication_valid": true,
+        "all_work_completed": true,
+        "telemetry_reuse_matches_scope": true
+      },
+      "simulated_tokens": 147,
+      "outcomes": {
+        "A": {
+          "state": "completed",
+          "error": null
+        },
+        "B": {
+          "state": "completed",
+          "error": null
+        },
+        "C": {
+          "state": "completed",
+          "error": null
+        }
+      }
+    },
+    {
+      "scope": "full",
+      "recovery": "restart",
+      "foreground_guard": false,
+      "checks": {
+        "rejected_candidate_not_activated": true,
+        "stale_inflight_rejected": true,
+        "invalid_publications_blocked": true,
+        "discarded_call_charged": true,
+        "invalidation_scope_exact": true,
+        "fresh_group_unaffected": true,
+        "no_rejected_policy_consumed": true,
+        "reservations_drained": true,
+        "cost_reconciled": true,
+        "old_publications_preserved": true,
+        "corrections_valid_and_linked": true,
+        "cost_matches_dispatched_calls": true,
+        "only_budget_failures": true,
+        "completed_publications_match_outcome": true,
+        "fresh_publication_valid": true,
+        "all_work_completed": true,
+        "telemetry_reuse_matches_scope": true
+      },
+      "simulated_tokens": 147,
+      "outcomes": {
+        "A": {
+          "state": "completed",
+          "error": null
+        },
+        "B": {
+          "state": "completed",
+          "error": null
+        },
+        "C": {
+          "state": "completed",
+          "error": null
+        }
+      }
+    },
+    {
+      "scope": "full",
+      "recovery": "restart",
+      "foreground_guard": true,
+      "checks": {
+        "rejected_candidate_not_activated": true,
+        "stale_inflight_rejected": true,
+        "invalid_publications_blocked": true,
+        "discarded_call_charged": true,
+        "invalidation_scope_exact": true,
+        "fresh_group_unaffected": true,
+        "no_rejected_policy_consumed": true,
+        "reservations_drained": true,
+        "cost_reconciled": true,
+        "old_publications_preserved": true,
+        "corrections_valid_and_linked": true,
+        "cost_matches_dispatched_calls": true,
+        "only_budget_failures": true,
+        "completed_publications_match_outcome": true,
+        "fresh_publication_valid": true,
+        "all_work_completed": true,
+        "telemetry_reuse_matches_scope": true
+      },
+      "simulated_tokens": 147,
+      "outcomes": {
+        "A": {
+          "state": "completed",
+          "error": null
+        },
+        "B": {
+          "state": "completed",
+          "error": null
+        },
+        "C": {
+          "state": "completed",
+          "error": null
+        }
+      }
+    },
+    {
+      "scope": "pressure",
+      "recovery": "selective",
+      "foreground_guard": false,
+      "checks": {
+        "rejected_candidate_not_activated": true,
+        "stale_inflight_rejected": true,
+        "invalid_publications_blocked": true,
+        "discarded_call_charged": true,
+        "invalidation_scope_exact": true,
+        "fresh_group_unaffected": true,
+        "no_rejected_policy_consumed": true,
+        "reservations_drained": true,
+        "cost_reconciled": true,
+        "old_publications_preserved": true,
+        "corrections_valid_and_linked": true,
+        "cost_matches_dispatched_calls": true,
+        "only_budget_failures": true,
+        "completed_publications_match_outcome": true,
+        "fresh_publication_valid": true
+      },
+      "simulated_tokens": 107,
+      "outcomes": {
+        "A": {
+          "state": "failed",
+          "error": "BudgetExhausted('No remaining affordable reservation')"
+        },
+        "B": {
+          "state": "failed",
+          "error": "BudgetExhausted('No remaining affordable reservation')"
+        },
+        "C": {
+          "state": "completed",
+          "error": null
+        }
+      }
+    },
+    {
+      "scope": "pressure",
+      "recovery": "selective",
+      "foreground_guard": true,
+      "checks": {
+        "rejected_candidate_not_activated": true,
+        "stale_inflight_rejected": true,
+        "invalid_publications_blocked": true,
+        "discarded_call_charged": true,
+        "invalidation_scope_exact": true,
+        "fresh_group_unaffected": true,
+        "no_rejected_policy_consumed": true,
+        "reservations_drained": true,
+        "cost_reconciled": true,
+        "old_publications_preserved": true,
+        "corrections_valid_and_linked": true,
+        "cost_matches_dispatched_calls": true,
+        "only_budget_failures": true,
+        "completed_publications_match_outcome": true,
+        "fresh_publication_valid": true,
+        "foreground_reservation_exercised": true
+      },
+      "simulated_tokens": 107,
+      "outcomes": {
+        "A": {
+          "state": "failed",
+          "error": "BudgetExhausted('No remaining affordable reservation')"
+        },
+        "B": {
+          "state": "completed",
+          "error": null
+        },
+        "C": {
+          "state": "completed",
+          "error": null
+        }
+      }
+    },
+    {
+      "scope": "pressure",
+      "recovery": "restart",
+      "foreground_guard": false,
+      "checks": {
+        "rejected_candidate_not_activated": true,
+        "stale_inflight_rejected": true,
+        "invalid_publications_blocked": true,
+        "discarded_call_charged": true,
+        "invalidation_scope_exact": true,
+        "fresh_group_unaffected": true,
+        "no_rejected_policy_consumed": true,
+        "reservations_drained": true,
+        "cost_reconciled": true,
+        "old_publications_preserved": true,
+        "corrections_valid_and_linked": true,
+        "cost_matches_dispatched_calls": true,
+        "only_budget_failures": true,
+        "completed_publications_match_outcome": true,
+        "fresh_publication_valid": true
+      },
+      "simulated_tokens": 107,
+      "outcomes": {
+        "A": {
+          "state": "failed",
+          "error": "BudgetExhausted('No remaining affordable reservation')"
+        },
+        "B": {
+          "state": "failed",
+          "error": "BudgetExhausted('No remaining affordable reservation')"
+        },
+        "C": {
+          "state": "completed",
+          "error": null
+        }
+      }
+    },
+    {
+      "scope": "pressure",
+      "recovery": "restart",
+      "foreground_guard": true,
+      "checks": {
+        "rejected_candidate_not_activated": true,
+        "stale_inflight_rejected": true,
+        "invalid_publications_blocked": true,
+        "discarded_call_charged": true,
+        "invalidation_scope_exact": true,
+        "fresh_group_unaffected": true,
+        "no_rejected_policy_consumed": true,
+        "reservations_drained": true,
+        "cost_reconciled": true,
+        "old_publications_preserved": true,
+        "corrections_valid_and_linked": true,
+        "cost_matches_dispatched_calls": true,
+        "only_budget_failures": true,
+        "completed_publications_match_outcome": true,
+        "fresh_publication_valid": true,
+        "foreground_reservation_exercised": true
+      },
+      "simulated_tokens": 107,
+      "outcomes": {
+        "A": {
+          "state": "failed",
+          "error": "BudgetExhausted('No remaining affordable reservation')"
+        },
+        "B": {
+          "state": "failed",
+          "error": "BudgetExhausted('No remaining affordable reservation')"
+        },
+        "C": {
+          "state": "completed",
+          "error": null
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+E5受控集成验证 — 2026-10-09
+
+完成范围
+实际运行Runtime、PolicyMemory、Dispatcher与发布账本，后端为确定性模拟输出/用量。12条件=partial/full/pressure × selective/restart × foreground guard开/关。执行commit6a7cb8e，12条件全部工程断言通过，153项测试通过。未访问数据集或模型，没有真实API调用、延迟或语义质量证据。
+这完成E5工程预检，不代表计划中的真实模型E5主实验完成。seed policy与安全fallback的批准、候选拒绝回执均为显式fixture，不是假装真实学习成功。之前真实候选仍未启用。
+
+同一流程
+A/B消费v1，各产出telemetry、plan和diagnosis，发布P1。部分污染只有plan直接读policy；全部污染连telemetry也读policy。
+A另有一个正在执行的旧plan。尝试晋升accepted=false候选，确认默认策略与存储均未改变。
+激活fixture-approved安全fallback，C新群绑定fallback；撤回v1，只失效A/B实际依赖闭包。在途旧plan完成后被拒绝提交，但模拟17token仍结算。
+失效诊断发布被拒绝。A/B选择性恢复或全量重做与C新请求共享dispatcher；开启guard时，在C已到达但等待首个恢复步骤完成的间隔登记前台预留，真正触发guard_deferred。
+成功恢复产生P2并关联P1，原发布内容不变；预算失败保留P1且不伪造P2。C发布有效新结果；全部任务结束后预留、队列、在途任务、workflow登记均清空。
+
+结果（以下用量全是模拟单位，不是实测LLM tokens）
+partial/selective：guard开关均127；A/B/C全部完成，独立telemetry版本保持1。
+partial/restart：guard开关均147；全部完成，telemetry重算到2。
+full：两种恢复×guard开关均147；全部完成，没有可复用telemetry，也没有选择性恢复节省。
+pressure/selective/guard关：107；A/B预算失败，C完成。
+pressure/selective/guard开：107；A失败，B/C完成。
+pressure/restart：guard开关均107；A/B失败，C完成。
+压力总预算117，prefix及废弃调用已计入。剩余10不够下一call的20预留，因此停止不等于必须用满预算。
+部分污染的20单位差异来自少执行两个独立telemetry步骤；全部污染无差异是预期边界。压力下guard帮助一个恢复workflow完成只针对这套受控到达/执行顺序，不能外推为生产吞吐/SLA改善。
+
+检查
+拒绝候选未存储、未成为default、未进入任何请求；撤回范围与实际依赖一致；旧在途结果不能提交；失效结果不能发布；旧账本完整保留；完成与失败状态对应正确发布条数；新群有实际有效发布；失败只允许BudgetExhausted。
+每个dispatch start对应一次settlement，恰有一个17单位废弃调用，其余已发送调用10单位；总账核对，不将失败或被丢弃调用免费处理。full/partial范围的telemetry版本符合预期。
+
+复现
+PYTHONPATH=src .venv/bin/python scripts/run_e5_controlled.py --output runs/e5-controlled-new
+要求clean Git和新输出目录，拒绝覆盖旧结果。
+原始manifest、逐条件runtime/dispatch/settlement/publication trace在runs/e5-controlled-v1。
+可版本化摘要docs/e5-controlled-results.json。
+
+下一步
+真实E5前先冻结完整矩阵、同预算对照、模型输入与来源绑定、压力下失败计分和批次预留。工程fixture不能替代真实policy审批/生成，也不能替代质量评估。
+优先复用已核验开发案例来做一个真实集成smoke，明确记为已见开发资料；不得把这次模拟结果与旧真实实验混算。完成资源预检后才启动推理，不自动提高预算或解锁final8。
+完整课程Phase2仍需真实E5、学习提案数量与有效性证据、正式消融/复现/报告；这些未完成事项保留。
+无后台实验、无课程提交、Phase1包未修改。
