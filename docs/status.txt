@@ -1,3 +1,8 @@
+Phase 2启动状态 — 2026-10-08
+协议：docs/phase2-protocol.txt；进展：docs/phase2-progress.txt。Phase1报告和ZIP保持冻结。
+已完成查询级来源版本、真实性/新鲜度分离、8组离线来源变化控制、晚到结果拒绝且计费、共享物理预算及恢复总预算继承。69项测试通过（显式vendor路径，无跳过）。
+待执行：一个真实模型smoke试验；验证当前内容实际被消费和公平成本后，再展开固定重复。final8保持锁定，多群调度及受门槛约束的学习排在恢复验证之后。
+
 当前交付状态 — 2026-10-08
 Phase 1本地交付包完成，作者审阅及课程提交待进行。Canvas课程78326的Assignments本次未见Phase1上传项。
 首要入口：PHASE1_README.txt；output/pdf/phase1-report.pdf；output/phase1-submission.zip。
