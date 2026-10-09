@@ -1,0 +1,6 @@
+{
+  "rules": [
+    "Proposed, unvalidated: When a pod remains Pending or ContainerCreating, inspect its scheduling conditions, container state and sandbox events before attributing the failure to application startup. If events report an initialization OOM, compare the pod's effective memory requests and limits with the workload YAML to investigate memory constraints. Withhold a definitive claim that the configured limit caused the failure when the runtime message is tentative and no confirming evidence is available; these observations alone cannot establish a suitable replacement value.",
+    "Proposed, unvalidated: When request logs report a refused connection to a dependency, correlate the destination with the Service listing and inspect its endpoints. If endpoints are empty, compare the Service selector's exact keys and values with the intended pod's labels and readiness. A ready pod does not establish that the Service selects it. Withhold a selector-mismatch conclusion if either side of the comparison is unavailable, and do not treat a demonstrated mismatch as proof that it is the sole cause of the request failure or that correcting it has restored connectivity."
+  ]
+}

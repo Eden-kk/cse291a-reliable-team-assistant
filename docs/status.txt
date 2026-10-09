@@ -1,3 +1,7 @@
+最新进展：自然经验候选已冻结 — 2026-10-09
+3个learning案例，2个独立审核成功、1个uncertain排除；12采集calls+1生成call，已记录275617tokens。生成2条一般性规则，冻结为1个bundle，尚未验证/激活；最低3提案要求仍未完成。137测试通过。
+详情phase2-learning-candidates.txt与configs/learning/bundle-v1。下一步6个gate_validation案例×基线/候选共12调查；执行设置尚需冻结。无后台任务，final8锁定。
+
 最新进展：真实低预算对照 — 2026-10-09
 200k/窗口，逆序执行admit-one→reserve：前者1/3诊断成功，后者0/3；新增tokens81258 vs87845。12calls/228359physical tokens，5个预算预留不足失败均保留；134测试通过。历史前缀uncertain不计成功，唯一成功答案语义复核通过。
 详情phase2-admission-pressure.txt及results/CSV。无后台任务。下一步独立学习门槛闭环；final8锁定，Phase1包不变。

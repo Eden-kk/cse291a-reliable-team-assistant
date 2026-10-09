@@ -1,0 +1,37 @@
+Phase2 self-evolve：首批自然经验候选 — 2026-10-09
+
+本轮完成
+固定learning集首个runtime/service/performance案例：runtime/22、service/47、performance/25。只取预定案例，不看结果换样本。
+首轮因稀疏检出缺文件在模型调用前失败，0calls/0tokens；原始记录保留runs/learning-sources-v1。补齐这三个案例的稀疏路径后，以相同选择运行v2；未取final或gate-validation内容。
+实际采集12calls/254666tokens。runtime与service原生JRA/ECR=1且独立语义审查通过；performance给出uncertain、合同不通过，未计成功，不能用于生成经验。
+失败案例的费用完整计入。performance明确表示证据不足以区分网络延迟/CPU/代码等原因，不把保守拒答改写成成功诊断。
+
+经验生成
+生成器只看到两个审查通过结果的6条引用观察；没有gold oracle、评分解释、case目录或验证集材料。原始输入及source绑定保存在runs/learning-candidates-v1。
+1次生成调用/20951tokens，提出2条而非3条。每条都有原文支持；9处引用精确匹配，独立审查确认一般性和依据，未记忆具体服务名、端口或配置值。
+
+c1：容器Pending/ContainerCreating时先查调度条件、container状态和sandbox事件；若存在初始化OOM，再比较实际内存约束与工作负载YAML。事件措辞不确定且无确认材料时保留结论，不从单例推断“正确”的替换数值。
+c2：请求到依赖服务连接被拒绝时，先对应目标Service及endpoints；若endpoints为空，对比Service selector完整键值与目标pod标签、readiness。Ready不等于被Service选中，也不意味着纠正selector后已验证恢复。
+
+这是2条独立记录的经验提案，作为1个policy bundle冻结。没有完成计划中至少3条自然提案的要求；不能把两条拼接后的验证当作逐条收益证据。
+冻结目录configs/learning/bundle-v1含policy、空baseline、支持来源提案及hash。runtime只应输入candidate-bundle.json的rules，不输入具体案例支持记录。
+未激活、未发布、不改变现有默认policy。结构检查和专家式复核不是验证集收益证明。c1过强的保守表述可能增加拒答，留给固定门槛检验，不提前删改以迎合结果。
+
+成本
+已记录来源采集254666+生成20951=275617tokens，13次真实模型调用。独立review/编排成本未完整计量，显式为unknown，不能报告完整美元成本或净节省/回本案例数。失败采集和被排除案例仍在账本中。
+工程代码和规则检查137项测试通过，无跳过。无新付费API/AWS、平台提交或后台任务。
+
+后续验证已经固定的部分
+gate_validation的6例全部保留，按registry顺序执行；奇偶case分别baseline→candidate / candidate→baseline，共12次调查。policy、阈值及案例列表在读取验证结果前冻结。
+门槛仍为逐例JRA/ECR不退化、合同/预算/语义审核通过，整体质量增加或至少10%token节省，且总tokens不增加。不同prompt/model/tool/预算设置必须保持可比，代码commit/完整执行设置需在首次验证调用前登记。
+尚未执行验证集，所以不能声称候选有效，也不生成accepted回执。如果预算不足导致配对缺失，门槛应拒绝，不用已完成子集替代全6例。
+每组逻辑预算360k，计划验证物理cap900k；仅规划，未启动。不得因为验证失败而回头修改同一冻结候选并当作未见结果。
+final8继续锁定；只有case-ID隔离，没有宣称未见故障家族泛化。
+
+入口
+原始学习结果：runs/learning-sources-v2/episode-{1,2,3}/
+来源审核：episode-1/semantic-audit.json和episode-2/semantic-audit.json
+生成请求/结果及费用：runs/learning-candidates-v1/
+冻结候选及计划：configs/learning/bundle-v1/freeze.json
+复核函数：src/team_assistant/learning_candidates.py
+Phase1交付包未改变。

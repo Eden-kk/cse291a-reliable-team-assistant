@@ -1,0 +1,61 @@
+{
+  "candidates": [
+    {
+      "id": "c1",
+      "rule": "Proposed, unvalidated: When a pod remains Pending or ContainerCreating, inspect its scheduling conditions, container state and sandbox events before attributing the failure to application startup. If events report an initialization OOM, compare the pod's effective memory requests and limits with the workload YAML to investigate memory constraints. Withhold a definitive claim that the configured limit caused the failure when the runtime message is tentative and no confirming evidence is available; these observations alone cannot establish a suitable replacement value.",
+      "support": [
+        {
+          "source": "source-1",
+          "observation_id": "observation-6",
+          "quote": "Reason:       ContainerCreating"
+        },
+        {
+          "source": "source-1",
+          "observation_id": "observation-6",
+          "quote": "PodScheduled                True"
+        },
+        {
+          "source": "source-1",
+          "observation_id": "observation-6",
+          "quote": "container init was OOM-killed (memory limit too low?): unknown"
+        },
+        {
+          "source": "source-1",
+          "observation_id": "observation-7",
+          "quote": "resources:\n          requests:\n            cpu: 200m\n            memory: 5Mi\n          limits:\n            cpu: 300m\n            memory: 5Mi"
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "rule": "Proposed, unvalidated: When request logs report a refused connection to a dependency, correlate the destination with the Service listing and inspect its endpoints. If endpoints are empty, compare the Service selector's exact keys and values with the intended pod's labels and readiness. A ready pod does not establish that the Service selects it. Withhold a selector-mismatch conclusion if either side of the comparison is unavailable, and do not treat a demonstrated mismatch as proof that it is the sole cause of the request failure or that correcting it has restored connectivity.",
+      "support": [
+        {
+          "source": "source-2",
+          "observation_id": "observation-5",
+          "quote": "failed to get shipping quote: rpc error: code = Unavailable desc = connection error: desc = "
+        },
+        {
+          "source": "source-2",
+          "observation_id": "observation-5",
+          "quote": "connect: connection refused"
+        },
+        {
+          "source": "source-2",
+          "observation_id": "observation-6",
+          "quote": "shippingservice         ClusterIP   10.68.91.181    <none>        50051/TCP      64s   application=shippingservice"
+        },
+        {
+          "source": "source-2",
+          "observation_id": "observation-7",
+          "quote": "shippingservice         <none>              78s"
+        },
+        {
+          "source": "source-2",
+          "observation_id": "observation-9",
+          "quote": "shippingservice-7cbfcb6d68-47wzk   1/1     Running   0          63s   app=shippingservice,pod-template-hash=7cbfcb6d68"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "stage": "learning bundle frozen before validation; not activated",
+  "candidate_policy_count": 1,
+  "individual_proposals": 2,
+  "minimum_three_proposals_met": false,
+  "files": {
+    "candidate-bundle.json": "51599669f49d7f776da77b96ad1439454fe330eff1fcfb96cfd5eb5542eb3218",
+    "baseline.json": "a55c9e162b49562f2f6db1a1ed4a15f561aa959830e5e2dbff670d26e3821d6e",
+    "proposals.json": "cbf5ae145c3efc9b264dfcc38b9510bf6540f47cd02d05aea695ae27c7255dfa"
+  },
+  "generation_receipt": "runs/learning-candidates-v1/generation-receipt.json",
+  "source_input_sha256": "e3819d91cebb40bb08b11a7e064cb9003ba8082ae499cdfbaa1ab60e3f255b32",
+  "registry_sha256": "30600a46ee1270eed7588f5402cd4ae0bc916d1320bf52dd24181fc64fdafe3e",
+  "threshold_sha256": "5b46e3bbfdf3bec5f7296fd444b609c8c5de54c89a161b9c0b641c227cd768c7",
+  "cases": [
+    {
+      "case": "boutique/runtime/14",
+      "order": [
+        "baseline",
+        "candidate"
+      ]
+    },
+    {
+      "case": "boutique/runtime/44",
+      "order": [
+        "candidate",
+        "baseline"
+      ]
+    },
+    {
+      "case": "boutique/service/52",
+      "order": [
+        "baseline",
+        "candidate"
+      ]
+    },
+    {
+      "case": "boutique/service/51",
+      "order": [
+        "candidate",
+        "baseline"
+      ]
+    },
+    {
+      "case": "boutique/performance/18",
+      "order": [
+        "baseline",
+        "candidate"
+      ]
+    },
+    {
+      "case": "boutique/performance/10",
+      "order": [
+        "candidate",
+        "baseline"
+      ]
+    }
+  ],
+  "logical_token_limit_per_run": 360000,
+  "planned_physical_token_cap": 900000,
+  "generation_tokens": 20951,
+  "source_collection_tokens": 254666,
+  "known_acquisition_tokens": 275617,
+  "independent_review_cost": null,
+  "limitations": [
+    "One bundle, not independent per-rule validation",
+    "Only case-ID isolation; unknown template overlap",
+    "No validation or final-case contents opened in this stage",
+    "External review/orchestration costs not fully metered; no net savings/payback claim",
+    "Validation runner execution commit and complete prompt/provider settings must be frozen before first validation call"
+  ]
+}
