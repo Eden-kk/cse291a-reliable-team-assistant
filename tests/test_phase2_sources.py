@@ -30,7 +30,6 @@ class SourceControlTests(unittest.TestCase):
         result = CONTROL.replay(state, spec, 'trusted_stale')
         self.assertEqual(state, before)
         self.assertEqual(result['invalidated'], ['configuration_evidence', 'diagnosis'])
-        self.assertEqual(result['citation_only_invalidated'], ['configuration_evidence'])
         self.assertEqual(result['stale_observations'], 1)
         self.assertEqual(len(result['retained_unchanged']), 4)
         self.assertEqual(result['pending_semantic_recompute'], ['diagnosis'])
@@ -64,3 +63,8 @@ class SourceControlTests(unittest.TestCase):
         state['configuration_evidence']['payload']['observations'][0]['truncated'] = True
         with self.assertRaises(ValueError):
             CONTROL.replay(state, spec, 'trusted_stale')
+
+    def test_unknown_condition_is_rejected(self):
+        state, spec = self.fixture()
+        with self.assertRaises(ValueError):
+            CONTROL.replay(state, spec, 'typo')

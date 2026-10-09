@@ -25,6 +25,8 @@ def controlled_old(observation, current, historical):
 
 
 def replay(state, spec, mode):
+    if mode not in {'unchanged', 'version_only', 'trusted_stale', 'dense_version_only'}:
+        raise ValueError('Unknown predeclared source condition')
     catalog = VersionedSources('offline/' + spec['case'])
     store = ExecutionStore()
     selected = state['configuration_evidence']['payload']['observations']
@@ -51,7 +53,7 @@ def replay(state, spec, mode):
     dependencies = {name: store.results[name].version for name in
                     ('initial', 'configuration_evidence', 'telemetry_evidence')}
     store.commit(Result('diagnosis', 1, {'mechanism_marker': 'not an LLM answer'},
-                        inputs=dependencies, citations={'initial', 'telemetry_evidence'}), store.epoch)
+                        inputs=dependencies), store.epoch)
     store.publish('diagnosis', store.epoch)
     before = copy.deepcopy(store.results)
     keys = set(catalog.heads) if mode == 'dense_version_only' else changed_keys
@@ -61,7 +63,6 @@ def replay(state, spec, mode):
     audit = [catalog.inspect(obs) for r in store.results.values()
              for obs in r.payload.get('observations', [])]
     invalid = catalog.sync(store)
-    citation_invalid = store.invalid(mode='citation')
     rejected = False
     try:
         store.commit(Result('late_answer', 1, {}, inputs=dependencies), store.epoch)
@@ -86,7 +87,7 @@ def replay(state, spec, mode):
             'authentic_observations': sum(a['authentic'] for a in audit),
             'stale_observations': sum(a['authentic'] and not a['fresh'] for a in audit),
             'local_record_checks': len(audit), 'invalidated': sorted(invalid),
-            'citation_only_invalidated': sorted(citation_invalid), 'retained_unchanged': retained,
+            'retained_unchanged': retained,
             'selective_recompute_nodes': len(invalid), 'restart_nodes': len(before),
             'late_commit_rejected': rejected, 'refreshed_evidence': refreshed,
             'pending_semantic_recompute': sorted(store.invalid()),
