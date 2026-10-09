@@ -30,7 +30,16 @@ async def main(args):
     budget=Budget(60000)
     backend=provider(args.output,budget)
     outcome=await backend.complete(PROMPT,{'sources':data['sources']})
-    receipt={'generation_tokens':budget.spent,'usage_known':outcome.tokens is not None,
+    collection=[]
+    for source in args.sources:
+        usage=read(source/'usage.json')['calls']
+        collection.extend(usage)
+    collection_cost=sum(c['tokens'] if type(c.get('tokens')) is int else 60000 for c in collection)
+    receipt={'source_collection_tokens':collection_cost,
+             'known_acquisition_tokens':collection_cost+budget.spent,
+             'external_review_token_cost':None,
+             'cost_scope':'Recorded source and generation calls only; independent review/orchestration cost unmetered',
+             'generation_tokens':budget.spent,'usage_known':outcome.tokens is not None,
              'halted':budget.halted,'provider_error':outcome.error,'input_sha256':digest(data['sources']),
              'code_commit':subprocess.check_output(['git','-C',str(ROOT),'rev-parse','HEAD'],text=True).strip(),
              'activation':'none; semantic review and full validation gate pending'}

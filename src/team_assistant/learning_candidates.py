@@ -10,6 +10,7 @@ def read(path):
 
 def corpus(paths, registry):
     sources, excluded, bindings = [], [], {}
+    seen_cases=set()
     for path in paths:
         path=Path(path)
         manifest=read(path/'manifest.json')
@@ -17,6 +18,9 @@ def corpus(paths, registry):
             raise ValueError('Candidate sources must belong to learning split')
         if manifest['dataset_commit']!=registry['dataset_commit']:
             raise ValueError('Dataset mismatch')
+        if manifest['case'] in seen_cases:
+            raise ValueError('Duplicate learning source')
+        seen_cases.add(manifest['case'])
         result=read(path/'result.json') if (path/'result.json').exists() else {}
         score=read(path/'scores.json') if (path/'scores.json').exists() else {}
         audit=read(path/'semantic-audit.json') if (path/'semantic-audit.json').exists() else {}
