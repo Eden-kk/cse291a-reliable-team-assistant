@@ -1,0 +1,119 @@
+{
+  "scope": "offline fixed-output replay, correlated replicas, no live latency/quality claim",
+  "protocol": {
+    "version": 1,
+    "group_counts": [
+      2,
+      4
+    ],
+    "arrivals": [
+      "burst",
+      "staggered"
+    ],
+    "seeds": [
+      11,
+      23,
+      47
+    ],
+    "policies": [
+      "fifo",
+      "fair"
+    ],
+    "methods": [
+      "selective",
+      "restart"
+    ],
+    "concurrency": 2,
+    "reservation": 60000,
+    "budget_per_group": [
+      100000,
+      180000
+    ],
+    "stagger_seconds": 5,
+    "response_slo": 30,
+    "recovery_slo": 60,
+    "seed_role": "shuffle group admission order only; not independent model samples"
+  },
+  "replays": 288,
+  "physical_calls": 0,
+  "aggregate": {
+    "selective/fifo": {
+      "groups": 144,
+      "completed": 144,
+      "recovery_slo_met": 72,
+      "recovery_count": 72,
+      "response_slo_met": 25,
+      "response_count": 72
+    },
+    "selective/fair": {
+      "groups": 144,
+      "completed": 144,
+      "recovery_slo_met": 72,
+      "recovery_count": 72,
+      "response_slo_met": 47,
+      "response_count": 72
+    },
+    "selective/fair-reserve": {
+      "groups": 144,
+      "completed": 144,
+      "recovery_slo_met": 72,
+      "recovery_count": 72,
+      "response_slo_met": 53,
+      "response_count": 72
+    },
+    "restart/fifo": {
+      "groups": 144,
+      "completed": 132,
+      "recovery_slo_met": 72,
+      "recovery_count": 72,
+      "response_slo_met": 13,
+      "response_count": 72
+    },
+    "restart/fair": {
+      "groups": 144,
+      "completed": 132,
+      "recovery_slo_met": 43,
+      "recovery_count": 72,
+      "response_slo_met": 49,
+      "response_count": 72
+    },
+    "restart/fair-reserve": {
+      "groups": 144,
+      "completed": 132,
+      "recovery_slo_met": 43,
+      "recovery_count": 72,
+      "response_slo_met": 51,
+      "response_count": 72
+    }
+  },
+  "fair_reserve_vs_fair": {
+    "recovery": {
+      "slower": 15,
+      "slo_gains": 0,
+      "slo_losses": 0,
+      "unfinished_both": 12,
+      "same": 117
+    },
+    "response": {
+      "faster": 17,
+      "slo_gains": 8,
+      "slo_losses": 0,
+      "same": 127
+    }
+  },
+  "input_sha256": "75146ceef54f7abb0d033002660efb356586aa126cdc04fa7c5c8440be8ee26d",
+  "limitations": [
+    "Fixed recorded outputs, durations and tokens; neither live latency nor quality evaluation.",
+    "Replicated groups and schedule seeds are counterfactual workloads, not independent samples.",
+    "Only complete paired arms eligible; exclusions retained; failure rates cannot be inferred.",
+    "Model duration includes recorded provider overhead; local tool/verification/handoff cost omitted.",
+    "New response uses restart current-source incremental trace without historical prefix.",
+    "Recovering groups prepaid identical prefix tokens; all methods share total budget.",
+    "Time starts at recovery/arrival window; historical prefix latency is excluded.",
+    "Group completion means replayed call DAG finished, not independently verified diagnosis.",
+    "Future durations and tokens are used only for completion/settlement, never scheduling rank.",
+    "No new output may be inferred for rejected or unfinished groups; no operational writes.",
+    "optional guard assumes known independent DAG and fixed reservation; runtime not integrated",
+    "30/60 second SLOs are exploratory assumptions, not course or production requirements"
+  ]
+}

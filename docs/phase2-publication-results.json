@@ -1,0 +1,36 @@
+[
+  {
+    "kind": "offline replay of recorded real outputs and local simulated publications",
+    "window": "/Users/yvette/26fall/cse291a-team-assistant/runs/phase2-cpu-fixed-v2/window-1",
+    "new_model_calls": 0,
+    "new_tokens": 0,
+    "external_writes": 0,
+    "stale_republish_rejected": "Invalid/obsolete publication",
+    "captured_inflight_rejected": "Invalid parent input",
+    "original_publication_retained": true,
+    "limitations": [
+      "No new inference or external writes",
+      "Late notification/publication timing is simulated, not the original live schedule",
+      "Freshness is dependency consistency, not semantic correctness or causal accuracy",
+      "Initial policy:v1 active and epoch zero reconstructed from runner contract; no prior publications"
+    ],
+    "sha256": "1411363410ed9b575dba456814b15baa163ecceaa73c415043e0870472cf9f09"
+  },
+  {
+    "kind": "offline replay of recorded real outputs and local simulated publications",
+    "window": "/Users/yvette/26fall/cse291a-team-assistant/runs/phase2-cpu-fixed-v2/window-2",
+    "new_model_calls": 0,
+    "new_tokens": 0,
+    "external_writes": 0,
+    "stale_republish_rejected": "Invalid/obsolete publication",
+    "captured_inflight_rejected": "Invalid parent input",
+    "original_publication_retained": true,
+    "limitations": [
+      "No new inference or external writes",
+      "Late notification/publication timing is simulated, not the original live schedule",
+      "Freshness is dependency consistency, not semantic correctness or causal accuracy",
+      "Initial policy:v1 active and epoch zero reconstructed from runner contract; no prior publications"
+    ],
+    "sha256": "2af52aba0ec7ef8593ded3f35cdd1612adbb83892c5b0286b854d13e77557641"
+  }
+]

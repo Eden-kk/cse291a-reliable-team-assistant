@@ -1,0 +1,186 @@
+{
+  "scope": "one development_seen CPU case, two fixed repeats; smoke excluded from formal evidence",
+  "physical_calls_including_smoke": 30,
+  "tokens_including_smoke": 611109,
+  "physical_cap": 900000,
+  "unknown_usage": 0,
+  "formal": [
+    {
+      "repeat": 1,
+      "tokens": 203756,
+      "arms": [
+        {
+          "arm": "historical-prefix",
+          "state": "completed",
+          "seconds": 25.99021804199947,
+          "incremental_tokens": 59263,
+          "logical_total_tokens": 59263,
+          "physical_model_calls": 3,
+          "contract_errors": [
+            "uncertain: not a successful diagnosis"
+          ],
+          "stale_consumed_instances": 0
+        },
+        {
+          "arm": "selective",
+          "state": "completed",
+          "seconds": 12.106665541999973,
+          "incremental_tokens": 26582,
+          "logical_total_tokens": 85845,
+          "physical_model_calls": 1,
+          "contract_errors": [],
+          "stale_consumed_instances": 0,
+          "scores": {
+            "CA": 1.0,
+            "FA": 1.0,
+            "JRA": 1.0,
+            "MC": 1.0,
+            "EOC": 1.0,
+            "ECR": 1.0,
+            "EE": 0.25,
+            "contract_valid": true,
+            "budget_valid": true
+          }
+        },
+        {
+          "arm": "restart",
+          "state": "completed",
+          "seconds": 20.249581959000352,
+          "incremental_tokens": 58859,
+          "logical_total_tokens": 118122,
+          "physical_model_calls": 3,
+          "contract_errors": [],
+          "stale_consumed_instances": 0,
+          "scores": {
+            "CA": 1.0,
+            "FA": 1.0,
+            "JRA": 1.0,
+            "MC": 1.0,
+            "EOC": 1.0,
+            "ECR": 1.0,
+            "EE": 0.25,
+            "contract_valid": true,
+            "budget_valid": true
+          }
+        },
+        {
+          "arm": "verify-before-diagnosis",
+          "state": "completed",
+          "seconds": 20.841751083000418,
+          "incremental_tokens": 59052,
+          "logical_total_tokens": 59052,
+          "physical_model_calls": 3,
+          "contract_errors": [],
+          "stale_consumed_instances": 0,
+          "scores": {
+            "CA": 1.0,
+            "FA": 1.0,
+            "JRA": 1.0,
+            "MC": 1.0,
+            "EOC": 1.0,
+            "ECR": 1.0,
+            "EE": 0.25,
+            "contract_valid": true,
+            "budget_valid": true
+          }
+        }
+      ]
+    },
+    {
+      "repeat": 2,
+      "tokens": 203438,
+      "arms": [
+        {
+          "arm": "historical-prefix",
+          "state": "completed",
+          "seconds": 24.30983012499928,
+          "incremental_tokens": 58933,
+          "logical_total_tokens": 58933,
+          "physical_model_calls": 3,
+          "contract_errors": [
+            "uncertain: not a successful diagnosis"
+          ],
+          "stale_consumed_instances": 0
+        },
+        {
+          "arm": "restart",
+          "state": "completed",
+          "seconds": 21.560621249998803,
+          "incremental_tokens": 59198,
+          "logical_total_tokens": 118131,
+          "physical_model_calls": 3,
+          "contract_errors": [],
+          "stale_consumed_instances": 0,
+          "scores": {
+            "CA": 1.0,
+            "FA": 1.0,
+            "JRA": 1.0,
+            "MC": 1.0,
+            "EOC": 1.0,
+            "ECR": 1.0,
+            "EE": 0.25,
+            "contract_valid": true,
+            "budget_valid": true
+          }
+        },
+        {
+          "arm": "selective",
+          "state": "completed",
+          "seconds": 11.607384832997923,
+          "incremental_tokens": 26432,
+          "logical_total_tokens": 85365,
+          "physical_model_calls": 1,
+          "contract_errors": [],
+          "stale_consumed_instances": 0,
+          "scores": {
+            "CA": 1.0,
+            "FA": 1.0,
+            "JRA": 1.0,
+            "MC": 1.0,
+            "EOC": 1.0,
+            "ECR": 1.0,
+            "EE": 0.25,
+            "contract_valid": true,
+            "budget_valid": true
+          }
+        },
+        {
+          "arm": "verify-before-diagnosis",
+          "state": "completed",
+          "seconds": 20.520738667000842,
+          "incremental_tokens": 58875,
+          "logical_total_tokens": 58875,
+          "physical_model_calls": 3,
+          "contract_errors": [],
+          "stale_consumed_instances": 0,
+          "scores": {
+            "CA": 1.0,
+            "FA": 1.0,
+            "JRA": 1.0,
+            "MC": 1.0,
+            "EOC": 1.0,
+            "ECR": 1.0,
+            "EE": 0.25,
+            "contract_valid": true,
+            "budget_valid": true
+          }
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "constructed query-source transition, not naturally observed history",
+    "explicit change notification; no automatic detector",
+    "small seen-case development trial; no causal latency claim",
+    "fresh source versions and native scores do not prove semantic support",
+    "uncertain-to-diagnosed, not wrong-root correction",
+    "native scores do not prove latency causality"
+  ],
+  "input_sha256": {
+    "runs/phase2-cpu-fixed-v2/window-1-audit.json": "503f1ae5c1bffbd5485c5ddb884cd28f6626d2ee2ab2cecca343b29f13d0a6a1",
+    "runs/phase2-cpu-fixed-v2/window-2-audit.json": "563ffd0e39c68ff8b5b88b7c4ae7ad944c8b8740d8b7064eea26331c26f4683c",
+    "runs/phase2-cpu-fixed-v2/window-1/scope-audit.json": "be1d72c771eaebf3619af3b58dfff351457be5e401933a11bc79f6882269c395",
+    "runs/phase2-cpu-fixed-v2/window-2/scope-audit.json": "e034d7a134e38d5607eeec2c611ba7346e52b45549308137d054fe8fb1745e61",
+    "runs/phase2-cpu-fixed-v2/summary.json": "2713df3588ea2338484834c911f9dbed2b55a326b0277b0ce1b00c34df7b5e5a"
+  }
+}

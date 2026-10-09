@@ -1,30 +1,25 @@
-Phase 2 progress — 2026-10-08
+Phase 2 v2进展 — 2026-10-08
 
-本轮完成
-查询级可信版本与依赖恢复已接入真实调查；源真实性与新鲜度分离；旧的在途输出被拒但费用保留。8组离线控制证明：稀疏变化失效2/6节点、保留4；密集变化失效6/6，无选择性优势。离线不计语义恢复成功。
-真实smoke后运行两个已见案例各两次固定重复，轮换restart/selective顺序。每方法端到端上限240000tokens/24工具尝试，包含同一历史前缀；共享物理上限900000tokens（含smoke）。
-总计46次真实请求，846940tokens，全部usage已知，无供应商错误。正式12个后续对照中10个完成，全部原生JRA/ECR及合同通过；2个被共享预算预留阻止。最后一组不用于配对优劣比较，不能用selective4/4、restart3/4来宣称质量差距。
-实际coordinator请求核验：完成的后续结果均读到当前来源版本；runtime9556被9555替换，performance800m被200m替换。保留遥测与刷新配置确实共同进入推理。
+真实推理：修正CPU干预范围
+query-fields-v2只将server limits.cpu的两处历史查询值800m恢复为当前200m；requests、sidecar、node值不变。独立smoke后按预注册执行同一development_seen案例两次固定重复，恢复顺序交叉。smoke 203915 tokens；正式407194；共30次真实调用/611109 tokens，低于900000物理上限，无未知usage或provider失败。已结束，无后台模型实验。
+正式6个后续对照全部完成且JRA/ECR=1，无旧版本输入消费；历史uncertain不计成功。选择性恢复：26582/26432 tokens、1调用；重启：58859/59198 tokens、3调用。上述为新增恢复成本，不含各方法共享的59263/58933 token前缀。选择性新增token约少55%，不是全任务成本少55%。核验预防组59052/58875 tokens，3调用。
+历史root字段已是pod_cpu_overload，更新后由uncertain转diagnosed：是拒答解除与事实刷新，不是错误根因纠正。CPU突发和时延因果仍是推断。仅一已见案例两次重复，不支持泛化或统计显著结论。构造的是混合年龄查询缓存，不是全环境历史快照。
+来源：phase2-v2-results.json及runs/phase2-cpu-fixed-v2/window-{1,2}-audit.json；精确差异在各window/scope-audit.json。
 
-完整配对窗口的总tokens（均包含相应初始工作）
-runtime重复1：selective71783；restart103622；诊断前验证51618。
-runtime重复2：selective71298；restart103500；诊断前验证51718。
-performance重复1：selective85689；restart118135；诊断前验证59199。
-selective额外1次模型调用，restart额外3次；prevention端到端3次。预先验证的通知时点更早，不能把三列作为同一恢复时点的严格排名。一次调用耗时68.59秒，时延只作描述。
+后置通知与发布更正
+对两组真实输出进行本地离线重放：先记录旧答案P1，推进source版本后拒绝旧发布及旧在途写回，导入新依赖，生成关联P1的P2，保留原记录。两组均通过。零新模型调用、零外部写入；不是线上发布时序或崩溃持久化验证。
+来源：phase2-publication-results.json；重现scripts/replay_phase2_publication.py --window <window> --output <new.json>。
 
-发现及修正
-1. runtime前缀根因本来正确：证明过期事实更新，不是错误根因恢复。performance前缀已给相同候选根因但uncertain，恢复为diagnosed：属于解除abstention。瞬时CPU需求未测得，不能把推断因果当实验证实。
-2. v1全局200m→800m还改到node表其他请求与2200m→2800m，因此只可称广泛查询记录变更，不能称单变量CPU-limit实验。所有结果保留，不追溯覆盖。
-3. query-fields-v2已修正并离线检查：只改变adservice server的limits.cpu，两份查询各一行；requests、node表、sidecar、数值子串不变。严格scope测试已加入，legacy模式仅供原结果复现。v2尚未运行新的真实推理，不与v1混合统计。
-4. 60000固定reservation在剩余额度不足/并发预留时拒绝调用，即使实际可能更低。剩余53060tokens不视作可用模型预算；本批已停，不追加成功导向重试。
+多群调度与预算预留
+固定真实调用的输出、耗时和token，在2/4群、突发/间隔到达、两档预算和3种入队顺序下离线重放。冻结FIFO/fair基线192配置；加可选fair-reserve候选共288配置，零新模型调用。group实例和随机种子是相关复制，不能当独立事故样本。
+负例：window1选择性恢复/2群突发/200000总预算，FIFO新告警27.49秒，fair31.94秒。背景恢复占用预留，阻止新告警末步入队。
+fair-reserve为已到达未完成前台DAG保留一次固定调用额度。相对fair：前台17更快/127不变，8个30秒SLO收益；恢复15更慢/117不变，12个原来未完成的实例仍未完成，无完成率变化。示例前台31.94→20.13秒，恢复延后到32.17秒完成。
+候选仅模拟，未接入runtime。只支持统一正整数预留和独立已知DAG；不读取未来耗时、实际tokens或未到达组。可能闲置算力并拖慢恢复，不为整个剩余DAG保证预算。30/60秒是探索性目标，不是课程或生产SLA。忽略工具与交接开销，真实队列效果尚待验证。
+来源：phase2-scheduling-results.json。重现scripts/replay_phase2_traces.py <window1> <window2> --reserve-candidate --output <new.json>。原基线scheduling-replay.json保留；候选scheduling-reserve-replay.json单独保存。
 
-关键文件
-docs/phase2-protocol.txt；configs/phase2/protocol.json（v1冻结）；configs/phase2/protocol-v2.json（下一批）。
-docs/phase2-live-results.json：全部窗口与成本、失败、输入校验和。
-docs/phase2-source-controls.json：离线对照；docs/phase2-field-scope-check.json：v2实际查询diff。
-runs/phase2-runtime-smoke-v1；runs/phase2-fixed-repeats-v1：原始调用、输入、输出、来源和计费。
-
-下一步
-优先在新批次用v2做独立smoke，审核两份查询的一致性及实际当前证据消费，然后固定小矩阵；不复用v1 smoke作为v2验证。补足版本变化在诊断后/发布后的通知与验证+按需恢复对照。
-来源依赖目前是tool+arguments，未覆盖跨查询的语义资源依赖；状态变化为构造的查询缓存历史，不是真实连续运维时间序列。先补这些恢复边界，再推进多群调度与受验证门槛约束的学习；final8保持锁定。
-当前无后台实验运行，无AWS机器/新付费API，无课程提交。Phase1报告和ZIP未修改。
+下一阶段计划
+1. 将候选预留规则接入可选运行时，先用确定性provider验证取消、拒绝、预留释放和队列事件，默认策略保持不变。
+2. 预注册小规模真实并发窗口，对比FIFO/fair/fair-reserve；固定物理上限，保留排队、超预算、恢复延迟和失败。不得依据当前已见时延设定隐藏oracle。
+3. 增加不同事故与依赖结构，在development集合比较恢复/重启/预防；final8继续锁定。当前单案例不足以证明一般收益。
+4. 随后接入独立gated self-evolve，计入候选生成/验证成本和回归拒绝；尚无可声称的学习收益。
+99项测试通过，无跳过。Phase1交付包未更改；未提交课程、发送消息或调用真实运维写操作。v1原始数据和限制保留，不与v2合并。

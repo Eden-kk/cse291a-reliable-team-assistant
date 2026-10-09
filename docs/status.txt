@@ -1,8 +1,6 @@
 Phase 2当前状态 — 2026-10-08
-本轮有界实验已结束，无后台实验。详情：docs/phase2-progress.txt；docs/phase2-live-results.json。
-8组离线来源变化控制；smoke加两个已见案例各2次固定重复，共46次真实请求/846940tokens。正式12个后续对照10个完成并通过原生评分和输入新鲜度核验，2个共享物理预留预算阻止，完整配对窗口仅3组。无未知usage，不声称普遍性能优势或完成整个Phase2。
-v1 CPU替换范围过宽，已保留并明确限制；v2限定server limits.cpu，两行精确diff已离线验证，尚未进行v2新推理。75项测试通过，无跳过。
-下一步v2独立smoke及后置通知/发布更正对照，之后多群调度和gated learning。final8保持锁定。Phase1交付包未修改、未代提交。
+修正CPU范围的独立smoke+两次固定重复完成：30次真实调用/611109 tokens，正式6个后续对照通过。两组发布更正离线重放、288配置调度重放完成。可选fair-reserve降低部分前台等待但延迟恢复，仅模拟，未接入runtime。99项测试通过，无跳过；无后台实验。
+详情：phase2-progress.txt；phase2-v2-results.json；phase2-scheduling-results.json；phase2-publication-results.json。下一步运行时预留规则、真实并发和异质案例验证；final8锁定。
 
 当前交付状态 — 2026-10-08
 Phase 1本地交付包完成，作者审阅及课程提交待进行。Canvas课程78326的Assignments本次未见Phase1上传项。
