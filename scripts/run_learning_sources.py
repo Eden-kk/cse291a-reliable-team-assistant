@@ -35,6 +35,8 @@ async def main(args):
         raise ValueError('Commit before inference')
     registry=json.loads((ROOT/'configs/splits.json').read_text())
     cases=selected_cases(registry)
+    if any(not (args.vendor/'benchmark'/case/'metadata.json').is_file() for case in cases):
+        raise ValueError('Missing predeclared learning snapshot; materialize exact sparse paths first')
     commit=subprocess.check_output(['git','-C',str(ROOT),'rev-parse','HEAD'],text=True).strip()
     manifest={'study':'learning-sources-v1','cases':cases,'code_commit':commit,
               'dataset_commit':registry['dataset_commit'],'physical_token_cap':360000,
