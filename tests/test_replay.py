@@ -26,3 +26,32 @@ class ReplayTests(unittest.TestCase):
         self.assertEqual(replay([node(1, arrival=4)], 'fifo', 20)['groups']['A']['seconds'], 5)
         with self.assertRaises(ValueError):
             replay([node(1, [2]), node(2, [1])], 'fair', 20)
+
+    def test_foreground_next_reservation_avoids_background_completion_delay(self):
+        first = node('first', duration=2)
+        second = node('second', ['first'])
+        background = {**node('background', duration=20), 'kind': 'recovery', 'group': 'B'}
+        nodes = [first, second, background]
+        baseline = replay(nodes, 'fair', 24)
+        guarded = replay(nodes, 'fair', 24, reserve_foreground=True)
+        self.assertEqual(baseline['groups']['A']['seconds'], 21)
+        self.assertEqual(guarded['groups']['A']['seconds'], 3)
+        self.assertTrue(guarded['groups']['B']['completed'])
+        self.assertEqual(guarded['tokens'], baseline['tokens'])
+        self.assertTrue(guarded['reservation_guard']['deferrals'])
+
+    def test_future_unarrived_foreground_does_not_hold_reservation(self):
+        background = {**node('background', duration=2), 'kind': 'recovery', 'group': 'B'}
+        future = node('future', arrival=10)
+        result = replay([background, future], 'fair', 20, reserve_foreground=True)
+        self.assertEqual(result['events'][0]['id'], 'background')
+        self.assertEqual(result['events'][0]['start'], 0)
+        self.assertTrue(all(g['completed'] for g in result['groups'].values()))
+
+    def test_insufficient_budget_terminates_with_rejections(self):
+        background = {**node('background'), 'kind': 'recovery', 'group': 'B'}
+        result = replay([node('first'), node('second', ['first']), background],
+                        'fair', 10, reserve_foreground=True)
+        self.assertEqual(set(result['rejected_ids']), {'second', 'background'})
+        self.assertFalse(result['groups']['A']['completed'])
+        self.assertFalse(result['groups']['B']['completed'])

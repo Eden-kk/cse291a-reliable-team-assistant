@@ -11,6 +11,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('windows', type=Path, nargs='+')
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--reserve-candidate', action='store_true',
+                        help='Add simulation-only fair-reserve alongside unchanged FIFO/fair')
     args = parser.parse_args()
     result = {'protocol': PROTOCOL, 'physical_model_calls': 0, 'eligible': [], 'excluded': [],
         'limitations': [
@@ -25,10 +27,16 @@ def main():
             'Future durations and tokens are used only for completion/settlement, never scheduling rank.',
             'No new output may be inferred for rejected or unfinished groups; no operational writes.',
         ]}
+    if args.reserve_candidate:
+        result['optional_candidate'] = {
+            'name': 'fair-reserve', 'simulation_only': True,
+            'mechanism': 'protect one fixed next-call reservation for each arrived unfinished response DAG',
+            'cost': 'may idle capacity, delay/reject recovery; cannot guarantee full-DAG completion',
+            'runtime_integrated': False}
     for window in args.windows:
         try:
             pair = load_pair(window)
-            result['eligible'].append({**pair, 'replays': experiment(pair)})
+            result['eligible'].append({**pair, 'replays': experiment(pair, args.reserve_candidate)})
         except (ValueError, KeyError, FileNotFoundError) as exc:
             result['excluded'].append({'source': str(window), 'reason': str(exc)})
     with args.output.open('x') as handle:

@@ -119,7 +119,7 @@ def schedule(pair, count, arrivals, seed, method):
     return nodes, initial_service
 
 
-def experiment(pair):
+def experiment(pair, reserve_candidate=False):
     outcomes = []
     for count in PROTOCOL['group_counts']:
         for arrival in PROTOCOL['arrivals']:
@@ -127,10 +127,11 @@ def experiment(pair):
                 for budget in PROTOCOL['budget_per_group']:
                     for method in PROTOCOL['methods']:
                         nodes, service = schedule(pair, count, arrival, seed, method)
-                        for policy in PROTOCOL['policies']:
-                            result = replay(nodes, policy, count * budget,
+                        for policy in PROTOCOL['policies'] + (['fair-reserve'] if reserve_candidate else []):
+                            result = replay(nodes, 'fair' if policy == 'fair-reserve' else policy, count * budget,
                                             concurrency=PROTOCOL['concurrency'],
-                                            initial_spent=sum(service.values()), initial_service=service)
+                                            initial_spent=sum(service.values()), initial_service=service,
+                                            reserve_foreground=policy == 'fair-reserve')
                             for group, metrics in result['groups'].items():
                                 members = [n for n in nodes if n['group'] == group]
                                 events = [e for e in result['events'] if e['group'] == group]
