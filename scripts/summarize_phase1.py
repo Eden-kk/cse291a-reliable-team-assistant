@@ -28,7 +28,7 @@ def summarize(root):
     for name in NAMES:
         original = root / name
         retry = root / (name + '-retry1')
-        directory = retry if (retry / 'summary.json').exists() else original
+        directory = retry if (retry / 'clean/result.json').exists() else original
         summary = optional(directory / 'summary.json')
         fault = optional(directory / 'fault.json')
         state = optional(directory / 'collection/state.json')

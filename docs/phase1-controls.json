@@ -1,0 +1,346 @@
+{
+  "kind": "offline_fake_provider_control_simulations",
+  "live_model_calls": 0,
+  "limitations": "Fake providers and in-memory publication exercise control mechanics, not model quality, real provider timeout behavior, or external corrections.",
+  "controls": {
+    "timeout_unknown_usage_stop": {
+      "passed": true,
+      "simulation": "timeout",
+      "provider_calls": [
+        "timeout"
+      ],
+      "first_error": "TimeoutError",
+      "queued_rejected": true,
+      "spent": 40,
+      "reserved": 0,
+      "halted": true,
+      "settlements": [
+        {
+          "reservation": 40,
+          "actual": null,
+          "charged": 40,
+          "halted": true
+        }
+      ]
+    },
+    "unknown_usage_stop": {
+      "passed": true,
+      "simulation": "unknown_usage",
+      "provider_calls": [
+        "unknown_usage"
+      ],
+      "first_error": null,
+      "queued_rejected": true,
+      "spent": 40,
+      "reserved": 0,
+      "halted": true,
+      "settlements": [
+        {
+          "reservation": 40,
+          "actual": null,
+          "charged": 40,
+          "halted": true
+        }
+      ]
+    },
+    "delayed_stale_policy_write": {
+      "passed": true,
+      "stale_write_rejected": true,
+      "stale_call_charged_tokens": 31,
+      "unaffected_branch_retained": true,
+      "retained_version": 1,
+      "stale_result_present": false,
+      "affected": {
+        "incident": []
+      },
+      "events": [
+        {
+          "event": "request",
+          "incident": "incident",
+          "step": "telemetry",
+          "generation": 1,
+          "inputs": {},
+          "shared": {},
+          "request": {
+            "incident": "incident",
+            "step": "telemetry",
+            "inputs": {}
+          }
+        },
+        {
+          "event": "commit",
+          "incident": "incident",
+          "step": "telemetry",
+          "version": 1
+        },
+        {
+          "event": "request",
+          "incident": "incident",
+          "step": "plan",
+          "generation": 1,
+          "inputs": {},
+          "shared": {
+            "policy:v1": 1
+          },
+          "request": {
+            "incident": "incident",
+            "step": "plan",
+            "inputs": {},
+            "policy": {
+              "rule": "v1"
+            }
+          }
+        },
+        {
+          "event": "revoke",
+          "version": "v1",
+          "affected": {
+            "incident": []
+          }
+        },
+        {
+          "event": "discard",
+          "incident": "incident",
+          "step": "plan",
+          "generation": 1,
+          "reason": "Stale shared-state read"
+        }
+      ]
+    },
+    "published_correction": {
+      "passed": true,
+      "publication": "in-memory ledger only; no external publication",
+      "invalid_publication_blocked": true,
+      "original_unchanged": true,
+      "unaffected_branch_retained": true,
+      "affected": {
+        "incident": [
+          "answer",
+          "plan"
+        ]
+      },
+      "ledger": [
+        {
+          "id": 1,
+          "result": "answer",
+          "version": 1,
+          "payload": {
+            "rule": "independent",
+            "inputs": {
+              "plan": {
+                "rule": "v1",
+                "inputs": {}
+              },
+              "telemetry": {
+                "rule": "independent",
+                "inputs": {}
+              }
+            }
+          },
+          "epoch": 0,
+          "supersedes": null
+        },
+        {
+          "id": 2,
+          "result": "answer",
+          "version": 2,
+          "payload": {
+            "rule": "independent",
+            "inputs": {
+              "plan": {
+                "rule": "v2",
+                "inputs": {}
+              },
+              "telemetry": {
+                "rule": "independent",
+                "inputs": {}
+              }
+            }
+          },
+          "epoch": 1,
+          "supersedes": 1
+        }
+      ],
+      "action_ledger": [
+        {
+          "actor": "simulated-assistant",
+          "resource": "in-memory:incident/answer",
+          "action": "restart_service",
+          "causal_inputs": {
+            "plan": 1,
+            "telemetry": 1
+          },
+          "authorization": "denied",
+          "executed": false,
+          "supersedes": null
+        },
+        {
+          "actor": "simulated-assistant",
+          "resource": "in-memory:incident/answer",
+          "action": "publish",
+          "causal_inputs": {
+            "plan": 1,
+            "telemetry": 1
+          },
+          "authorization": "allowed",
+          "executed": true,
+          "supersedes": null,
+          "publication_id": 1
+        },
+        {
+          "actor": "simulated-assistant",
+          "resource": "in-memory:incident/answer",
+          "action": "publish",
+          "causal_inputs": {
+            "plan": 2,
+            "telemetry": 1
+          },
+          "authorization": "allowed",
+          "executed": true,
+          "supersedes": 1,
+          "publication_id": 2
+        }
+      ],
+      "action_scope": "bounded scripted allowlist simulation; not model safety evidence"
+    }
+  },
+  "cpu_overhead": {
+    "graph_size": 128,
+    "dependency_edges": 126,
+    "shared_reads": 1,
+    "graph_shape": "two interleaved independent chains; revoke first chain root policy",
+    "repeats": 20,
+    "warmup_repeats": 1,
+    "timer": "time.process_time_ns",
+    "python": "3.14.8",
+    "platform": "macOS-26.5.1-arm64-arm-64bit-Mach-O",
+    "baseline": "same ExecutionStore.commit and payloads, without dependency/shared-read metadata",
+    "minimal_baseline": "dictionary assignment plus deepcopy of identical tracked Results; excludes validation, version checks, and invalidation",
+    "serialized_result_bytes": {
+      "tracked": 20138,
+      "no_dependency": 18596,
+      "minimal_dictionary": 20138
+    },
+    "serialization_scope": "UTF-8 JSON Result list only; excludes store/runtime and Python heap overhead",
+    "timing_scope": "preconstructed Result commits; store setup and graph construction excluded",
+    "limitations": "Synthetic local CPU bookkeeping only; no inference or workload performance claims. Timing values vary by host/run; baseline omits dependency validation.",
+    "invalidated_nodes": 64,
+    "retained_nodes": 64,
+    "passed": true,
+    "samples": {
+      "tracked_commit_cpu_ns": [
+        6519000,
+        6341000,
+        6486000,
+        6480000,
+        6496000,
+        6208000,
+        6397000,
+        6317000,
+        6465000,
+        6815000,
+        6421000,
+        6423000,
+        6486000,
+        6382000,
+        6551000,
+        6441000,
+        6364000,
+        6340000,
+        6403000,
+        6310000
+      ],
+      "no_dependency_commit_cpu_ns": [
+        740000,
+        734000,
+        775000,
+        758000,
+        802000,
+        694000,
+        746000,
+        770000,
+        760000,
+        797000,
+        761000,
+        786000,
+        771000,
+        805000,
+        763000,
+        869000,
+        711000,
+        702000,
+        765000,
+        765000
+      ],
+      "minimal_dictionary_commit_cpu_ns": [
+        691000,
+        740000,
+        736000,
+        731000,
+        703000,
+        729000,
+        824000,
+        742000,
+        803000,
+        755000,
+        799000,
+        759000,
+        730000,
+        749000,
+        805000,
+        744000,
+        691000,
+        739000,
+        728000,
+        740000
+      ],
+      "invalidation_cpu_ns": [
+        135000,
+        123000,
+        166000,
+        120000,
+        120000,
+        120000,
+        127000,
+        130000,
+        117000,
+        130000,
+        119000,
+        124000,
+        117000,
+        124000,
+        122000,
+        124000,
+        112000,
+        123000,
+        119000,
+        114000
+      ]
+    },
+    "summary": {
+      "tracked_commit_cpu_ns": {
+        "median": 6422000.0,
+        "min": 6208000,
+        "max": 6815000
+      },
+      "no_dependency_commit_cpu_ns": {
+        "median": 764000.0,
+        "min": 694000,
+        "max": 869000
+      },
+      "minimal_dictionary_commit_cpu_ns": {
+        "median": 740000.0,
+        "min": 691000,
+        "max": 824000
+      },
+      "invalidation_cpu_ns": {
+        "median": 122500.0,
+        "min": 112000,
+        "max": 166000
+      }
+    },
+    "paired_tracking_increment_median_cpu_ns": 5652000.0,
+    "paired_validation_increment_median_cpu_ns": 5668500.0
+  },
+  "passed": true
+}
