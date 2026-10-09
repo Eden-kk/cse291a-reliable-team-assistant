@@ -4,12 +4,6 @@
   "dataset_split": "development_seen",
   "cases": [
     {
-      "case": "boutique/runtime/1",
-      "phase1_run": "runtime-port",
-      "current": "9555",
-      "historical": "9556"
-    },
-    {
       "case": "boutique/performance/1",
       "phase1_run": "performance-limit",
       "current": "200m",
@@ -43,5 +37,6 @@
   "final_locked": true,
   "fault_scope": "query-fields-v2",
   "intervention_note": "Only adservice query records; CPU change restricted to server container limits.cpu in YAML/pod describe. Node totals, requests, sidecars and substring matches excluded. Query-cache history only, not a consistent evolving environment.",
-  "previous_results": "v1 retained as broad record transformations; do not pool scopes"
+  "previous_results": "v1 retained as broad record transformations; do not pool scopes",
+  "case_scope_rationale": "Before any v2 live call, focus this bounded batch on the CPU transformation changed by v2. Smoke+2 matched repeats avoids repeating the underfunded four-window v1 design; runtime is not pooled and no independent-case generalization is claimed."
 }
