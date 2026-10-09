@@ -9,6 +9,10 @@ def replay(nodes, policy, limit, concurrency=2, initial_spent=0, initial_service
     if join_delay < 0 or any(n['duration'] <= 0 or n['tokens'] < 0 for n in nodes):
         raise ValueError('Invalid duration, tokens, or delay')
     if reserve_foreground:
+        reservations = {n['reservation'] for n in nodes}
+        if (len(reservations) > 1
+                or any(type(n['reservation']) is not int or n['reservation'] <= 0 for n in nodes)):
+            raise ValueError('Reservation guard requires one uniform positive integer reservation')
         for group in {n['group'] for n in nodes}:
             members = [n for n in nodes if n['group'] == group]
             if len({(n['kind'], n['arrival']) for n in members}) != 1:

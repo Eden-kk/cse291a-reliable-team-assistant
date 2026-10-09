@@ -55,3 +55,18 @@ class ReplayTests(unittest.TestCase):
         self.assertEqual(set(result['rejected_ids']), {'second', 'background'})
         self.assertFalse(result['groups']['A']['completed'])
         self.assertFalse(result['groups']['B']['completed'])
+
+    def test_guard_rejects_nonuniform_reservations_instead_of_blocking_affordable_work(self):
+        foreground = {**node('foreground'), 'reservation': 20}
+        background = {**node('background'), 'kind': 'recovery', 'group': 'B'}
+        with self.assertRaisesRegex(ValueError, 'uniform positive integer reservation'):
+            replay([foreground, background], 'fair', 10, reserve_foreground=True)
+        baseline = replay([foreground, background], 'fair', 10)
+        self.assertTrue(baseline['groups']['B']['completed'])
+
+    def test_guard_rejects_nonpositive_or_boolean_reservations(self):
+        for reservation in (0, -1, True):
+            with self.subTest(reservation=reservation):
+                with self.assertRaisesRegex(ValueError, 'uniform positive integer reservation'):
+                    replay([{**node('foreground'), 'reservation': reservation}],
+                           'fair', 10, reserve_foreground=True)
