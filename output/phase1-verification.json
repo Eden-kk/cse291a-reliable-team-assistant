@@ -1,0 +1,8 @@
+{
+  "exit_code": 0,
+  "stdout": "{\"checksums\": 383, \"matrix_reproduced\": true, \"native_scores_reproduced\": 13, \"controls_passed\": true, \"live_model_calls\": 0}\n",
+  "stderr": "----------------------------------------------------------------------\nRan 51 tests in 0.174s\n\nOK (skipped=7)\n",
+  "method": "fresh temporary extraction; original .venv interpreter; external snapshot checkout absent",
+  "archive": "output/phase1-submission.zip",
+  "archive_sha256": "e8d3897144c90ddf2ad77d8c6ff8fc9eae5efa28c5c167482e199adefc4f38e9"
+}
