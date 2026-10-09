@@ -1,0 +1,23 @@
+{
+  "study": "E5 same-prefix recovery ablation on seen development cases",
+  "recovery_case": "boutique/runtime/1",
+  "foreground_case": "boutique/service/1",
+  "order": [
+    "restart",
+    "selective"
+  ],
+  "diagnosis_rounds": 1,
+  "call_reservation": 60000,
+  "physical_token_cap": 900000,
+  "logical_window_cap": 540000,
+  "worst_case_calls": 15,
+  "concurrency": 2,
+  "max_tools_per_group_including_prefix": 24,
+  "foreground_guard": true,
+  "fault_scope": "query-fields-v2",
+  "limitations": "One fixed order, one case pair; no statistical, guard or learned-policy benefit claim",
+  "publication": "local provisional status; not quality approved or external",
+  "stop": "No retries, no replacing uncertain or failed outcomes; final set locked",
+  "foreground_arrival_seconds": 0,
+  "intervention": "Advance after common prefix; concurrent recovery and foreground begin at window origin"
+}
