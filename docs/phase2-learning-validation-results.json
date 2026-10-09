@@ -1,0 +1,274 @@
+{
+  "receipt": {
+    "accepted": false,
+    "batch_errors": [
+      "pair-6/baseline:incomplete_run",
+      "pair-6/baseline:missing_artifacts"
+    ],
+    "gate": null,
+    "model_calls": 40,
+    "decision_reason": "Full paired evidence required; failed or missing arms cannot be omitted",
+    "validation_tokens": 806838,
+    "source_collection_tokens": 254666,
+    "generation_tokens": 20951,
+    "known_total_tokens": 1082455,
+    "external_review_orchestration_tokens": null,
+    "economics": "Known subtotal only; no full net-benefit or payback claim",
+    "batch_evidence_sha256": "543866cca80e2a7eda2af7c716b3f6f5ce7a9a293d86f7fae111ca28ea2ce0d3",
+    "activation": "none; receipt only"
+  },
+  "runs": [
+    {
+      "arm": "pair-1/baseline",
+      "case": "boutique/runtime/14",
+      "state": "completed",
+      "answer_status": "diagnosed",
+      "tokens": 50417,
+      "seconds": 20.32855649999692,
+      "JRA": 1.0,
+      "ECR": 1.0,
+      "contract_valid": true,
+      "semantic_supported": true,
+      "error": null
+    },
+    {
+      "arm": "pair-1/candidate",
+      "case": "boutique/runtime/14",
+      "state": "completed",
+      "answer_status": "diagnosed",
+      "tokens": 50396,
+      "seconds": 16.21629208298691,
+      "JRA": 1.0,
+      "ECR": 1.0,
+      "contract_valid": true,
+      "semantic_supported": true,
+      "error": null
+    },
+    {
+      "arm": "pair-2/candidate",
+      "case": "boutique/runtime/44",
+      "state": "completed",
+      "answer_status": "diagnosed",
+      "tokens": 50417,
+      "seconds": 16.413301542008412,
+      "JRA": 1.0,
+      "ECR": 1.0,
+      "contract_valid": true,
+      "semantic_supported": true,
+      "error": null
+    },
+    {
+      "arm": "pair-2/baseline",
+      "case": "boutique/runtime/44",
+      "state": "completed",
+      "answer_status": "diagnosed",
+      "tokens": 49979,
+      "seconds": 18.608321082996554,
+      "JRA": 1.0,
+      "ECR": 1.0,
+      "contract_valid": true,
+      "semantic_supported": true,
+      "error": null
+    },
+    {
+      "arm": "pair-3/baseline",
+      "case": "boutique/service/52",
+      "state": "completed",
+      "answer_status": "diagnosed",
+      "tokens": 81313,
+      "seconds": 26.19200391699269,
+      "JRA": 1.0,
+      "ECR": 1.0,
+      "contract_valid": true,
+      "semantic_supported": true,
+      "error": null
+    },
+    {
+      "arm": "pair-3/candidate",
+      "case": "boutique/service/52",
+      "state": "completed",
+      "answer_status": "diagnosed",
+      "tokens": 56661,
+      "seconds": 23.039764291010215,
+      "JRA": 1.0,
+      "ECR": 1.0,
+      "contract_valid": true,
+      "semantic_supported": true,
+      "error": null
+    },
+    {
+      "arm": "pair-4/candidate",
+      "case": "boutique/service/51",
+      "state": "completed",
+      "answer_status": "diagnosed",
+      "tokens": 55978,
+      "seconds": 22.0347632500052,
+      "JRA": 1.0,
+      "ECR": 1.0,
+      "contract_valid": true,
+      "semantic_supported": true,
+      "error": null
+    },
+    {
+      "arm": "pair-4/baseline",
+      "case": "boutique/service/51",
+      "state": "completed",
+      "answer_status": "diagnosed",
+      "tokens": 80333,
+      "seconds": 32.837323416999425,
+      "JRA": 1.0,
+      "ECR": 1.0,
+      "contract_valid": true,
+      "semantic_supported": true,
+      "error": null
+    },
+    {
+      "arm": "pair-5/baseline",
+      "case": "boutique/performance/18",
+      "state": "completed",
+      "answer_status": "uncertain",
+      "tokens": 127246,
+      "seconds": 42.6737741669931,
+      "JRA": 0.0,
+      "ECR": 0.0,
+      "contract_valid": false,
+      "semantic_supported": true,
+      "error": null
+    },
+    {
+      "arm": "pair-5/candidate",
+      "case": "boutique/performance/18",
+      "state": "completed",
+      "answer_status": "uncertain",
+      "tokens": 128147,
+      "seconds": 41.234555500006536,
+      "JRA": 0.0,
+      "ECR": 0.0,
+      "contract_valid": false,
+      "semantic_supported": true,
+      "error": null
+    },
+    {
+      "arm": "pair-6/candidate",
+      "case": "boutique/performance/10",
+      "state": "completed",
+      "answer_status": "diagnosed",
+      "tokens": 59521,
+      "seconds": 22.213018958005705,
+      "JRA": 1.0,
+      "ECR": 1.0,
+      "contract_valid": true,
+      "semantic_supported": true,
+      "error": null
+    },
+    {
+      "arm": "pair-6/baseline",
+      "case": "boutique/performance/10",
+      "state": "failed",
+      "answer_status": null,
+      "tokens": 16430,
+      "seconds": 8.890946250001434,
+      "JRA": null,
+      "ECR": null,
+      "contract_valid": null,
+      "semantic_supported": null,
+      "error": "RuntimeError('Physical budget unavailable; request not sent')"
+    }
+  ],
+  "execution_manifest": {
+    "study": "learning-bundle-v1-validation",
+    "code_commit": "57975cc416471332fb7451e705b89fc9262c69f7",
+    "frozen": {
+      "stage": "learning bundle frozen before validation; not activated",
+      "candidate_policy_count": 1,
+      "individual_proposals": 2,
+      "minimum_three_proposals_met": false,
+      "files": {
+        "candidate-bundle.json": "51599669f49d7f776da77b96ad1439454fe330eff1fcfb96cfd5eb5542eb3218",
+        "baseline.json": "a55c9e162b49562f2f6db1a1ed4a15f561aa959830e5e2dbff670d26e3821d6e",
+        "proposals.json": "cbf5ae145c3efc9b264dfcc38b9510bf6540f47cd02d05aea695ae27c7255dfa"
+      },
+      "generation_receipt": "runs/learning-candidates-v1/generation-receipt.json",
+      "source_input_sha256": "e3819d91cebb40bb08b11a7e064cb9003ba8082ae499cdfbaa1ab60e3f255b32",
+      "registry_sha256": "30600a46ee1270eed7588f5402cd4ae0bc916d1320bf52dd24181fc64fdafe3e",
+      "threshold_sha256": "5b46e3bbfdf3bec5f7296fd444b609c8c5de54c89a161b9c0b641c227cd768c7",
+      "cases": [
+        {
+          "case": "boutique/runtime/14",
+          "order": [
+            "baseline",
+            "candidate"
+          ]
+        },
+        {
+          "case": "boutique/runtime/44",
+          "order": [
+            "candidate",
+            "baseline"
+          ]
+        },
+        {
+          "case": "boutique/service/52",
+          "order": [
+            "baseline",
+            "candidate"
+          ]
+        },
+        {
+          "case": "boutique/service/51",
+          "order": [
+            "candidate",
+            "baseline"
+          ]
+        },
+        {
+          "case": "boutique/performance/18",
+          "order": [
+            "baseline",
+            "candidate"
+          ]
+        },
+        {
+          "case": "boutique/performance/10",
+          "order": [
+            "candidate",
+            "baseline"
+          ]
+        }
+      ],
+      "logical_token_limit_per_run": 360000,
+      "planned_physical_token_cap": 900000,
+      "generation_tokens": 20951,
+      "source_collection_tokens": 254666,
+      "known_acquisition_tokens": 275617,
+      "independent_review_cost": null,
+      "limitations": [
+        "One bundle, not independent per-rule validation",
+        "Only case-ID isolation; unknown template overlap",
+        "No validation or final-case contents opened in this stage",
+        "External review/orchestration costs not fully metered; no net savings/payback claim",
+        "Validation runner execution commit and complete prompt/provider settings must be frozen before first validation call"
+      ]
+    },
+    "execution_settings": {
+      "model": "gpt-6-astra",
+      "model_alias_not_immutable": true,
+      "reasoning_effort": "low",
+      "context_window": 131072,
+      "call_reservation": 60000,
+      "concurrency": 2,
+      "max_tools": 24,
+      "source_sha256": {
+        "provider.py": "c566e66b6cd47804665015843cdc4e6965829e693ffad1f7ff305e286d355e4d",
+        "investigation.py": "7d26083cd8bdecf3e3191624d011e32942810de6e8b76edf2fd929de8ace78e8",
+        "runtime.py": "50eba5d26df18757e84d4c98c9f96413ecfc3099855884a3d117b446fb99e89d",
+        "cloudops.py": "66e3ce262ce24f1429f06edcde21722ffd7893bf8760bae33b5b80eef03b8f39",
+        "dispatch.py": "a49fd9d16a689d7e1347d938f418fe55f46864a4f035d2c9d50bcba839e51d80",
+        "memory.py": "e7abfccb167cf3184241fb73a568991ee62a951d01391cc905ea264a8a23df3d"
+      }
+    },
+    "execution_settings_sha256": "36ac591ae8cd60b3d1ed1472a4106fc0f4fc4f8bd3ec4dee930f12b5d4fb0827",
+    "dataset_commit": "ea05dafbc87b5985df8721622d63d4229c2b4224",
+    "promotion": "none; experimental paired evaluation"
+  }
+}

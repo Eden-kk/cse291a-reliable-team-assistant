@@ -72,7 +72,7 @@ def audit(directory):
                 errors.append(key + ':manifest_or_cost_mismatch')
             pair[arm] = run
         pairs.append(pair)
-    completed_costs = [p[a]['tokens'] for p in pairs for a in ('baseline', 'candidate') if a in p]
+    completed_costs = [v.get('tokens', 0) for v in summary['outcomes'].values()]
     if (any(type(t) is not int or t < 0 for t in completed_costs)
             or sum(t for t in completed_costs if type(t) is int) != summary['physical_tokens']):
         errors.append('logical_physical_total_mismatch')
@@ -93,6 +93,7 @@ def audit(directory):
         gate['total_learning_tokens'] = None
     return {'accepted': not errors and gate is not None and gate['accepted'],
             'batch_errors': errors, 'gate': gate, 'model_calls': len(calls),
+            'decision_reason': 'Full paired evidence required; failed or missing arms cannot be omitted',
             'validation_tokens': summary['physical_tokens'],
             'source_collection_tokens': frozen['source_collection_tokens'],
             'generation_tokens': frozen['generation_tokens'],

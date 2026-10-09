@@ -67,3 +67,12 @@ class BatchAuditTest(unittest.TestCase):
     def test_incomplete_pair(self):
         self.data['summary.json']['outcomes']['pair-6/candidate']['state'] = 'failed'
         self.assertFalse(self.run_audit()['accepted'])
+
+    def test_failed_arm_cost_is_retained(self):
+        self.data['summary.json']['outcomes']['pair-6/candidate']['state'] = 'failed'
+        (self.root / 'pair-6/candidate/result.json').unlink()
+        result = self.run_audit()
+        self.assertFalse(result['accepted'])
+        self.assertIsNone(result['gate'])
+        self.assertEqual(result['validation_tokens'], 120)
+        self.assertNotIn('logical_physical_total_mismatch', result['batch_errors'])

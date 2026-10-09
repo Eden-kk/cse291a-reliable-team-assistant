@@ -1,0 +1,13 @@
+arm,case,state,answer_status,tokens,seconds,JRA,ECR,contract_valid,semantic_supported,error
+pair-1/baseline,boutique/runtime/14,completed,diagnosed,50417,20.32855649999692,1.0,1.0,True,True,
+pair-1/candidate,boutique/runtime/14,completed,diagnosed,50396,16.21629208298691,1.0,1.0,True,True,
+pair-2/candidate,boutique/runtime/44,completed,diagnosed,50417,16.413301542008412,1.0,1.0,True,True,
+pair-2/baseline,boutique/runtime/44,completed,diagnosed,49979,18.608321082996554,1.0,1.0,True,True,
+pair-3/baseline,boutique/service/52,completed,diagnosed,81313,26.19200391699269,1.0,1.0,True,True,
+pair-3/candidate,boutique/service/52,completed,diagnosed,56661,23.039764291010215,1.0,1.0,True,True,
+pair-4/candidate,boutique/service/51,completed,diagnosed,55978,22.0347632500052,1.0,1.0,True,True,
+pair-4/baseline,boutique/service/51,completed,diagnosed,80333,32.837323416999425,1.0,1.0,True,True,
+pair-5/baseline,boutique/performance/18,completed,uncertain,127246,42.6737741669931,0.0,0.0,False,True,
+pair-5/candidate,boutique/performance/18,completed,uncertain,128147,41.234555500006536,0.0,0.0,False,True,
+pair-6/candidate,boutique/performance/10,completed,diagnosed,59521,22.213018958005705,1.0,1.0,True,True,
+pair-6/baseline,boutique/performance/10,failed,,16430,8.890946250001434,,,,,RuntimeError('Physical budget unavailable; request not sent')

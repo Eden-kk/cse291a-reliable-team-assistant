@@ -1,3 +1,7 @@
+最新进展：学习候选验证未晋升 — 2026-10-09
+12调查：9诊断成功、2uncertain、1预算预留失败；5完整配对。40calls/806838tokens，已知采集+生成+验证1082455tokens。两组Service局部节省30.32%，不能替代完整验收；bundle不启用，final8锁定。145测试通过。
+详情phase2-learning-validation.txt及同名results/CSV。无后台任务；下一步在learning资料分析performance证据缺口，预先修订新批次完整配对准入，至少3自然提案仍未完成。
+
 最新进展：自然经验候选已冻结 — 2026-10-09
 3个learning案例，2个独立审核成功、1个uncertain排除；12采集calls+1生成call，已记录275617tokens。生成2条一般性规则，冻结为1个bundle，尚未验证/激活；最低3提案要求仍未完成。137测试通过。
 详情phase2-learning-candidates.txt与configs/learning/bundle-v1。下一步6个gate_validation案例×基线/候选共12调查；执行设置尚需冻结。无后台任务，final8锁定。
