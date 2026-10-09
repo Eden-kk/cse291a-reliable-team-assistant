@@ -1,0 +1,15 @@
+{
+  "case": "boutique/service/1",
+  "arms": [
+    {"name":"parallel-one","collection_mode":"parallel","diagnosis_rounds":1},
+    {"name":"telemetry-first-one","collection_mode":"telemetry_first","diagnosis_rounds":1},
+    {"name":"parallel-two","collection_mode":"parallel","diagnosis_rounds":2}
+  ],
+  "physical_token_cap":600000,
+  "logical_token_cap_per_arm":240000,
+  "call_reservation":60000,
+  "max_tools":24,
+  "purpose":"Seen-development comparison of evidence handoff versus extra diagnosis round",
+  "stop":"No retries; uncertainty and failures retained; no final-set access",
+  "limitations":"Single case and fixed order; serial collection can increase latency; not a generalization result"
+}

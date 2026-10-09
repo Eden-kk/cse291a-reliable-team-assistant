@@ -24,9 +24,12 @@ If critical evidence is missing return uncertain. Never infer truth from policy 
 
 
 class Investigation:
-    def __init__(self, runtime, provider, snapshot, identifier='incident-1', reservation=60000, max_tools=12, diagnosis_rounds=3):
+    def __init__(self, runtime, provider, snapshot, identifier='incident-1', reservation=60000, max_tools=12, diagnosis_rounds=3, collection_mode="parallel"):
         if type(diagnosis_rounds) is not int or not 1 <= diagnosis_rounds <= 3:
             raise ValueError('Diagnosis rounds must be between one and three')
+        if collection_mode not in ('parallel', 'telemetry_first'):
+            raise ValueError('Unsupported collection mode')
+        self.collection_mode = collection_mode
         self.diagnosis_rounds = diagnosis_rounds
         self.runtime, self.provider, self.snapshot = runtime, provider, snapshot
         self.identifier, self.reservation, self.max_tools = identifier, reservation, max_tools
@@ -92,13 +95,18 @@ class Investigation:
             if reuse and role + '_plan' in store.results and role + '_plan' not in store.invalid():
                 plan = store.results[role + '_plan']
             else:
-                plan = await self.model_step(role + '_plan', PLAN + '\nSpecialty: ' + role, ('initial',), True)
+                dependencies = ('initial', 'telemetry_evidence') if role == 'configuration' and self.collection_mode == 'telemetry_first' else ('initial',)
+                plan = await self.model_step(role + '_plan', PLAN + '\nSpecialty: ' + role, dependencies, True)
             queries = plan.payload.get('queries', [])
             if not isinstance(queries, list) or len(queries) > 3:
                 raise ValueError('Specialist query contract violated')
             error_start = len(self.tool_errors)
             observations = self.execute_queries(queries)
             self.artifact(role + '_evidence', {'observations': observations, 'tool_errors': self.tool_errors[error_start:]}, (role + '_plan',))
+        if self.collection_mode == 'telemetry_first':
+            await specialist('telemetry')
+            await specialist('configuration')
+            return
         results = await asyncio.gather(specialist('configuration'), specialist('telemetry'), return_exceptions=True)
         for result in results:
             if isinstance(result, BaseException):
