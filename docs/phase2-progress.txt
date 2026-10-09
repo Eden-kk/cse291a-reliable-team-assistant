@@ -1,0 +1,18 @@
+Phase 2 progress — 2026-10-08
+
+Implemented and tested
+- Query-scoped trusted revision archive separates authenticity from freshness. Source notifications update the actual dependency graph; unrelated results stay valid.
+- Stale in-flight reply test confirms output is rejected but its 23 tokens remain charged. Publication history remains append-only.
+- Offline lifecycle controls use saved Phase1 collection graphs for runtime/1 and performance/1: unchanged, version-only, trusted-stale, dense-version-only (8 conditions).
+- Sparse source changes invalidate configuration evidence plus the synthetic diagnosis marker: 2/6 nodes, retaining4. Dense source revisions invalidate6/6 and retain0. No-change invalidates0.
+- After fetching current configuration evidence, diagnosis remains invalid pending real recomputation. Offline results do not claim semantic recovery, call reduction, or latency gain.
+- Full raw controls: runs/phase2-sources-v3/results.json; compact frozen results: docs/phase2-source-controls.json. Earlier v1/v2 retained; v3 corrects labels and removes a constructed citation-only comparison.
+
+Current gate
+The live adapter/runner must pass budget and freshness integration tests before inference. Per-method total240000tokens/24tool attempts, per-call60000reservation, shared physical cap900000tokens. Prefix is included in both recovery methods; unknown usage stops the batch. See docs/phase2-protocol.txt.
+
+Remaining
+- Live smoke then fixed-repeat recovery/prevention comparison, inspect actual consumed new content and current-state scoring.
+- Metadata/query dependency coverage: current identity is per tool+arguments, not semantic cross-query resource dependencies. Notifications are supplied by the experiment; automatic detection is not implemented.
+- Dynamic benchmark history is constructed; no real observed incident evolution is claimed.
+- Multi-group shared-budget study and gated learning follow recovery validation. Final8 cases remain locked.
