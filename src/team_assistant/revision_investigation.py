@@ -2,7 +2,7 @@
 import copy
 import hashlib
 from .investigation import Investigation
-from .sources import VersionedSources, source_key
+from .sources import VersionedSources, source_key, content
 from .state import Result
 
 CASES = {'boutique/runtime/1': ('9555', '9556'),
@@ -12,11 +12,12 @@ CASES = {'boutique/runtime/1': ('9555', '9556'),
 class RevisionInvestigation(Investigation):
     def __init__(self, *args, case, **kwargs):
         super().__init__(*args, **kwargs)
-        self.revisions = VersionedSources(case)
+        self.revisions = VersionedSources(f'{self.incident.team}/{self.identifier}/{case}')
         self.transform = CASES[case]
         self.old_phase = True
         self.originals = {}
         self.revision_events = []
+        self.source_rereads = 0
 
     def artifact(self, name, payload, dependencies=()):
         payload = copy.deepcopy(payload)
@@ -33,6 +34,8 @@ class RevisionInvestigation(Investigation):
                     observation['sha256'] = hashlib.sha256(observation['text'].encode()).hexdigest()
             if key in self.revisions.heads and (not self.old_phase or name.startswith('additional_')):
                 stamped = self.revisions.current(key, observation['id'])
+                if not self.old_phase and content(stamped) != content(observation):
+                    raise ValueError('Fetched current source differs from trusted revision')
             else:
                 # Mixed branch versions of the same query fail closed here.
                 stamped = self.revisions.record(observation)
@@ -67,7 +70,9 @@ class RevisionInvestigation(Investigation):
             result = store.results[name]
             queries = [{'tool': o['tool'], 'arguments': o['arguments']}
                        for o in result.payload.get('observations', [])]
+            before = len(self.snapshot.observations) + len(self.tool_errors)
             observations = self.execute_queries(queries)
+            self.source_rereads += len(self.snapshot.observations) + len(self.tool_errors) - before
             if len(observations) != len(queries):
                 raise ValueError('Insufficient tool budget for source verification')
             self.artifact(name, {'observations': observations}, tuple(result.inputs))
