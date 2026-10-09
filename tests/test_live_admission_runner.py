@@ -46,18 +46,18 @@ class FakeInvestigation:
 
 
 class LiveAdmissionRunnerTests(unittest.IsolatedAsyncioTestCase):
-    async def run_window(self, policy, fail=False):
+    async def run_window(self, policy, fail=False, cap=360000):
         physical=Budget(600000)
         physical.spent=30
         base=SimpleNamespace(runtime=SimpleNamespace(dispatcher=Dispatcher(Budget(360000))))
         base.runtime.dispatcher.budget.spent=30
         def branch(*args):
-            runtime=SimpleNamespace(dispatcher=Dispatcher(Budget(360000)),events=[])
+            runtime=SimpleNamespace(dispatcher=Dispatcher(Budget(cap)),events=[])
             runtime.dispatcher.budget.spent=30
             return FakeInvestigation(runtime,physical,'recovery')
         def fresh(path,runtime,spec):
             return FakeInvestigation(runtime,physical,spec['group'], fail and spec['group']=='service')
-        manifest={'logical_token_cap':360000,'recovery_case':'boutique/performance/1',
+        manifest={'logical_token_cap':cap,'recovery_case':'boutique/performance/1',
                   'foregrounds':[{'group':'service','case':'boutique/service/1','arrival_seconds':0},
                                  {'group':'runtime','case':'boutique/runtime/1','arrival_seconds':0}]}
         with tempfile.TemporaryDirectory() as directory, patch.object(MODULE,'provider',return_value=None), patch.object(MODULE,'recovery_branch',side_effect=branch):
@@ -116,3 +116,20 @@ class LiveAdmissionRunnerTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(physical.reserved,0)
         self.assertEqual(shared.dispatcher.budget.reserved,0)
         self.assertFalse(shared.dispatcher.pending or shared.dispatcher.running)
+
+    async def test_low_budget_keeps_failed_groups_and_settles(self):
+        for policy in ('fair-reserve','fair-admit-one'):
+            result=await self.run_window(policy,cap=60030)
+            self.assertEqual(set(result['outcomes']),{'recovery','service','runtime'})
+            self.assertTrue(any(o['state']=='failed' for o in result['outcomes'].values()))
+            self.assertLessEqual(result['logical_total_tokens'],60030)
+
+    async def test_protocol_only_accepts_fixed_caps_and_policy_permutations(self):
+        import json
+        protocol=json.loads(MODULE.PROTOCOL.read_text())
+        for cap in (200000,360000):
+            protocol['logical_token_cap']=cap
+            protocol['policies'].reverse()
+            MODULE.validate_protocol(protocol)
+        protocol['policies']=['fair-reserve','fair-reserve']
+        with self.assertRaises(ValueError):MODULE.validate_protocol(protocol)

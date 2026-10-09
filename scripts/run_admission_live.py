@@ -95,28 +95,34 @@ async def window(path, base, physical, policy, manifest, make_foreground):
     return summary
 
 
-async def main(args):
-    if args.output.exists():
-        raise ValueError('Refuse overwrite')
-    if subprocess.check_output(['git','-C',str(ROOT),'status','--porcelain'], text=True).strip():
-        raise ValueError('Commit before inference')
-    protocol = json.loads(PROTOCOL.read_text())
-    registry = json.loads((ROOT / 'configs/splits.json').read_text())
-    cases = [protocol['recovery_case']] + [s['case'] for s in protocol['foregrounds']]
-    if any(case not in registry['splits']['development_seen'] for case in cases):
-        raise ValueError('Development cases only')
-    if protocol['policies'] != ['fair-reserve', 'fair-admit-one']:
+def validate_protocol(protocol):
+    if sorted(protocol['policies']) != ['fair-admit-one', 'fair-reserve']:
         raise ValueError('Unexpected policy order')
     if protocol['foregrounds'] != [
             {'group':'service','case':'boutique/service/1','arrival_seconds':0},
             {'group':'runtime','case':'boutique/runtime/1','arrival_seconds':0}]:
         raise ValueError('Retest changed arrivals or cases')
-    fixed = {'logical_token_cap':360000, 'physical_token_cap':600000,
+    if type(protocol['logical_token_cap']) is not int or protocol['logical_token_cap'] not in (200000,360000):
+        raise ValueError('Unsupported logical budget')
+    fixed = {'physical_token_cap':600000,
              'call_reservation':60000, 'concurrency':2, 'foreground_call_bound':5,
              'max_tools_per_group':24, 'response_slo_seconds':30, 'recovery_slo_seconds':60,
              'recovery_case':'boutique/performance/1'}
     if any(protocol[k] != v for k,v in fixed.items()):
         raise ValueError('Retest runner before changing protocol constants')
+
+
+async def main(args):
+    if args.output.exists():
+        raise ValueError('Refuse overwrite')
+    if subprocess.check_output(['git','-C',str(ROOT),'status','--porcelain'], text=True).strip():
+        raise ValueError('Commit before inference')
+    protocol = json.loads(args.protocol.read_text())
+    registry = json.loads((ROOT / 'configs/splits.json').read_text())
+    cases = [protocol['recovery_case']] + [s['case'] for s in protocol['foregrounds']]
+    if any(case not in registry['splits']['development_seen'] for case in cases):
+        raise ValueError('Development cases only')
+    validate_protocol(protocol)
     commit = subprocess.check_output(['git','-C',str(ROOT),'rev-parse','HEAD'], text=True).strip()
     manifest = {**protocol, 'code_commit':commit, 'dataset_commit':registry['dataset_commit'], 'model':'gpt-6-astra'}
     write(args.output / 'manifest.json', manifest)
@@ -157,6 +163,7 @@ async def main(args):
 
 if __name__ == '__main__':
     parser=argparse.ArgumentParser()
+    parser.add_argument('--protocol',type=Path,default=PROTOCOL)
     parser.add_argument('--vendor',type=Path,required=True)
     parser.add_argument('--output',type=Path,required=True)
     asyncio.run(main(parser.parse_args()))
