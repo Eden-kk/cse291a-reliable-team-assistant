@@ -75,7 +75,7 @@ async def main(args):
             for recovery in ('selective','restart'):
                 result=await condition(args.vendor,mode,expired,recovery,commit)
                 name=f'{mode}-{expired}-{recovery}'
-                (args.output/(name+'.json')).write_text(json.dumps(result,indent=2))
+                (args.output/(name+'.json')).write_text(json.dumps(result,indent=2,default=list))
                 rows.append({k:v for k,v in result.items() if k not in ('before','after','requests','runtime_events','settlements')})
     (args.output/'summary.json').write_text(json.dumps(rows,indent=2))
     print(json.dumps({'conditions':len(rows),'real_model_calls':0}))
