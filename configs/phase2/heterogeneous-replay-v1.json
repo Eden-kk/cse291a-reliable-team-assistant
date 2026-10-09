@@ -1,0 +1,58 @@
+{
+  "study": "heterogeneous-fixed-trace-v1",
+  "traces": {
+    "recovery": {
+      "directory": "runs/phase2-live-scheduling-v1/repeat-1/fifo/recovery",
+      "kind": "recovery"
+    },
+    "runtime": {
+      "directory": "runs/phase2-live-scheduling-v1/repeat-1/fifo/foreground",
+      "kind": "response"
+    },
+    "service": {
+      "directory": "runs/phase1-matrix/service-address/clean",
+      "collection": "runs/phase1-matrix/service-address/collection",
+      "kind": "response"
+    }
+  },
+  "prefix_summary": "runs/phase2-live-scheduling-v1/repeat-1/fifo/summary.json",
+  "foreground_sets": [
+    [
+      "runtime"
+    ],
+    [
+      "service"
+    ],
+    [
+      "runtime",
+      "service"
+    ]
+  ],
+  "spacing_seconds": [
+    0,
+    5
+  ],
+  "budgets": [
+    200000,
+    360000
+  ],
+  "policies": [
+    "fifo",
+    "fair",
+    "fair-reserve"
+  ],
+  "response_slo_seconds": 30,
+  "recovery_slo_seconds": 60,
+  "initial_service": "empty, matching live scheduling dispatcher reset; prefix tokens still prepaid",
+  "limitations": [
+    "Fixed outputs/service times; no new live latency or quality evidence.",
+    "Three already seen cases, historical code and prompt versions differ; mechanism study only.",
+    "Local tool/verification/handoff time omitted; zero-spacing admission uses listed group/node order.",
+    "Exact recorded DAG remaining count differs from live five-call upper bound.",
+    "Replay guard and runtime guard differ on unaffordable response fallback; equivalence not established.",
+    "Complete means model DAG executed, not semantic success; native scores reported separately.",
+    "Two budget caps test token affordability, not sustained arrival-rate overload.",
+    "No final-set access, provider requests, operational writes, or cherry-picked retries.",
+    "Queue metrics cover dispatched calls only; rejected ready-call waiting is unmeasured."
+  ]
+}

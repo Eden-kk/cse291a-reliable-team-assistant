@@ -33,15 +33,20 @@ def derive_arm(window, arm):
             or (directory / 'failure.json').exists()):
         raise ValueError(f'{arm}: failed/incomplete trace is ineligible')
     calls = usage['calls']
+    if sum(c['tokens'] for c in calls if type(c.get('tokens')) is int) != usage['summary']['incremental_tokens']:
+        raise ValueError('Call usage does not match incremental total')
+    return derive_nodes(calls, state)
+
+
+def derive_nodes(calls, state):
+    """Validate recorded calls against immutable artifact lineage before replay."""
     if not calls or any(c.get('error') or type(c.get('tokens')) is not int
                         or c['tokens'] < 0 or type(c.get('seconds')) not in (int, float)
                         or not math.isfinite(c['seconds']) or c['seconds'] <= 0 for c in calls):
-        raise ValueError(f'{arm}: missing/failed/unknown-usage calls')
+        raise ValueError('Missing/failed/unknown-usage calls')
     by_step = {c['request']['step']: c for c in calls}
     if len(by_step) != len(calls):
         raise ValueError('Repeated step requires versioned call history')
-    if sum(c['tokens'] for c in calls) != usage['summary']['incremental_tokens']:
-        raise ValueError('Call usage does not match incremental total')
 
     def parents(name):
         for parent, version in state[name]['inputs'].items():

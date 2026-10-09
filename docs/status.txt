@@ -1,3 +1,7 @@
+最新进展：异质事故固定回放 — 2026-10-09
+36条件/三个已见案例，0新增模型调用。预留可将完成机会从恢复转给前台；三群200k存在预算不足，不能承诺全完成。115项测试全部通过。
+详情：phase2-heterogeneous-replay.txt、同名CSV及-results.json。下一步completion-aware admission，再做统一代码的真实三群验证；final8继续锁定。无后台实验。
+
 最新进展：真实多群调度验证 — 2026-10-08
 运行时预留机制已接入，111项测试通过。两轮三策略真实并发共30calls/587275tokens，12个后续诊断原生评分通过。fair-reserve新告警19.03/22.38秒，恢复延后29.71/36.08秒；保留等待代价，不声称普遍优势。当前无后台实验。
 详情：phase2-live-scheduling.txt与phase2-live-scheduling-results.json。下一步异质案例/到达压力验证，再推进学习闭环；final8仍锁定。

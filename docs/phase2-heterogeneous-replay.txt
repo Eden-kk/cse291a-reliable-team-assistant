@@ -1,0 +1,47 @@
+Phase 2 异质事故与预算压力 — 2026-10-09
+
+本轮完成
+36个固定trace回放条件：runtime前台、service前台、runtime+service双前台；到达间隔0/5秒；共享预算200k/360k；FIFO/fair/fair-reserve。每个条件另有performance恢复群。0次模型调用，未使用AWS、新付费API或final测试案例。
+115项测试通过，无跳过。独立审查后增加完整前台planner检查、恢复前缀账本核对，并将等待指标明确命名为仅已派发调用的等待。
+
+来源及口径
+恢复：phase2-live-scheduling-v1/repeat-1/fifo/recovery，1call/26430tokens。
+runtime前台：同窗口foreground，3calls/51869tokens。
+service前台：phase1-matrix/service-address/collection加clean，4calls/82488tokens；包含两次planner，不能把collection算作免费。
+恢复历史前缀59318tokens，在每个条件中预先计入。fair历史service从0开始，与已有live窗口一致。
+三个源诊断原生JRA/ECR=1，但不是本次新质量评估。service源使用较早代码/prompt，因此本轮只能研究固定工作流的调度机制，不能比较事故难度或泛化。
+
+核心结果（秒为到达→DAG完成的模拟时延；未完成保留在分母）
+前台组合        间隔  预算   策略           前台结果                    恢复结果
+runtime          0   200k   fair           32.52                       23.11
+runtime          0   200k   fair-reserve   18.62                       34.15
+service          0   200k   fair           未完成                      23.83
+service          0   200k   fair-reserve   34.25                       未完成
+runtime+service  0   200k   FIFO           两者均未完成                15.54
+runtime+service  0   200k   fair/reserve   runtime40.69，service未完成  未完成
+runtime+service  0   360k   fair/reserve   runtime32.40，service51.23   33.03
+所有完整逐群数据见同名CSV/JSON。fair与reserve相同只针对表中对应条件，不代表一般等价。
+
+机制解释
+1. 保护新告警不等于提高全局完成率。service单前台的200k条件中，保护策略把可完成任务从恢复换成前台。
+2. reservation headroom与actual token总量不同。service+恢复+前缀实际总量168236，小于200k，但最后一次调用前必须预留60000，仍可能无法派发；不能因为最终actual总量够就承诺可完成。
+3. 三群实际总量220105，本来就超过200k。调度不能创造预算；需要明确拒绝/延后及任务接纳机制，不应把未完成隐去。
+4. 新告警在恢复启动5秒后到达时，已有调用不可抢占；两群低预算条件中reserve不改变结果。不能假定系统预知未来告警来预留。
+5. 360k下大部分reserve与fair相同；预留不是普遍收益。两前台突发仍可能超过探索性30秒目标，该目标不是课程要求。
+
+局限
+固定输出、固定服务耗时，省略本地工具和交接耗时；不代表新的live性能、统计显著性或生产SLA。案例均已见，重复场景不是独立事故样本。
+回放知道实际DAG形状，真实控制器使用最多5call上界；两者在无法负担前台时的fallback也未证明等价。
+排队统计仅覆盖已派发调用，被拒绝调用的等待尚未测量；完成含义是DAG执行完，不是新做的语义审核。
+三群staggered到达为恢复0s、runtime5s、service10s。不得将到达顺序影响解释为事故类型差异。
+
+下一步固定范围
+先增加completion-aware admission（限制同时活跃的新调查并保留到达时间），对比现有fair-reserve，保持每call统一60000预留与同一共享额度；不偷看未来实际tokens/耗时。
+必须报告：每个到达任务的接纳/延后/拒绝、arrival到最终完成、恢复期限、部分调查浪费tokens，以及未完成分母。不能仅报被接纳任务。
+离线确认机制后，再用同一代码/prompt收集service干净trace并开展有上限的真实三群小批次。不要直接扩大final或恢复故障范围。
+self-evolve仍按独立learning/gate-validation流程推进，不能用本批结果更新final案例答案。
+
+复现
+.venv/bin/python scripts/replay_heterogeneous.py --protocol configs/phase2/heterogeneous-replay-v1.json --output <新的JSON路径>
+原始runs必须存在；脚本拒绝覆盖输出并保留输入排除原因。JSON保存原始文件hash、逐call DAG、逐群结果和拒绝节点。
+Phase1提交包未改变。无后台实验运行。
