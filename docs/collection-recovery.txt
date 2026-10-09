@@ -1,0 +1,37 @@
+证据交接的恢复范围代价 — 2026-10-09
+
+完成与边界
+运行12个受控条件：parallel/telemetry_first × telemetry_evidence/configuration_evidence/initial过期 × selective/restart。全部完成并检查有效状态；161项测试通过。真实模型调用0。
+使用固定development service/1只读快照，查询由确定性假后端预先指定。只标记artifact过期，数据内容不变；不是新故障、真实服务状态变更或诊断质量实验。每call模拟10单位仅用于账本检查，不作为真实token成本。
+
+恢复步骤结果（模型步骤数 / 工具查询数）
+过期位置                 parallel selective   telemetry_first selective   restart（两模式）
+telemetry_evidence       1 / 1                2 / 2                       3 / 4
+configuration_evidence   1 / 1                1 / 1                       3 / 4
+initial                  3 / 4                3 / 4                       3 / 4
+每个条件共同初始阶段为3模型步骤、4工具查询，表中仅恢复增量。
+
+原因
+parallel遥测证据过期：原telemetry_plan只读initial，仍有效；重新执行其查询，刷新telemetry_evidence，再调用diagnosis即可。configuration分支完整保留。
+telemetry_first遥测证据过期：configuration_plan消费过该证据，连同configuration_evidence和diagnosis均失效。除了重取遥测查询，还要重新规划配置、执行配置查询、诊断。因此比parallel多1模型步骤与1工具查询。
+configuration_evidence单独过期：两模式configuration_plan仍有效，重放该计划的查询后重新诊断；额外的遥测→配置依赖不扩大这次失效范围。
+initial过期：两个planner及其证据和diagnosis全部失效，选择性恢复没有可保留分支，与restart相同。
+restart保留源与版本计数，重做两个planner和诊断，重新执行4查询；未删除历史消耗以获得额外工具额度。
+
+检查
+预先列出每种过期的确切失效集合，检查实际集合一致，而非用实现输出自证。每个重做artifact版本恰加1；保留artifact的整个内容与版本完全相同。telemetry_first更新后的configuration_plan读取的是最新telemetry_evidence版本。
+budget.spent、settlement总额、实际假后端调用数×10三者一致；无未结算预留或残余失效结果。累积工具查询未超24。测试哨兵禁止CodexProvider真实调用。
+
+对系统设计的影响
+上一轮真实单案例证明了先看日志可能补齐配置采集；本轮说明这条信息依赖同时扩大遥测变动时的恢复范围。不能只以初次诊断更省调用作为全局切换依据。
+保留parallel为默认，telemetry_first作为实验选项。更适合先在症状不明确、必须由日志定位依赖服务的工作流中研究；遥测频繁变化时，应同时评估重规划频率与首次诊断质量。此处是待验证设计判断，不是自动路由规则或已经证明的生产收益。
+不要将假后端模拟10单位与上一轮真实tokens相加，或据此计算回本次数；实际每个planner上下文长度不同，必须再做真实测量。
+
+下一阶段
+在预登记开发条件中比较相同预算下的证据交接、污染范围与恢复，再根据质量/成本/等待共同决定是否值得复验；暂不追加真实模型调用或解锁final。
+课程层面仍缺完整E5跨条件对照、学习自然提案/有效性、最终统计与报告。本次完成的是新依赖结构的工程恢复验收。
+
+记录
+代码cad8f32，入口scripts/run_collection_recovery.py，原始runs/collection-recovery-v2，可版本化collection-recovery-results.json。
+v1在首次序列化时因citation集合不可JSON编码失败，未产生完整结果；已修复，失败目录保留，0真实调用。v2全12条件输出成功。
+无后台任务、无外部提交，Phase1材料与冻结真实实验未改。

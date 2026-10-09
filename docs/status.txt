@@ -1,3 +1,7 @@
+最新进展：证据交接恢复代价12条件完成 — 2026-10-09
+受控过期矩阵表明：telemetry失效时parallel selective1模型步骤/1工具，telemetry_first2/2；配置失效均1/1，initial失效均3/4，与restart相同。161测试通过，0真实模型调用，默认parallel不变。
+详情collection-recovery.txt/results.json；下一步预登记跨条件质量—恢复代价比较，避免仅按首次诊断收益全局切换。final8锁定，无后台任务。
+
 最新进展：证据交接开发对照完成 — 2026-10-09
 10calls/202276tokens。parallel单轮uncertain；telemetry-first单轮3calls/63669、parallel双轮4calls/81812均native+语义通过。新流程原文交接与失效依赖测试通过，160测试。过程覆盖EOC不同，单例不能外推；parallel仍为默认。
 详情evidence-coverage.txt及results/CSV；下一步测新依赖结构的恢复范围代价。无后台任务，final8锁定。

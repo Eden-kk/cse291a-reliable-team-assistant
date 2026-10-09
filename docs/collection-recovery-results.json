@@ -1,0 +1,265 @@
+{
+  "manifest": {
+    "code_commit": "cad8f32006b60292fa8580610ce6250407fbf19c",
+    "dataset_commit": "ea05dafbc87b5985df8721622d63d4229c2b4224",
+    "case": "boutique/service/1",
+    "real_model_calls": 0,
+    "backend": "controlled",
+    "intervention": "artifact expiry, unchanged snapshot; no fabricated fault evidence"
+  },
+  "conditions": [
+    {
+      "mode": "parallel",
+      "expired": "telemetry_evidence",
+      "recovery": "selective",
+      "invalidated_by_expiry": [
+        "diagnosis_0",
+        "telemetry_evidence"
+      ],
+      "prefix_calls": 3,
+      "recovery_calls": 1,
+      "recovery_call_steps": [
+        "diagnosis_0"
+      ],
+      "prefix_tools": 4,
+      "recovery_tools": 1,
+      "simulated_recovery_tokens": 10,
+      "kind": "controlled expiry on unchanged snapshot; predetermined queries and simulated usage"
+    },
+    {
+      "mode": "parallel",
+      "expired": "telemetry_evidence",
+      "recovery": "restart",
+      "invalidated_by_expiry": [
+        "diagnosis_0",
+        "telemetry_evidence"
+      ],
+      "prefix_calls": 3,
+      "recovery_calls": 3,
+      "recovery_call_steps": [
+        "configuration_plan",
+        "telemetry_plan",
+        "diagnosis_0"
+      ],
+      "prefix_tools": 4,
+      "recovery_tools": 4,
+      "simulated_recovery_tokens": 30,
+      "kind": "controlled expiry on unchanged snapshot; predetermined queries and simulated usage"
+    },
+    {
+      "mode": "parallel",
+      "expired": "configuration_evidence",
+      "recovery": "selective",
+      "invalidated_by_expiry": [
+        "configuration_evidence",
+        "diagnosis_0"
+      ],
+      "prefix_calls": 3,
+      "recovery_calls": 1,
+      "recovery_call_steps": [
+        "diagnosis_0"
+      ],
+      "prefix_tools": 4,
+      "recovery_tools": 1,
+      "simulated_recovery_tokens": 10,
+      "kind": "controlled expiry on unchanged snapshot; predetermined queries and simulated usage"
+    },
+    {
+      "mode": "parallel",
+      "expired": "configuration_evidence",
+      "recovery": "restart",
+      "invalidated_by_expiry": [
+        "configuration_evidence",
+        "diagnosis_0"
+      ],
+      "prefix_calls": 3,
+      "recovery_calls": 3,
+      "recovery_call_steps": [
+        "configuration_plan",
+        "telemetry_plan",
+        "diagnosis_0"
+      ],
+      "prefix_tools": 4,
+      "recovery_tools": 4,
+      "simulated_recovery_tokens": 30,
+      "kind": "controlled expiry on unchanged snapshot; predetermined queries and simulated usage"
+    },
+    {
+      "mode": "parallel",
+      "expired": "initial",
+      "recovery": "selective",
+      "invalidated_by_expiry": [
+        "configuration_evidence",
+        "configuration_plan",
+        "diagnosis_0",
+        "initial",
+        "telemetry_evidence",
+        "telemetry_plan"
+      ],
+      "prefix_calls": 3,
+      "recovery_calls": 3,
+      "recovery_call_steps": [
+        "configuration_plan",
+        "telemetry_plan",
+        "diagnosis_0"
+      ],
+      "prefix_tools": 4,
+      "recovery_tools": 4,
+      "simulated_recovery_tokens": 30,
+      "kind": "controlled expiry on unchanged snapshot; predetermined queries and simulated usage"
+    },
+    {
+      "mode": "parallel",
+      "expired": "initial",
+      "recovery": "restart",
+      "invalidated_by_expiry": [
+        "configuration_evidence",
+        "configuration_plan",
+        "diagnosis_0",
+        "initial",
+        "telemetry_evidence",
+        "telemetry_plan"
+      ],
+      "prefix_calls": 3,
+      "recovery_calls": 3,
+      "recovery_call_steps": [
+        "configuration_plan",
+        "telemetry_plan",
+        "diagnosis_0"
+      ],
+      "prefix_tools": 4,
+      "recovery_tools": 4,
+      "simulated_recovery_tokens": 30,
+      "kind": "controlled expiry on unchanged snapshot; predetermined queries and simulated usage"
+    },
+    {
+      "mode": "telemetry_first",
+      "expired": "telemetry_evidence",
+      "recovery": "selective",
+      "invalidated_by_expiry": [
+        "configuration_evidence",
+        "configuration_plan",
+        "diagnosis_0",
+        "telemetry_evidence"
+      ],
+      "prefix_calls": 3,
+      "recovery_calls": 2,
+      "recovery_call_steps": [
+        "configuration_plan",
+        "diagnosis_0"
+      ],
+      "prefix_tools": 4,
+      "recovery_tools": 2,
+      "simulated_recovery_tokens": 20,
+      "kind": "controlled expiry on unchanged snapshot; predetermined queries and simulated usage"
+    },
+    {
+      "mode": "telemetry_first",
+      "expired": "telemetry_evidence",
+      "recovery": "restart",
+      "invalidated_by_expiry": [
+        "configuration_evidence",
+        "configuration_plan",
+        "diagnosis_0",
+        "telemetry_evidence"
+      ],
+      "prefix_calls": 3,
+      "recovery_calls": 3,
+      "recovery_call_steps": [
+        "telemetry_plan",
+        "configuration_plan",
+        "diagnosis_0"
+      ],
+      "prefix_tools": 4,
+      "recovery_tools": 4,
+      "simulated_recovery_tokens": 30,
+      "kind": "controlled expiry on unchanged snapshot; predetermined queries and simulated usage"
+    },
+    {
+      "mode": "telemetry_first",
+      "expired": "configuration_evidence",
+      "recovery": "selective",
+      "invalidated_by_expiry": [
+        "configuration_evidence",
+        "diagnosis_0"
+      ],
+      "prefix_calls": 3,
+      "recovery_calls": 1,
+      "recovery_call_steps": [
+        "diagnosis_0"
+      ],
+      "prefix_tools": 4,
+      "recovery_tools": 1,
+      "simulated_recovery_tokens": 10,
+      "kind": "controlled expiry on unchanged snapshot; predetermined queries and simulated usage"
+    },
+    {
+      "mode": "telemetry_first",
+      "expired": "configuration_evidence",
+      "recovery": "restart",
+      "invalidated_by_expiry": [
+        "configuration_evidence",
+        "diagnosis_0"
+      ],
+      "prefix_calls": 3,
+      "recovery_calls": 3,
+      "recovery_call_steps": [
+        "telemetry_plan",
+        "configuration_plan",
+        "diagnosis_0"
+      ],
+      "prefix_tools": 4,
+      "recovery_tools": 4,
+      "simulated_recovery_tokens": 30,
+      "kind": "controlled expiry on unchanged snapshot; predetermined queries and simulated usage"
+    },
+    {
+      "mode": "telemetry_first",
+      "expired": "initial",
+      "recovery": "selective",
+      "invalidated_by_expiry": [
+        "configuration_evidence",
+        "configuration_plan",
+        "diagnosis_0",
+        "initial",
+        "telemetry_evidence",
+        "telemetry_plan"
+      ],
+      "prefix_calls": 3,
+      "recovery_calls": 3,
+      "recovery_call_steps": [
+        "telemetry_plan",
+        "configuration_plan",
+        "diagnosis_0"
+      ],
+      "prefix_tools": 4,
+      "recovery_tools": 4,
+      "simulated_recovery_tokens": 30,
+      "kind": "controlled expiry on unchanged snapshot; predetermined queries and simulated usage"
+    },
+    {
+      "mode": "telemetry_first",
+      "expired": "initial",
+      "recovery": "restart",
+      "invalidated_by_expiry": [
+        "configuration_evidence",
+        "configuration_plan",
+        "diagnosis_0",
+        "initial",
+        "telemetry_evidence",
+        "telemetry_plan"
+      ],
+      "prefix_calls": 3,
+      "recovery_calls": 3,
+      "recovery_call_steps": [
+        "telemetry_plan",
+        "configuration_plan",
+        "diagnosis_0"
+      ],
+      "prefix_tools": 4,
+      "recovery_tools": 4,
+      "simulated_recovery_tokens": 30,
+      "kind": "controlled expiry on unchanged snapshot; predetermined queries and simulated usage"
+    }
+  ]
+}
