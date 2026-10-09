@@ -88,9 +88,10 @@ def run(protocol):
                               'kind': kind, 'arrival': arrival,
                               'deadline': arrival + protocol[kind + '_slo_seconds'],
                               'dependencies': [name + ':' + d for d in original['dependencies']]})
-        result = replay(nodes, 'fair' if policy == 'fair-reserve' else policy, budget,
+        result = replay(nodes, 'fair' if policy in ('fair-reserve', 'fair-admit-one') else policy, budget,
                         initial_spent=prefix, initial_service={}, concurrency=2,
-                        reserve_foreground=policy == 'fair-reserve')
+                        reserve_foreground=policy in ('fair-reserve', 'fair-admit-one'),
+                        max_active_responses=1 if policy == 'fair-admit-one' else None)
         for name, group in result['groups'].items():
             arrival = next(n['arrival'] for n in nodes if n['group'] == name)
             events = [e for e in result['events'] if e['group'] == name]

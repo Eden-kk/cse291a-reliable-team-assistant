@@ -1,3 +1,7 @@
+最新进展：调查接纳机制 — 2026-10-09
+已实现FIFO完整workflow接纳及取消安全的名额释放；异步Dispatcher假provider集成通过，尚未live接入。64条件固定回放显示完成机会与队首阻塞的取舍；127测试全过。
+详情：phase2-admission.txt及同名replay结果。下一步真实三群小批验证；无后台任务，final8锁定。
+
 最新进展：异质事故固定回放 — 2026-10-09
 36条件/三个已见案例，0新增模型调用。预留可将完成机会从恢复转给前台；三群200k存在预算不足，不能承诺全完成。115项测试全部通过。
 详情：phase2-heterogeneous-replay.txt、同名CSV及-results.json。下一步completion-aware admission，再做统一代码的真实三群验证；final8继续锁定。无后台实验。

@@ -1,0 +1,30 @@
+Phase2：完整调查接纳机制 — 2026-10-09
+
+实现
+WorkflowAdmission异步组件按实际到达FIFO接纳完整response workflow，默认只允许1个活跃调查；群内planner仍可并行。把async with gate.workflow(group)放在dispatcher.response_workflow注册外层，只有被接纳的调查占用前台预留。异常、取消、正常结束都会释放名额；pending取消不发模型请求。名额绑定具体future身份，避免取消的旧同名任务误释放新任务。
+该组件已用真实异步Dispatcher+假provider验证，尚未接入真实模型实验runner。不能称为已上线或已实测的生产能力。
+
+回放
+64个条件，含两种前台顺序、0/5秒间隔、200k/360k共享额度及四策略。第四策略fair-admit-one仅允许1个活跃前台，保留原fair和预留规则；不读取未来tokens/耗时决定接纳。
+前三策略原有36条件的派发事件、tokens和拒绝节点完全一致。新增顺序敏感性公开保留，不按结果选择到达顺序。
+127项测试全部通过，无跳过。0次新模型调用。Phase1包和final8未变。
+
+结果（固定trace模拟秒数，不是真实新增API时延）
+1. runtime先到、三群突发、200k：runtime完成40.69→18.62秒；service与恢复仍未完成。半途调查消耗仍31991tokens，没有节省收益。
+2. runtime先到、三群突发、360k：runtime32.40→18.62；service51.23→52.86；恢复33.03→23.11。后到群延迟是明确代价。
+3. service先到、三群突发、200k：fair-reserve三个群均未完成，前台半途消耗88639tokens；admit-one先完成service（34.25秒），runtime与恢复未完成。未完成前台新增消耗降至0，但仍支付82488tokens完成service以及59318tokens恢复历史前缀，不能声称总成本为0。
+4. service先到、三群突发、360k：service44.01→34.25；runtime40.25→52.86，体现FIFO队首阻塞。
+5. 两前台错峰且预算200k时，并非所有方向都有收益。接纳上限不等于全DAG预算预留，已接纳任务仍可能在中途无法承担下一次60000token预留。
+
+描述性汇总
+每策略16个工作负载条件、40个群位置：fair-reserve完成30/40，admit-one31/40；未完成DAG的本窗口已执行tokens累计265598→160860。两数是重复trace配置汇总，非独立样本完成率估计、非真实累计支出、非统计显著收益。
+若汇总成本，必须另外计入恢复历史前缀，不能把上述“本窗口未完成DAG新增tokens”当作全部浪费。
+
+边界与后续
+先保留limit=1作为可选策略，不替换默认调度。没有证明持续高负载下公平或避免饥饿；未做deadline抢占、全工作流成本预测或生产负载实验。
+回放知道录制DAG何时结束，真实运行通过工作流上下文结束释放名额；两者不同预留fallback及5-call上界仍需live复核。
+队列等待由原始arrival起算；未接纳任务报告截至终止时的censored等待，不能只统计成功者。已派发调用等待仍只覆盖已派发调用。
+下一步：把WorkflowAdmission用于真实三群runner，固定同一代码/prompt和到达顺序，对比reserve/admit-one两策略；先小批验证生命周期、质量与账本，再增加重复。不以本轮更快结果筛选事故。
+来源：configs/phase2/admission-replay-v1.json；phase2-admission-replay-results.json和CSV。
+复现：.venv/bin/python scripts/replay_heterogeneous.py --protocol configs/phase2/admission-replay-v1.json --output <新JSON路径>
+当前无后台任务，无新AWS或付费API资源。
