@@ -1,0 +1,4 @@
+arm,calls,tokens,seconds,status,JRA,ECR,EOC
+parallel-one,3,56795,23.54483270800847,uncertain,0.0,0.0,0.3333333333333333
+telemetry-first-one,3,63669,25.59060095800669,diagnosed,1.0,1.0,0.3333333333333333
+parallel-two,4,81812,32.4966793749918,diagnosed,1.0,1.0,1.0

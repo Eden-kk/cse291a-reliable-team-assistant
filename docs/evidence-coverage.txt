@@ -1,0 +1,31 @@
+开发集证据采集覆盖对照 — 2026-10-09
+
+发现与改动
+此前配置与遥测specialist并行，只共同看到initial pod/alert。日志随后发现cartservice/Redis失败，但配置planner已经选择了通用Service/endpoints查询，关键环境变量没有进入单轮诊断。
+新增可选collection_mode=telemetry_first：先运行遥测planner及只读查询，把原始telemetry_evidence作为配置planner的显式输入；不传同事猜测、gold或既定故障服务名。Runtime记录版本依赖，遥测失效会沿配置plan→配置evidence→诊断传播。parallel仍是默认值，未启用学习候选。
+
+设计
+c7a598d执行，configs/phase2/evidence-coverage-v1.json；固定已见development service/1，顺序parallel-one→telemetry-first-one→parallel-two。三组空policy、相同模型gpt-6-astra/low、同一快照、max_tools24、每臂logical240000。前两组最多3call，后一组最多4call；总最大10call×60000=600000预留。失败与不确定均保留，未重跑。
+这是一个针对已知开发失败设计的架构对照，不是独立泛化验证；没有用之前验证集或final8训练它。
+
+结果
+parallel-one：3calls，56795tokens，23.545秒，uncertain，JRA/ECR0，主成功失败。
+telemetry-first-one：3calls，63669tokens，25.591秒，diagnosed，JRA/ECR1、合同/预算通过。
+parallel-two：4calls，81812tokens，32.497秒，diagnosed，JRA/ECR1、合同/预算通过。
+总10calls/202276tokens，逐调用与物理settlement对账，未发生未知用量/provider错误/预算halt。复核与编排成本未完整计量，不报告美元净收益。
+
+证据差异
+parallel-one没有cartservice YAML/live环境变量，也没有Redis连通测量，保持uncertain有依据；23.545秒不是成功诊断延迟。
+telemetry-first配置planner实际消费日志中的错误Redis目标，选择cartservice YAML、pod Describe及Service列表。前两者确认REDIS_ADDR=redis-cart-invalid:6379，Service给出redis-cart:6379，运行时异常关联错误地址。这组未做Redis连通测试，答案也没有宣称正确地址连通。
+parallel-two通过补采cartservice YAML和Redis连通测试确认环境变量字段与可达的正确目标。它的native EOC=1；telemetry-first EOC=1/3，说明过程覆盖指标不同，不能只看成功率就说信息完全等价。
+原生标签仅事后评分，语义审核检查引文确实在最终模型请求中。参考各臂semantic-audit.json与可版本化results。
+
+解释
+在这个案例中，信息先后顺序让相同3call数量获得关键配置。额外输入令telemetry-first比parallel-one多6874tokens且慢约2.05秒，但取得有证据支持的诊断。
+与同样成功的parallel-two相比，telemetry-first少18143tokens（约22.2%）和一次call，本轮慢串行阶段后总耗时仍少约6.91秒。这是单次描述性结果，不是普遍收益或统计显著性。
+如果配置/遥测可独立调查，串行化可能只增加等待；如果遥测有错误或被撤回，会扩大失效闭包和恢复成本。应在其他预定开发案例、不同污染范围下验证后再考虑默认策略，不能直接全局替换parallel。
+
+验证与后续
+160项测试通过，新增真实snapshot+假provider测试保证遥测原文进入配置请求、依赖版本记录正确、失效传递到下游；哨兵禁止测试调用真实provider。
+原始runs/evidence-coverage-v1；入口scripts/run_evidence_coverage.py；摘要evidence-coverage-results.json/.csv。无后台任务、无外部写入。
+下一步将此可选依赖结构接入受控恢复矩阵，测增加依赖对选择性恢复范围的影响，再决定是否值得做更多真实跨案例复验。不要先把parallel默认切换或修改已冻结结果。课程E5完整消融、学习自然提案/效果、最终报告仍未完成。

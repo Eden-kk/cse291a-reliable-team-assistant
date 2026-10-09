@@ -1,0 +1,91 @@
+{
+  "manifest": {
+    "case": "boutique/service/1",
+    "arms": [
+      {
+        "name": "parallel-one",
+        "collection_mode": "parallel",
+        "diagnosis_rounds": 1
+      },
+      {
+        "name": "telemetry-first-one",
+        "collection_mode": "telemetry_first",
+        "diagnosis_rounds": 1
+      },
+      {
+        "name": "parallel-two",
+        "collection_mode": "parallel",
+        "diagnosis_rounds": 2
+      }
+    ],
+    "physical_token_cap": 600000,
+    "logical_token_cap_per_arm": 240000,
+    "call_reservation": 60000,
+    "max_tools": 24,
+    "purpose": "Seen-development comparison of evidence handoff versus extra diagnosis round",
+    "stop": "No retries; uncertainty and failures retained; no final-set access",
+    "limitations": "Single case and fixed order; serial collection can increase latency; not a generalization result",
+    "code_commit": "c7a598d75dbb4e5b35a30bf6572c55ec2e4e7871",
+    "dirty": false,
+    "dataset_commit": "ea05dafbc87b5985df8721622d63d4229c2b4224",
+    "split": "development_seen",
+    "model": "gpt-6-astra",
+    "reasoning_effort": "low",
+    "context_window": 131072
+  },
+  "arms": [
+    {
+      "arm": "parallel-one",
+      "calls": 3,
+      "tokens": 56795,
+      "seconds": 23.54483270800847,
+      "status": "uncertain",
+      "JRA": 0.0,
+      "ECR": 0.0,
+      "EOC": 0.3333333333333333,
+      "semantic_audit": {
+        "supported": true,
+        "reviewer": "independent read-only learning_protocol_review agent",
+        "rationale": "Qualified uncertainty only. Config planner saw initial observations, no cartservice YAML/live environment or Redis connectivity. Runtime wrong destination does not establish environment-variable origin. Not successful diagnosis.",
+        "evidence_sha256": "2bbb5dee83515e99b57d76e6b3377d309dfc095b0afadcf0e78674cd9a7745dd"
+      }
+    },
+    {
+      "arm": "telemetry-first-one",
+      "calls": 3,
+      "tokens": 63669,
+      "seconds": 25.59060095800669,
+      "status": "diagnosed",
+      "JRA": 1.0,
+      "ECR": 1.0,
+      "EOC": 0.3333333333333333,
+      "semantic_audit": {
+        "supported": true,
+        "reviewer": "independent read-only learning_protocol_review agent",
+        "rationale": "Configuration planner consumed raw telemetry containing failing Redis address, then acquired cartservice YAML, live pod environment and Services. Two configuration sources show invalid REDIS_ADDR, intended Service/dependency and errors support diagnosis. No connectivity query or claim.",
+        "evidence_sha256": "b1de83f6f8bc413d9686818166c1c33bd4b185ed63fedbb2966076a5ad995917"
+      }
+    },
+    {
+      "arm": "parallel-two",
+      "calls": 4,
+      "tokens": 81812,
+      "seconds": 32.4966793749918,
+      "status": "diagnosed",
+      "JRA": 1.0,
+      "ECR": 1.0,
+      "EOC": 1.0,
+      "semantic_audit": {
+        "supported": true,
+        "reviewer": "independent read-only learning_protocol_review agent",
+        "rationale": "Coordinator supplementary round acquired cartservice YAML and successful Redis connectivity. Invalid REDIS_ADDR and intended reachable address support mismatch; separate DNS failures remain unexplained.",
+        "evidence_sha256": "236244dcfb53893bccf1b107d2384bc58b8f70afe465702e10d6558a4d1d849b"
+      }
+    }
+  ],
+  "model_calls": 10,
+  "physical_tokens": 202276,
+  "accounting_reconciled": true,
+  "independent_review_orchestration_cost": null,
+  "default_changed": false
+}

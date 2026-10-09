@@ -1,3 +1,7 @@
+最新进展：证据交接开发对照完成 — 2026-10-09
+10calls/202276tokens。parallel单轮uncertain；telemetry-first单轮3calls/63669、parallel双轮4calls/81812均native+语义通过。新流程原文交接与失效依赖测试通过，160测试。过程覆盖EOC不同，单例不能外推；parallel仍为默认。
+详情evidence-coverage.txt及results/CSV；下一步测新依赖结构的恢复范围代价。无后台任务，final8锁定。
+
 最新进展：E5同前缀恢复消融完成 — 2026-10-09
 13calls/236425tokens。恢复两组native+语义通过：restart3calls/51758/25.28秒，selective1call/19727/17.02秒；两个新群均uncertain，各窗口1/2成功，不能宣称整体质量提升。
 159测试通过，详情e5-recovery-pair.txt及results/CSV。下一步开发集诊断证据覆盖与轮数对照，再做独立guard压力消融；无后台任务，final8锁定，学习未晋升。
