@@ -9,6 +9,7 @@ import sys
 import time
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'src'))
 from team_assistant.cloudops import Snapshot
+from team_assistant.experiment_budget import require_complete_batch
 from team_assistant.dispatch import Budget,Dispatcher
 from team_assistant.investigation import Investigation
 from team_assistant.memory import PolicyMemory,digest
@@ -44,6 +45,9 @@ async def main(args):
     if subprocess.check_output(['git','-C',str(ROOT),'status','--porcelain'],text=True).strip():
         raise ValueError('Commit before validation')
     frozen,registry=validate_freeze(BUNDLE,ROOT/'configs/splits.json',ROOT/'configs/learning-gate.json')
+    require_complete_batch(pairs=len(frozen['cases']), repetitions=1, reservation=60000,
+                           logical_limit=frozen['logical_token_limit_per_run'],
+                           physical_limit=frozen['planned_physical_token_cap'])
     for row in frozen['cases']:
         if not (args.vendor/'benchmark'/row['case']/'metadata.json').is_file():
             raise ValueError('Missing predeclared validation snapshot')

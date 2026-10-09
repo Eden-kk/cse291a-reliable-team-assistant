@@ -1,3 +1,7 @@
+最新进展：证据缺口定位与整批预算预检 — 2026-10-09
+学习performance/25主要缺少事故时机制测量，遗漏配置查询不能解决；保留uncertain。新增完整配对预算预检，原900k计划首次调用前即拒绝（当前调用图覆盖需3.6m预留，未授权/增加预算）。151测试通过，0新增模型调用。
+详情learning-evidence-gap.txt及learning-budget-preflight.json。默认memory不变、final8锁定、无后台任务。下一步E5集成失败路径或经预先预算审查的剩余learning采集。
+
 最新进展：学习候选验证未晋升 — 2026-10-09
 12调查：9诊断成功、2uncertain、1预算预留失败；5完整配对。40calls/806838tokens，已知采集+生成+验证1082455tokens。两组Service局部节省30.32%，不能替代完整验收；bundle不启用，final8锁定。145测试通过。
 详情phase2-learning-validation.txt及同名results/CSV。无后台任务；下一步在learning资料分析performance证据缺口，预先修订新批次完整配对准入，至少3自然提案仍未完成。

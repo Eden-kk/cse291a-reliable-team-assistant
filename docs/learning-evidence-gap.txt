@@ -1,0 +1,42 @@
+Learning案例performance/25证据缺口 — 2026-10-09
+
+范围
+只复核runs/learning-sources-v2/episode-3、同一learning案例的允许工具缓存和工具实现/参数；没有读取gold/process-label、validation或final案例，没有新增推理。已冻结bundle和原评分不变。
+
+结论
+主要是允许工具接口缺少根因机制测量，导致合理拒答。存在遗漏的排除性查询，但已检查的替代查询不能提供缺失的因果证据。不能把这一案例归为已证明的“模型推理失败”，也不能断言整个数据集不可用。
+
+已经知道什么
+productcatalogservice p90从2.50ms升至1158.68ms，recommendationservice同时变慢，依赖关系允许传播。TCP成功连接只证明可达；packet-rate/RPS降低不是丢包率；200m限制不是CPU使用或节流测量。最终答案明确将网络延迟标签视作未证实假设。
+
+缺少什么
+GetAlerts在该例仅固定摘要，没有事故时段RTT/重传/丢包、CPU使用/节流或执行trace。允许接口没有时间序列/trace查询。
+productcatalogservice五条启动日志时间11:35:56，含Tracing disabled和Profiling disabled；告警时段11:38:49–11:40:44。recommendationservice的recent响应从11:41:43开始，晚于事故，且10000字符处截断。frontend recent响应约11:41:45后成功请求也不能证明事故时健康。
+GetRecentLogs没有时间范围/分页参数，底层取每流最后50条；重复调用不会取回事故区间。截断和时间不对齐是可观测性约束，不能把“未显示错误”当无故障证据。
+11个服务的GetErrorLogs缓存均为空。
+
+遗漏的查询及价值
+DescribeResource(productcatalogservice Service)：selector app=productcatalogservice、port/targetPort3550、endpoint172.20.1.18:3550。
+GetResources(endpoints)：相关两个服务都有backend。
+CheckNodeServiceStatus(worker-01)：kubelet/containerd/kube-proxy active。
+NetworkPolicy/ResourceQuota列表为空。
+这些可加强配置/组件故障排除，但不能确认网络延迟、CPU竞争或代码执行延迟。它们不构成追加模型重跑的充分理由。
+
+协议影响
+本例用了12个查询，无工具错误；并非耗尽max_tools=24。当前调查结构最多2个planner + 3个diagnosis模型轮次。最终按证据不足返回uncertain，仍按既定joint success记失败；不得改判正确或放松证据标准。
+未来可另报supported abstention，但作为辅助安全指标，不能替代主成功率，也不能用未知标签声称拒答一定必要。
+
+下一轮实施顺序
+1. 优先在剩余learning案例按预定顺序采集，不根据gold挑容易案例。至少3自然提案要求仍未完成，当前只2条。新采集先做budget preflight，不自动加额度。
+2. 采集前记录接口可观测性：能否查询事故时段、是否截断、是否提供机制测量。缺失标注unknown，不凭工具名判断有测量。
+3. 若需要扩展工具，先确认同一公开数据源确实含事故时原始测量及许可，新增工具与原接口作为不同实验条件；不能把gold/root-cause标注当观测、生成虚构telemetry或将人工补充混入原benchmark。
+4. 暂不训练memory去猜测缺失机制；可在后续开发验证“识别证据不足、减少重复不可回答查询”的独立假设。保留质量/拒答与成本双指标，不能复用当前validation作为未见集。
+5. 当前可继续推进不消耗推理的E5集成与失败路径测试；self-evolve默认未晋升路径也应能被系统正确处理。
+
+预算预检改动
+完整6配对×2臂×每臂最多5call×60000预留=3600000，是覆盖已知调用图的保守预留要求，不是预计实际花费、硬provider输出上限或新额度授权。
+原900000计划现在在读取snapshot、创建run输出或调用provider之前拒绝。若改变调用图，必须同步更新上界及测试。未知usage/超预留仍停止后续派发，任何预检都不能保证诊断成功。
+未提高900000冻结预算、未更改规则、未重跑旧批次。历史执行commit57975cc保留其行为；当前runner加了保护，复现旧结果应引用历史commit并明确旧预算设计缺陷。
+
+验证与成果
+151项测试通过，包括精确预算边界、重复次数、无效数值、首次调用前拒绝的runner集成测试。原始诊断/失败记录未覆盖。无模型调用、无后台实验。

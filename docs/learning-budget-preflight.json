@@ -1,0 +1,21 @@
+{
+  "previous_plan_check": {
+    "admitted": false,
+    "reasons": [
+      "physical_limit_cannot_cover_complete_batch"
+    ],
+    "pairs": 6,
+    "repetitions": 1,
+    "calls_per_arm_bound": 5,
+    "reservation_per_call": 60000,
+    "required_per_arm": 300000,
+    "required_per_pair": 600000,
+    "required_batch": 3600000,
+    "physical_limit": 900000,
+    "logical_limit": 360000,
+    "scope": "Reservation coverage only; unknown usage or per-call overrun still halts. Does not guarantee successful diagnosis or authorize spending."
+  },
+  "new_budget_authorized": false,
+  "live_calls": 0,
+  "decision": "Reject before inference; do not change archived candidate or budget"
+}

@@ -1,3 +1,6 @@
+import asyncio
+from types import SimpleNamespace
+from unittest.mock import patch
 import importlib.util
 import json
 from pathlib import Path
@@ -33,3 +36,16 @@ class ValidationFreezeTests(unittest.TestCase):
             data=json.loads(freeze.read_text());data['cases'][0]['order']=['baseline','baseline'];freeze.write_text(json.dumps(data))
             with self.assertRaisesRegex(ValueError,'both policies'):
                 MODULE.validate_freeze(root/'bundle',MODULE.ROOT/'configs/splits.json',MODULE.ROOT/'configs/learning-gate.json')
+
+    def test_underfunded_batch_stops_before_snapshot_or_provider(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / 'not-created'
+            args = SimpleNamespace(output=output, vendor=Path('/unused'))
+            with patch.object(MODULE.subprocess, 'check_output', return_value=''), \
+                 patch.object(MODULE, 'Snapshot', side_effect=AssertionError('Snapshot must not be opened')) as snapshot, \
+                 patch.object(MODULE, 'provider', side_effect=AssertionError('No model calls')) as provider:
+                with self.assertRaisesRegex(ValueError, 'Batch budget preflight rejected'):
+                    asyncio.run(MODULE.main(args))
+                snapshot.assert_not_called()
+                provider.assert_not_called()
+            self.assertFalse(output.exists())
