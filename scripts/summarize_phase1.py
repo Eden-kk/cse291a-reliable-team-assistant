@@ -1,4 +1,4 @@
-"""Aggregate the frozen Phase 1 matrix, retaining non-injection and failure outcomes."""
+"""Aggregate fixed conditions; retain partial failures, retries and unknown-usage charges."""
 import argparse
 import json
 from pathlib import Path
@@ -11,63 +11,83 @@ def read(path):
     return json.loads(path.read_text())
 
 
-def tool_count(result):
+def optional(path):
+    return read(path) if path.exists() else {}
+
+
+def records(directory):
+    return [read(p) for p in directory.glob('**/calls/*.json') if p.stem.isdigit()]
+
+
+def tools(result):
     return len(result['observation_archive']) + len(result.get('tool_errors', []))
 
 
 def summarize(root):
     rows, windows = [], []
     for name in NAMES:
-        directory = root / name
-        if not (directory / 'summary.json').exists():
-            windows.append({'name': name, 'state': 'failed_or_missing', 'failure': read(directory / 'failure.json') if (directory / 'failure.json').exists() else None})
-            continue
-        summary = read(directory / 'summary.json')
-        if 'collection' not in summary:
-            collection_records = [read(p) for p in (directory / 'collection/calls').glob('*.json') if p.stem.isdigit()]
-            summary['collection'] = {'tokens': sum(r['tokens'] for r in collection_records), 'calls': len(collection_records)}
-        windows.append({'name': name, **summary})
-        state = read(directory / 'collection/state.json')
+        original = root / name
+        retry = root / (name + '-retry1')
+        directory = retry if (retry / 'summary.json').exists() else original
+        summary = optional(directory / 'summary.json')
+        fault = optional(directory / 'fault.json')
+        state = optional(directory / 'collection/state.json')
         collection_tools = sum(len(r['payload'].get('observations', [])) + len(r['payload'].get('tool_errors', [])) for r in state.values())
+        collection_calls = records(directory / 'collection')
+        collection_tokens = sum(r['tokens'] or 0 for r in collection_calls)
+        damaged = optional(directory / 'damaged/result.json')
+        prefix_tokens = collection_tokens + damaged.get('budget', {}).get('spent', 0)
+        win = {'name': name, 'state': summary.get('state', 'partial_provider_failure'), 'fault': fault,
+               'source': str(directory.relative_to(ROOT)), 'collection_tokens': collection_tokens,
+               'collection_calls': len(collection_calls), 'prefix_tokens': prefix_tokens,
+               'failures': [{'path': str(p.relative_to(ROOT)), 'record': read(p)} for d in (original, retry, root / (name+'-preventive-retry1')) for p in d.glob('failure.json')],
+               'invalidated': summary.get('invalidated'), 'retained_valid': summary.get('retained_valid')}
         for method in ('clean', 'damaged', 'selective', 'restart', 'always-verify'):
             path = directory / method
+            preventive_retry = root / (name + '-preventive-retry1')
+            if method == 'always-verify' and (preventive_retry / method / 'result.json').exists():
+                path = preventive_retry / method
             if not (path / 'result.json').exists():
                 continue
             result = read(path / 'result.json')
-            scores = read(path / 'scores.json')['scores'] if (path / 'scores.json').exists() else {}
+            scores = optional(path / 'scores.json').get('scores', {})
             archive = {o['id']: o for o in result['observation_archive']}
-            bad_citations = [e for e in result['answer'].get('evidence', []) if e.get('observation_id') not in archive or e.get('quote', '') not in archive[e['observation_id']]['text']]
-            prefix = summary['collection']['tokens'] if method in ('clean', 'damaged') else (summary['prefix_tokens'] if method in ('selective', 'restart') else 0)
-            tools = tool_count(result)
-            if method in ('clean', 'damaged'):
-                tools -= collection_tools
-            elif method == 'selective':
-                tools -= tool_count(read(directory / 'damaged/result.json'))
-            consumed = False
-            fault = summary['preventive_fault'] if method == 'always-verify' else summary['fault']
-            changed_ids = {r['id'] for r in fault.get('changed', [])}
-            for call in result['model_calls']:
-                for artifact in call['request'].get('inputs', {}).values():
-                    for obs in artifact.get('observations', []):
-                        if obs['id'] in changed_ids and obs['id'] in archive and obs['text'] != archive[obs['id']]['text']:
-                            consumed = True
-            rows.append({'window': name, 'category': read(ROOT / f'configs/phase1/{name}.json')['category'],
-                         'case': read(path / 'manifest.json')['case'], 'method': method,
-                         'injected': fault.get('injected', False), 'consumed_modified_text': consumed,
-                         'answer_status': result['answer'].get('status'), 'native_JRA': scores.get('JRA'),
-                         'native_ECR': scores.get('ECR'), 'contract_valid': not result['contract_errors'],
-                         'source_mismatch_citations': bad_citations,
+            bad = [e for e in result['answer'].get('evidence', []) if e.get('observation_id') not in archive or e.get('quote', '') not in archive[e['observation_id']]['text']]
+            prefix = collection_tokens if method in ('clean', 'damaged') else (prefix_tokens if method in ('selective', 'restart') else 0)
+            count = tools(result) - (collection_tools if method in ('clean', 'damaged') else (tools(damaged) if method == 'selective' else 0))
+            injection = fault
+            if method == 'always-verify':
+                parent = optional(path.parent / 'summary.json')
+                injection = parent.get('preventive_fault', parent.get('fault', {}))
+            ids = {r['id'] for r in injection.get('changed', [])}
+            consumed = any(o['id'] in ids and o['id'] in archive and o['text'] != archive[o['id']]['text']
+                           for c in result['model_calls'] for a in c['request'].get('inputs', {}).values() for o in a.get('observations', []))
+            rows.append({'window': name, 'method': method, 'source': str(path.relative_to(ROOT)),
+                         'category': read(ROOT / f'configs/phase1/{name}.json')['category'],
+                         'case': read(path / 'manifest.json')['case'], 'injected': injection.get('injected', False),
+                         'consumed_modified_text': consumed, 'answer_status': result['answer'].get('status'),
+                         'native_JRA': scores.get('JRA'), 'native_ECR': scores.get('ECR'),
+                         'contract_valid': not result['contract_errors'], 'source_mismatch_citations': bad,
                          'incremental_tokens': result['budget']['spent'], 'logical_total_tokens': prefix + result['budget']['spent'],
-                         'phase_calls': len(result['model_calls']), 'phase_tools': tools,
-                         'phase_seconds': result['phase_seconds'],
+                         'phase_calls': len(result['model_calls']), 'phase_tools': count, 'phase_seconds': result['phase_seconds'],
                          'rejected_tool_attempts': result.get('tool_errors', []),
                          'verification_cpu_seconds': sum(a['cpu_seconds'] for a in result.get('integrity_audits', [])),
                          'verification_checks': sum(a['checked_observations'] for a in result.get('integrity_audits', [])),
                          'verification_repairs': sum(len(a['repairs']) for a in result.get('integrity_audits', []))})
-    calls = [read(p) for p in root.glob('**/calls/*.json') if p.stem.isdigit()]
-    return {'scope': 'three seen incidents; four predeclared interventions; one run per arm; not final generalization',
+            key = 'preventive' if method == 'always-verify' else method
+            win[key+'_total_tokens'] = prefix + result['budget']['spent']
+        after = optional(directory / 'selective/state.json')
+        before = optional(directory / 'damaged/state.json')
+        if after and before and win['invalidated'] is None:
+            win['invalidated'] = [k for k,v in before.items() if k not in after or v['version'] != after[k]['version']]
+            win['retained_valid'] = [k for k,v in before.items() if k in after and v['version'] == after[k]['version']]
+            win['state_comparison_note'] = 'Recomputed/retained derived from saved versions; run failed later during prevention.'
+        windows.append(win)
+    calls = records(root)
+    return {'scope': 'three seen incidents; four predeclared conditions; retries and non-injection retained; not final generalization',
             'windows': windows, 'rows': rows, 'physical_calls': len(calls),
-            'physical_tokens': sum(c['tokens'] or 0 for c in calls),
+            'physical_tokens_known': sum(c['tokens'] or 0 for c in calls),
+            'physical_tokens_charged': sum(c['tokens'] if c['tokens'] is not None else 60000 for c in calls),
             'unknown_usage': sum(c['tokens'] is None for c in calls), 'provider_errors': sum(bool(c['error']) for c in calls)}
 
 
