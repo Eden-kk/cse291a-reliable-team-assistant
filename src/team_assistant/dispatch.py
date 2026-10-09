@@ -1,5 +1,6 @@
 """Non-preemptive asynchronous dispatch with reservations and actual usage settlement."""
 import asyncio
+from contextlib import contextmanager
 from dataclasses import dataclass
 import time
 
@@ -58,11 +59,15 @@ class Job:
 
 
 class Dispatcher:
-    def __init__(self, budget, concurrency=2, policy="fair", age_seconds=10, clock=time.monotonic, response_handoff_seconds=0):
+    def __init__(self, budget, concurrency=2, policy="fair", age_seconds=10, clock=time.monotonic, response_handoff_seconds=0, foreground_reservation=None):
         if concurrency < 1 or policy not in {"fair", "fifo"} or age_seconds <= 0:
             raise ValueError("Invalid dispatcher configuration")
         if not 0 <= response_handoff_seconds <= .1:
             raise ValueError("Handoff must be bounded to 100ms")
+        if foreground_reservation is not None and (type(foreground_reservation) is not int or foreground_reservation <= 0):
+            raise ValueError("Foreground reservation must be a positive integer")
+        self.foreground_reservation = foreground_reservation
+        self.foreground_workflows = {}
         self.response_handoff_seconds = response_handoff_seconds
         self.background_hold_until = 0
         self.budget = budget
@@ -77,9 +82,40 @@ class Dispatcher:
         self.events = []
         self._next_id = 0
 
+    @contextmanager
+    def response_workflow(self, group, calls):
+        """Register an arrived, bounded DAG; close its allowance on every exit path.
+
+        `calls` is the number of planned model calls, not tokens or service time.
+        The context must enclose and await its child calls, including parallel ones.
+        """
+        if self.foreground_reservation is None:
+            raise ValueError("Enable foreground_reservation before registering workflows")
+        if type(calls) is not int or calls <= 0 or group in self.foreground_workflows:
+            raise ValueError("Expected a positive call count and an inactive group")
+        self.foreground_workflows[group] = calls
+        try:
+            yield
+        finally:
+            self.foreground_workflows.pop(group, None)
+            # No queued child may outlive its owner's lifecycle. In-flight usage
+            # remains reserved and settles even when the owner was cancelled.
+            for job in list(self.pending):
+                if job.group == group and job.kind == "response":
+                    self.pending.remove(job)
+                    job.future.cancel()
+            asyncio.get_running_loop().call_soon(self._drain)
+
     async def call(self, group, kind, reservation, invoke, deadline=None):
         if kind not in {"response", "recovery", "learning"} or reservation <= 0:
             raise ValueError("Invalid job")
+        if self.foreground_reservation is not None:
+            if type(reservation) is not int or reservation != self.foreground_reservation:
+                raise ValueError("Guard requires uniform fixed call reservations")
+            if kind == "response":
+                queued = sum(j.group == group and j.kind == "response" for j in self.pending)
+                if self.foreground_workflows.get(group, 0) <= queued:
+                    raise ValueError("Response call exceeds registered workflow")
         loop = asyncio.get_running_loop()
         future = loop.create_future()
         self._next_id += 1
@@ -98,6 +134,7 @@ class Dispatcher:
                 future.cancel()
             else:
                 future.add_done_callback(lambda f: f.exception() if not f.cancelled() else None)
+            asyncio.get_running_loop().call_soon(self._drain)
             self.events.append({"event": "waiter_cancelled", "job": job.identifier})
             raise
 
@@ -128,6 +165,14 @@ class Dispatcher:
                         self.events.append({"event": "rejected", "job": job.identifier})
                     self.pending.clear()
                 return
+            if self.foreground_reservation is not None:
+                held = self.foreground_reservation * sum(n > 0 for n in self.foreground_workflows.values())
+                feasible = [j for j in feasible if j.kind == "response"
+                            or self.budget.limit - self.budget.spent - self.budget.reserved - j.reservation >= held]
+                if not feasible:
+                    # The owner is between DAG calls; its next submission or
+                    # lifecycle exit wakes dispatch without polling or a timer.
+                    return
             if self.clock() < self.background_hold_until:
                 feasible = [j for j in feasible if j.kind == "response"
                             or self.clock() - j.arrived >= self.age_seconds
@@ -137,6 +182,8 @@ class Dispatcher:
             job = self._choose(feasible)
             self.pending.remove(job)
             self.budget.reserve(job.reservation)
+            if self.foreground_reservation is not None and job.kind == "response":
+                self.foreground_workflows[job.group] -= 1
             self.running[job.identifier] = job
             self.events.append({"event": "start", "job": job.identifier, "group": job.group,
                                 "kind": job.kind, "reservation": job.reservation,
