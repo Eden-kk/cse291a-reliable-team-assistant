@@ -1,3 +1,7 @@
+最新进展：E5同前缀恢复消融完成 — 2026-10-09
+13calls/236425tokens。恢复两组native+语义通过：restart3calls/51758/25.28秒，selective1call/19727/17.02秒；两个新群均uncertain，各窗口1/2成功，不能宣称整体质量提升。
+159测试通过，详情e5-recovery-pair.txt及results/CSV。下一步开发集诊断证据覆盖与轮数对照，再做独立guard压力消融；无后台任务，final8锁定，学习未晋升。
+
 最新进展：E5真实开发smoke完成 — 2026-10-09
 8正式calls/153514tokens，恢复与新群JRA/ECR及语义审核通过。来源刷新、并发响应、本地P1→P2更正、拒绝学习候选已连接；不是错误根因修复或调度收益对照。准备测试误发3calls/51846已记录并修复provider隔离，总已知205360。
 157测试通过。详情e5-live-smoke.txt及results.json。真实完整E5消融/学习证据仍未完成；final8锁定，默认空policy，后台已结束。

@@ -1,0 +1,36 @@
+E5同前缀恢复消融 — 2026-10-09
+
+结论
+同一起点、同预算下，本次选择性恢复保留有效分支，恢复诊断以1次调用完成；全量重做用3次调用。两份恢复答案均native JRA/ECR=1，合同/预算通过且独立证据审核通过。
+两个窗口的新群答案均uncertain，按主成功指标失败。整个窗口均只1/2任务成功，不能把更低成本或更快结束等同于更好整体服务。这是一组已见开发案例、固定顺序、单次运行，只有描述性结论。
+
+冻结方案与公平性
+执行a320fce；configs/phase2/e5-recovery-pair-v1.json。共同历史prefix为runtime/1，9555→9556构造历史字段；来源更正后独立fork，顺序restart→selective，各自带全新service/1前台。
+两个分支独立runtime/memory/source revisions/执行结果/ledger，主prefix状态及source map在每个窗口后检查未改变。两组都保留相同P1账本、来源版本及之前工具消耗；restart只失效全部执行artifact，不重置额度或历史。
+空baseline policy，foreground guard均开启，新群到达时间窗口0；不比较学习或guard收益。两组及prefix均只1轮diagnosis，2planner+1diagnosis最多3call/调查。
+最大15call×60000预留=900000物理cap。每窗口logical cap540000覆盖prefix最多180000+两调查最多360000；prefix物理只发生一次、逻辑计入两组。max_tools24对恢复包含历史查询。所有失败/uncertain保留，无补跑。
+
+原始数据
+共同prefix：3calls/51734tokens；构造历史，不按当前gold打分。
+restart recovery：3calls/51758tokens，25.278秒，诊断成功。
+selective recovery：1call/19727tokens，17.023秒，诊断成功。
+restart foreground：3calls/56919tokens，26.927秒返回uncertain。
+selective foreground：3calls/56287tokens，17.107秒返回uncertain。
+restart窗口新增108677tokens，含prefix逻辑总160411。
+selective窗口新增76014tokens，含prefix逻辑总127748。
+物理13calls/236425tokens。所有usage逐call与settlements及物理总账一致，未报告未知usage/provider错误/预算halt。独立review与编排成本未完整计量，不报美元净收益。
+
+结果解释
+恢复部分少32031tokens，实际少两个planner调用；有效initial和telemetry保留。耗时少约8.26秒。其他调度/模型随机性仍可能影响延迟，单次不能做显著性或普遍优势声明。
+新群uncertain是有依据的：日志给出redis-cart-invalid:6379失败，服务/endpoint给出redis-cart:6379，但没有消费cartservice YAML中的环境变量字段，不能确认具体environment-variable root cause；无实际Redis连通测量。不能从上轮smoke补充本轮缺失证据。
+全部14处引文精确存在于对应最终请求；语义支持两个uncertain只表示拒答理由合理，绝不覆盖native0/合同失败。
+新群时间是返回不确定状态的耗时，不是达到质量标准的first-response latency。前台工作对两组均失败，所以不能把两组窗口新增成本之差当作完整业务任务收益。
+单轮限制可能构成证据补采瓶颈，但本次没有轮数配对对照，不把此前两轮smoke当因果对照；不应基于预算减少盲目宣称效率更高。
+
+发布与边界
+两个恢复分支P2均关联共同P1，历史记录保留；来源更正导致证据刷新，根因并未从错变对。所有发布为本地provisional/quality_approved=false；新群uncertain status不是成功diagnosis。没有外部消息、真实服务写入或学习候选启用。
+
+复现与下一步
+入口scripts/run_e5_recovery_pair.py；原始runs/e5-recovery-pair-v1，摘要e5-recovery-pair-results.json及.csv；需要新目录、clean commit与指定vendor。159测试通过，包括真实snapshot+假provider分支隔离、累计工具/用量及禁止真实测试调用。
+下一步优先解决新群证据采集覆盖：在开发条件预先固定诊断轮数/必要查询覆盖对照，再看质量—成本；不能把失败窗口直接用于证明调度优势。guard有/无的压力消融仍待独立预登记，不能从本轮推出。
+学习至少3自然提案与有效性、完整E5矩阵、最终复现/报告仍未完成。final8锁定，无后台实验，Phase1包不变。

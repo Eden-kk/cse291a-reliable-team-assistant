@@ -1,0 +1,167 @@
+{
+  "kind": "One paired seen-development recovery ablation; descriptive only",
+  "manifest": {
+    "study": "E5 same-prefix recovery ablation on seen development cases",
+    "recovery_case": "boutique/runtime/1",
+    "foreground_case": "boutique/service/1",
+    "order": [
+      "restart",
+      "selective"
+    ],
+    "diagnosis_rounds": 1,
+    "call_reservation": 60000,
+    "physical_token_cap": 900000,
+    "logical_window_cap": 540000,
+    "worst_case_calls": 15,
+    "concurrency": 2,
+    "max_tools_per_group_including_prefix": 24,
+    "foreground_guard": true,
+    "fault_scope": "query-fields-v2",
+    "limitations": "One fixed order, one case pair; no statistical, guard or learned-policy benefit claim",
+    "publication": "local provisional status; not quality approved or external",
+    "stop": "No retries, no replacing uncertain or failed outcomes; final set locked",
+    "foreground_arrival_seconds": 0,
+    "intervention": "Advance after common prefix; concurrent recovery and foreground begin at window origin",
+    "code_commit": "a320fce3aff11ff0f3735a3c680f18be825812b8",
+    "dirty": false,
+    "dataset_commit": "ea05dafbc87b5985df8721622d63d4229c2b4224",
+    "model": "gpt-6-astra",
+    "reasoning_effort": "low",
+    "context_window": 131072,
+    "split": "development_seen"
+  },
+  "stages": [
+    {
+      "stage": "prefix",
+      "calls": 3,
+      "tokens": 51734,
+      "answer_status": "diagnosed",
+      "JRA": null,
+      "ECR": null,
+      "contract_valid": true,
+      "semantic_audit": null
+    },
+    {
+      "stage": "restart/recovery",
+      "calls": 3,
+      "tokens": 51758,
+      "answer_status": "diagnosed",
+      "JRA": 1.0,
+      "ECR": 1.0,
+      "contract_valid": true,
+      "semantic_audit": {
+        "supported": true,
+        "reviewer": "independent read-only learning_protocol_review agent",
+        "rationale": "Observation-11-r2 configures HTTP liveness9555; observation-12-r1 records HTTP/1.x rejection; observation-10-r2 links failed probes to restarts. Container/environment/gRPC readiness ports agree; protocol mismatch supported.",
+        "evidence_sha256": "a3d8c5b8945cdf25b92c1117359d2e88d2876b59ab1dff17122215a56a072a55"
+      }
+    },
+    {
+      "stage": "selective/recovery",
+      "calls": 1,
+      "tokens": 19727,
+      "answer_status": "diagnosed",
+      "JRA": 1.0,
+      "ECR": 1.0,
+      "contract_valid": true,
+      "semantic_audit": {
+        "supported": true,
+        "reviewer": "independent read-only learning_protocol_review agent",
+        "rationale": "Refreshed description/YAML show HTTP liveness versus gRPC readiness9555. Preserved logs show HTTP/1.x rejection; events establish probe-driven restarts. Ready state supports functioning readiness.",
+        "evidence_sha256": "31b362ccf963581207c7a1ead996f728f61a205dc2aa80fa18dec1f2acd89130"
+      }
+    },
+    {
+      "stage": "restart/foreground",
+      "calls": 3,
+      "tokens": 56919,
+      "answer_status": "uncertain",
+      "JRA": 0.0,
+      "ECR": 0.0,
+      "contract_valid": false,
+      "semantic_audit": {
+        "supported": true,
+        "reviewer": "independent read-only learning_protocol_review agent",
+        "rationale": "Evidence-grounded uncertainty only. Logs show redis-cart-invalid:6379 failure, Service/endpoints show redis-cart:6379, but no consumed cartservice environment fields confirm an environment-variable mismatch. Not a successful diagnosis.",
+        "evidence_sha256": "07e4cd5bbbeda2ba618eb4392b1c0a1572b3d66ddc89f443b04211ae1735d829"
+      }
+    },
+    {
+      "stage": "selective/foreground",
+      "calls": 3,
+      "tokens": 56287,
+      "answer_status": "uncertain",
+      "JRA": 0.0,
+      "ECR": 0.0,
+      "contract_valid": false,
+      "semantic_audit": {
+        "supported": true,
+        "reviewer": "independent read-only learning_protocol_review agent",
+        "rationale": "Evidence-grounded uncertainty only. Destination discrepancy/storage failures observed; does not equate endpoint existence with connectivity, separates other DNS errors. Missing cartservice environment fields prevent definitive diagnosis.",
+        "evidence_sha256": "885ba98c298ee086c47c8bd7a82a36c2d7cba3cbbd91786a72caeb0d9f601f8a"
+      }
+    }
+  ],
+  "physical_tokens": 236425,
+  "model_calls": 13,
+  "accounting_reconciled": true,
+  "windows": {
+    "restart": {
+      "outcomes": {
+        "recovery": {
+          "state": "completed",
+          "seconds": 25.278050833003363,
+          "contract_errors": [],
+          "quality_scoring": "pending independent native and semantic review"
+        },
+        "foreground": {
+          "state": "completed",
+          "seconds": 26.92711295800109,
+          "contract_errors": [
+            "uncertain: not a successful diagnosis"
+          ],
+          "quality_scoring": "pending independent native and semantic review"
+        }
+      },
+      "physical_incremental_tokens": 108677,
+      "logical_prefix_tokens": 51734,
+      "logical_total_tokens": 160411,
+      "tool_attempts": {
+        "recovery": 14,
+        "foreground": 8
+      }
+    },
+    "selective": {
+      "outcomes": {
+        "recovery": {
+          "state": "completed",
+          "seconds": 17.022730290991603,
+          "contract_errors": [],
+          "quality_scoring": "pending independent native and semantic review"
+        },
+        "foreground": {
+          "state": "completed",
+          "seconds": 17.107315124987508,
+          "contract_errors": [
+            "uncertain: not a successful diagnosis"
+          ],
+          "quality_scoring": "pending independent native and semantic review"
+        }
+      },
+      "physical_incremental_tokens": 76014,
+      "logical_prefix_tokens": 51734,
+      "logical_total_tokens": 127748,
+      "tool_attempts": {
+        "recovery": 9,
+        "foreground": 8
+      }
+    }
+  },
+  "external_review_orchestration_cost": null,
+  "limitations": [
+    "Both foreground answers uncertain; do not claim successful response latency",
+    "Guard held constant; no scheduling advantage established",
+    "Fixed order one repetition, constructed history",
+    "Provisional local publication only; learned policy not enabled"
+  ]
+}

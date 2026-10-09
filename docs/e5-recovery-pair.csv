@@ -1,0 +1,6 @@
+stage,calls,tokens,answer_status,JRA,ECR,contract_valid
+prefix,3,51734,diagnosed,,,True
+restart/recovery,3,51758,diagnosed,1.0,1.0,True
+selective/recovery,1,19727,diagnosed,1.0,1.0,True
+restart/foreground,3,56919,uncertain,0.0,0.0,False
+selective/foreground,3,56287,uncertain,0.0,0.0,False
