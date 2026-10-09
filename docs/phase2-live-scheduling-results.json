@@ -1,0 +1,454 @@
+{
+  "manifest": {
+    "study": "source-revision-live-scheduling-v1",
+    "split": "development_seen",
+    "cases": [
+      "boutique/performance/1",
+      "boutique/runtime/1"
+    ],
+    "policy_orders": [
+      [
+        "fifo",
+        "fair",
+        "fair-reserve"
+      ],
+      [
+        "fair-reserve",
+        "fair",
+        "fifo"
+      ]
+    ],
+    "physical_token_cap": 900000,
+    "shared_logical_token_cap_including_prefix": 200000,
+    "per_group_total_tool_attempt_cap": 24,
+    "call_reservation": 60000,
+    "foreground_call_bound": 5,
+    "concurrency": 2,
+    "arrival": "both groups at window origin; fixed recovery then foreground task creation",
+    "response_slo_seconds": 30,
+    "recovery_slo_seconds": 60,
+    "fault_scope": "query-fields-v2",
+    "unknown_usage": "charge 60000 reservation and halt new physical calls across batch",
+    "failure": "retain all outcomes; no success-seeking retries or fault retargeting",
+    "accounting": "one physical historical prefix per repeat; each policy pays same logical prefix",
+    "scoring": "post-inference only, current labels; historical uncertain is not wrong-root correction",
+    "limitations": [
+      "two known incidents; not independent population evidence",
+      "explicit constructed source notification",
+      "adaptive foreground bound five calls, not exact three-call DAG",
+      "exploratory SLOs; no course or production SLA",
+      "no external publication or operational writes"
+    ],
+    "final_locked": true,
+    "code_commit": "f97da4147618d5fc531d0ee33a44dd321259dc79",
+    "dataset_commit": "ea05dafbc87b5985df8721622d63d4229c2b4224",
+    "model": "gpt-6-astra"
+  },
+  "physical_calls": 30,
+  "known_tokens": 587275,
+  "unknown_usage_calls": 0,
+  "charged_tokens": 587275,
+  "physical_halted": false,
+  "rows": [
+    {
+      "repeat": 1,
+      "policy": "fifo",
+      "group": "recovery",
+      "state": "completed",
+      "seconds": 23.184558207998634,
+      "contract_errors": [],
+      "quality_scoring": "pending independent native and semantic review",
+      "scores": {
+        "CA": 1.0,
+        "FA": 1.0,
+        "JRA": 1.0,
+        "MC": 1.0,
+        "EOC": 1.0,
+        "ECR": 1.0,
+        "EE": 0.25,
+        "contract_valid": true,
+        "budget_valid": true
+      },
+      "native_success": true,
+      "native_success_within_slo": true,
+      "incremental_tokens": 26430,
+      "model_calls": 1,
+      "budget_valid": true,
+      "queue_seconds": 7.575969417001033,
+      "window_event_counts": {
+        "queued": 4,
+        "start": 4,
+        "finish": 4
+      }
+    },
+    {
+      "repeat": 1,
+      "policy": "fifo",
+      "group": "foreground",
+      "state": "completed",
+      "seconds": 32.60095912500037,
+      "contract_errors": [],
+      "quality_scoring": "pending independent native and semantic review",
+      "scores": {
+        "CA": 1.0,
+        "FA": 1.0,
+        "JRA": 1.0,
+        "MC": 1.0,
+        "EOC": 1.0,
+        "ECR": 1.0,
+        "EE": 0.42857142857142855,
+        "contract_valid": true,
+        "budget_valid": true
+      },
+      "native_success": true,
+      "native_success_within_slo": false,
+      "incremental_tokens": 51869,
+      "model_calls": 3,
+      "budget_valid": true,
+      "queue_seconds": 13.926545417998568,
+      "window_event_counts": {
+        "queued": 4,
+        "start": 4,
+        "finish": 4
+      }
+    },
+    {
+      "repeat": 1,
+      "policy": "fair",
+      "group": "recovery",
+      "state": "completed",
+      "seconds": 22.241110167000443,
+      "contract_errors": [],
+      "quality_scoring": "pending independent native and semantic review",
+      "scores": {
+        "CA": 1.0,
+        "FA": 1.0,
+        "JRA": 1.0,
+        "MC": 1.0,
+        "EOC": 1.0,
+        "ECR": 1.0,
+        "EE": 0.25,
+        "contract_valid": true,
+        "budget_valid": true
+      },
+      "native_success": true,
+      "native_success_within_slo": true,
+      "incremental_tokens": 26439,
+      "model_calls": 1,
+      "budget_valid": true,
+      "queue_seconds": 7.053234167000483,
+      "window_event_counts": {
+        "queued": 4,
+        "start": 4,
+        "finish": 4
+      }
+    },
+    {
+      "repeat": 1,
+      "policy": "fair",
+      "group": "foreground",
+      "state": "completed",
+      "seconds": 34.72926854199977,
+      "contract_errors": [],
+      "quality_scoring": "pending independent native and semantic review",
+      "scores": {
+        "CA": 1.0,
+        "FA": 1.0,
+        "JRA": 1.0,
+        "MC": 1.0,
+        "EOC": 1.0,
+        "ECR": 1.0,
+        "EE": 0.42857142857142855,
+        "contract_valid": true,
+        "budget_valid": true
+      },
+      "native_success": true,
+      "native_success_within_slo": false,
+      "incremental_tokens": 51657,
+      "model_calls": 3,
+      "budget_valid": true,
+      "queue_seconds": 13.99160791700342,
+      "window_event_counts": {
+        "queued": 4,
+        "start": 4,
+        "finish": 4
+      }
+    },
+    {
+      "repeat": 1,
+      "policy": "fair-reserve",
+      "group": "recovery",
+      "state": "completed",
+      "seconds": 29.711192665999988,
+      "contract_errors": [],
+      "quality_scoring": "pending independent native and semantic review",
+      "scores": {
+        "CA": 1.0,
+        "FA": 1.0,
+        "JRA": 1.0,
+        "MC": 1.0,
+        "EOC": 1.0,
+        "ECR": 1.0,
+        "EE": 0.25,
+        "contract_valid": true,
+        "budget_valid": true
+      },
+      "native_success": true,
+      "native_success_within_slo": true,
+      "incremental_tokens": 26399,
+      "model_calls": 1,
+      "budget_valid": true,
+      "queue_seconds": 18.980134249999537,
+      "window_event_counts": {
+        "workflow_registered": 1,
+        "queued": 4,
+        "start": 4,
+        "finish": 4,
+        "guard_deferred": 1,
+        "workflow_closed": 1
+      }
+    },
+    {
+      "repeat": 1,
+      "policy": "fair-reserve",
+      "group": "foreground",
+      "state": "completed",
+      "seconds": 19.03433641599986,
+      "contract_errors": [],
+      "quality_scoring": "pending independent native and semantic review",
+      "scores": {
+        "CA": 1.0,
+        "FA": 1.0,
+        "JRA": 1.0,
+        "MC": 1.0,
+        "EOC": 1.0,
+        "ECR": 1.0,
+        "EE": 0.42857142857142855,
+        "contract_valid": true,
+        "budget_valid": true
+      },
+      "native_success": true,
+      "native_success_within_slo": true,
+      "incremental_tokens": 51910,
+      "model_calls": 3,
+      "budget_valid": true,
+      "queue_seconds": 0.0008725000006961636,
+      "window_event_counts": {
+        "workflow_registered": 1,
+        "queued": 4,
+        "start": 4,
+        "finish": 4,
+        "guard_deferred": 1,
+        "workflow_closed": 1
+      }
+    },
+    {
+      "repeat": 2,
+      "policy": "fair-reserve",
+      "group": "recovery",
+      "state": "completed",
+      "seconds": 36.08057820799877,
+      "contract_errors": [],
+      "quality_scoring": "pending independent native and semantic review",
+      "scores": {
+        "CA": 1.0,
+        "FA": 1.0,
+        "JRA": 1.0,
+        "MC": 1.0,
+        "EOC": 1.0,
+        "ECR": 1.0,
+        "EE": 0.25,
+        "contract_valid": true,
+        "budget_valid": true
+      },
+      "native_success": true,
+      "native_success_within_slo": true,
+      "incremental_tokens": 26574,
+      "model_calls": 1,
+      "budget_valid": true,
+      "queue_seconds": 22.34075416700216,
+      "window_event_counts": {
+        "workflow_registered": 1,
+        "queued": 4,
+        "start": 4,
+        "finish": 4,
+        "guard_deferred": 1,
+        "workflow_closed": 1
+      }
+    },
+    {
+      "repeat": 2,
+      "policy": "fair-reserve",
+      "group": "foreground",
+      "state": "completed",
+      "seconds": 22.381976083001064,
+      "contract_errors": [],
+      "quality_scoring": "pending independent native and semantic review",
+      "scores": {
+        "CA": 1.0,
+        "FA": 1.0,
+        "JRA": 1.0,
+        "MC": 1.0,
+        "EOC": 1.0,
+        "ECR": 1.0,
+        "EE": 0.42857142857142855,
+        "contract_valid": true,
+        "budget_valid": true
+      },
+      "native_success": true,
+      "native_success_within_slo": true,
+      "incremental_tokens": 51634,
+      "model_calls": 3,
+      "budget_valid": true,
+      "queue_seconds": 0.0008547079996787943,
+      "window_event_counts": {
+        "workflow_registered": 1,
+        "queued": 4,
+        "start": 4,
+        "finish": 4,
+        "guard_deferred": 1,
+        "workflow_closed": 1
+      }
+    },
+    {
+      "repeat": 2,
+      "policy": "fair",
+      "group": "recovery",
+      "state": "completed",
+      "seconds": 17.56151670899999,
+      "contract_errors": [],
+      "quality_scoring": "pending independent native and semantic review",
+      "scores": {
+        "CA": 1.0,
+        "FA": 1.0,
+        "JRA": 1.0,
+        "MC": 1.0,
+        "EOC": 1.0,
+        "ECR": 1.0,
+        "EE": 0.25,
+        "contract_valid": true,
+        "budget_valid": true
+      },
+      "native_success": true,
+      "native_success_within_slo": true,
+      "incremental_tokens": 26376,
+      "model_calls": 1,
+      "budget_valid": true,
+      "queue_seconds": 7.005506541998329,
+      "window_event_counts": {
+        "queued": 4,
+        "start": 4,
+        "finish": 4
+      }
+    },
+    {
+      "repeat": 2,
+      "policy": "fair",
+      "group": "foreground",
+      "state": "completed",
+      "seconds": 27.36256458400021,
+      "contract_errors": [],
+      "quality_scoring": "pending independent native and semantic review",
+      "scores": {
+        "CA": 1.0,
+        "FA": 1.0,
+        "JRA": 1.0,
+        "MC": 1.0,
+        "EOC": 1.0,
+        "ECR": 1.0,
+        "EE": 0.42857142857142855,
+        "contract_valid": true,
+        "budget_valid": true
+      },
+      "native_success": true,
+      "native_success_within_slo": true,
+      "incremental_tokens": 51570,
+      "model_calls": 3,
+      "budget_valid": true,
+      "queue_seconds": 8.345959041998867,
+      "window_event_counts": {
+        "queued": 4,
+        "start": 4,
+        "finish": 4
+      }
+    },
+    {
+      "repeat": 2,
+      "policy": "fifo",
+      "group": "recovery",
+      "state": "completed",
+      "seconds": 19.554586374997598,
+      "contract_errors": [],
+      "quality_scoring": "pending independent native and semantic review",
+      "scores": {
+        "CA": 1.0,
+        "FA": 1.0,
+        "JRA": 1.0,
+        "MC": 1.0,
+        "EOC": 1.0,
+        "ECR": 1.0,
+        "EE": 0.25,
+        "contract_valid": true,
+        "budget_valid": true
+      },
+      "native_success": true,
+      "native_success_within_slo": true,
+      "incremental_tokens": 26429,
+      "model_calls": 1,
+      "budget_valid": true,
+      "queue_seconds": 6.819323666997661,
+      "window_event_counts": {
+        "queued": 4,
+        "start": 4,
+        "finish": 4
+      }
+    },
+    {
+      "repeat": 2,
+      "policy": "fifo",
+      "group": "foreground",
+      "state": "completed",
+      "seconds": 28.64659366699925,
+      "contract_errors": [],
+      "quality_scoring": "pending independent native and semantic review",
+      "scores": {
+        "CA": 1.0,
+        "FA": 1.0,
+        "JRA": 1.0,
+        "MC": 1.0,
+        "EOC": 1.0,
+        "ECR": 1.0,
+        "EE": 0.42857142857142855,
+        "contract_valid": true,
+        "budget_valid": true
+      },
+      "native_success": true,
+      "native_success_within_slo": true,
+      "incremental_tokens": 51557,
+      "model_calls": 3,
+      "budget_valid": true,
+      "queue_seconds": 10.280244874997152,
+      "window_event_counts": {
+        "queued": 4,
+        "start": 4,
+        "finish": 4
+      }
+    }
+  ],
+  "limitations": [
+    "native success requires later semantic review",
+    "two repeated known cases; policy order counterbalanced, not statistical evidence",
+    "live outputs and provider latency can differ between policies",
+    "adaptive five-call upper bound retains allowance until early workflow exit"
+  ],
+  "audit_file": "runs/phase2-live-scheduling-v1/audit.json",
+  "audit_sha256": "ca5c414f8b3335615931f6de4605b55f560ce69a1852fc20155fc748a8227bf5",
+  "raw_file_count": 170,
+  "semantic_review": {
+    "path": "runs/phase2-live-scheduling-v1/semantic-review.json",
+    "sha256": "e39250cee6c53d526b0d399f4eca8124b01bc46ca05b8aceaf445d93105740a0",
+    "consumed_observations_checked": 90,
+    "current_config_instances_r2": 12,
+    "qualification": "Some CPU answer causal wording exceeds independently measured support; bursts, demand trigger and latency causal effect remain unmeasured."
+  }
+}

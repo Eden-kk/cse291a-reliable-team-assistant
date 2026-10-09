@@ -1,3 +1,8 @@
+最新进展：真实多群调度验证 — 2026-10-08
+运行时预留机制已接入，111项测试通过。两轮三策略真实并发共30calls/587275tokens，12个后续诊断原生评分通过。fair-reserve新告警19.03/22.38秒，恢复延后29.71/36.08秒；保留等待代价，不声称普遍优势。当前无后台实验。
+详情：phase2-live-scheduling.txt与phase2-live-scheduling-results.json。下一步异质案例/到达压力验证，再推进学习闭环；final8仍锁定。
+
+以下保留此前阶段记录（已被上述运行时验证更新）：
 Phase 2当前状态 — 2026-10-08
 修正CPU范围的独立smoke+两次固定重复完成：30次真实调用/611109 tokens，正式6个后续对照通过。两组发布更正离线重放、288配置调度重放完成。可选fair-reserve降低部分前台等待但延迟恢复，仅模拟，未接入runtime。99项测试通过，无跳过；无后台实验。
 详情：phase2-progress.txt；phase2-v2-results.json；phase2-scheduling-results.json；phase2-publication-results.json。下一步运行时预留规则、真实并发和异质案例验证；final8锁定。

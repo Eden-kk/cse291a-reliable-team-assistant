@@ -1,0 +1,35 @@
+Phase 2：真实多群预算调度实验
+
+固定协议与范围
+运行代码f97da41；预注册configs/phase2/scheduling-live-v1.json。恢复组为performance/1的两处CPU限额查询从历史800m推进到当前200m；前台为不同已见案例runtime/1。两轮策略顺序正序/逆序，共6窗口。每轮生成一次历史前缀，各策略深拷贝同一前缀；前缀物理只计一次，逻辑完整计入各窗口。
+每窗口共享200000 token额度，调用预留60000、并发2、每组24次工具尝试上限。前台5次是上界（两planner+最多三次diagnosis），提前完成即释放，并非预知实际会调用几次。30/60秒仅探索性目标。
+
+结果（端到端秒；包含工具处理与实际等待，不包含已完成历史前缀）
+轮次  策略          新告警     恢复       新告警累计排队
+1     fifo           32.601   23.185    13.926545
+1     fair           34.729   22.241    13.991608
+1     fair-reserve   19.034   29.711     0.000873
+2     fifo           28.647   19.555    10.280245
+2     fair           27.363   17.562     8.345959
+2     fair-reserve   22.382   36.081     0.000855
+
+12个后续诊断均JRA/ECR=1、合同有效、预算有效；历史前缀不计成功诊断。30次真实调用、587275 tokens、0未知usage、0provider错误；900000预留式上限未触及。无新收费API/AWS资源、真实运维写入或平台提交。
+
+机制证据与代价
+第一轮FIFO前台诊断等待13.926秒：恢复调用占用60000，剩余48478无法覆盖下一次预留，尽管有并发槽空闲。fair-reserve在恢复派发前记录guard_deferred：假如派发将只剩4573，不能覆盖保护的60000。前台诊断实际排队约0.000049秒，context退出后立即派发恢复。第二轮同样有一次guard_deferred，前台总排队也约1毫秒。
+收益是前台完成路径的额度保护；代价是恢复更晚、主动闲置并发槽。不提高本批完成率（所有策略均成功），不降低模型调用数（每窗口均4调用），不是整体吞吐提升证据。
+策略任务创建顺序不等于队列顺序：由于collect中的异步调度，实际前台planner先入队。分析依据queued/start/finish事件，不能描述为恢复先到。
+总时延差异还包含provider服务时间波动和不同模型输出，不能全部归因于调度。相同只读已见数据的两次重复不能支持统计显著性或一般SLA保证；尚无高负载、不同到达模式、动态跨群依赖验证。CPU证据支持限流，但未测量瞬时突发或建立延迟因果；端口案例的HTTP探针与gRPC/HTTP1拒绝及重启事件支持协议不匹配诊断。
+
+复现与产物
+运行：.venv/bin/python scripts/run_phase2_multigroup.py --vendor <Cloud-OpsBench路径> --output <新的空目录>；该命令会消耗订阅推理额度。
+独立评分：scripts/score_run.py <每个window/group目录>。计费汇总：scripts/summarize_live_scheduling.py <batch目录> --output <新audit.json>。禁止覆盖已有目录/结果，失败不做成功导向重试。
+原始输入、输出、事件与账本：runs/phase2-live-scheduling-v1；核验摘要：phase2-live-scheduling-results.json。保留原生scores的pending语义说明，独立语义复核另存，不冒充机器评分。
+
+当前实现边界与下一步
+Dispatcher默认行为不变；foreground_reservation显式启用，response_workflow登记到达工作流并在完成/异常/取消时释放。所有调用固定统一reservation；已经派发的取消请求继续结算，未知用量停止新派发。不得在工作流context内等待背景join。
+预留式预算不是provider服务端硬输出额度：单次实际用量若超过预留会在结算时记录并halt，不能撤回已经发生的用量。本批没有超额。
+下一步冻结此版本，扩展不同到达模式、预算压力和异质案例，并以逐例质量及恢复等待为共同门槛；之后再验证gated self-evolve。不要仅围绕本批两例继续优化；final8保持锁定。
+111项测试通过，无跳过；Phase1交付包未更改。本批已结束，无后台模型实验。
+
+全批独立语义/来源复核：90次实际消费观察匹配heads与archive；12个更新配置实例均r2，无800m残留；12份答案引文均有效。24个后续调用未出现禁止工具活动。部分CPU答案的“establishes/delaying requests”措辞比实测支持更强，不能将原生通过等同完全语义可靠。原始审查及输入hash：runs/phase2-live-scheduling-v1/semantic-review.json。
