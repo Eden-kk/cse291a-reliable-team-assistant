@@ -2,6 +2,7 @@
 import copy
 import hashlib
 import json
+import math
 from pathlib import Path
 import random
 
@@ -32,8 +33,9 @@ def derive_arm(window, arm):
             or (directory / 'failure.json').exists()):
         raise ValueError(f'{arm}: failed/incomplete trace is ineligible')
     calls = usage['calls']
-    if not calls or any(c.get('error') or not isinstance(c.get('tokens'), int)
-                        or c['tokens'] < 0 or c['seconds'] <= 0 for c in calls):
+    if not calls or any(c.get('error') or type(c.get('tokens')) is not int
+                        or c['tokens'] < 0 or type(c.get('seconds')) not in (int, float)
+                        or not math.isfinite(c['seconds']) or c['seconds'] <= 0 for c in calls):
         raise ValueError(f'{arm}: missing/failed/unknown-usage calls')
     by_step = {c['request']['step']: c for c in calls}
     if len(by_step) != len(calls):
@@ -41,13 +43,19 @@ def derive_arm(window, arm):
     if sum(c['tokens'] for c in calls) != usage['summary']['incremental_tokens']:
         raise ValueError('Call usage does not match incremental total')
 
+    def parents(name):
+        for parent, version in state[name]['inputs'].items():
+            if parent not in state or version != state[parent]['version']:
+                raise ValueError('Input version differs from saved parent; mutable history unsupported')
+        return state[name]['inputs']
+
     def ancestors(name, seen):
         if name in seen or name not in state:
             raise ValueError('Missing/cyclic recorded dependency')
         if name in by_step:
             return {name}
         result = set()
-        for parent in state[name]['inputs']:
+        for parent in parents(name):
             result |= ancestors(parent, seen | {name})
         return result
 
@@ -58,7 +66,9 @@ def derive_arm(window, arm):
         if set(call['request']['inputs']) != set(state[step]['inputs']):
             raise ValueError('Request inputs differ from committed dependencies')
         dependencies = set()
-        for parent in state[step]['inputs']:
+        for parent in parents(step):
+            if call['request']['inputs'][parent] != state[parent]['payload']:
+                raise ValueError('Request payload differs from saved parent; mutable history unsupported')
             dependencies |= ancestors(parent, {step})
         nodes.append({'id': step, 'dependencies': sorted(dependencies),
                       'duration': call['seconds'], 'tokens': call['tokens'],

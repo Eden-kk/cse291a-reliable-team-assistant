@@ -20,8 +20,10 @@ class TraceReplayTests(unittest.TestCase):
                 'evidence_a': {'inputs': {'planner_a': 1}, 'complete': True},
                 'evidence_b': {'inputs': {'planner_b': 1}, 'complete': True},
                 'answer': {'inputs': {'evidence_a': 1, 'evidence_b': 1}, 'complete': True}}
+            for name, artifact in state.items():
+                artifact.update(version=1, payload={'value': name})
             steps = ['planner_b', 'planner_a', 'answer'] if arm == 'restart' else ['answer']
-            calls = [{'call': i+1, 'request': {'step': step, 'inputs': state[step]['inputs']},
+            calls = [{'call': i+1, 'request': {'step': step, 'inputs': {p: state[p]['payload'] for p in state[step]['inputs']}},
                       'seconds': i+2, 'tokens': 10000, 'error': None} for i,step in enumerate(steps)]
             summary = {'state': 'completed', 'incremental_tokens': len(calls)*10000,
                        'logical_total_tokens': 40000+len(calls)*10000}
@@ -81,3 +83,30 @@ class TraceReplayTests(unittest.TestCase):
         self.write('restart/state.json', state)
         with self.assertRaises(ValueError):
             derive_arm(self.root, 'restart')
+
+    def test_changed_payload_rejected(self):
+        path = self.root/'restart/usage.json'
+        data = json.loads(path.read_text())
+        data['calls'][0]['request']['inputs']['initial'] = {'value': 'earlier payload'}
+        self.write('restart/usage.json', data)
+        with self.assertRaisesRegex(ValueError, 'payload differs'):
+            derive_arm(self.root, 'restart')
+
+    def test_changed_parent_version_rejected_through_tool_artifact(self):
+        state = json.loads((self.root/'restart/state.json').read_text())
+        state['evidence_a']['inputs']['planner_a'] = 2
+        self.write('restart/state.json', state)
+        with self.assertRaisesRegex(ValueError, 'version differs'):
+            derive_arm(self.root, 'restart')
+
+    def test_invalid_numeric_measurements_rejected(self):
+        original = json.loads((self.root/'restart/usage.json').read_text())
+        for field, value in [('tokens', True), ('tokens', float('inf')),
+                             ('seconds', True), ('seconds', float('nan')),
+                             ('seconds', float('inf'))]:
+            with self.subTest(field=field, value=value):
+                data = json.loads(json.dumps(original))
+                data['calls'][0][field] = value
+                self.write('restart/usage.json', data)
+                with self.assertRaises(ValueError):
+                    derive_arm(self.root, 'restart')
