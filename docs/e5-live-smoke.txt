@@ -1,0 +1,41 @@
+E5真实开发集成smoke v2 — 2026-10-09
+
+结论
+同一runtime中完成来源变化→选择性刷新→与新群并发→本地关联更正，并核实真实学习拒绝回执不会启用候选。恢复与新群两份答案原生JRA/ECR=1、合同/预算通过，独立语义审核通过。正式8calls/153514tokens。
+这是一轮已见开发案例smoke，不是完整E5比较研究。root cause在前后相同，变的是9556→9555的构造历史端口证据；不能称修复错误根因、真实服务恢复或生产SLA提升。
+
+执行
+代码c62c918，configs/phase2/e5-live-smoke-v2.json。runtime/1为恢复案例、service/1为新群；只用development_seen，final8未读取。
+同一空baseline policy一直使用；实际bundle-v1拒绝回执测试promote失败，默认policy未变。没有成功学习晋升、memory撤回收益或在途撤回实验，这些仅有此前工程检查。
+每阶段2planner+最多2diagnosis=4call，3阶段最多12call，单call60000预留。900000总cap包含准备阶段51846；正式物理可用848154。最坏预留720000+51846=771846；未知usage/超预留仍会停发，不宣称硬provider上限。
+新群登记4call foreground workflow后，与恢复共享fair dispatcher、累计logical budget900000。没有重置已花费前缀；max_tools24对恢复包含前缀。
+
+正式结果
+历史prefix：3calls/51710tokens，15.71秒。构造的9556历史观察内部支持原答案，不与当前gold打分。
+来源advance：configuration_evidence、diagnosis_0、public-status失效；旧public-status再次发布被拒绝。
+恢复：1call/19853tokens，窗口起18.33秒完成。configuration_evidence与diagnosis_0变为v2；initial、configuration_plan、telemetry_plan、telemetry_evidence均保留v1。
+新群：4calls/81951tokens，窗口起26.83秒完成。识别REDIS_ADDR指向redis-cart-invalid:6379；日志与正确redis-cart连通证据支持地址不匹配。一次不支持的EndpointSlice查询被视作缺失证据，不被伪装成endpoint失败。
+本次无guard_deferred事件，预算充分，不能据此证明预留保护的优势。没有restart/无guard配对对照，也没有独立重复或泛化结论。
+
+证据审核
+恢复3处引文和新群4处引文均精确出现在最终模型请求中。恢复配置观察使用revision2，保留日志revision1仍等于current head1，未把旧证据误判为新的。
+恢复根因是HTTP liveness probe对gRPC服务使用错误协议；9555配置、拒绝HTTP/1.x日志和kubelet重启事件支持结论。
+原生评分在推理结束后读取标签；标签未进入推理。semantic-audit.json以manifest/result/scores哈希绑定。
+
+发布边界
+两个恢复status记录P1/P2，P2.supersedes=1；原记录保留。新群一个status记录。全部是本地provisional、quality_approved=false，不发送消息或提交课程。事后语义审核不回写历史批准状态。
+这证明关联更正机制，不等于真实平台通知、用户接收或错误服务修复。
+
+用量与准备故障
+正式8个调用的usage/result记录、物理settlements及总账一致：51710+19853+81951=153514。每个result.budget.spent是共享累计快照，不能相加；汇总按usage逐call计算。
+准备测试曾因导入build函数绕过provider mock，误发3次真实调用：16096+16101+19649=51846。测试临时目录自动删除，原始请求/响应不可恢复；仅终端用量可核实，因此不纳入质量/性能结果，也不称完整可审计trace。详见e5-live-preparation-incident.json。
+已修复为直接构建并注入provider，测试对CodexProvider.complete设置禁止调用哨兵。增加强制继续查询测试，确认两轮上限。
+已知总用量205360（正式153514+准备51846），未突破900000；独立复核与编排成本未知，不报告完整美元成本。未使用付费API/AWS或额度reset。
+
+验证与复现
+157项测试通过。入口scripts/run_e5_live_smoke.py；默认v2，v1仅保留未正式启动的原计划。需clean commit、新输出目录及指定vendor。额外运行属于新实验，不因这次成功自动重复。
+原始trace：runs/e5-live-smoke-v2；可版本化结果：e5-live-smoke-results.json。汇总脚本summarize_e5_live.py检查分阶段调用用量和物理结算，无用量时拒绝伪造零成本。
+
+剩余工作
+E5还需预登记同预算的restart/去掉guard/去掉学习组件对照、污染密度和过载条件；学习提案数量与有效性证据仍未齐全。先决定哪些比较能在现有额度内完整覆盖，再冻结正式矩阵，不解锁final8凑结果。
+Phase1包未改；无后台任务。正式smoke现已结束，不把继续运行模型当默认后续。

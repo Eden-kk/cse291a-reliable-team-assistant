@@ -1,0 +1,234 @@
+{
+  "kind": "Seen-development real smoke; no paired efficacy comparison",
+  "manifest": {
+    "study": "E5 bounded-round development integration smoke v2, not comparative efficacy",
+    "recovery_case": "boutique/runtime/1",
+    "foreground_case": "boutique/service/1",
+    "physical_token_cap": 900000,
+    "shared_logical_token_cap": 900000,
+    "call_reservation": 60000,
+    "max_calls_per_stage": 4,
+    "stage_count": 3,
+    "concurrency": 2,
+    "max_tools_per_group": 24,
+    "fault_scope": "query-fields-v2",
+    "seed_policy": "empty rules; fixture-approved baseline, not learned",
+    "rejected_receipt": "docs/phase2-learning-validation-results.json",
+    "publication": "local provisional status only; no external posting or semantic approval",
+    "stop": "No retries; stop after prefix failure, absent exposure, unknown usage or cap overrun",
+    "final_unlocked": false,
+    "preparation_tokens_already_spent": 51846,
+    "preparation_usage_basis": "Three unintended real prefix calls during mock test: 16096 + 16101 + 19649; raw temporary files unavailable, excluded from efficacy",
+    "diagnosis_rounds": 2,
+    "supersedes_plan": "v1 not launched; preparation usage retained, fewer rounds declared before formal smoke",
+    "code_commit": "c62c918778346b4afa2c02a60dc4bce9a6e33e23",
+    "dirty": false,
+    "dataset_commit": "ea05dafbc87b5985df8721622d63d4229c2b4224",
+    "model": "gpt-6-astra",
+    "reasoning_effort": "low",
+    "context_window": 131072,
+    "receipt_sha256": "d1c6de5bcdc7f6a21ec7a34e1ef29716ec81687cdef75253721fa853db5b7ded",
+    "policy": {
+      "rules": []
+    },
+    "split": "development_seen"
+  },
+  "stages": {
+    "prefix": {
+      "outcome": {
+        "state": "completed",
+        "seconds": 15.71198545799416,
+        "contract_errors": [],
+        "quality_scoring": "pending independent native and semantic review"
+      },
+      "model_calls": 3,
+      "incremental_tokens": 51710,
+      "answer_status": "diagnosed",
+      "contract_errors": [],
+      "native_scores": null,
+      "semantic_audit": null
+    },
+    "recovery": {
+      "outcome": {
+        "state": "completed",
+        "seconds": 18.333196292005596,
+        "contract_errors": [],
+        "quality_scoring": "pending independent native and semantic review"
+      },
+      "model_calls": 1,
+      "incremental_tokens": 19853,
+      "answer_status": "diagnosed",
+      "contract_errors": [],
+      "native_scores": {
+        "CA": 1.0,
+        "FA": 1.0,
+        "JRA": 1.0,
+        "MC": 1.0,
+        "EOC": 1.0,
+        "ECR": 1.0,
+        "EE": 0.42857142857142855,
+        "contract_valid": true,
+        "budget_valid": true
+      },
+      "semantic_audit": {
+        "supported": true,
+        "reviewer": "independent read-only learning_protocol_review agent",
+        "rationale": "All three evidence quotes occur exactly in final consumed request. HTTP GET9555 versus gRPC readiness/app PORT9555, malformed HTTP response and explicit probe-caused restart support protocol mismatch. Preserved log r1 remains current head1; refreshed Describe/YAML use head2.",
+        "evidence_sha256": "d87c1c42800a9a24739a188f1cdf5b452ccfa53188b7f9a3f9ff3467daa152b7"
+      }
+    },
+    "foreground": {
+      "outcome": {
+        "state": "completed",
+        "seconds": 26.83495083299931,
+        "contract_errors": [],
+        "quality_scoring": "pending independent native and semantic review"
+      },
+      "model_calls": 4,
+      "incremental_tokens": 81951,
+      "answer_status": "diagnosed",
+      "contract_errors": [],
+      "native_scores": {
+        "CA": 1.0,
+        "FA": 1.0,
+        "JRA": 1.0,
+        "MC": 1.0,
+        "EOC": 1.0,
+        "ECR": 1.0,
+        "EE": 0.4,
+        "contract_valid": true,
+        "budget_valid": true
+      },
+      "semantic_audit": {
+        "supported": true,
+        "reviewer": "independent read-only learning_protocol_review agent",
+        "rationale": "All four evidence quotes occur exactly in final consumed request. REDIS_ADDR invalid hostname, matching RedisConnectionException, valid Redis Service6379 and successful connectivity support address mismatch. EndpointSlice tool error correctly treated as missing evidence, not measured failure.",
+        "evidence_sha256": "8c7535c8b268c11e5159219ca78c81f58bf40416f5c81581db7b9529eb8e2ca3"
+      }
+    }
+  },
+  "accounting_checks": {
+    "known_usage": true,
+    "call_settlement_match": true,
+    "charged_match": true,
+    "no_provider_errors": true,
+    "candidate_rejected": true,
+    "formal_within_cap": true,
+    "physical_total_match": true
+  },
+  "formal_model_calls": 8,
+  "formal_tokens": 153514,
+  "preparation_tokens_terminal_only": 51846,
+  "known_total_tokens": 205360,
+  "review_orchestration_cost": null,
+  "ledgers": {
+    "recovery": [
+      {
+        "id": 1,
+        "result": "public-status",
+        "version": 1,
+        "payload": {
+          "status": "provisional",
+          "quality_approved": false,
+          "answer": {
+            "status": "diagnosed",
+            "fault_object": "app/adservice",
+            "root_cause": "liveness_probe_incorrect_protocol",
+            "evidence": [
+              {
+                "observation_id": "observation-7-r1",
+                "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9556"
+              },
+              {
+                "observation_id": "observation-3-r1",
+                "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+              },
+              {
+                "observation_id": "observation-6-r1",
+                "quote": "Container server failed liveness probe, will be restarted"
+              }
+            ],
+            "reasoning": "The liveness probe sends an HTTP GET to port 9556, where adservice serves gRPC over HTTP/2; application logs explicitly show rejection of the HTTP/1.x request. The configured container port, PORT environment variable, and gRPC readiness port all match 9556, identifying a protocol mismatch rather than a port mismatch. Kubelet events directly connect failed liveness probes to container restarts."
+          }
+        },
+        "epoch": 0,
+        "supersedes": null
+      },
+      {
+        "id": 2,
+        "result": "public-status",
+        "version": 2,
+        "payload": {
+          "status": "provisional",
+          "quality_approved": false,
+          "answer": {
+            "status": "diagnosed",
+            "fault_object": "app/adservice",
+            "root_cause": "liveness_probe_incorrect_protocol",
+            "evidence": [
+              {
+                "observation_id": "observation-9-r2",
+                "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+              },
+              {
+                "observation_id": "observation-3-r1",
+                "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+              },
+              {
+                "observation_id": "observation-8-r2",
+                "quote": "Container server failed liveness probe, will be restarted"
+              }
+            ],
+            "reasoning": "The liveness probe sends an HTTP/1.x GET to port 9555, while the service uses gRPC/HTTP2 on that port. Application logs directly show rejection of this request, and kubelet events explicitly link failed liveness probes to container restarts. The configured readiness gRPC port, liveness port, and application PORT all equal 9555, establishing a protocol mismatch rather than a port mismatch."
+          }
+        },
+        "epoch": 1,
+        "supersedes": 1
+      }
+    ],
+    "foreground": [
+      {
+        "id": 1,
+        "result": "public-status",
+        "version": 1,
+        "payload": {
+          "status": "provisional",
+          "quality_approved": false,
+          "answer": {
+            "status": "diagnosed",
+            "fault_object": "app/cartservice",
+            "root_cause": "service_env_var_address_mismatch",
+            "evidence": [
+              {
+                "observation_id": "observation-9",
+                "quote": "- name: REDIS_ADDR\n          value: \"redis-cart-invalid:6379\""
+              },
+              {
+                "observation_id": "observation-4",
+                "quote": "UnableToConnect on redis-cart-invalid:6379/Interactive"
+              },
+              {
+                "observation_id": "observation-10",
+                "quote": "redis-cart (10.68.39.143:6379) open\nConnection Succeeded"
+              },
+              {
+                "observation_id": "observation-5",
+                "quote": "redis-cart  <-- (Database)"
+              }
+            ],
+            "reasoning": "Cartservice's REDIS_ADDR points to redis-cart-invalid:6379, whereas its Redis dependency is redis-cart and the measured TCP connection to redis-cart:6379 succeeds. Runtime logs confirm attempts to the configured incorrect hostname fail, causing cart storage operations to time out and frontend cart requests to fail. This establishes an address mismatch, not a Redis port failure. Earlier DNS errors for other services are also recorded, but their cause is not established; the unsupported EndpointSlice query is missing evidence, not a measured endpoint failure."
+          }
+        },
+        "epoch": 0,
+        "supersedes": null
+      }
+    ]
+  },
+  "publication_scope": "Local provisional status and correction only; no external posting/approval",
+  "limitations": [
+    "Constructed query history, not real evolving cluster",
+    "Rejected learning receipt, not successful learning promotion/revocation",
+    "No in-flight revocation tested in this smoke",
+    "Single run; two diagnosis rounds; no guard/restart counterfactual"
+  ]
+}
