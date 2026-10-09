@@ -1,0 +1,22 @@
+{
+  "study": "source-revision-live-scheduling-v1",
+  "split": "development_seen",
+  "cases": ["boutique/performance/1", "boutique/runtime/1"],
+  "policy_orders": [["fifo", "fair", "fair-reserve"], ["fair-reserve", "fair", "fifo"]],
+  "physical_token_cap": 900000,
+  "shared_logical_token_cap_including_prefix": 200000,
+  "per_group_total_tool_attempt_cap": 24,
+  "call_reservation": 60000,
+  "foreground_call_bound": 5,
+  "concurrency": 2,
+  "arrival": "both groups at window origin; fixed recovery then foreground task creation",
+  "response_slo_seconds": 30,
+  "recovery_slo_seconds": 60,
+  "fault_scope": "query-fields-v2",
+  "unknown_usage": "charge 60000 reservation and halt new physical calls across batch",
+  "failure": "retain all outcomes; no success-seeking retries or fault retargeting",
+  "accounting": "one physical historical prefix per repeat; each policy pays same logical prefix",
+  "scoring": "post-inference only, current labels; historical uncertain is not wrong-root correction",
+  "limitations": ["two known incidents; not independent population evidence", "explicit constructed source notification", "adaptive foreground bound five calls, not exact three-call DAG", "exploratory SLOs; no course or production SLA", "no external publication or operational writes"],
+  "final_locked": true
+}
