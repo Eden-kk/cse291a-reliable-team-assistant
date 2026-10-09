@@ -23,6 +23,9 @@ def summarize(root):
             windows.append({'name': name, 'state': 'failed_or_missing', 'failure': read(directory / 'failure.json') if (directory / 'failure.json').exists() else None})
             continue
         summary = read(directory / 'summary.json')
+        if 'collection' not in summary:
+            collection_records = [read(p) for p in (directory / 'collection/calls').glob('*.json') if p.stem.isdigit()]
+            summary['collection'] = {'tokens': sum(r['tokens'] for r in collection_records), 'calls': len(collection_records)}
         windows.append({'name': name, **summary})
         state = read(directory / 'collection/state.json')
         collection_tools = sum(len(r['payload'].get('observations', [])) + len(r['payload'].get('tool_errors', [])) for r in state.values())
