@@ -52,7 +52,7 @@ class SourceControlTests(unittest.TestCase):
         result = CONTROL.replay(state, spec, 'unchanged')
         self.assertFalse(result['invalidated'])
         self.assertFalse(result['late_commit_rejected'])
-        self.assertEqual(result['authentic_observations'], result['metadata_checks'])
+        self.assertEqual(result['authentic_observations'], result['local_record_checks'])
 
     def test_missing_fixed_content_does_not_retarget(self):
         state, spec = self.fixture()

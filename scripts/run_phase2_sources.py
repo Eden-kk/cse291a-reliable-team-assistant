@@ -85,7 +85,7 @@ def replay(state, spec, mode):
     return {'condition': mode, 'status': 'completed', 'changed_sources': catalog.events,
             'authentic_observations': sum(a['authentic'] for a in audit),
             'stale_observations': sum(a['authentic'] and not a['fresh'] for a in audit),
-            'metadata_checks': len(audit), 'invalidated': sorted(invalid),
+            'local_record_checks': len(audit), 'invalidated': sorted(invalid),
             'citation_only_invalidated': sorted(citation_invalid), 'retained_unchanged': retained,
             'selective_recompute_nodes': len(invalid), 'restart_nodes': len(before),
             'late_commit_rejected': rejected, 'refreshed_evidence': refreshed,
