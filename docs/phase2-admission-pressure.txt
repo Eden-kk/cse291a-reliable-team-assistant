@@ -1,0 +1,37 @@
+Phase2真实低预算接纳实验 — 2026-10-09
+
+固定设计
+运行代码de1809e，协议configs/phase2/admission-live-pressure-v1.json。
+performance/1恢复、service/1与runtime/1两个同时到达新告警；service先登记。与上批360k不同，本批逻辑预算200000tokens，包含共享历史前缀；先admit-one后reserve。每call仍预留60000，最大并发2，批physical cap600000。
+故障、案例与规则预先固定；只跑一对窗口，未做成功导向重试。final8锁定。原始数据runs/phase2-admission-pressure-v1。
+
+结果
+策略           service                     runtime       恢复       本窗口新增tokens   含历史前缀逻辑tokens
+fair-admit-one  完成，23.335秒，JRA/ECR1      未完成        未完成      81258              140514
+fair-reserve   未完成                       未完成        未完成      87845              147101
+所有未完成均为BudgetExhausted：无法满足下一次60000tokens预留，而非provider错误、输出格式错误或未知费用。
+未完成不是正确诊断，也不能从原生测试缺少result推测原本能成功。6个群位置都保留，admit-one成功1/3，reserve0/3。
+reserve的service已花56179tokens、runtime31666，均未产出最终答案。admit-one把81258用于完成service，另两群本窗口未发模型调用，但恢复仍有共享历史前缀59256的成本，不能称“恢复成本为0”。
+两个窗口结束时budget.halted=false表示没有usage异常/超支，不代表还能发调用；可用余额59486/52899都小于60000预留。预算语义应区分“没有超额”和“仍可接纳”。
+
+账本与生命周期
+全批12次模型调用、228359tokens=历史59256+admit81258+reserve87845。0未知usage、0provider错误。所有派发/接纳状态已清空；退出码0，无后台任务。
+runtime在admit-one中等待接纳23.336秒，随后因预留不足失败；这段等待计入其23.343秒到终止时间。失败任务的终止时间不能叫成功响应时延。
+6个低预算runner测试包含预算拒绝与取消结算；全套134测试通过，无跳过。未使用新收费API、AWS或课程提交操作。
+
+可以得出的结论
+本例中把有限预算集中在一个活跃调查，获得一个有效答案；原策略把预算分散后没有完成答案。新增用量更少6587tokens，不能外推固定百分比成本收益。
+结合上批360k：接纳机制也会让后到群更慢，所以保持opt-in，不宣布替代默认调度。
+
+不能得出的结论
+不是通用质量/公平/SLA证明；三个事故均已见，独立样本很少。本批与上批同时改变预算及策略执行顺序，不能将跨批差异单独解释为预算或顺序因果。
+同一批两策略仍有不同生成输出和provider耗时。需要同预算反向顺序重复才有更强依据；预算限制下先保留该限制，而不是重复到有理想结果。
+没有验证持续到达下的饥饿处理、生产RPM/TPM限制、真实美元账本或跨进程持久恢复。
+
+材料与下一步
+原始调用/失败/事件：runs/phase2-admission-pressure-v1。
+逐群汇总：phase2-admission-pressure-results.json、phase2-admission-pressure.csv。
+本轮已补齐一个真实预算不足对照。调度暂保留当前两个可选机制；接下来可按原计划推进独立learning/gate-validation闭环，之后再做集成验收和预登记的重复。不能把这些已见案例用于最终泛化声明。
+Phase1提交包不变。
+
+独立复核：唯一成功答案3处引文精确匹配消费证据，因果表述未发现实质不支持部分。12份provider事件记录未见禁止活动。历史前缀仅完成了故障暴露，其答案为uncertain并有contract error，不算成功历史诊断；两个恢复群仍计未完成。详见原始目录semantic-review.json。

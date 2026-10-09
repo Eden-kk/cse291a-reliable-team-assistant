@@ -1,3 +1,7 @@
+最新进展：真实低预算对照 — 2026-10-09
+200k/窗口，逆序执行admit-one→reserve：前者1/3诊断成功，后者0/3；新增tokens81258 vs87845。12calls/228359physical tokens，5个预算预留不足失败均保留；134测试通过。历史前缀uncertain不计成功，唯一成功答案语义复核通过。
+详情phase2-admission-pressure.txt及results/CSV。无后台任务。下一步独立学习门槛闭环；final8锁定，Phase1包不变。
+
 最新进展：真实三群接纳验证 — 2026-10-09
 19calls/379136tokens，6份诊断native及独立语义审核通过。service38.65→28.98秒，runtime33.36→50.25秒（含28.98秒接纳等待）；保留先来先服务的延迟代价，不替换默认策略。132测试全部通过，取消结算与join忙循环已修复。
 详情phase2-admission-live.txt及同名results/CSV。无后台实验；final8锁定，Phase1包未改变。

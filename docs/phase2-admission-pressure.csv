@@ -1,0 +1,7 @@
+policy,group,state,error,arrival_to_terminal_seconds,admission_wait_seconds,model_calls,incremental_tokens,native_success
+fair-admit-one,recovery,failed,BudgetExhausted('No remaining affordable reservation'),23.410547292005504,0,0,0,False
+fair-admit-one,service,completed,,23.33498470800987,2.1083003957755864e-05,4,81258,True
+fair-admit-one,runtime,failed,BudgetExhausted('No remaining affordable reservation'),23.34320079200552,23.33580475000781,0,0,False
+fair-reserve,recovery,failed,BudgetExhausted('No remaining affordable reservation'),33.76318579100189,0,0,0,False
+fair-reserve,service,failed,BudgetExhausted('No remaining affordable reservation'),33.6862069159979,0,3,56179,False
+fair-reserve,runtime,failed,BudgetExhausted('No remaining affordable reservation'),33.682895707999705,0,2,31666,False
