@@ -1,0 +1,22 @@
+{
+  "study": "E5 bounded-round development integration smoke v2, not comparative efficacy",
+  "recovery_case": "boutique/runtime/1",
+  "foreground_case": "boutique/service/1",
+  "physical_token_cap": 900000,
+  "shared_logical_token_cap": 900000,
+  "call_reservation": 60000,
+  "max_calls_per_stage": 4,
+  "stage_count": 3,
+  "concurrency": 2,
+  "max_tools_per_group": 24,
+  "fault_scope": "query-fields-v2",
+  "seed_policy": "empty rules; fixture-approved baseline, not learned",
+  "rejected_receipt": "docs/phase2-learning-validation-results.json",
+  "publication": "local provisional status only; no external posting or semantic approval",
+  "stop": "No retries; stop after prefix failure, absent exposure, unknown usage or cap overrun",
+  "final_unlocked": false,
+  "preparation_tokens_already_spent": 51846,
+  "preparation_usage_basis": "Three unintended real prefix calls during mock test: 16096 + 16101 + 19649; raw temporary files unavailable, excluded from efficacy",
+  "diagnosis_rounds": 2,
+  "supersedes_plan": "v1 not launched; preparation usage retained, fewer rounds declared before formal smoke"
+}

@@ -1,0 +1,15 @@
+{
+  "kind": "test provider isolation failure; excluded from experiment efficacy",
+  "date": "2026-10-09",
+  "cause": "Imported build() resolved provider in run_phase2_multigroup, bypassing run_e5_live_smoke.provider mock",
+  "real_calls_observed": 3,
+  "real_tokens_from_terminal": [16096, 16101, 19649],
+  "known_real_token_total": 51846,
+  "mixed_test_summary_total": 51886,
+  "simulated_followup_tokens": 40,
+  "raw_artifacts": "TemporaryDirectory was automatically deleted after test assertion failure; raw request/result artifacts unavailable",
+  "evidence_limit": "Terminal usage output only; no causal/quality/latency result claimed",
+  "repair": "Construct RevisionInvestigation directly with injected provider; test sentinel forbids CodexProvider.complete",
+  "budget_treatment": "Count 51846 against this turn's 900000 cap before formal smoke",
+  "retry_policy": "No repetition of escaped test as efficacy data; formal smaller-round protocol separately frozen"
+}

@@ -24,7 +24,10 @@ If critical evidence is missing return uncertain. Never infer truth from policy 
 
 
 class Investigation:
-    def __init__(self, runtime, provider, snapshot, identifier='incident-1', reservation=60000, max_tools=12):
+    def __init__(self, runtime, provider, snapshot, identifier='incident-1', reservation=60000, max_tools=12, diagnosis_rounds=3):
+        if type(diagnosis_rounds) is not int or not 1 <= diagnosis_rounds <= 3:
+            raise ValueError('Diagnosis rounds must be between one and three')
+        self.diagnosis_rounds = diagnosis_rounds
         self.runtime, self.provider, self.snapshot = runtime, provider, snapshot
         self.identifier, self.reservation, self.max_tools = identifier, reservation, max_tools
         self.incident = runtime.start(identifier, 'oncall', identifier)
@@ -114,13 +117,13 @@ class Investigation:
     async def diagnose(self):
         dependencies = ['initial', 'configuration_evidence', 'telemetry_evidence']
         answer, errors = None, []
-        for turn in range(3):
-            instruction = DIAGNOSE + f'\nRemaining query rounds: {2-turn}. Prior validation errors: {errors}'
+        for turn in range(self.diagnosis_rounds):
+            instruction = DIAGNOSE + f'\nRemaining query rounds: {self.diagnosis_rounds-1-turn}. Prior validation errors: {errors}'
             result = await self.model_step(f'diagnosis_{turn}', instruction, tuple(dependencies), False)
             answer = result.payload
             if 'queries' in answer:
                 queries = answer['queries']
-                if turn == 2 or not isinstance(queries, list) or len(queries) > 2:
+                if turn == self.diagnosis_rounds-1 or not isinstance(queries, list) or len(queries) > 2:
                     answer = {'status': 'uncertain', 'reasoning': 'Query contract/budget exhausted'}
                     break
                 error_start = len(self.tool_errors)
