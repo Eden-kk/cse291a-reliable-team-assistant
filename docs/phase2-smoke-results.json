@@ -1,0 +1,282 @@
+{
+  "manifest": {
+    "case": "boutique/runtime/1",
+    "split": "development_seen",
+    "repeat": 1,
+    "code_commit": "586a08021f878e9d5c804d14496ecc82c1ffcd4b",
+    "dataset_commit": "ea05dafbc87b5985df8721622d63d4229c2b4224",
+    "model": "gpt-6-astra",
+    "total_tokens": 240000,
+    "total_tool_attempts": 24,
+    "physical_token_cap": 900000,
+    "reservation": 60000,
+    "order": [
+      "selective",
+      "restart"
+    ],
+    "transition": "after shared historical diagnosis; before prevention diagnosis",
+    "transform": [
+      "9555",
+      "9556"
+    ],
+    "scoring": "score only post-transition answers against current labels",
+    "limitations": "constructed historical configuration, development case, trusted explicit change notification; no write tools"
+  },
+  "physical_model_calls": 10,
+  "known_tokens": 174946,
+  "unknown_usage_calls": 0,
+  "charged_tokens": 174946,
+  "physical_halted": false,
+  "arms": [
+    {
+      "arm": "historical-prefix",
+      "state": "completed",
+      "seconds": 19.056929459002276,
+      "incremental_tokens": 51923,
+      "logical_total_tokens": 51923,
+      "logical_total_tool_attempts": 7,
+      "logical_budget_halted": false,
+      "physical_model_calls": 3,
+      "known_incremental_tokens": 51923,
+      "unknown_usage_calls": 0,
+      "answer": {
+        "status": "diagnosed",
+        "fault_object": "app/adservice",
+        "root_cause": "liveness_probe_incorrect_protocol",
+        "evidence": [
+          {
+            "observation_id": "observation-3-r1",
+            "quote": "Container server failed liveness probe, will be restarted"
+          },
+          {
+            "observation_id": "observation-4-r1",
+            "quote": "readinessProbe:\n          initialDelaySeconds: 5\n          grpc:\n            port: 9556\n        livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9556"
+          },
+          {
+            "observation_id": "observation-5-r1",
+            "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+          }
+        ],
+        "reasoning": "The liveness probe sends an HTTP/1.x GET to port 9556, where adservice handles gRPC over HTTP/2. The application logs explicitly show rejection of that request, and kubelet events directly attribute restarts to failed liveness probes. Readiness uses gRPC on the same port and the pod is ready, supporting a protocol mismatch rather than an incorrect port. Repeated liveness failures cause kubelet to terminate and restart the container."
+      },
+      "contract_errors": [],
+      "diagnosis_requests": 1,
+      "consumed_observation_instances": 7,
+      "stale_consumed_instances": 0,
+      "freshness_scope": "at saved source heads; historical prefix has old heads, not current-state success"
+    },
+    {
+      "arm": "selective",
+      "state": "completed",
+      "seconds": 9.412029292001534,
+      "incremental_tokens": 19662,
+      "logical_total_tokens": 71585,
+      "logical_total_tool_attempts": 9,
+      "logical_budget_halted": false,
+      "physical_model_calls": 1,
+      "known_incremental_tokens": 19662,
+      "unknown_usage_calls": 0,
+      "answer": {
+        "status": "diagnosed",
+        "fault_object": "app/adservice",
+        "root_cause": "liveness_probe_incorrect_protocol",
+        "evidence": [
+          {
+            "observation_id": "observation-9-r2",
+            "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+          },
+          {
+            "observation_id": "observation-5-r1",
+            "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+          },
+          {
+            "observation_id": "observation-8-r2",
+            "quote": "Container server failed liveness probe, will be restarted"
+          }
+        ],
+        "reasoning": "The liveness probe sends HTTP/1.x GET requests to port 9555, where adservice serves gRPC over HTTP/2. Application logs directly show rejection of those requests, and kubelet events explicitly link failed liveness probes to container restarts. The readiness gRPC probe, application PORT, and liveness port all use 9555, so the mismatch is protocol rather than port."
+      },
+      "contract_errors": [],
+      "diagnosis_requests": 1,
+      "consumed_observation_instances": 7,
+      "stale_consumed_instances": 0,
+      "freshness_scope": "at saved source heads; historical prefix has old heads, not current-state success",
+      "scores": {
+        "CA": 1.0,
+        "FA": 1.0,
+        "JRA": 1.0,
+        "MC": 1.0,
+        "EOC": 1.0,
+        "ECR": 1.0,
+        "EE": 0.42857142857142855,
+        "contract_valid": true,
+        "budget_valid": true
+      }
+    },
+    {
+      "arm": "restart",
+      "state": "completed",
+      "seconds": 25.04807499999879,
+      "incremental_tokens": 51725,
+      "logical_total_tokens": 103648,
+      "logical_total_tool_attempts": 14,
+      "logical_budget_halted": false,
+      "physical_model_calls": 3,
+      "known_incremental_tokens": 51725,
+      "unknown_usage_calls": 0,
+      "answer": {
+        "status": "diagnosed",
+        "fault_object": "app/adservice",
+        "root_cause": "liveness_probe_incorrect_protocol",
+        "evidence": [
+          {
+            "observation_id": "observation-7-r2",
+            "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+          },
+          {
+            "observation_id": "observation-3-r1",
+            "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+          },
+          {
+            "observation_id": "observation-6-r2",
+            "quote": "Container server failed liveness probe, will be restarted"
+          }
+        ],
+        "reasoning": "The liveness probe sends an HTTP GET to port 9555, while the same port serves gRPC over HTTP/2, as supported by the configured gRPC readiness probe and the server's explicit rejection of HTTP/1.x requests. The port values match; the protocol does not. These probe failures cause kubelet to restart the container, directly confirmed by the Killing event."
+      },
+      "contract_errors": [],
+      "diagnosis_requests": 1,
+      "consumed_observation_instances": 7,
+      "stale_consumed_instances": 0,
+      "freshness_scope": "at saved source heads; historical prefix has old heads, not current-state success",
+      "scores": {
+        "CA": 1.0,
+        "FA": 1.0,
+        "JRA": 1.0,
+        "MC": 1.0,
+        "EOC": 1.0,
+        "ECR": 1.0,
+        "EE": 0.42857142857142855,
+        "contract_valid": true,
+        "budget_valid": true
+      }
+    },
+    {
+      "arm": "verify-before-diagnosis",
+      "state": "completed",
+      "seconds": 20.261526875001437,
+      "incremental_tokens": 51636,
+      "logical_total_tokens": 51636,
+      "logical_total_tool_attempts": 9,
+      "logical_budget_halted": false,
+      "physical_model_calls": 3,
+      "known_incremental_tokens": 51636,
+      "unknown_usage_calls": 0,
+      "answer": {
+        "status": "diagnosed",
+        "fault_object": "app/adservice",
+        "root_cause": "liveness_probe_incorrect_protocol",
+        "evidence": [
+          {
+            "observation_id": "observation-8-r2",
+            "quote": "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3"
+          },
+          {
+            "observation_id": "observation-8-r2",
+            "quote": "Container server failed liveness probe, will be restarted"
+          },
+          {
+            "observation_id": "observation-3-r1",
+            "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+          },
+          {
+            "observation_id": "observation-9-r2",
+            "quote": "readinessProbe:\n          initialDelaySeconds: 5\n          grpc:\n            port: 9555"
+          }
+        ],
+        "reasoning": "The liveness probe sends HTTP/1.x GET requests to port 9555, where adservice serves gRPC over HTTP/2. Application logs directly show rejection of these requests. Readiness uses gRPC on the same port and the pod is Ready, supporting a protocol mismatch rather than an incorrect port. Repeated liveness failures cause kubelet to terminate and restart the container, as explicitly recorded in pod events."
+      },
+      "contract_errors": [],
+      "diagnosis_requests": 1,
+      "consumed_observation_instances": 7,
+      "stale_consumed_instances": 0,
+      "freshness_scope": "at saved source heads; historical prefix has old heads, not current-state success",
+      "scores": {
+        "CA": 1.0,
+        "FA": 1.0,
+        "JRA": 1.0,
+        "MC": 1.0,
+        "EOC": 1.0,
+        "ECR": 1.0,
+        "EE": 0.42857142857142855,
+        "contract_valid": true,
+        "budget_valid": true
+      }
+    }
+  ],
+  "input_sha256": {
+    "historical-prefix/calls/001.events.jsonl": "3baf8b6df4e682cacad34d2d8181d95cd522c320c24d0b196f7cc05aa258cba8",
+    "historical-prefix/calls/001.json": "433e699b02f3fac83b7bec6c19a6ee19c98d520153f1f5d6ee2d799def63e7a1",
+    "historical-prefix/calls/001.request.json": "2f28235e8aaa8d21bb7448198309d97ce92b93c2cb255d2774fb70eda1a9cad3",
+    "historical-prefix/calls/002.events.jsonl": "1231f4b0f4dff23f67b390cd827fd5c068df1b23a399464ec36299ad3f7b55ec",
+    "historical-prefix/calls/002.json": "76d7d583b64136e5eb989220a558530bfac0eeebf55f9adde76da299dc0abfeb",
+    "historical-prefix/calls/002.request.json": "21b66945ee76b7de271ae92653c2d79e1625c6df803216cecf5939cb5c25b880",
+    "historical-prefix/calls/003.events.jsonl": "dd61c7ad3468986f7fc404ab6b0faa4c63c0d65201fb56a0f4c58db618ba9be3",
+    "historical-prefix/calls/003.json": "89e5d54de068576281597fbbda61e21b669d03344f2a1f067366f9a8a953c42c",
+    "historical-prefix/calls/003.request.json": "50ab820c7cd6e660d3f763e5edab89c4f3a0cf48e5c38033119327376644c75c",
+    "historical-prefix/manifest.json": "4936f5b566631b97ce4a978df1f2cbed830d49be9002a3ef5eb8b0a69b20d00e",
+    "historical-prefix/result.json": "ea5656a766ede2061f38fa50c4b18f62c69aaa4c37c6cad16ba2ae15ee080b0d",
+    "historical-prefix/sources.json": "52a6c0e1341de9def665f96b31a92ee0b9d861a4eb6322ec9d5abef1ffc9b246",
+    "historical-prefix/state.json": "0407dcc436403f6da49db85de9201e686dcc1dabe1fb9938325e15d172dec4af",
+    "historical-prefix/usage.json": "9bc4330f17b129770cc695dc28b40a7383962c1d3ed8b0133d801b9b72512483",
+    "manifest.json": "3a35993646022ae7d0eeb956984b3cb259012bd3aab22e0b784450a5696dba99",
+    "restart/calls/001.events.jsonl": "6283cd210bd78844b63c7b75c81f8bd3fab2f6b5252b577e3740f52bff31607e",
+    "restart/calls/001.json": "c91633224c0a82be5634314202ec4ec2210b100aca0bb4bfcae21bb45b5bd0c2",
+    "restart/calls/001.request.json": "2f28235e8aaa8d21bb7448198309d97ce92b93c2cb255d2774fb70eda1a9cad3",
+    "restart/calls/002.events.jsonl": "a38a28980926add79e87cf9e886d4c9ced0b2fb7d1ef97e8ffb96aea8611b0d5",
+    "restart/calls/002.json": "a1a44fbc250ded8eaf5b2a9ce46f0c651ab31a11707dc2f4a8b7d98a7b2bc552",
+    "restart/calls/002.request.json": "21b66945ee76b7de271ae92653c2d79e1625c6df803216cecf5939cb5c25b880",
+    "restart/calls/003.events.jsonl": "92a5fafda6820a69d6abd861c935be0e57d3c5b4dda10e31c3eaeb051bec13d6",
+    "restart/calls/003.json": "6ecf8789164c579f1cdfbf00396d16d5ca8b70e4b7590683dda6d260695fb007",
+    "restart/calls/003.request.json": "03a68d179e66897310406ad7e23644c11c701f7abffc107520842daf15cb5cc3",
+    "restart/manifest.json": "4f67a6b96720aa4358052b949e0e180fb457d15d6e3537a24302448e426f556b",
+    "restart/result.json": "dbcc8c5014e308ebbe7151a9ec612517278819caf670e406500fad051a5399bb",
+    "restart/scores.json": "c26b5fc153d1b2fb4b5ba679a3f77d6aeb254673ed6975d099e02da7e2786069",
+    "restart/sources.json": "7f7428c7f1773393d1ad8afa65f86e14314ae52e00d8ad30779c12fdbcdc317e",
+    "restart/state.json": "fe809a2934443d4605672c362d347a9d8acd9ef3545d8ebb4a90c91bd4254954",
+    "restart/usage.json": "4a3a464c8bc709654e00ab8e56c9fccbe6f8f8e075a555f57b46d31fee219e7e",
+    "selective/calls/001.events.jsonl": "6f142f24000797db0698fb25c49fc44016511cbcb3211649f713d989624a1152",
+    "selective/calls/001.json": "1fe5ea36a30987af1773985e1c898926837ffc1139e3e46a9371970ff57b39e6",
+    "selective/calls/001.request.json": "cd525f02ac2b7b70a88ed8587b55e009885074f1d79c0e087c8f0b2929c56837",
+    "selective/manifest.json": "4f67a6b96720aa4358052b949e0e180fb457d15d6e3537a24302448e426f556b",
+    "selective/result.json": "ab089ebe44e5b82e0e08134e89c90ad6ee9e3034e826587b36dcde23f7c1563a",
+    "selective/scores.json": "c26b5fc153d1b2fb4b5ba679a3f77d6aeb254673ed6975d099e02da7e2786069",
+    "selective/sources.json": "7f7428c7f1773393d1ad8afa65f86e14314ae52e00d8ad30779c12fdbcdc317e",
+    "selective/state.json": "7a66abf4d02ac1dfa9bab5bf9364e5fb3076b5f47cb5675554847db4f9fb002a",
+    "selective/usage.json": "37e94295ff0e661d7e23cf66faea32a06f7bc61c316790e2cb4839f0d69ee89b",
+    "summary.json": "3a665205fd0864eccc5753390c479066d9b69393dc6b6cfbd94843c063a3bf39",
+    "transition.json": "349d3256d4b37f0720633151d13371e64768360b258374a27e8bc190b2c50cb2",
+    "verify-before-diagnosis/calls/001.events.jsonl": "651659269cf60a225e337210515699c2d91f134679b9b078e15c3c43bdabba36",
+    "verify-before-diagnosis/calls/001.json": "19068a1ee18b2e999d50dbe78c3330bbdebc3788869d83a3782944faafe285e3",
+    "verify-before-diagnosis/calls/001.request.json": "2f28235e8aaa8d21bb7448198309d97ce92b93c2cb255d2774fb70eda1a9cad3",
+    "verify-before-diagnosis/calls/002.events.jsonl": "3025cea8e4f9938365b4d9b970fcc5c4f8abe23249b6e089397dee2d551c4776",
+    "verify-before-diagnosis/calls/002.json": "adb7e43a040d7f4f5eade3fc1c9f7b72b36b69b734658abbe2386322f50e79d4",
+    "verify-before-diagnosis/calls/002.request.json": "21b66945ee76b7de271ae92653c2d79e1625c6df803216cecf5939cb5c25b880",
+    "verify-before-diagnosis/calls/003.events.jsonl": "9d474dbfa837d19184eb66ab433365b9e8f3167dbaa91879b5ab3d9df2b041fa",
+    "verify-before-diagnosis/calls/003.json": "66eedba67ab7f2015cc7cc3a1b7737a390e79eb6ee0ba19678d522cf736e9b5a",
+    "verify-before-diagnosis/calls/003.request.json": "46338e69d0b1c4e1a7d6a282807e2be5648ae3e51d728dde1acfe36be70cbb1c",
+    "verify-before-diagnosis/manifest.json": "4936f5b566631b97ce4a978df1f2cbed830d49be9002a3ef5eb8b0a69b20d00e",
+    "verify-before-diagnosis/result.json": "fd083ff64cca0353d202a4f75b707aced111ea0cbd2b56f077abe291d9ab7030",
+    "verify-before-diagnosis/scores.json": "c26b5fc153d1b2fb4b5ba679a3f77d6aeb254673ed6975d099e02da7e2786069",
+    "verify-before-diagnosis/sources.json": "26a9f53046ff0eae84404be277aa49d806daf9690497d301ca46814feecc8c41",
+    "verify-before-diagnosis/state.json": "5c4dffa76a981fbb9964d6a2086f6e499bc0221e5e04992d9ac80e3a07e83678",
+    "verify-before-diagnosis/usage.json": "b6c6ae80b2e809edfcbc3d767067bbf8c7b0eebd22deab48065215eee257119d"
+  },
+  "limitations": [
+    "constructed query-source transition, not naturally observed history",
+    "explicit change notification; no automatic detector",
+    "small seen-case development trial; no causal latency claim",
+    "fresh source versions and native scores do not prove semantic support"
+  ],
+  "raw_directory": "runs/phase2-runtime-smoke-v1"
+}
