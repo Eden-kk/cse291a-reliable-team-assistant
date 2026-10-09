@@ -1,0 +1,461 @@
+{
+  "study": "offline constructed source transitions over recorded collection graphs",
+  "code_commit": "37d9d637c7dd03fbcf4e91fd81677ba51a711130",
+  "protocol_sha256": "1ca0e7888e2f2695f5c80790dc212df50289db62fae884b05bd4bfa8a87836d9",
+  "inputs": [
+    {
+      "path": "runs/phase1-matrix/runtime-port/collection/state.json",
+      "sha256": "d8aeb146c2e0b5f335a641ca12d84283803457f893a83aff948d7ac3b1d6f7d5"
+    },
+    {
+      "path": "runs/phase1-matrix/performance-limit/collection/state.json",
+      "sha256": "490591fe8d9fe3b966b11a777b5baf49f4cc55a44eb34c7bb0f68be408094cd2"
+    }
+  ],
+  "live_model_calls": 0,
+  "native_scores": "not applicable",
+  "limitations": [
+    "not naturally observed history",
+    "not semantic recovery evidence",
+    "node counts are not latency or inference cost",
+    "query identity does not capture cross-query resource dependencies"
+  ],
+  "results": [
+    {
+      "case": "boutique/runtime/1",
+      "condition": "unchanged",
+      "status": "completed",
+      "changed_sources": [],
+      "authentic_observations": 7,
+      "stale_observations": 0,
+      "metadata_checks": 7,
+      "invalidated": [],
+      "citation_only_invalidated": [],
+      "retained_unchanged": [
+        "configuration_evidence",
+        "configuration_plan",
+        "diagnosis",
+        "initial",
+        "telemetry_evidence",
+        "telemetry_plan"
+      ],
+      "selective_recompute_nodes": 0,
+      "restart_nodes": 6,
+      "late_commit_rejected": false,
+      "refreshed_evidence": [],
+      "pending_semantic_recompute": [],
+      "publication_history_preserved": true
+    },
+    {
+      "case": "boutique/runtime/1",
+      "condition": "version_only",
+      "status": "completed",
+      "changed_sources": [
+        {
+          "source": "query:15c750d7088bd88fa990c3ad20d3c4ae31aa9d65f9971f608950133028cd46ad",
+          "previous": 1,
+          "revision": 2,
+          "reason": "version_only",
+          "content_changed": false
+        },
+        {
+          "source": "query:20b2e24be25122173546b8388835fc40e10ba049da1bfa7a7e06134e3a06392b",
+          "previous": 1,
+          "revision": 2,
+          "reason": "version_only",
+          "content_changed": false
+        }
+      ],
+      "authentic_observations": 7,
+      "stale_observations": 2,
+      "metadata_checks": 7,
+      "invalidated": [
+        "configuration_evidence",
+        "diagnosis"
+      ],
+      "citation_only_invalidated": [
+        "configuration_evidence"
+      ],
+      "retained_unchanged": [
+        "configuration_plan",
+        "initial",
+        "telemetry_evidence",
+        "telemetry_plan"
+      ],
+      "selective_recompute_nodes": 2,
+      "restart_nodes": 6,
+      "late_commit_rejected": true,
+      "refreshed_evidence": [
+        "configuration_evidence"
+      ],
+      "pending_semantic_recompute": [
+        "diagnosis"
+      ],
+      "publication_history_preserved": true
+    },
+    {
+      "case": "boutique/runtime/1",
+      "condition": "trusted_stale",
+      "status": "completed",
+      "changed_sources": [
+        {
+          "source": "query:15c750d7088bd88fa990c3ad20d3c4ae31aa9d65f9971f608950133028cd46ad",
+          "previous": 1,
+          "revision": 2,
+          "reason": "trusted_stale",
+          "content_changed": true
+        },
+        {
+          "source": "query:20b2e24be25122173546b8388835fc40e10ba049da1bfa7a7e06134e3a06392b",
+          "previous": 1,
+          "revision": 2,
+          "reason": "trusted_stale",
+          "content_changed": true
+        }
+      ],
+      "authentic_observations": 7,
+      "stale_observations": 2,
+      "metadata_checks": 7,
+      "invalidated": [
+        "configuration_evidence",
+        "diagnosis"
+      ],
+      "citation_only_invalidated": [
+        "configuration_evidence"
+      ],
+      "retained_unchanged": [
+        "configuration_plan",
+        "initial",
+        "telemetry_evidence",
+        "telemetry_plan"
+      ],
+      "selective_recompute_nodes": 2,
+      "restart_nodes": 6,
+      "late_commit_rejected": true,
+      "refreshed_evidence": [
+        "configuration_evidence"
+      ],
+      "pending_semantic_recompute": [
+        "diagnosis"
+      ],
+      "publication_history_preserved": true
+    },
+    {
+      "case": "boutique/runtime/1",
+      "condition": "dense_version_only",
+      "status": "completed",
+      "changed_sources": [
+        {
+          "source": "query:15c750d7088bd88fa990c3ad20d3c4ae31aa9d65f9971f608950133028cd46ad",
+          "previous": 1,
+          "revision": 2,
+          "reason": "dense_version_only",
+          "content_changed": false
+        },
+        {
+          "source": "query:20b2e24be25122173546b8388835fc40e10ba049da1bfa7a7e06134e3a06392b",
+          "previous": 1,
+          "revision": 2,
+          "reason": "dense_version_only",
+          "content_changed": false
+        },
+        {
+          "source": "query:4a96c3c1c6598fcabf1b6a33201b2f41b79a33d18194181a0654a814f0a0a73a",
+          "previous": 1,
+          "revision": 2,
+          "reason": "dense_version_only",
+          "content_changed": false
+        },
+        {
+          "source": "query:816afb630fb6cb11f746de7bd8402d2527d27e3f9523d67eb8734c3fb2c21dfc",
+          "previous": 1,
+          "revision": 2,
+          "reason": "dense_version_only",
+          "content_changed": false
+        },
+        {
+          "source": "query:82e9331b4e30c854769f4b1e7d4b79626fe520ca253f6beda00eb1af916e96fd",
+          "previous": 1,
+          "revision": 2,
+          "reason": "dense_version_only",
+          "content_changed": false
+        },
+        {
+          "source": "query:e1362dc5c7e3731d5f1d28060cb82df4b6fbea813388b02edaacb4207b8f8808",
+          "previous": 1,
+          "revision": 2,
+          "reason": "dense_version_only",
+          "content_changed": false
+        },
+        {
+          "source": "query:f9148eeb40a01cdb2092800ec4c3b6fea86dd37acd3d64851dbe8d3c983065fd",
+          "previous": 1,
+          "revision": 2,
+          "reason": "dense_version_only",
+          "content_changed": false
+        }
+      ],
+      "authentic_observations": 7,
+      "stale_observations": 7,
+      "metadata_checks": 7,
+      "invalidated": [
+        "configuration_evidence",
+        "configuration_plan",
+        "diagnosis",
+        "initial",
+        "telemetry_evidence",
+        "telemetry_plan"
+      ],
+      "citation_only_invalidated": [
+        "configuration_evidence",
+        "diagnosis",
+        "initial",
+        "telemetry_evidence"
+      ],
+      "retained_unchanged": [],
+      "selective_recompute_nodes": 6,
+      "restart_nodes": 6,
+      "late_commit_rejected": true,
+      "refreshed_evidence": [
+        "initial"
+      ],
+      "pending_semantic_recompute": [
+        "configuration_evidence",
+        "configuration_plan",
+        "diagnosis",
+        "telemetry_evidence",
+        "telemetry_plan"
+      ],
+      "publication_history_preserved": true
+    },
+    {
+      "case": "boutique/performance/1",
+      "condition": "unchanged",
+      "status": "completed",
+      "changed_sources": [],
+      "authentic_observations": 8,
+      "stale_observations": 0,
+      "metadata_checks": 8,
+      "invalidated": [],
+      "citation_only_invalidated": [],
+      "retained_unchanged": [
+        "configuration_evidence",
+        "configuration_plan",
+        "diagnosis",
+        "initial",
+        "telemetry_evidence",
+        "telemetry_plan"
+      ],
+      "selective_recompute_nodes": 0,
+      "restart_nodes": 6,
+      "late_commit_rejected": false,
+      "refreshed_evidence": [],
+      "pending_semantic_recompute": [],
+      "publication_history_preserved": true
+    },
+    {
+      "case": "boutique/performance/1",
+      "condition": "version_only",
+      "status": "completed",
+      "changed_sources": [
+        {
+          "source": "query:8b6342530c7c830459b5cc99466741269bfac314b8e4e551dc78593be4466898",
+          "previous": 1,
+          "revision": 2,
+          "reason": "version_only",
+          "content_changed": false
+        },
+        {
+          "source": "query:9f49398f81eb281195ca7faa9fd68121de6c75824ce0ef3b86cddde1905a5ea0",
+          "previous": 1,
+          "revision": 2,
+          "reason": "version_only",
+          "content_changed": false
+        },
+        {
+          "source": "query:ced62aa80bff827da206fafd6402030d00c4006752ee4abbabc41e63d6badf4a",
+          "previous": 1,
+          "revision": 2,
+          "reason": "version_only",
+          "content_changed": false
+        }
+      ],
+      "authentic_observations": 8,
+      "stale_observations": 3,
+      "metadata_checks": 8,
+      "invalidated": [
+        "configuration_evidence",
+        "diagnosis"
+      ],
+      "citation_only_invalidated": [
+        "configuration_evidence"
+      ],
+      "retained_unchanged": [
+        "configuration_plan",
+        "initial",
+        "telemetry_evidence",
+        "telemetry_plan"
+      ],
+      "selective_recompute_nodes": 2,
+      "restart_nodes": 6,
+      "late_commit_rejected": true,
+      "refreshed_evidence": [
+        "configuration_evidence"
+      ],
+      "pending_semantic_recompute": [
+        "diagnosis"
+      ],
+      "publication_history_preserved": true
+    },
+    {
+      "case": "boutique/performance/1",
+      "condition": "trusted_stale",
+      "status": "completed",
+      "changed_sources": [
+        {
+          "source": "query:8b6342530c7c830459b5cc99466741269bfac314b8e4e551dc78593be4466898",
+          "previous": 1,
+          "revision": 2,
+          "reason": "trusted_stale",
+          "content_changed": true
+        },
+        {
+          "source": "query:9f49398f81eb281195ca7faa9fd68121de6c75824ce0ef3b86cddde1905a5ea0",
+          "previous": 1,
+          "revision": 2,
+          "reason": "trusted_stale",
+          "content_changed": true
+        },
+        {
+          "source": "query:ced62aa80bff827da206fafd6402030d00c4006752ee4abbabc41e63d6badf4a",
+          "previous": 1,
+          "revision": 2,
+          "reason": "trusted_stale",
+          "content_changed": true
+        }
+      ],
+      "authentic_observations": 8,
+      "stale_observations": 3,
+      "metadata_checks": 8,
+      "invalidated": [
+        "configuration_evidence",
+        "diagnosis"
+      ],
+      "citation_only_invalidated": [
+        "configuration_evidence"
+      ],
+      "retained_unchanged": [
+        "configuration_plan",
+        "initial",
+        "telemetry_evidence",
+        "telemetry_plan"
+      ],
+      "selective_recompute_nodes": 2,
+      "restart_nodes": 6,
+      "late_commit_rejected": true,
+      "refreshed_evidence": [
+        "configuration_evidence"
+      ],
+      "pending_semantic_recompute": [
+        "diagnosis"
+      ],
+      "publication_history_preserved": true
+    },
+    {
+      "case": "boutique/performance/1",
+      "condition": "dense_version_only",
+      "status": "completed",
+      "changed_sources": [
+        {
+          "source": "query:1267cbab83b9b3e71e280d35e12d15738581793da334d09f523818f3172c426d",
+          "previous": 1,
+          "revision": 2,
+          "reason": "dense_version_only",
+          "content_changed": false
+        },
+        {
+          "source": "query:47660ae20c6445f74a65843d71021273c8a44f87915a3bc1e2ab0483ded02b04",
+          "previous": 1,
+          "revision": 2,
+          "reason": "dense_version_only",
+          "content_changed": false
+        },
+        {
+          "source": "query:7cc762967955a0eee759f009b34f26ed84782f786e6e977080de8d98d12cf218",
+          "previous": 1,
+          "revision": 2,
+          "reason": "dense_version_only",
+          "content_changed": false
+        },
+        {
+          "source": "query:8b6342530c7c830459b5cc99466741269bfac314b8e4e551dc78593be4466898",
+          "previous": 1,
+          "revision": 2,
+          "reason": "dense_version_only",
+          "content_changed": false
+        },
+        {
+          "source": "query:924f743c327ff8874e8fde8f109912dab35ca8ae8fff94983e77711ece7aecbf",
+          "previous": 1,
+          "revision": 2,
+          "reason": "dense_version_only",
+          "content_changed": false
+        },
+        {
+          "source": "query:9f49398f81eb281195ca7faa9fd68121de6c75824ce0ef3b86cddde1905a5ea0",
+          "previous": 1,
+          "revision": 2,
+          "reason": "dense_version_only",
+          "content_changed": false
+        },
+        {
+          "source": "query:ced62aa80bff827da206fafd6402030d00c4006752ee4abbabc41e63d6badf4a",
+          "previous": 1,
+          "revision": 2,
+          "reason": "dense_version_only",
+          "content_changed": false
+        },
+        {
+          "source": "query:dc7df82f2a1bbd3468975cd034bf25881052f2c71814a606ac7706057fd9b9d8",
+          "previous": 1,
+          "revision": 2,
+          "reason": "dense_version_only",
+          "content_changed": false
+        }
+      ],
+      "authentic_observations": 8,
+      "stale_observations": 8,
+      "metadata_checks": 8,
+      "invalidated": [
+        "configuration_evidence",
+        "configuration_plan",
+        "diagnosis",
+        "initial",
+        "telemetry_evidence",
+        "telemetry_plan"
+      ],
+      "citation_only_invalidated": [
+        "configuration_evidence",
+        "diagnosis",
+        "initial",
+        "telemetry_evidence"
+      ],
+      "retained_unchanged": [],
+      "selective_recompute_nodes": 6,
+      "restart_nodes": 6,
+      "late_commit_rejected": true,
+      "refreshed_evidence": [
+        "initial"
+      ],
+      "pending_semantic_recompute": [
+        "configuration_evidence",
+        "configuration_plan",
+        "diagnosis",
+        "telemetry_evidence",
+        "telemetry_plan"
+      ],
+      "publication_history_preserved": true
+    }
+  ],
+  "raw_results": "runs/phase2-sources-v1/results.json"
+}
