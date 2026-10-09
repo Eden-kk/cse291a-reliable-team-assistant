@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 data = json.loads((ROOT / 'docs/phase1-matrix-results.json').read_text())
 controls = json.loads((ROOT / 'docs/phase1-controls.json').read_text())
 styles = getSampleStyleSheet()
-styles.add(ParagraphStyle(name='Body', fontName='Helvetica', fontSize=9.5, leading=12.4, spaceAfter=6))
+styles.add(ParagraphStyle(name='Body', fontName='Helvetica', fontSize=9.2, leading=11.8, spaceAfter=6))
 styles.add(ParagraphStyle(name='SmallBody', fontName='Helvetica', fontSize=8, leading=10, spaceAfter=5))
 styles.add(ParagraphStyle(name='Section', fontName='Helvetica-Bold', fontSize=11, leading=14, spaceBefore=8, spaceAfter=6, textColor=colors.HexColor('#183D5D')))
 styles.add(ParagraphStyle(name='ReportTitle', fontName='Helvetica-Bold', fontSize=19, leading=22, spaceAfter=8, textColor=colors.HexColor('#183D5D')))
@@ -70,7 +70,8 @@ for w in data['windows']:
         rows.append([labels[w['name']],f"{w['selective_total_tokens']:,}",f"{w['restart_total_tokens']:,}",f"{w['preventive_total_tokens']:,}"])
 table(rows,[150,118,118,118])
 p('Totals include the collection and consumed-fault prefix for both recovery methods. Each initial trajectory has a 360k-token ceiling; recovery gets a further 360k tokens, whereas prevention has one 360k ceiling. Recovery ceilings and tool limits match, but end-to-end preventive and recovery caps differ. All measured trajectories remain below their caps. Tokens include CLI context overhead and are not API dollar costs.')
-p('The runtime mutation propagates a false port into explanation/citations while preserving the correct protocol-mismatch label. The CPU-limit mutation produces an uncertain answer despite clean task success; both source fidelity and task completion are therefore reported. Recovery restores useful outputs in the completed accidental trials. The service-address mutation did not match collected evidence and remains in the intervention denominator. The adversarial case is analyzed separately; read-only execution cannot establish real operational-action safety.')
+p('The runtime mutation propagates a false port into explanation/citations while preserving the correct protocol-mismatch label. The CPU-limit mutation produces an uncertain answer despite clean task success; both source fidelity and task completion are therefore reported. Recovery restores useful outputs in the completed accidental trials. The service-address mutation did not match collected evidence and remains in the intervention denominator. The adversarial instruction was consumed without a forbidden tool request in completed clean/damaged trajectories; its recovery attempt was interrupted by HTTP 503. No adversarial recovery success is claimed. Read-only execution cannot establish real operational-action safety.')
+p('Both completed accidental recovery trials invalidate configuration evidence and its downstream diagnosis, retaining four independent/valid artifacts. Selective recovery uses one extra model call versus three for restart. Measured recovery-only latency is 8.27 vs 25.65 seconds (runtime) and 19.60 vs 31.12 seconds (performance); fixed method order and one repeat prevent a causal latency claim. Both live accidental injections occur at the collection-to-coordinator boundary, not two temporal stages.')
 p('Always checking source integrity is cheap for static snapshots and can prevent damage without additional inference. Its low cost is a meaningful counterexample to universal selective-recovery superiority. The selective method is expected to help when validating or restarting all work is expensive; this small experiment does not yet establish that general regime.')
 p('5. State controls and measured overhead', 'Section')
 o=controls['cpu_overhead']; med=lambda k:o['summary'][k]['median']/1e6
@@ -106,5 +107,5 @@ def footer(canvas, doc):
 
 out=ROOT / 'output/pdf/phase1-report.pdf'
 out.parent.mkdir(parents=True,exist_ok=True)
-SimpleDocTemplate(str(out),pagesize=letter,leftMargin=54,rightMargin=54,topMargin=42,bottomMargin=54).build(flow,onFirstPage=footer,onLaterPages=footer)
+SimpleDocTemplate(str(out),title='Reliable Team Assistant - Phase 1',author='Yiting Dai',pagesize=letter,leftMargin=54,rightMargin=54,topMargin=42,bottomMargin=54).build(flow,onFirstPage=footer,onLaterPages=footer)
 print(out)
