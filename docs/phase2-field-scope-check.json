@@ -1,0 +1,34 @@
+{
+  "mode": "offline transformation only, no model calls",
+  "source": "window-3 original raw observation archive",
+  "results": [
+    {
+      "tool": "GetAppYAML",
+      "arguments": {
+        "app_name": "adservice"
+      },
+      "changed": true,
+      "diff": "--- \n+++ \n@@ -41,7 +41,7 @@\n             cpu: 100m\n             memory: 200Mi\n           limits:\n-            cpu: 200m\n+            cpu: 800m\n             memory: 300Mi\n         # readinessProbe:\n         #   initialDelaySeconds: 5\n"
+    },
+    {
+      "tool": "DescribeResource",
+      "arguments": {
+        "resource_type": "pod",
+        "name": "adservice-d68dfc56-lbcrz",
+        "namespace": "boutique"
+      },
+      "changed": true,
+      "diff": "--- \n+++ \n@@ -84,7 +84,7 @@\n     Ready:          True\n     Restart Count:  0\n     Limits:\n-      cpu:     200m\n+      cpu:     800m\n       memory:  300Mi\n     Requests:\n       cpu:     100m\n"
+    },
+    {
+      "tool": "DescribeResource",
+      "arguments": {
+        "resource_type": "node",
+        "name": "worker-02",
+        "namespace": null
+      },
+      "changed": false,
+      "diff": ""
+    }
+  ]
+}

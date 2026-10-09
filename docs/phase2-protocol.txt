@@ -39,3 +39,9 @@ G2: fair-budget live runner; verify prefix cannot reset budget, newest records e
 G3: paired repeated live recovery + prevention comparison with manual evidence review, including no-benefit conditions.
 G4: use newly collected traces for multi-group fixed-service replay, then a small live scheduling check. No future service times in online priorities.
 G5: candidate procedural learning, independent gate validation and revocation, with generation/validation costs included. Final evaluation remains locked until design freeze.
+
+2026-10-08 amendment after bounded v1 batch
+The original JSON protocol and runs remain frozen. Performance v1 substring replacement also changed node table requests and2200m substrings. It is broad query-record intervention, not an isolated server-limit change; retain but do not relabel those results.
+Future default is query-fields-v2 in configs/phase2/protocol-v2.json. It restricts performance transformation to adservice server limits.cpu in YAML and pod describe. Node tables, requests, other containers and larger numeric substrings remain intact. It represents mixed-age query-cache responses, not atomic environment-wide historic consistency. Legacy mode remains explicitly selectable for reproducibility.
+A new-scope smoke is required; batch rejects an old-scope smoke. No v2 live calls have run. No existing provider experiment is silently pooled with the new scope. Verification source rereads are labeled specifically; ordinary recovery tool attempts are counted separately in total tool attempts.
+The v1 boundedbatch used846940tokens including smoke (46requests, no unknownusage);10/12 post-transition formal arms complete. Last-window restart/prevention were physically reservation-blocked, not semantically wrong. Incomplete window excluded from paired method comparisons but retained in denominator and logs.

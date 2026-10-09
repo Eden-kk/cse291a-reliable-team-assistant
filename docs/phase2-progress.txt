@@ -1,18 +1,30 @@
 Phase 2 progress — 2026-10-08
 
-Implemented and tested
-- Query-scoped trusted revision archive separates authenticity from freshness. Source notifications update the actual dependency graph; unrelated results stay valid.
-- Stale in-flight reply test confirms output is rejected but its 23 tokens remain charged. Publication history remains append-only.
-- Offline lifecycle controls use saved Phase1 collection graphs for runtime/1 and performance/1: unchanged, version-only, trusted-stale, dense-version-only (8 conditions).
-- Sparse source changes invalidate configuration evidence plus the synthetic diagnosis marker: 2/6 nodes, retaining4. Dense source revisions invalidate6/6 and retain0. No-change invalidates0.
-- After fetching current configuration evidence, diagnosis remains invalid pending real recomputation. Offline results do not claim semantic recovery, call reduction, or latency gain.
-- Full raw controls: runs/phase2-sources-v3/results.json; compact frozen results: docs/phase2-source-controls.json. Earlier v1/v2 retained; v3 corrects labels and removes a constructed citation-only comparison.
+本轮完成
+查询级可信版本与依赖恢复已接入真实调查；源真实性与新鲜度分离；旧的在途输出被拒但费用保留。8组离线控制证明：稀疏变化失效2/6节点、保留4；密集变化失效6/6，无选择性优势。离线不计语义恢复成功。
+真实smoke后运行两个已见案例各两次固定重复，轮换restart/selective顺序。每方法端到端上限240000tokens/24工具尝试，包含同一历史前缀；共享物理上限900000tokens（含smoke）。
+总计46次真实请求，846940tokens，全部usage已知，无供应商错误。正式12个后续对照中10个完成，全部原生JRA/ECR及合同通过；2个被共享预算预留阻止。最后一组不用于配对优劣比较，不能用selective4/4、restart3/4来宣称质量差距。
+实际coordinator请求核验：完成的后续结果均读到当前来源版本；runtime9556被9555替换，performance800m被200m替换。保留遥测与刷新配置确实共同进入推理。
 
-Current gate
-The live adapter/runner must pass budget and freshness integration tests before inference. Per-method total240000tokens/24tool attempts, per-call60000reservation, shared physical cap900000tokens. Prefix is included in both recovery methods; unknown usage stops the batch. See docs/phase2-protocol.txt.
+完整配对窗口的总tokens（均包含相应初始工作）
+runtime重复1：selective71783；restart103622；诊断前验证51618。
+runtime重复2：selective71298；restart103500；诊断前验证51718。
+performance重复1：selective85689；restart118135；诊断前验证59199。
+selective额外1次模型调用，restart额外3次；prevention端到端3次。预先验证的通知时点更早，不能把三列作为同一恢复时点的严格排名。一次调用耗时68.59秒，时延只作描述。
 
-Remaining
-- Live smoke then fixed-repeat recovery/prevention comparison, inspect actual consumed new content and current-state scoring.
-- Metadata/query dependency coverage: current identity is per tool+arguments, not semantic cross-query resource dependencies. Notifications are supplied by the experiment; automatic detection is not implemented.
-- Dynamic benchmark history is constructed; no real observed incident evolution is claimed.
-- Multi-group shared-budget study and gated learning follow recovery validation. Final8 cases remain locked.
+发现及修正
+1. runtime前缀根因本来正确：证明过期事实更新，不是错误根因恢复。performance前缀已给相同候选根因但uncertain，恢复为diagnosed：属于解除abstention。瞬时CPU需求未测得，不能把推断因果当实验证实。
+2. v1全局200m→800m还改到node表其他请求与2200m→2800m，因此只可称广泛查询记录变更，不能称单变量CPU-limit实验。所有结果保留，不追溯覆盖。
+3. query-fields-v2已修正并离线检查：只改变adservice server的limits.cpu，两份查询各一行；requests、node表、sidecar、数值子串不变。严格scope测试已加入，legacy模式仅供原结果复现。v2尚未运行新的真实推理，不与v1混合统计。
+4. 60000固定reservation在剩余额度不足/并发预留时拒绝调用，即使实际可能更低。剩余53060tokens不视作可用模型预算；本批已停，不追加成功导向重试。
+
+关键文件
+docs/phase2-protocol.txt；configs/phase2/protocol.json（v1冻结）；configs/phase2/protocol-v2.json（下一批）。
+docs/phase2-live-results.json：全部窗口与成本、失败、输入校验和。
+docs/phase2-source-controls.json：离线对照；docs/phase2-field-scope-check.json：v2实际查询diff。
+runs/phase2-runtime-smoke-v1；runs/phase2-fixed-repeats-v1：原始调用、输入、输出、来源和计费。
+
+下一步
+优先在新批次用v2做独立smoke，审核两份查询的一致性及实际当前证据消费，然后固定小矩阵；不复用v1 smoke作为v2验证。补足版本变化在诊断后/发布后的通知与验证+按需恢复对照。
+来源依赖目前是tool+arguments，未覆盖跨查询的语义资源依赖；状态变化为构造的查询缓存历史，不是真实连续运维时间序列。先补这些恢复边界，再推进多群调度与受验证门槛约束的学习；final8保持锁定。
+当前无后台实验运行，无AWS机器/新付费API，无课程提交。Phase1报告和ZIP未修改。
