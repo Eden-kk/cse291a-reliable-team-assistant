@@ -10,10 +10,10 @@ from team_assistant.cloudops import load_vendor
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def score(directory):
+def score(directory, vendor=None, output=None):
     manifest = json.loads((directory / 'manifest.json').read_text())
     result = json.loads((directory / 'result.json').read_text())
-    vendor = ROOT.parent / 'preparation/291a-team-agent/vendor/Cloud-OpsBench'
+    vendor = vendor or ROOT.parent / 'preparation/291a-team-agent/vendor/Cloud-OpsBench'
     native = importlib.import_module(load_vendor(vendor) + '.evaluation')
     system, category, case = manifest['case'].split('/')
     label_root = vendor / 'process-label' / system / category
@@ -30,7 +30,7 @@ def score(directory):
     report = {'case': manifest['case'], 'split': manifest['split'], 'scores': scores,
               'semantic_support_audit': 'pending; native scores do not establish causal support',
               'oracle': truth, 'scoring_stage': 'after completed model run; never supplied to model'}
-    path = directory / 'scores.json'
+    path = output or directory / 'scores.json'
     if path.exists():
         raise ValueError('Refusing to overwrite scores')
     path.write_text(json.dumps(report, indent=2))
@@ -40,4 +40,7 @@ def score(directory):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('directory', type=Path)
-    score(parser.parse_args().directory)
+    parser.add_argument('--vendor', type=Path)
+    parser.add_argument('--output', type=Path)
+    args = parser.parse_args()
+    score(args.directory, args.vendor, args.output)
