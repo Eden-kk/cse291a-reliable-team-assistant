@@ -1,0 +1,7 @@
+policy,group,arrival_to_completion_seconds,admission_wait_seconds,model_calls,tokens,native_success
+fair-reserve,recovery,28.204793291995884,0,1,26397,True
+fair-reserve,service,38.653758833999746,0,4,82650,True
+fair-reserve,runtime,33.35915429200395,0,3,50960,True
+fair-admit-one,recovery,18.124829250009498,0,1,26403,True
+fair-admit-one,service,28.982166375004454,8.957998943515122e-06,4,82465,True
+fair-admit-one,runtime,50.24861545799649,28.983729125000536,3,51013,True

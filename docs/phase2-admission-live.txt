@@ -1,0 +1,37 @@
+Phase2真实三群接纳实验 — 2026-10-09
+
+设计与执行
+实际推理代码743d62b；固定protocol为configs/phase2/admission-live-v1.json。performance/1历史CPU证据前缀执行一次，推进到当前源后各策略独立clone；service/1与runtime/1均以当前原始只读快照运行，同一代码/prompt、不同群identity。
+先fair-reserve，再fair-admit-one，均为并发2、每call预留60000、每个逻辑窗口360000tokens且包括前缀；physical cap600000。前台同时到达、service先登记；无最终集或新收费API/AWS。两个策略各一窗口，只是校准，不是统计比较。
+
+全部结果（arrival→完成，含接纳等待；时间秒）
+策略             恢复       service     runtime    runtime接纳等待
+fair-reserve     28.205     38.654      33.359     0
+fair-admit-one   18.125     28.982      50.249     28.984
+6份后续诊断全部完成，native JRA/ECR=1，输出合同和预算检查通过；这不等于全部语义因果表达均有充分支持。
+service与runtime分别都是4/3模型调用，恢复1调用，两策略相同。不能声称节省模型调用或提升完成率。
+预留策略窗口逻辑219255tokens，接纳策略219129，均包含59248的共享历史前缀。126token差异主要来自生成输出，不是可信成本优化证据。
+全批19次物理调用、379136tokens；0未知用量、0provider错误；账本逐组/窗口/物理前缀均一致。两个窗口生命周期全部drained。当前无后台实验。
+
+解释
+接纳后runtime先在workflow队列等待约28.98秒，其模型派发队列几乎为0；不能只看后者声称“没有排队”。它真正的端到端时间是50.25秒。
+service先完成、恢复也更早，但最后一个群明显更晚。因此不替换默认策略，也不把30秒探索目标写成生产保证。恢复和第一个群的时延差还受模型服务时间和输出差异影响。
+本批360k没有触发低预算拒绝，未验证回放中的“挽救一个完成任务”效果。要支持这一结论，仍需预算压力下的真实对照和反向顺序重复。
+
+运行时修复与测试
+本批结束后代码5a4e568补齐取消窗口等待已发provider结算的finally，补充protocol硬编码字段核对。
+取消回归测试发现Dispatcher.join在已完成任务的done callback尚未执行时可能忙循环；已显式清理完成批次，防止事件循环饥饿。132项测试全部通过，无跳过。
+这些是后续代码修复；本批推理仍归属743d62b，不把修复后的测试当作重新运行本批实验。尚不具备跨进程崩溃恢复保证。
+
+材料
+原始请求/回复、usage、源版本、事件、答案：runs/phase2-admission-live-v1/
+冻结汇总：phase2-admission-live-results.json；逐群CSV：phase2-admission-live.csv。
+独立原生评分在推理结束后运行scripts/score_run.py；原始oracle未进入推理输入。
+复现会消耗订阅额度：scripts/run_admission_live.py --vendor <Cloud-OpsBench> --output <新目录>。
+核账：scripts/summarize_admission_live.py <batch目录> --output <新JSON>。
+
+下一步
+保持接纳功能opt-in。后续固定反向策略执行顺序，并加入低预算压力；完整报告被拒绝/未完成群、接纳等待及前缀成本。不要只围绕本批更快的service案例调参。
+学习闭环仍需独立learning/gate-validation；final8继续锁定。Phase1交付包不变。
+
+独立语义复核已完成：六份答案未发现实质不受证据支持的因果断言；20处引文全部精确匹配实际消费观察，恢复无800m残留。19份provider事件文件未见禁止工具活动，不代表独立OS/网络审计。绑定原始结果hash的记录见runs/phase2-admission-live-v1/semantic-review.json。
