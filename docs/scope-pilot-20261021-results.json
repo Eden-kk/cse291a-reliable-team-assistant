@@ -1,0 +1,132 @@
+{
+  "outcomes": {
+    "parallel-one": {
+      "state": "completed",
+      "seconds": 22.393979832995683,
+      "contract_errors": [
+        "uncertain: not a successful diagnosis"
+      ],
+      "quality_scoring": "pending independent native and semantic review",
+      "tokens": 57056,
+      "scores": {
+        "CA": 0.0,
+        "FA": 0.0,
+        "JRA": 0.0,
+        "MC": 0.6666666666666666,
+        "EOC": 0.3333333333333333,
+        "ECR": 0.0,
+        "EE": 0.25,
+        "contract_valid": false,
+        "budget_valid": true
+      },
+      "semantic_support": "supported uncertainty; not success",
+      "native_joint_success": false
+    },
+    "telemetry-first-one": {
+      "state": "completed",
+      "seconds": 25.627602458000183,
+      "contract_errors": [],
+      "quality_scoring": "pending independent native and semantic review",
+      "tokens": 63477,
+      "scores": {
+        "CA": 1.0,
+        "FA": 1.0,
+        "JRA": 1.0,
+        "MC": 1.0,
+        "EOC": 0.3333333333333333,
+        "ECR": 1.0,
+        "EE": 0.375,
+        "contract_valid": true,
+        "budget_valid": true
+      },
+      "semantic_support": "supported diagnosis; independent post-inference review",
+      "native_joint_success": true
+    },
+    "parallel-two": {
+      "state": "completed",
+      "seconds": 30.991361750056967,
+      "contract_errors": [],
+      "quality_scoring": "pending independent native and semantic review",
+      "tokens": 81370,
+      "scores": {
+        "CA": 1.0,
+        "FA": 1.0,
+        "JRA": 1.0,
+        "MC": 0.6666666666666666,
+        "EOC": 0.6666666666666666,
+        "ECR": 0.0,
+        "EE": 0.3,
+        "contract_valid": true,
+        "budget_valid": true
+      },
+      "semantic_support": "supported diagnosis; independent post-inference review",
+      "native_joint_success": false
+    }
+  },
+  "physical_tokens": 201903,
+  "physical_halted": false,
+  "settlements": [
+    {
+      "reservation": 60000,
+      "actual": 15929,
+      "charged": 15929,
+      "halted": false
+    },
+    {
+      "reservation": 60000,
+      "actual": 16005,
+      "charged": 16005,
+      "halted": false
+    },
+    {
+      "reservation": 60000,
+      "actual": 25122,
+      "charged": 25122,
+      "halted": false
+    },
+    {
+      "reservation": 60000,
+      "actual": 15763,
+      "charged": 15763,
+      "halted": false
+    },
+    {
+      "reservation": 60000,
+      "actual": 22833,
+      "charged": 22833,
+      "halted": false
+    },
+    {
+      "reservation": 60000,
+      "actual": 24881,
+      "charged": 24881,
+      "halted": false
+    },
+    {
+      "reservation": 60000,
+      "actual": 15756,
+      "charged": 15756,
+      "halted": false
+    },
+    {
+      "reservation": 60000,
+      "actual": 15765,
+      "charged": 15765,
+      "halted": false
+    },
+    {
+      "reservation": 60000,
+      "actual": 24409,
+      "charged": 24409,
+      "halted": false
+    },
+    {
+      "reservation": 60000,
+      "actual": 25440,
+      "charged": 25440,
+      "halted": false
+    }
+  ],
+  "scope": "one seen development case, fixed order; controlled recovery is separate and uses fake outputs",
+  "source_commit": "aae219cae19a3fb608cce331301f4658421514e8"
+}

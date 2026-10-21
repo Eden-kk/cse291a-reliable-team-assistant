@@ -1,3 +1,6 @@
+最新进展：2026-10-21 边界修订与新预实验完成
+当前计划以 docs/experiment-plan.txt v0.3 和 docs/current-proposal.txt 为准：核心安全恢复，调度第一扩展，学习第二扩展。12受控条件/17测试通过；新10次真实调用201903 tokens，遥测先行单轮JRA/ECR通过，并行单轮uncertain、并行双轮JRA1但ECR0。全量记账核对通过；final8未打开，模型实验已结束。缺失provenance目前只验证拒绝，自动保守重启仍需实现和测量。详见scope-pilot-20261021.txt。
+
 最新进展：证据交接恢复代价12条件完成 — 2026-10-09
 受控过期矩阵表明：telemetry失效时parallel selective1模型步骤/1工具，telemetry_first2/2；配置失效均1/1，initial失效均3/4，与restart相同。161测试通过，0真实模型调用，默认parallel不变。
 详情collection-recovery.txt/results.json；下一步预登记跨条件质量—恢复代价比较，避免仅按首次诊断收益全局切换。final8锁定，无后台任务。

@@ -1,135 +1,48 @@
-CSE291A Team Assistant — 正式实验计划 v0.2（按课程Phase 1重排）
-已提交方向：Option 5；Learning, Recovery and Scheduling under API Budgets。
+Experiment plan v0.3 — scope revision 2026-10-21
+Authoritative execution priorities; submitted-proposal.txt and prior traces remain historical evidence.
 
-1. 项目要回答什么
-H1 恢复：在保证诊断与证据质量时，哪些依赖密度下选择性恢复比全重启省资源？验证/追踪开销何时抵消收益？
-H2 来源：实际输入及共享知识版本追踪，相比citation-only能减少多少错误保留，代价是什么？
-H3 调度：前台容量预留、公平/aging、恢复期限与完成优先如何影响首次有效响应、过期/错误结论更正、饥饿和吞吐？
-H4 学习：从已解决开发事件生成、经过门槛验证的调查流程知识，是否改善后续独立事件的查询路径、证据闭环或总成本？与固定/不经门槛的更新相比如何？
-统一链路：事件调查→候选流程知识→独立验证→版本发布→多个群消费→错误版本撤回→依赖失效→恢复任务与新告警共享预算。
-保留负结果；完成研究不要求所有H都成立。
+1. Question and causal boundary
+Study recovery AFTER a trusted source/version/artifact invalidation notification. Notification identifies invalid material, never the answer. Automatic general error detection is excluded. A human configuration-change clue triggers querying, not an automatic causal rule. Source revisions are controlled constructions over existing snapshots, not real historical incident streams.
+Core = safe dependency recovery. Priority extension = multi-group budget scheduling. Second extension = independently gated procedural learning. No production chat integration, live remediation, model training, crash durability, or broad semantic-verifier claim.
 
-2. 已有证据及不能沿用的结论
-preparation/291a-team-agent中的pilot/tuning/integrated-pilot是不可修改的历史证据。
-六例clean team/single均根因6/6、证据5/6；single更少调用。不能以此宣称多Agent优越。
-三组过期但值未变的恢复10→7新增调用；不是错误内容恢复或端到端美元收益。
-一次学习更新：验证3/3，新例固定/候选均2/3；经验只在最终回答接入，没有学习收益证据。
-36组已知成本调度回放表明前台/恢复时延取舍和过载失败；不是未知成本的真实API控制器。
-因此正式代码与结果放独立仓库；历史文件只引用，禁止覆盖、改标签或删失败。
+2. Claims and counterexamples
+C1: with independent reusable work, selective recovery can preserve quality with less recomputation. Counterexample: dense invalidation, expensive validation, or insufficient evidence makes restart/verification preferable.
+C2: consumed-input/version tracking blocks invalid descendants and obsolete publications; incomplete capture requires fail-closed fallback. This is tested relative to the captured dependency model, not a proof of real-world causal completeness.
+C3: evidence handoff can improve collection but widen the recovery closure. Measure both initial quality and recovery work; do not choose topology from initial token savings alone.
+Learning efficacy and scheduling superiority are not prerequisites for these claims.
 
-3. 数据、划分和冻结
-主数据Cloud-OpsBench，commit ea05dafbc87b5985df8721622d63d4229c2b4224，MIT。服务事故使用原始快照与工具；只构造工作流故障、到达时序和模拟发布。
-所有已使用/看过结果的15个案例列入development_seen。学习、门槛验证、集成调试与最终集分开；以configs/splits.json为唯一清单。
-初始预留：learning6、gate-validation6、shakedown4、final8，按runtime/service/performance分层、固定seed抽样。预留不是承诺全部付费运行；预算不足时只在打开最终集前缩小，并记录理由。
-当前只有case-ID级隔离；能够确认相同generator/template的近重复时，先成组再划分。未确认机制隔离就不得声称未见故障家族泛化。
-只把question/允许工具观察传入模型；metadata.result、process-label、golden trajectory和答案目录名留在评分进程。模型无文件/网络工具。
-最终集在configs/freeze.json记录代码commit、模型版本/alias、prompt、memory、门槛、fault/arrival manifest、token/调用预算hash后方可运行。脚本默认拒绝final_locked；明确解锁也必须有完整freeze。
-最终失败只能用于下一研究版本，不能用其答案更新知识后重跑同一批并称新泛化。所有失败、超时、限额、格式错误和拒绝入队保留。
-候选生成资料只来自learning/development_seen；选择候选和门槛只用validation。测试前固定知识版本。后续online学习若做，必须先评分再反馈，并单独报告反馈协议。
+3. Definitions and outcomes
+Separate applied injection, consumed exposure, factual/decision propagation, detected invalidity, refreshed artifact, and corrected answer. A correct root with false supporting facts is not a clean success. Version-only refresh is not wrong-answer repair. Nonmatching/ignored injections stay in the denominator with their state.
+Report root/object correctness, native ECR, independent evidence support/source fidelity, output validity, stale-publication rejection separately and as a declared joint success. Independent review reads only actually visible evidence and is not passed back to inference. Freeze semantic sufficiency criteria before formal runs, using only development material; benchmark-required tool paths may differ from semantically sufficient evidence. Preserve both scores and never retroactively replace the native gate.
+Uncertain, provider error, timeout, budget rejection, and missing output are unsuccessful scheduled conditions with distinct causes. Show total quality/cost over ALL conditions before secondary cost comparisons on quality-preserving pairs. Include failed/cancelled work and unknown-usage accounting.
+Latency = arrival to quality-qualified answer, and invalidation to quality-qualified linked correction. Uncertain-return time is reported separately. Small pilots use per-condition values/ranges, not meaningful population p95 or significance claims.
 
-4. 工作流与角色接口
-Configuration/status与Telemetry/dependency各自有上下文和工具选择；Coordinator读原始证据与两角色结果，可补充查询。
-Memory必须在planner选择工具前显式提供；记录该步骤实际消费的版本，不能仅在最终答复追加建议。知识是条件→建议检查→证据/适用范围；不存具体测试事件答案。
-运行ID分team/group/incident/step/attempt/epoch。每步存实际输入artifact版本、source版本、policy版本、查询、结果hash、模型/prompt/tool版本、usage、时间和状态。
-原始观察不可被模型自信摘要替代；输出具对象/根因/引用约束。引用匹配不是语义真值；盲审抽样支持性。
-工具只读；发布/工单写入先模拟并有动作账本。普通升级只影响新任务；撤回错误版本才失效实际消费者。缺失来源保守扩大重算。
-恢复后拒绝旧attempt及已失效输入写入；无关epoch变化不应丢弃独立有效工作。保留已发布P1并追加P2关联更正；不得抹掉外部历史。恢复读干净的新状态，不能仅改版本号复用旧内容。
-v0.1实现进程内恢复和追加式事件账本，在运行完成后导出日志；跨进程重启/实时持久化是后续里程碑，不能用日志存在宣称已具备。
+4. Policy fairness
+No-recovery, restart and selective receive the same saved consumed-fault prefix and invalidation notification. Preserve historical ledger and prefix/tool costs; each fork has isolated state and equal resource ceilings.
+Consumption-time source-consistency verification is a separate end-to-end baseline with its own prefix; it may prevent corruption. It checks source identity/content/version using available trusted records, not all semantic claims. Charge checks, fresh queries and retries. Do not compare its incremental cost directly with post-fault recovery.
+Report initial, incremental recovery and end-to-end calls/tokens/tools separately; shared prefixes count once physically and once per method logically. Track CPU/storage overhead separately from provider latency. Subscription CLI tokens include wrappers and do not imply dollar savings or real RPM/TPM guarantees.
 
-5. 模型访问与费用门槛
-E0先确认CSE291A账户/角色、模型权限、区域、API credit适用性和余额。CSE260账号及个人新付费API不用于本项目。
-现在已有订阅可用于小型开发，但CLI包装token/缓存不能直接映射Bedrock价格。模型切换重新过开发校准门槛。
-预算总上限$50：compute20、API15、storage5、reserve10，均为规划cap。先实测每类请求input/output/reasoning、失败重试、gate成本，再按当时允许provider价格计算上界。未验证之前不启动大矩阵。
-每call保守预留输入估计+最大输出；返回后用actual usage结算，释放余量。未知usage按预留计费并停止新派发；actual超过cap记录overrun并停发。普通取消不能把已发请求当免费。
-跟踪总calls/tokens、并发、每组额度、RPM/TPM及实际费用。v0.1先实现并发/总token预留；真实RPM/TPM限流、模型tokenizer与美元账本为E0/E1完成项。
-每批最多10%可用实验预算；到API规划cap80%只允许分析/收尾，不再拓展；跨支出cap前重新明确资源方案。
-大实验以tmux+caffeinate、日志、退出状态运行。AWS仅需要时开启，结束确认Stopped。当前阶段不需要GPU或常驻集群。
+5. Staged matrix, not a full Cartesian product
+P0 engineering preflight: existing two collection modes x three invalidation locations x two recovery modes = 12 deterministic conditions. Independently specify expected invalidation sets and cost counters; check state isolation, old-write rejection and settled budgets. Run missing-provenance/publication controls separately. Current controls prove rejection, not automatic full-restart fallback: implement and measure that fallback before claiming recovery availability. Until then report fail-closed rejection as an unsuccessful investigation. Fake-provider steps are not model quality or token measurements.
+P1 semantic feasibility: fixed seen service/1, parallel-one, telemetry-first-one, parallel-two. Existing frozen protocol: at most 10 inference calls, 600000 physical reserved tokens, 240000 per arm, 24 tool attempts, 60000 reservation/call. No retries, no final access, empty memory. Score outputs after inference and audit visible evidence. Fixed order/single case only establishes feasibility. A second run must remain explicitly a development repeat.
+P2 core development: use existing seen runtime/service/performance cases to finalize fault contracts and all four baselines. Include unchanged/version-only controls, wrong content, changed-content stale evidence, dense invalidation and incomplete provenance. Do not require every fault to propagate. Confirm baseline validity and measure overhead before freezing formal runs.
+P3 formal ceiling: existing final_locked eight incidents remain unopened until protocol and complete-batch budget preflight pass. Predeclare two applicable accidental fault conditions per incident and no-recovery/restart/selective = at most 48 post-fault outcomes, plus eight clean and up to sixteen end-to-end verification outcomes (72 total, one repetition). Eligibility uses tool schema/source availability, not answer labels or prior outcomes. Unmatched faults are recorded rather than replaced. This is a ceiling, NOT a launch authorization or sufficient budget estimate; calibrate and reduce incident count in a new frozen protocol before any held-out inference if needed. Repeats require a separately frozen affordable plan. Eight incidents support limited descriptive evidence; aggregate by incident, never count calls or copied groups as independent samples.
+P4 topology sensitivity: parallel versus telemetry-first on a small predeclared development subset under equal diagnosis-round ceilings; parallel-two is a separate round-budget sensitivity, not a pure topology contrast. Combine real clean quality/cost with separately measured recovery branches. Do not add simulated units to real tokens. Final topology choice is fixed before held-out outcomes.
 
-6. 分阶段实验矩阵（上限，不一次全部执行）
-E0 Provider calibration
-2–3个已见开发案例，串行及并发2，测API可用性/usage/延迟、失败与重试。并发不是研究结果。
-通过条件：没有oracle访问；每call原始请求/回复/usage完整；预算账本可核对；明确失败状态；工具调用与输出合同有效。
+6. Extension gates
+Scheduling: only after core baselines and quality scoring pass. Use one fixed recovery/topology and FIFO versus one existing admission/reservation policy, at most 2/4 groups x spaced/burst x two policies = eight initial windows. Include foreground AND recovery completion, queue wait, rejected/unfinished jobs, logical/physical budget, idle capacity and correction delay. Replay and real concurrent calls are separate evidence. Disable learning.
+Self-evolve: use learning-only episodes; gate on a separate complete validation batch, provenance-bound review and total generation/validation costs. Existing bundle is inactive; incomplete validation and two service-case savings do not establish efficacy. No requirement to manufacture a successful learning result. Memory revocation controls remain part of core even if learning is omitted.
+Integrated demo: one revoked shared-rule version while a fresh group arrives, after standalone controls pass. Demonstrates composition, not a factorial causal study.
 
-E1 Clean workflow / query-stage memory plumbing
-4个shakedown案例×固定/候选memory×1重复，最多8调查。在新代码上确保memory进入实际planner；保持模型、工具和总预算一致。
-要求至少3/4根因及证据完整，并有逐例语义核验；否则仅用开发集修复，不打开final。
-比较历史只作背景；不能把修复过的同一shakedown集作为最终测试。
-工作流真实多Agent输出必须影响后续查询/判断；假后端只算软件集成测试。
+7. Milestones and stopping rules
+Oct21–27: scope-consistent proposal, P0/P1, core evidence audit, reconcile report with exact Phase1 archive. Existing supplementary report and frozen package must not be mixed without rebuilding/verifying.
+Oct28: planning target for Phase1 submission; verify current course channel and rubric before upload.
+Oct29–Nov12: P2 and tracking/verification overhead; freeze collection topology and eligibility.
+Nov13–23: affordable formal protocol then P3; all failures retained. No held-out adaptation.
+Nov24–30: boundary analysis and optional scheduling; self-evolve only if time/budget remains.
+Dec1–10: reproducible artifact/report, course requirements recheck. No paid resources or account resets without authorization.
+Stop live batch on provider/account incompatibility or unknown usage that prevents affordable reservation. Preserve failures; repair tooling on development before a new declared batch. Do not switch models/order/limits midway and merge outcomes.
 
-E2 Learning
-最终初始小批4案例×frozen/ungated/gated×1重复=12调查；预算允许扩至8×3×2=48。
-至少生成3个自然候选，保存生成过程与被拒绝候选；constructed harmful controls单列。
-候选生成成本、门槛验证、重试、拒绝候选均计入学习总成本；比较相同资料和候选集合，避免方法看见不同答案。
-门槛预先固定：case级质量不得退化、无新语义/对象错误；成本门槛与权重在验证集确定，不在final调。安全失败时允许不更新。
-gated/ungated同一候选时复用相同运行并明确等价，不能伪造策略差距。
-指标：根因/对象、ECR、语义支持、查询次数/重复查询、达到证据所需calls/tokens、错误提升/拒绝、回归率与成本摊销。
-
-E3 Recovery
-初始4案例×2故障×3策略×1=24；上限8×2×3×2=96，另加可复用的clean/no-recovery对照。
-故障：错误中间claim；错误/过期共享policy或观察版本。仅过期但值不变作为单独容易控制。
-完整重启/选择性恢复共享已消费故障前缀、相同坏artifact身份和可查询环境；不提供根因答案。
-Always-verify在进入下游前核对来源/版本/claim，其前缀可能不同，单独比较端到端结果。不能把通知后verify-all当作always-verify。
-覆盖早/晚注入、独立分支、join、共享状态、密集污染、来源缺失、已发布后失效。实际被忽略的故障不算恢复成功。
-自动故障检测不作为主要变量；误报/漏报若测独立报告。恶意指令与偶发错误单列。
-指标：暴露/消费/传播率、错误保留、重算/保留有效工作、恢复正确性、source新鲜度、跨群/权限错误、过期写入、发布更正及总成本。
-
-E4 Scheduling
-先用E1–E3真实新trace做2/4群×间隔/突发/过载×FIFO/fair-aging/completion-aware×restart/selective=72个便宜回放条件；至少3固定arrival seeds，重复不当作独立事故。
-分别报告known-cost replay和estimated-cost replay；后者加预先指定±25%用量估计误差。不得偷看未来真实耗时用于线上优先级。
-正式live起步选2个arrival条件×2策略×1重复=4窗口，预算校准后最多2/4群×2负载×2策略×2重复=16窗口。用同一API容量、提示、arrival/fault schedule。
-初次有效响应必须达到根因/证据门槛；报完成/未完成/拒绝数，不能只统计幸存者延迟。
-同时报response SLO与recovery SLO，p50/p95、小样本范围、每群吞吐、最大ready wait、饥饿、抢占限制、预留浪费和未知usage。
-过载必须比较限制活跃incident数和优先完成已有调查；减少拒绝可能增加响应排队，坦诚报告。
-v0.1不能声称hard fairness或真实API成本上界；输出上界/供应商usage可验证后再升级。
-
-E5 Integrated acceptance
-三个固定窗口：部分知识污染、全污染、预算过载。按同一事件与到达seed比较完整设计及移除一个组件的变体；先1重复，预算允许2。
-必须真正连接同一memory版本→实际模型上下文→产生的artifact→撤回→失效闭包→dispatcher恢复→新群响应→已发布历史修订。
-模型/工具请求及输出成本均真实记录。受控fake/recorded backend的工程演示单列，不算语义或生产性能实验。
-单个演示只能证明连接可运行；各组件因果贡献依靠E2/E3/E4。
-
-7. 评分与统计
-Primary joint success = correct object/root + native ECR + output contract valid + evidence support检查。四个分项同时报告；不能把ECR有值误当整体成功。
-每个eligible case/window入分母；uncertain是未成功、无证据不能算正确、budget/timeout/provider failure另列原因，不删除。
-延迟：arrival→首个达到明确质量标准的答复；revocation→正确linked correction。expiry-only替代计refresh latency，不称错误答案修复。
-成本：initial/recovery/end-to-end，工具、LLM、candidate/gate、tracking CPU/storage、废弃/取消/重试都包含。物理共享prefix与每方法逻辑计费分开。
-配对比较，按独立incident做cluster bootstrap；重复calls/groups不是独立样本。小样本仅报描述性结果/区间，不宣称普遍优势。
-主图：质量-成本散点、恢复成本vs污染密度、first-response和correction双目标、预算压力-完成率、memory查询路径和回归案例。保存逐例CSV/JSON及生成脚本。
-
-8. 实现验收
-M0启动：独立repo/config/计划/历史proposal；无网络测试；memory真实进入请求；trace可读。
-M1状态：不可变已验证policy，普通升级pin旧版本；错误撤回仅影响消费者；遗漏capture保守回退；跨team禁止访问；恢复重新绑定来源。
-M2调度：输入估计+输出cap预留，actual结算；取消仍计费；未知usage/超限停发；不可负担foreground不占预留；无可运行任务明确交接。
-M3端到端：A/B消费v1，C使用v2；撤回v1；A/B旧在途结果被拒，独立证据保留；恢复作业与C新任务同dispatcher执行；P1保留P2关联。
-M4真实调试：在development/shakedown完成一次真实模型+只读工具的三角色调查与受控错误policy恢复；才解锁E2后续。
-M5完整Phase1：native checker、clean/传播与full restart/alwaysverify，文档和复现。
-M6正式study：选择性恢复、学习/调度消融、E5及失败分析。
-
-9. 时间线与成果
-10/08–10/14：M0–M2，split registry，资源确认；提交survey已完成。可运行CLI、配置、预算/事件schema、测试与首个demo。
-10/15–10/21：M3–M4、真实query-stage memory、候选生成/gate、错误/旧状态注入；完成E0/E1。
-10/22–10/28：clean/传播、restart/alwaysverify、小规模memory/调度证据；Phase1 1–2页报告+timeline、代码和trace。
-10/29–11/15：正式选择性恢复/共享状态，冻结E2/E3，统计与开销。
-11/16–11/29：E4/E5、负例/消融及资源边界。至少预留3天修复和一次完整复现。
-11/30–12/10：最终复现、演示、4–6页报告、代码/数据许可/运行文档；12/10 Phase2。
-以上日期沿用已核对课程要求；若课程更新，以官方为准，仓库留变更记录。
-
-10. 范围与停止条件
-所有三组件都是核心。暂不加入完整Slack/企业IM、真实运维写权限、多模型路由、训练权重、Kubernetes集群或复杂UI。
-模型能力不达E1门槛：只用dev修复/更换已允许模型，freeze前重新校准。
-预算未知/耗尽：停新派发并保留inflight账本，缩小样本而不删负例；不自动购买或用reset额度。
-主实验结果不理想：保留失败与机制解释，不能换case或训练到test成功。研究结论可为“该条件不值得复用/学习/优先前台”。
-工作任务与状态以docs/status.txt为准；未完成项不得写入简历为既成结果。
-
-11. 2026-10-08课程对齐修订（优先于此前实现顺序）
-课程Option5的Phase1重点是clean workflow、受控故障注入、传播/浪费/时延测量、full restart及有意义的always-verify对照。选择性恢复是Phase2核心；memory/scheduling仍保留为proposal主要内容，但暂缓继续调优，直至Phase1证据齐全。
-P0：固定已有runtime/1为开发案例，预登记中间证据端口9555→9556损坏；无匹配时记录not_injected，不更换故障直到出现成功传播。比较同一collection前缀的clean/损坏、通知后restart/selective，以及消费前完整证据一致性检查。该检查只是与可信只读源对比，不声称解决一般语义谎言。
-P1：逐份保存实际消费的payload、依赖、原始源和调用成本；分别报告暴露、引用、下游任务失败/错误结论和恢复。错误未传播也保留，不当作恢复成功。
-P2：先完成至少两种故障/两个注入阶段的开发矩阵，再扩样本；加入超时/过期、共享状态，偶发与对抗分开。always-verify额外模型调用若为0则明确记录0，同时测比较/重取证CPU与工具开销。
-P3：10/28前完成Phase1代码、可复现trace、1–2页报告和timeline附录。当前43个软件测试不替代故障实验。
-P4：Phase1材料可交后恢复E2学习及E4调度；保持Phase2 12/10日期不变。禁止将本项目自设30秒或10%节省目标当课程及格线。
-评估公平性：selective/restart使用相同已消费故障前缀及相同额外预算，端到端均包含前缀；always-verify在消费前检查，前缀不同，因此另报从开始的全成本，不冒充同一恢复分支。clean对照单列。
-
-12. 2026-10-08 Phase2启动修订（后续执行顺序以此为准）
-Phase1本地包冻结，不覆盖既有结果。Phase2先恢复E3：查询级来源版本/新鲜度→公平总预算live校准→固定重复与预防对照；之后E4多群调度，最后E2受门槛约束的学习及E5集成。详细预算、构造历史状态边界、控制条件和停止规则见docs/phase2-protocol.txt及configs/phase2/protocol.json。
-不能把静态事故上的人为旧值称作真实时间序列；最终源保持原始benchmark内容。源检查可能优于恢复，密集来源变化可能完全没有复用收益，均需作为研究结论保留。final8保持锁定。
+8. Current evidence and gaps
+Use docs/status.txt and dated per-experiment artifacts, not only early tuning pilots. Existing E5 paired recovery uses 1 vs 3 calls and both recoveries succeed; both new foreground tasks remain uncertain. Controlled collection-recovery shows wider closure after telemetry handoff; it is not a semantic experiment. Existing source verification can be cheaper than recovery. Formal held-out study, complete overhead accounting, and broad robustness remain unproven.
+Current run records: docs/scope-pilot-20261021.txt (to be populated with actual results). No raw historical runs, submitted proposal or frozen Phase1 archive are overwritten.

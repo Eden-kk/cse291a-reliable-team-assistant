@@ -1,0 +1,41 @@
+Scope feasibility pilot — 2026-10-21
+
+Purpose
+Validate the v0.3 plan's execution feasibility and quality/accounting distinctions. Development replication, not held-out evaluation or a new production benchmark. Source commit aae219cae19a3fb608cce331301f4658421514e8; no inference code changed. Dataset ea05dafbc87b5985df8721622d63d4229c2b4224, development_seen boutique/service/1 only. final_locked remains unopened.
+
+A. Controlled recovery
+Command: .venv/bin/python scripts/run_collection_recovery.py --vendor ../preparation/291a-team-agent/vendor/Cloud-OpsBench --output runs/scope-review-controlled-20261021
+12 conditions completed; zero real model calls. Recovery steps/tools:
+                        parallel-selective  telemetry-first-selective  restart
+telemetry_evidence       1/1                 2/2                       3/4
+configuration_evidence   1/1                 1/1                       3/4
+initial                  3/4                 3/4                       3/4
+Common initial cost is 3 steps/4 tools. Independently expected closure, unchanged retained artifacts, new versions, settled reservations and cumulative tool accounting passed. Fake cost units are not real tokens.
+17 relevant tests passed: collection 1 (12 conditions), sources 6, publication 10. Initial publication test import failed without PYTHONPATH; failure log retained and correct environment rerun passed.
+Missing-parent controls prove rejection, not successful automatic restart. Explicit fallback implementation/evaluation remains a P2 requirement.
+
+B. Real-model development repeat
+Command: .venv/bin/python scripts/run_evidence_coverage.py --vendor ../preparation/291a-team-agent/vendor/Cloud-OpsBench --output runs/scope-review-20261021/live
+Existing evidence-coverage-v1 protocol, fixed arm order, empty rules; maximum 10 calls, physical reservation cap 600000, per-arm cap 240000, 24 tool attempts. No retries or model changes. tmux scope-pilot-1021 completed with exit 0; log /tmp/291a-scope-pilot.log. Uses existing subscription, no new AWS or paid API.
+
+Arm                  calls recorded tokens seconds  JRA ECR contract
+parallel-one           3      57056         22.39    0   0   false (uncertain)
+telemetry-first-one    3      63477         25.63    1   1   true
+parallel-two           4      81370         30.99    1   0   true
+All budget checks passed. 10 calls, 201903 recorded tokens; per-call records sum to per-arm totals, settlement charges sum to physical total, no unknown usage/provider error. No inference process remains running.
+Native scoring ran only after inference via scripts/score_run.py for each arm; oracle is not sent to inference. ECR and correct root are reported separately. Only telemetry-first-one meets the native quality conjunction; parallel-two is not an evidence-complete success despite a correct root and valid output.
+The parallel-one return time is time-to-uncertainty, not time to a quality-qualified diagnosis. Parallel-two also cannot supply a primary quality-qualified latency under the native ECR gate.
+
+C. Evidence interpretation and limitations
+Parallel-one explicitly lacks cartservice environment configuration and refuses a confident diagnosis. Telemetry-first-one cites REDIS_ADDR=redis-cart-invalid:6379, the redis-cart service on the same port, and observed connection/timeouts. Parallel-two cites the configured bad hostname, failed connections to it, and successful connectivity to redis-cart. A separate source-grounding review is recorded below when completed; native scores alone do not prove semantic truth.
+Telemetry-first-one uses 17893 fewer tokens (21.99%) than parallel-two in this run, but those arms have different round limits and different ECR outcomes: this is NOT a matched quality-preserving savings estimate. The equal-round topology comparison is parallel-one versus telemetry-first-one; increased collection dependence obtains evidence here at additional initial cost/serial latency.
+The controlled matrix separately shows that this dependence raises telemetry-expiry recovery from one to two model steps. Combining these findings motivates a joint study; it does not measure real recovery tokens or a break-even threshold. Do not add simulated units to real tokens.
+Single known case, fixed order, mutable model alias and one new repetition: no population accuracy, latency significance, novel-family generalization or production readiness claim. Historical same-case outcomes remain development observations. No new semantic recovery/verification/missing-provenance model experiment occurred in this batch.
+
+D. Decision
+The plan is executable and produces discriminating outcomes, including negative controls. Proceed with P2: explicit missing-provenance fallback, unified source-consistency baseline, incorrect/stale-content controls, tracking overhead and topology comparisons under equal round ceilings. Keep scheduling as first optional extension and learning second. Do not launch the held-out ceiling until whole-batch budget and scoring are frozen. Existing Phase1 archive unchanged; current supplementary report needs reconciliation before course submission.
+
+E. Independent post-inference grounding audit
+A separate reviewer checked final actual requests against replies: all 4/3/3 citations exist verbatim in their respective observations. Parallel-one uncertainty is justified; telemetry-first-one and parallel-two diagnoses are supported by actual visible configuration and connection evidence. This audit is human/agent judgment, not an independently validated automatic metric.
+Development-only post-inference scoring inspection explains parallel-two ECR0: milestone M2 accepts GetAppYAML(app_name=cartservice), while this run used DescribeResource on the cartservice pod and obtained REDIS_ADDR there. Preserve native JRA1/ECR0 and separately record semantic support; do not replace the preregistered joint gate or feed this label back to the runner. This is a measurement limitation worth documenting, not license to tune on final labels. Formal study must freeze both native and semantic rubrics beforehand.
+Parallel-one and parallel-two generated different initial queries and do not share a frozen prefix. Their comparison therefore does not isolate the causal effect of one additional diagnosis round. The TCP success is scoped to the observed test path/time. Future round ablation must fork a common collection prefix; topology comparisons necessarily change collection context and must use matched cases, limits and repeated/counterbalanced execution.

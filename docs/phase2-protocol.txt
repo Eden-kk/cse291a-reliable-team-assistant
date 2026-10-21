@@ -1,3 +1,5 @@
+Execution priority update 2026-10-21: docs/experiment-plan.txt v0.3 governs new work. The following protocol remains the historical specification of existing runs; do not use its extension order or baseline naming as the current plan.
+
 Phase 2 development protocol — v1, 2026-10-08
 
 Question
