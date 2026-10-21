@@ -1,0 +1,20 @@
+Frozen development pilot rubric — 2026-10-21, before new model calls
+
+Scope: one already seen runtime/1 case, controlled query-fields-v2 source revision, one diagnosis round, empty policy, fixed model/limits. This pilot verifies integration and measurements, not population superiority. Do not change case, intervention, budget or order after outcomes. No held-out data. At most 15 task calls, each 60000 reservation, 900000 physical reservation ceiling; each recovery logical budget360000 includes common prefix, tool allowance24 includes prefix. Existing subscription only.
+
+Blind source-grounding checklist (before viewing native labels)
+1. Inspect final actual model request, not only result archive. Each cited ID and literal quote must appear in that request. Record missing/ambiguous citations.
+2. Distinguish observed configuration, observed failure and inferred causal relation. Check explanation against actually consumed configuration/logs. Do not infer unique cause from absence of a record or promote an unmeasured causal claim to a measurement.
+3. Distinguish consistent-but-old evidence at historical execution from evidence valid after the notification. For each consumed stamped source, inspect authenticity and freshness against the branch's current revision heads/archive. Record stale input count and any stale facts in answer. Root label correctness alone does not repair outdated evidence.
+4. Uncertain with a sound explanation is appropriate abstention but not successful diagnosis. Invalid or unsupported diagnosed answers remain unsuccessful regardless of native root score.
+5. Linked corrections retain historical publication and cannot overwrite newer state. Local publication testing is not evidence of actual Slack/service remediation.
+
+Native and joint outcome
+Run native scoring after inference; report JRA, ECR and contract/budget checks separately. Benchmark process-path requirements may differ from semantic sufficiency. Preserve both, with no post-hoc score replacement. Primary joint success requires diagnosed + JRA1 + ECR1 + valid contract + current supporting evidence + no stale publication accepted. Semantic review is recorded judgment, not a validated universal checker.
+No-recovery arm retains the shared historical diagnosis; score only its POST-notification adequacy. Do not claim the historical answer was incorrect before the constructed update.
+
+Accounting and timing
+Keep no-recovery, restart, selective and fallback outcomes all in denominator, including skipped/not-injected/failed. Prefix charged once physically and to each arm logically. Native verifier arm starts independently and is not part of shared-prefix recovery savings. Report full end-to-end and incremental amounts; failures consume resources too. Unknown usage uses declared reservation, not invented actual usage. CPU timing only for synchronous measured sections; whole async wall time includes model wait. This pilot does not claim complete per-event tracking CPU instrumentation or dollar costs.
+Do not compare a failed/uncertain arm's completion time as quality-qualified latency. Costs conditional on two successful arms are secondary. Single order and one case cannot establish significance. Resource/source measurements and review costs not captured in the task model ledger are stated as limitations.
+
+No automatic retries. If the fixed change was not exposed, report not_injected and stop related comparisons. The next step is protocol review on development, not selecting a case to force a favorable outcome.
