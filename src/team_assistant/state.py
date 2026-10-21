@@ -23,6 +23,23 @@ class ExecutionStore:
         self.epoch = 0
         self.ledger = []
         self.invalid_versions = set()
+        self.restart_generation = 0
+        self.retired_versions = set()
+
+    def provenance_gaps(self):
+        """Only observable gaps; omitted, unrecorded inputs cannot be detected."""
+        return {name: ('incomplete' if not result.complete else 'missing_parent')
+                for name, result in self.results.items()
+                if (name, result.version) not in self.retired_versions
+                and (not result.complete or any(parent not in self.results
+                                               for parent in result.inputs))}
+
+    def restart(self):
+        """Retain history and version floors, but forbid every existing result's reuse."""
+        self.restart_generation += 1
+        self.retired_versions.update((name, result.version)
+                                     for name, result in self.results.items())
+        return self.invalidate(list(self.results))
 
     def invalid(self, changed=(), mode="actual"):
         invalid = set(changed) | {name for name, result in self.results.items()

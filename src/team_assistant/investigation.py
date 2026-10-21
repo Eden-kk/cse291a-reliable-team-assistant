@@ -45,6 +45,7 @@ class Investigation:
         self.tool_budget_start = 0
         self.kind = 'response'
         self.deadline = None
+        self.provenance_fallback = False
 
     def artifact(self, name, payload, dependencies=()):
         store = self.incident.store
@@ -84,6 +85,11 @@ class Investigation:
 
     async def collect(self, reuse=False):
         store = self.incident.store
+        gaps = store.provenance_gaps()
+        if gaps:
+            self.runtime.restart(self.identifier, {'provenance_gaps': gaps})
+            self.provenance_fallback = True
+            reuse = False
         if not reuse or "initial" not in store.results or "initial" in store.invalid():
             initial = self.execute_queries([
             {'tool': 'GetResources', 'arguments': {'resource_type': 'pods', 'namespace': 'boutique'}},
@@ -153,6 +159,7 @@ class Investigation:
                 'model_calls': self.provider.records}
 
     async def run(self, reuse=False):
-        self.tool_budget_start = len(self.snapshot.observations) + len(self.tool_errors)
+        if not self.provenance_fallback and not self.incident.store.provenance_gaps():
+            self.tool_budget_start = len(self.snapshot.observations) + len(self.tool_errors)
         await self.collect(reuse)
         return await self.diagnose()

@@ -52,6 +52,7 @@ class Runtime:
                 raise ValueError('Rebind revoked memory before execution')
             shared['policy:' + version] = 1
             request['policy'] = copy.deepcopy(entry['policy'])
+        restart_generation = store.restart_generation
         generation = incident.generations.get(name, 0) + 1
         incident.generations[name] = generation
         self.events.append({'event': 'request', 'incident': identifier, 'step': name,
@@ -60,6 +61,8 @@ class Runtime:
         outcome = await self.dispatcher.call(incident.group, kind, reservation,
                                              lambda: backend(copy.deepcopy(request)), deadline)
         try:
+            if store.restart_generation != restart_generation:
+                raise ValueError('Full restart supersedes this request')
             if incident.generations[name] != generation:
                 raise ValueError('Newer attempt supersedes this request')
             version = store.results[name].version + 1 if name in store.results else 1
@@ -74,6 +77,15 @@ class Runtime:
         self.events.append({'event': 'commit', 'incident': identifier, 'step': name,
                             'version': version})
         return copy.deepcopy(store.results[name])
+
+    def restart(self, identifier, reason):
+        store = self.incidents[identifier].store
+        invalidated = store.restart()
+        self.events.append({'event': 'full_restart', 'incident': identifier,
+                            'reason': copy.deepcopy(reason),
+                            'invalidated': sorted(invalidated),
+                            'restart_generation': store.restart_generation})
+        return invalidated
 
     def revoke(self, team, version):
         affected = self.memory.revoke(team, version)
