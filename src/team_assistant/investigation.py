@@ -159,7 +159,7 @@ class Investigation:
                 'model_calls': self.provider.records}
 
     async def run(self, reuse=False):
-        if not self.provenance_fallback and not self.incident.store.provenance_gaps():
+        if not reuse and not self.provenance_fallback and not self.incident.store.provenance_gaps():
             self.tool_budget_start = len(self.snapshot.observations) + len(self.tool_errors)
         await self.collect(reuse)
         return await self.diagnose()

@@ -138,6 +138,18 @@ class ProvenanceFallbackTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(inv.tool_budget_start, 0)
         self.assertEqual(len(inv.snapshot.observations), 4)
 
+    async def test_selective_run_cannot_replenish_tool_allowance(self):
+        inv = investigation()
+        await inv.run()
+        inv.max_tools = 4
+        inv.incident.store.invalidate(['configuration_evidence'])
+        result = await inv.run(reuse=True)
+        self.assertEqual(len(inv.snapshot.observations), 4)
+        self.assertEqual(inv.tool_budget_start, 0)
+        self.assertEqual(inv.incident.store.results['configuration_evidence'].payload['observations'], [])
+        self.assertEqual(inv.incident.store.results['telemetry_evidence'].version, 1)
+        self.assertEqual(result['budget']['spent'], 40)
+
     async def test_retired_unneeded_artifact_does_not_force_repeated_restarts(self):
         inv = investigation()
         await inv.run()

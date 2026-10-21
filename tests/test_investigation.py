@@ -68,7 +68,7 @@ class InvestigationTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn('specialist_claim', provider.records[-1]['inputs']['configuration_evidence'])
         old_config_id = runtime.incidents['incident-1'].store.results['configuration_evidence'].payload['observations'][0]['id']
         runtime.incidents['incident-1'].store.invalidate(['configuration_evidence'])
-        investigation.max_tools = 1
+        investigation.max_tools = 5  # Four prefix reads plus one recovery read.
         investigation.kind = 'recovery'
         result = await investigation.run(reuse=True)
         self.assertEqual(len(result['observation_archive']), 5)
