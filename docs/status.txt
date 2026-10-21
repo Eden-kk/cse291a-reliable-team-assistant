@@ -1,3 +1,6 @@
+最新进展：2026-10-21 保守恢复与开销测量完成
+显式complete=false/missing-parent触发全量重启；保留旧ledger/version floor/累计预算，拒绝旧在途提交。正常selective同样累计工具费用。主工作区170 tests全通过、无skip。受控fallback与restart均累计6calls/8tools，selective4/5；固定uncertain输出，不算语义成功。离线48节点dense追踪commit CPU中位117.863ms，sparse1.378ms；只作微基准。详细见recovery-completion-20261021.txt及结果JSON。无真实模型调用、final未读、无后台任务。
+
 最新进展：2026-10-21 边界修订与新预实验完成
 当前计划以 docs/experiment-plan.txt v0.3 和 docs/current-proposal.txt 为准：核心安全恢复，调度第一扩展，学习第二扩展。12受控条件/17测试通过；新10次真实调用201903 tokens，遥测先行单轮JRA/ECR通过，并行单轮uncertain、并行双轮JRA1但ECR0。全量记账核对通过；final8未打开，模型实验已结束。缺失provenance目前只验证拒绝，自动保守重启仍需实现和测量。详见scope-pilot-20261021.txt。
 

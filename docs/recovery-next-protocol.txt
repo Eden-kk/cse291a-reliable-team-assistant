@@ -1,0 +1,21 @@
+Recovery completion protocol — 2026-10-21
+
+Required release gates
+1. Explicit incomplete provenance or missing parent in an attempted reused incident triggers full recomputation. Preserve original ledger, prior tool usage and model charges; reject old in-flight results even if they had no declared parent. Unknown unrecorded dependencies are outside this guarantee.
+2. Ordinary intact provenance preserves selective behavior. Restart cannot silently replenish budgets. Budget/tool exhaustion remains an unsuccessful recovery; no quality success inferred from a completed function.
+3. Controlled failure matrix and relevant regressions pass before model calls.
+
+Same-prefix semantic experiment design (not launched)
+Use only development_seen. Freeze original runtime source-revision case and unchanged recovery provider settings before execution. Construct one prefix, save payloads, raw consumed requests, sources, publication and accounting. Fork independent no-recovery, restart, selective and incomplete-provenance fallback arms from that exact prefix. Notification includes changed source identity only. Missing-provenance intervention is declared independently of outcomes; fallback must not consume missing old payload as a valid dependency.
+Use identical per-arm token ceilings including prefix and identical cumulative tool allowances. Run policies in a predeclared counterbalanced order across repeats; preflight worst-case complete-batch reservation, including source recollection, all maximum diagnosis rounds and unknown-usage charges. Do not simply reuse the foreground E5 runner: it adds a competing task and does not isolate recovery quality/latency.
+Source-consistency prevention has a separate from-start arm and budget; it cannot share a faulty consumed prefix. Record fresh source queries and comparison work. It is not an omniscient semantic verifier.
+Scores are computed after inference. Native root/ECR, source fidelity, independently grounded answer and contract validity remain separate; all conditions and costs retained. A semantic reviewer sees only the actual request evidence, with rubric frozen before outcomes. No-recovery false supporting facts count as contamination even if root label remains correct.
+
+Round ablation (separate from recovery)
+If assessing one versus two diagnosis rounds, fork exactly the same collection state before any diagnosis call. Initial plan randomness is then controlled. If assessing collection topology, prefix equality is impossible by design; match case, model, allowed rounds and total budget, predeclare order/repeats and report different collection work explicitly. Neither comparison is replaced by the prior three independent-arm development demonstration.
+
+Overhead accounting
+Measure dependency capture+commit, invalidation, source consistency inspection and serialized tracking metadata separately. Record process CPU and wall-clock; run repeated synthetic sparse/dense graphs at declared sizes with independent expected closures. Report medians and ranges only as local microbenchmarks, not live service percentiles. Include a minimally equivalent untracked storage baseline; state clearly its missing guarantees. No overhead subtraction from model costs unless actual workloads have matched measurements. Source projection checking excludes network/tool refetch cost unless explicitly recorded.
+
+Stopping and claims
+No held-out access or paid infrastructure. A rejected missing-provenance input is not a recovered task. Controlled backend can establish safety/ledger invariants, not root accuracy, real token savings or production readiness. Passing release gates permits a later frozen semantic batch; it does not by itself complete the formal study.

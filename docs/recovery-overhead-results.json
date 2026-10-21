@@ -1,0 +1,80 @@
+{
+  "source_commit": "63d123c7c5f7eda413af4320204d22c590329dc7",
+  "scope": "Local synthetic microbenchmark, not model cost or production latency. Baseline copies identical payloads without metadata and clears all on invalidation; it does not provide equivalent safety/reuse. Commit comparison includes dependency validation and deep copy. Source checks use actual verify_inputs and file fingerprint, but do not validate semantic correctness. Serialization measured before fault injection; JSON byte counts are not memory usage. No persistence/network time included. Construction/setup excluded; raw timing samples retained; no speed threshold asserted.",
+  "repetitions": 7,
+  "raw": "runs/overhead-20261021/report.json",
+  "conditions": [
+    {
+      "nodes": 8,
+      "topology": "sparse",
+      "baseline_commit_cpu_ms": 0.029,
+      "tracked_commit_cpu_ms": 0.143,
+      "source_check_cpu_ms": 0.152,
+      "invalidation_cpu_ms": 0.019,
+      "serialized_bytes": {
+        "baseline": 2673,
+        "tracked": 4359
+      }
+    },
+    {
+      "nodes": 8,
+      "topology": "dense",
+      "baseline_commit_cpu_ms": 0.028,
+      "tracked_commit_cpu_ms": 0.356,
+      "source_check_cpu_ms": 0.154,
+      "invalidation_cpu_ms": 0.019,
+      "serialized_bytes": {
+        "baseline": 2673,
+        "tracked": 4524
+      }
+    },
+    {
+      "nodes": 24,
+      "topology": "sparse",
+      "baseline_commit_cpu_ms": 0.08,
+      "tracked_commit_cpu_ms": 0.522,
+      "source_check_cpu_ms": 0.366,
+      "invalidation_cpu_ms": 0.044,
+      "serialized_bytes": {
+        "baseline": 8045,
+        "tracked": 12776
+      }
+    },
+    {
+      "nodes": 24,
+      "topology": "dense",
+      "baseline_commit_cpu_ms": 0.084,
+      "tracked_commit_cpu_ms": 10.076,
+      "source_check_cpu_ms": 0.467,
+      "invalidation_cpu_ms": 0.048,
+      "serialized_bytes": {
+        "baseline": 8045,
+        "tracked": 14697
+      }
+    },
+    {
+      "nodes": 48,
+      "topology": "sparse",
+      "baseline_commit_cpu_ms": 0.163,
+      "tracked_commit_cpu_ms": 1.378,
+      "source_check_cpu_ms": 0.766,
+      "invalidation_cpu_ms": 0.086,
+      "serialized_bytes": {
+        "baseline": 16109,
+        "tracked": 25412
+      }
+    },
+    {
+      "nodes": 48,
+      "topology": "dense",
+      "baseline_commit_cpu_ms": 0.164,
+      "tracked_commit_cpu_ms": 117.863,
+      "source_check_cpu_ms": 1.028,
+      "invalidation_cpu_ms": 0.094,
+      "serialized_bytes": {
+        "baseline": 16109,
+        "tracked": 33801
+      }
+    }
+  ]
+}

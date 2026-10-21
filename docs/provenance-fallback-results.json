@@ -1,0 +1,72 @@
+{
+  "code_commit": "b960ad87f1774f214a53c4a751a37e61d6fa723f",
+  "backend": "controlled provider; fixed uncertain response, simulated token usage",
+  "real_model_calls": 0,
+  "case": "boutique/service/1",
+  "tests_run": 7,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "comparison": [
+    {
+      "mode": "selective",
+      "prefix_calls": 3,
+      "cumulative_calls": 4,
+      "cumulative_simulated_tokens": 40,
+      "cumulative_tools": 5,
+      "recovery_steps": [
+        "diagnosis_0"
+      ],
+      "answer_status": "uncertain",
+      "publication_count": 2
+    },
+    {
+      "mode": "incomplete",
+      "prefix_calls": 3,
+      "cumulative_calls": 6,
+      "cumulative_simulated_tokens": 60,
+      "cumulative_tools": 8,
+      "recovery_steps": [
+        "configuration_plan",
+        "telemetry_plan",
+        "diagnosis_0"
+      ],
+      "answer_status": "uncertain",
+      "publication_count": 2
+    },
+    {
+      "mode": "missing_parent",
+      "prefix_calls": 3,
+      "cumulative_calls": 6,
+      "cumulative_simulated_tokens": 60,
+      "cumulative_tools": 8,
+      "recovery_steps": [
+        "configuration_plan",
+        "telemetry_plan",
+        "diagnosis_0"
+      ],
+      "answer_status": "uncertain",
+      "publication_count": 2
+    },
+    {
+      "mode": "restart",
+      "prefix_calls": 3,
+      "cumulative_calls": 6,
+      "cumulative_simulated_tokens": 60,
+      "cumulative_tools": 8,
+      "recovery_steps": [
+        "configuration_plan",
+        "telemetry_plan",
+        "diagnosis_0"
+      ],
+      "answer_status": "uncertain",
+      "publication_count": 2
+    }
+  ],
+  "checks": [
+    "old input-free in-flight commit rejected, usage charged",
+    "exhausted model budget preserves old ledger and blocks publication",
+    "fallback does not replenish tool allowance",
+    "unrecorded implicit dependencies not claimed detectable"
+  ]
+}

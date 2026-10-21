@@ -1,0 +1,17 @@
+Recovery implementation and overhead — 2026-10-21
+
+Implemented
+ExecutionStore identifies explicit incomplete capture and references to absent parents. Investigation.collect automatically requests full restart; both direct collection and run(reuse=True) paths are covered. Historical results retain their versions, payloads and invalid status, while retired versions do not repeatedly trigger restart. New results must advance versions. Runtime captures a separate restart generation so an old in-flight call without parents is also rejected and charged. Budget, historical publication ledger and cumulative tool allowance survive. Ordinary selective recovery keeps its original reuse behavior, now without replenishing the tool allowance on run(reuse=True).
+
+Verification
+Main checkout: PYTHONPATH=src CLOUDOPS_VENDOR=/Users/yvette/26fall/preparation/291a-team-agent/vendor/Cloud-OpsBench .venv/bin/python -m unittest discover -s tests
+170 tests pass, zero skipped. Full log /tmp/291a-fallback-regression.log.
+Controlled 7-test report: docs/provenance-fallback-results.json; raw runs/fallback-20261021/validation-v2.json. Its commit refers to the isolated implementation branch; changes integrated as a25f377 and 45bfe2d.
+Matched deterministic prefix: selective cumulative 4 calls/5 tools; incomplete capture, missing parent and explicit restart each 6 calls/8 tools. Prior 3 calls included. Simulated cost 10/call is a ledger fixture, never real token savings. All answers uncertain. Covers exhausted model budget, exhausted cumulative tool allowance, old in-flight rejection with charged usage, historical unused invalid artifact, and undetectable unrecorded omissions.
+
+Overhead experiment
+Actual ExecutionStore commit/invalidate and source-consistency verify_inputs on synthetic 8/24/48 node sparse/dense graphs, seven measured repeats plus warmup. Independent expected invalidation sets. Raw CPU/wall/serialization samples retained at runs/overhead-20261021/report.json; compact results docs/recovery-overhead-results.json. Source commit 63d123c, integrated as 0829a83 before fallback changes; this is a pre-fallback microbenchmark, not final integrated timing.
+48-node CPU medians: payload-only commit about 0.164ms; tracked sparse 1.378ms; dense 117.863ms. Source checks sparse0.766/dense1.028ms. Tracking JSON 25412/33801bytes versus payload-only16109. JSON bytes are not RAM. Baseline lacks safe reuse; setup/network/tool recollection and production concurrency are not timed. No claim of negligible tracking overhead: repeated invalid() traversal within parent validation is a plausible profiling target, not an already optimized result.
+
+Remaining formal work
+The fallback implementation is complete at the controlled lifecycle level. Same-prefix semantic evaluation, total live tracking/verification cost and held-out robustness remain open. docs/recovery-next-protocol.txt fixes the next comparison: no competing foreground jobs, common fault prefix, identical cumulative ceilings, source verification separately from start, independent frozen semantic/native metrics. Automatic discovery of hidden omissions and arbitrary semantic errors remains out of scope. No model calls or final data were used in this implementation round.
