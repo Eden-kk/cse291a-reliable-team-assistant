@@ -1,0 +1,34 @@
+Same-prefix semantic recovery pilot — 2026-10-21
+
+Frozen design and execution
+Runner c966cbf, rubric docs/semantic-recovery-pilot-rubric.txt frozen before inference. All174 tests passed with no skips. Runtime/1 development_seen only, query-fields-v2 constructed source revision, empty policy, one diagnosis round, fixed restart/selective/fallback order. Same consumed prefix, isolated fork and historical ledger assertions passed. No foreground workload. Source verification starts independently. No held-out data or paid infrastructure.
+
+Original batch outcomes
+Arm             Increment calls  Increment tokens  Logical total tokens  Total tools
+no-recovery          0                    0             51755               7
+restart              3                51429            103184              14
+selective            1                19791             71546               9
+fallback             3                51753            103508              14
+verification         3                91891*            91891*              9
+Shared prefix:3calls/51755tokens/7tools. Verification is independent from-start and includes2 source rereads. *Its final call timed out180seconds; 60000 reservation charged as UNKNOWN usage, not actual tokens. No final answer in original verification arm. Total13 calls,206619 known recorded tokens plus60000 unknown-usage reservation=266619 ledger charge. Physical ledger halted as designed; no automatic retries.
+
+Quality
+No-recovery JRA/ECR1 but two consumed observations stale; answer retains9556 after source head changed to9555. Fails frozen current-evidence success condition. Historical answer is not called erroneous before the constructed transition. Restart/selective/fallback all JRA/ECR1 and contract valid,7/7 consumed observations authentic/current. Provisional local corrections preserve P1 and link P2; not actual operational publication. This is factual detail refresh with root category unchanged, not correction of an incorrect root category.
+Restart/selective blind review checked exact final-request citations and configuration+failure log+restart event support. Full blind-review completion is recorded separately when available.
+
+Interpretation
+Selective incremental tokens61.52% lower than restart; including shared prefix30.66% lower. Single already-seen incident/fixed order cannot establish general savings. Fallback reacquires both branches and costs approximately restart; successful execution is no longer inferred solely from safe rejection.
+Recovery wall times: restart17.82s/selective11.61s/fallback24.92s; descriptive only. Prefix19.52s. Independent verification194.78s to failure, not quality-qualified latency. Timing includes local provisional saving/publication. Synchronous fork approximately0.8ms and source inspections approximately0.08ms; verification source reread+refresh CPU1.684ms. These are selected measured sections, not total tracking overhead or API dollar costs. Review/compilation costs excluded.
+
+User-authorized diagnostic retry (separate record)
+After user requested retry, replayed only the exact failed003.request once with60000 reservation, same model/instruction/evidence; request SHA in runs/semantic-verification-retry-20261021/attempt-1/manifest.json. Successful13.10s,19754 known tokens, JRA/ECR1, full runtime object-allowlist contract check passes. Original temporary script used answer-derived object membership; authoritative post-check uses actual benchmark runtime allowlist and is saved separately. No prompt/inference alteration.
+This retry is a diagnostic request replay, NOT a new from-start verification arm or resumed runtime publication. Original failed batch remains failed. Combined usage:226373 known recorded tokens plus60000 unknown charge=286373 ledger units,14 physical calls. Do not report the retry as a complete successful end-to-end latency or omit the timeout.
+
+Artifacts
+runs/semantic-recovery-20261021/live: manifests, every request/reply, usage, source audits, immutable shared-prefix state, failures, transition and ledgers.
+docs/semantic-recovery-20261021-results.json: original batch compact results.
+runs/semantic-verification-retry-20261021/attempt-1: exact single-request retry, accounting, native scores and independent contract check.
+No experiment is running after completion.
+
+Additional review
+Primary reviewer checked fallback and retry answers: observed current9555 configuration, HTTP/1.x rejection and failed-probe restart events support protocol mismatch. Retry source audit against the saved verification revision archive is7/7 authentic/current. Separate blind reviewer had already confirmed original prefix/no-recovery/restart/selective request citations and post-transition freshness before native scores were supplied. Remaining independent fallback/retry review, if returned, is supplementary and does not alter original scores.

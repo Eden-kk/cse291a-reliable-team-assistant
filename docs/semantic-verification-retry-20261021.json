@@ -1,0 +1,65 @@
+{
+  "scope": "single failed diagnosis request replay, not end-to-end rerun",
+  "known_tokens": 19754,
+  "native_scores": {
+    "CA": 1.0,
+    "FA": 1.0,
+    "JRA": 1.0,
+    "MC": 1.0,
+    "EOC": 1.0,
+    "ECR": 1.0,
+    "EE": 0.42857142857142855,
+    "contract_valid": true,
+    "budget_valid": true
+  },
+  "source_audit": [
+    {
+      "id": "observation-1-r1",
+      "authentic": true,
+      "fresh": true,
+      "reason": "current"
+    },
+    {
+      "id": "observation-2-r1",
+      "authentic": true,
+      "fresh": true,
+      "reason": "current"
+    },
+    {
+      "id": "observation-8-r2",
+      "authentic": true,
+      "fresh": true,
+      "reason": "current"
+    },
+    {
+      "id": "observation-9-r2",
+      "authentic": true,
+      "fresh": true,
+      "reason": "current"
+    },
+    {
+      "id": "observation-5-r1",
+      "authentic": true,
+      "fresh": true,
+      "reason": "current"
+    },
+    {
+      "id": "observation-6-r1",
+      "authentic": true,
+      "fresh": true,
+      "reason": "current"
+    },
+    {
+      "id": "observation-7-r1",
+      "authentic": true,
+      "fresh": true,
+      "reason": "current"
+    }
+  ],
+  "contract_check": {
+    "errors": [],
+    "object_allowlist": "benchmark runtime contracts, not answer-derived"
+  },
+  "request_hash": "48c226b6c455d673f955fc5bbaf28075238f83b78e69361b6d1504357590f6af",
+  "original_batch_failure_retained": true
+}

@@ -1,3 +1,6 @@
+最新进展：2026-10-21 同前缀真实恢复与授权重试
+新原批13调用：restart/selective/fallback均JRA/ECR1、当前来源完整；no-recovery虽native满分但保留2旧来源和9556事实，质量门槛失败。selective增量19791 vs restart51429 tokens（少61.52%，含prefix少30.66%）。独立verification最后call180s超时，保留失败；用户授权后仅重放该诊断request一次，19754tokens成功、JRA/ECR1及7条current来源。总14calls，226373已知tokens+60000未知预留计账；不称端到端验证重跑成功。174tests通过，无后台任务、final未读。详见semantic-recovery-20261021.txt。
+
 最新进展：2026-10-21 保守恢复与开销测量完成
 显式complete=false/missing-parent触发全量重启；保留旧ledger/version floor/累计预算，拒绝旧在途提交。正常selective同样累计工具费用。主工作区170 tests全通过、无skip。受控fallback与restart均累计6calls/8tools，selective4/5；固定uncertain输出，不算语义成功。离线48节点dense追踪commit CPU中位117.863ms，sparse1.378ms；只作微基准。详细见recovery-completion-20261021.txt及结果JSON。无真实模型调用、final未读、无后台任务。
 
