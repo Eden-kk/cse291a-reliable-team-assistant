@@ -1,0 +1,7 @@
+Formal evaluation launched 2026-10-24 13:59 PDT (20:59 UTC).
+User explicitly selected Cloud-OpsBench and removed waiting window. Course acceptance remains unverified, not represented as staff approval.
+Source commit1380c6b; freeze f209147db0ad2afb9210b767f6d4b4aa95cef0d157114fad0fdd1c7e50894fd7.
+Remote /home/yid042/private/formal-v2-deploy; isolated .venv, tmux formal-v2. Output /home/yid042/private/formal-v2-results-20261024; log /home/yid042/private/formal-v2-run.log.
+Live model access verified, account spend0.2244407/max50, expires2026-11-07T18:28:12.453+00:00. Same-day verified pricing retained.
+Observed units.json: boutique-runtime-32-r1 started, other5 not_run; tmux session alive, no error output at check. Not yet completed or scored.
+Never relaunch; check marker, tmux, units and usage. Do not stop the DataHub server while evaluation is active. Keep all failures and finish input-only sealed review before labels. Maximum102calls/$20.
