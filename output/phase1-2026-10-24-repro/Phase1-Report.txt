@@ -71,3 +71,6 @@ Nov 3-23: analyze paired quality/cost and conservative fallback; any further inf
 Nov 24-Dec 10: final artifact, report and presentation preparation; verify current official dates and requirements.
 
 AI use: Codex assisted implementation, tooling, analysis and document drafting. Human review and benchmark course acceptance remain outstanding; neither is implied by successful offline reproduction.
+
+SEPARATE CAUSAL-SUMMARY DEVELOPMENT
+Seen runtime/1: the configuration summary was changed from httpGet to grpc while raw evidence remained available. The coordinator rejected the incorrect summary (0/1 propagated). Restart and selective recovery regenerated the correct summary; this was not recovery of a wrong final diagnosis. Restart/selective used 4/2 calls, 18,392/11,959 incremental tokens and 10.250/4.759 seconds of measured recovery wall time. The separate full batch used 11 calls, 57,541 tokens and $0.04764120. Single-run observations do not establish generalization. Full traces are included separately under development/causal-summary; the formal seal and scoring are unchanged. The archive verifier hashes these additional files but does not independently validate their semantic judgments or rescore this development run.

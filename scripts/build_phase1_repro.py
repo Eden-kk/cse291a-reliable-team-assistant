@@ -12,7 +12,7 @@ from pypdf import PdfReader, PdfWriter
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def build(source, vendor):
+def build(source, vendor, development):
     out = ROOT / 'output/phase1-2026-10-24-repro'
     out.mkdir(parents=True, exist_ok=False)
     stage = out / 'package'
@@ -32,11 +32,13 @@ def build(source, vendor):
             shutil.copytree(vendor / name, target, ignore=shutil.ignore_patterns('__pycache__', '*.pyc'))
         else:
             shutil.copy2(vendor / name, target)
+    shutil.copytree(development, stage / 'development/causal-summary', ignore=shutil.ignore_patterns('__pycache__', '*.pyc'))
     styles = getSampleStyleSheet()
     flow = [Paragraph('Phase 1: Reproduction and Timeline Appendix', styles['Title'])]
     for title, text in [
         ('Reproducible artifact', 'The accompanying ZIP includes pinned native evaluator source, MIT license, three scored label sets, code, tests and a portable offline verifier. README-REPRODUCTION.txt gives clean extraction commands and the pinned source acquisition command. Original formal review judgments and their seal are unchanged. The verifier resolves the review by sealed content hash, not the author-specific absolute path.'),
         ('Measurement boundaries', 'The stored seconds field sums API-call durations; integrated end-to-end latency and formal tracking overhead were not recorded. No numeric replacement is invented. Four eligible injections did not cause adoption of the false port; two units were ineligible. Equal 3/4 recovery success counts have different failed cases and do not establish quality equivalence.'),
+        ('Separate causal-summary development', 'On seen runtime/1, replacing the summary protocol httpGet with grpc while preserving raw evidence did not propagate (0/1): the coordinator rejected it. Restart/selective regenerated the correct summary, not a wrong final diagnosis. They used 4/2 calls, 18,392/11,959 incremental tokens and 10.250/4.759 seconds measured recovery wall time. This is a single-run observation, not generalization. The separate batch used 11 calls, 57,541 tokens and $0.04764120; full traces are in development/causal-summary. The formal seal is unchanged.'),
         ('Completed October 24', 'Formal scoring, billing reconciliation and immutable evidence preservation. Portable saved-output verification is separate from fresh inference and cannot establish repeatability of a mutable model alias. Input-only judgments were produced by Codex, not independent human review.'),
         ('October 24-November 4', 'Finish clean extraction checks and causal-error development on seen cases; keep failures and ignored injections. Prepare the Phase 1 submission by the updated November 4 course target; confirm exact current time and upload slots before submission. Nothing in this release has been submitted.'),
         ('Next experimental milestone', 'Freeze a new causal fault protocol only after development establishes propagation. Compare no recovery, restart and selective recovery from the same failure state. Include shared/complete invalidation and missing provenance. Newly selected evaluation cases must be separate from all exposed cases.'),
@@ -52,7 +54,7 @@ def build(source, vendor):
                         'Collection is not a diagnosis endpoint. No-recovery fails the current-publication criterion by construction; 0/6 does not imply six incorrect diagnoses. Prevention checks source integrity, not arbitrary semantic truth.')
     body_flow = []
     headings = {'Question and implemented scope', 'Workload and frozen protocol',
-                'Formal quality results', 'What the experiment establishes',
+                'Formal quality results', 'What the experiment establishes', 'Seen-case causal development',
                 'Budget reconciliation', 'Plan after this immutable evaluation',
                 'Artifact and disclosure'}
     for paragraph in body.split('\n\n'):
@@ -94,5 +96,6 @@ if __name__ == '__main__':
     p = argparse.ArgumentParser()
     p.add_argument('--source', required=True, type=Path)
     p.add_argument('--vendor', required=True, type=Path)
+    p.add_argument('--development', required=True, type=Path)
     args = p.parse_args()
-    build(args.source, args.vendor)
+    build(args.source, args.vendor, args.development)

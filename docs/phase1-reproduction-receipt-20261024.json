@@ -1,5 +1,5 @@
 {
-  "hashes_verified": 709,
+  "hashes_verified": 773,
   "native_answers_rescored": 36,
   "assigned_slots_retained": 54,
   "network_disabled": true,
@@ -17,13 +17,15 @@
   "checked_date": "2026-10-24",
   "pdf_visual_check": "3 pages rendered and inspected; 2-page body plus 1-page timeline appendix",
   "pdf_pages": 3,
-  "archive_sha256": "327ed97be3d3f4ffbc7d140b52c6db6f39436f8627d380ac22e5bc47dbdbee47",
-  "pdf_sha256": "23d85d67244d1e0214525367752b05e30fa52059e9069d5446e5c1f14461bb6f",
+  "archive_sha256": "9bcf561e13247494d62200302f697af197ca4a3eb2099bd84fc5eb004fe64394",
+  "pdf_sha256": "291d10272bc5a974e62d251b8a90b3ed1d951d63be3273a29f5437357ae41623",
   "submitted": false,
   "corrections": [
     "Phase 1 due date updated to November 4 per saved course overview",
     "Missing provenance fallback distinguished as development-only",
     "No-recovery publication invalidity distinguished from diagnosis failure",
     "Prevention source-integrity checking distinguished from semantic verification"
-  ]
+  ],
+  "separate_development": "64 additional files hash-checked, not included in formal scoring; no semantic recovery claim",
+  "verification_environment": "Clean extraction verified using the isolated locked-dependency venv previously created for this release; no network in verifier"
 }
