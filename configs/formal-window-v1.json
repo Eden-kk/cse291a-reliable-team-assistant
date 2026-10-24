@@ -32,5 +32,7 @@
     "Positive speedup",
     "Repeated user authorization within this scope"
   ],
-  "concurrency": "Never launch a second copy; check durable run marker, process status and receipts first; uncertain prior execution must be reconciled, not retried."
+  "concurrency": "Never launch a second copy; check durable run marker, process status and receipts first; uncertain prior execution must be reconciled, not retried.",
+  "automation_id": "291a",
+  "automation_schedule": "Daily 10:30 America/Los_Angeles through Nov5; project-only heartbeat"
 }
