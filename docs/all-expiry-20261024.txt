@@ -1,0 +1,28 @@
+All-work-expired negative control — 2026-10-24
+
+Result: selective recovery converged to full restart in recomputed work for this settled-prefix development case. Both regenerated all7 artifacts, made3 model calls with identical application-level instructions/requests, and executed identical query lists plus initial reads (7 fresh tool attempts). All artifact versions changed1->2. No old artifact was reused. Independent expected closure matched all7 state entries. Obsolete publication was rejected; both corrections retained P1 and linked P2. No claim of general equivalence under arbitrary in-flight or untracked work: restart also has a generation fence.
+
+Frozen protocol docs/all-expiry-20261024-protocol.txt; source332b9d1;180 tests passed. Case boutique/runtime/1, development_seen, parallel, one diagnosis round, empty memory. Initial artifact expiry only; source contents unchanged. Fixed restart->selective order.9 real calls/153025 known recorded tokens, no unknown usage, no retries, no held-out data. Existing subscription, no API-dollar inference. No jobs remain running.
+
+                           Prefix   No recovery   Restart   Selective
+Increment model calls           3             0         3           3
+Increment tokens            51129             0     51145       50751
+Logical total tokens        51129         51129    102274      101880
+Increment tool attempts         7             0         7           7
+Regenerated artifacts           -             0         7           7
+Retained old artifacts          -             7         0           0
+JRA / ECR                     1/1           1/1       1/1         1/1
+Source-matching observations  7/7           7/7       7/7         7/7
+Workflow current              yes            no       yes         yes
+Recovery wall seconds           -            NA     23.56       22.43
+
+Semantic review (before native labels): configuration gives HTTP liveness and gRPC readiness on9555, logs reject HTTP/1.x, events show failed liveness-triggered restarts. Both returned supported protocol-mismatch diagnosis; quotes resolve in actual requests. No-recovery remains factually correct since this is expiry-only, but fails declared reuse/publication validity. Do not call this wrong-answer correction or reduced factual accuracy. Review by primary assistant, not independent human adjudication.
+
+Cost interpretation
+Selective recorded394 fewer incremental tokens (0.77%) and1.14s less wall time in one run. These are NOT structural reuse gains: retained work is zero and saved application requests are exactly equal for all3 steps. Provider input counts and cache counters differ despite identical saved requests; the provider/CLI accounting difference was not isolated. Output wording also differs. Do not invent a latency-equivalence tolerance, infer dollar savings, or attribute a single observation to the recovery policy. Record input/output/cache usage components in results.json. Prefix paid once physically and per logical method; analyst work excluded.
+
+Artifacts
+Raw requests/responses, source audits, model usage, exact request comparison, version transitions, native scores and linked publications in output/all-expiry-20261024/raw-evidence.tar.gz. Raw hashes verified. Compact evidence: docs/all-expiry-20261024-results.json. Frozen Phase1 artifacts unchanged.
+
+Updated plan
+This closes the all-work-invalidated mechanism negative control. Existing evidence now covers independent-branch reuse, handoff widening, complete invalidation, missing-provenance fallback and intermediate factual corruption on seen data. Do not expand the claim to arbitrary graph-density/independent-app generality or wrong-root correction. Next priority: consolidate a claim-to-evidence matrix and freeze the affordable formal protocol: eligible source schemas, no-retarget rules, all scheduled outcomes, separate factual/source/workflow gates, fixed topology, explicit prevention starting point, batch token reservation and unknown-usage stopping rule. Final8 stays locked until preflight; no new held-out launch in this turn. Scheduling/self-evolve remain optional after core evidence.
