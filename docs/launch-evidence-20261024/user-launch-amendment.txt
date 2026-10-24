@@ -1,0 +1,2 @@
+2026-10-24 explicit user instruction: 直接用Cloud-OpsBench，不需要等既定窗口
+Proceed now with Cloud-OpsBench as user-selected research benchmark. This is user authorization, NOT course-staff approval. Course acceptance remains unverified and must be disclosed in reporting. No email authorized. Only earliest start and benchmark decision basis change; case IDs, order, model, budgets, scoring and stopping deadlines unchanged. No formal data read before this amendment.

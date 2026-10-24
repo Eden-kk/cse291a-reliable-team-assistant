@@ -2,7 +2,7 @@
   "protocol": "formal-evaluation-v2-20261024",
   "files": {
     "configs/formal-evaluation-v2.json": "5e1489b840ef6894fe76b44bf79e95a33dd241fd2c52643acea7cda4eada1f62",
-    "configs/formal-window-v1.json": "275c12b82aee07001b5911f072aa3a75cdfba30873747de7b223c1382c56a96a",
+    "configs/formal-window-v1.json": "7c4b56dcb367ce51c7f612583e72b9eb9c35cc362bea463cfd1628c09518a2af",
     "configs/splits.json": "30600a46ee1270eed7588f5402cd4ae0bc916d1320bf52dd24181fc64fdafe3e",
     "requirements.lock": "f9f98ed207d7d41a5d913d12d60f3a31e73d49a35bb0bbd6238584f0081441b7",
     "scripts/run_formal_v2.py": "f17163a4b6cfc4fb555b5354497ac79e95638217ba2adc2c7663404d4a013e49",
@@ -37,5 +37,6 @@
     "src/team_assistant/triton_provider.py": "df2f08719a684018bf719caf2f5417a1c98c1b03c6d9726170c2621b3f9a23b5"
   },
   "scope": "execution, scoring, prompts, package runtime, pinned dependencies and registry; no heldout content opened",
-  "approval": "external evidence must bind SHA256 of this manifest"
+  "approval": "external evidence must bind SHA256 of this manifest",
+  "authorization_amendment": "User advanced launch to October24 and selected Cloud-OpsBench; no cases or scientific settings changed, no heldout read."
 }

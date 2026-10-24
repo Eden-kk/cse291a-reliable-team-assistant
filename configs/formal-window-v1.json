@@ -2,12 +2,12 @@
   "version": "formal-window-v1-20261024",
   "timezone": "America/Los_Angeles",
   "user_authorized_conditional_launch": true,
-  "authorization": "User: \u6309\u7167\u76ee\u524d\u7684key\u8c03\u6574\u7a97\u53e3\uff0c\u5728\u5408\u9002\u65f6\u673a\u542f\u52a8\u6b63\u5f0f\u8bc4\u4f30",
+  "authorization": "User: 按照目前的key调整窗口，在合适时机启动正式评估",
   "authorization_date": "2026-10-24",
   "formal_started": false,
   "heldout_opened": false,
   "key_expires_utc": "2026-11-07T18:28:12.453000+00:00",
-  "target_start_local": "2026-10-28T09:00:00-07:00",
+  "target_start_local": "2026-10-24T00:00:00-07:00",
   "target_end_local": "2026-11-02T18:00:00-08:00",
   "latest_new_batch_start_local": "2026-11-04T12:00:00-08:00",
   "online_calls_stop_local": "2026-11-05T18:00:00-08:00",
@@ -24,7 +24,7 @@
     "Versioned output/reasoning/call/token budget and unknown-usage accounting",
     "Frozen code/prompt/config hashes and fair evidence/native scoring sequence",
     "Refreshed authorized model, charged prices, balance and access through bounded run",
-    "Official overview requires course-provided or approved local benchmarks; retain evidence of acceptance and AWS-default resource compatibility"
+    "Explicit user benchmark selection recorded separately from unverified course acceptance; verified course DataHub resources."
   ],
   "not_required": [
     "Perfect accuracy",
@@ -34,5 +34,7 @@
   ],
   "concurrency": "Never launch a second copy; check durable run marker, process status and receipts first; uncertain prior execution must be reconciled, not retried.",
   "automation_id": "291a",
-  "automation_schedule": "Daily 10:30 America/Los_Angeles through Nov5; project-only heartbeat"
+  "automation_schedule": "Daily 10:30 America/Los_Angeles through Nov5; project-only heartbeat",
+  "authorization_amendment": "2026-10-24 user: 直接用Cloud-OpsBench，不需要等既定窗口",
+  "benchmark_selection_basis": "Explicit user decision to proceed; course acceptance remains unverified and is not asserted."
 }
