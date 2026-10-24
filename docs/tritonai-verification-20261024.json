@@ -1,0 +1,44 @@
+{
+  "checked_date": "2026-10-24",
+  "method": "Authenticated GET /v1/models and GET /key/info inside course DataHub; secret never printed or copied",
+  "base_url": "https://tritonai-api.ucsd.edu/v1",
+  "accessible_models": [
+    "api-cohere-transcribe",
+    "api-glm-5.3-flash",
+    "api-lightonocr-1b",
+    "api-tgpt-embeddings",
+    "api-openai-privacy-filter",
+    "api-glm-5.3",
+    "api-muse-glimmer-30b"
+  ],
+  "spend_usd": 0.0,
+  "max_budget_usd": 50.0,
+  "remaining_usd_at_check": 50.0,
+  "rpm_limit": 100,
+  "tpm_limit": null,
+  "expires_utc": "2026-11-07T18:28:12.453000+00:00",
+  "expires_los_angeles": "2026-11-07T10:28:12.453000-08:00",
+  "prices_source": "https://docs.tritonai.ucsd.edu/models",
+  "price_scope": "public catalog, not a charged-response verification",
+  "inference_calls": 0,
+  "candidate_costs": {
+    "api-glm-5.3": {
+      "input_usd_per_million": 1.2,
+      "output_usd_per_million": 3.25,
+      "formal_102_call_ceiling_usd": 7.7722368,
+      "calibration_18_call_ceiling_usd": 1.3715712
+    },
+    "api-glm-5.3-flash": {
+      "input_usd_per_million": 0.15,
+      "output_usd_per_million": 0.5,
+      "formal_102_call_ceiling_usd": 0.9911135999999999,
+      "calibration_18_call_ceiling_usd": 0.17490239999999999
+    },
+    "api-muse-glimmer-30b": {
+      "input_usd_per_million": 0.2,
+      "output_usd_per_million": 0.4,
+      "formal_102_call_ceiling_usd": 1.2657792,
+      "calibration_18_call_ceiling_usd": 0.22337280000000004
+    }
+  }
+}

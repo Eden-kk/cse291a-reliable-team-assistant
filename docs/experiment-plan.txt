@@ -32,3 +32,5 @@ Separate root/native ECR, factual support, source/workflow validity, exposure/pr
 
 Course compliance and remaining delivery work
 See docs/course-requirements-audit-20261024.txt. Aligned with Option5; not fully complete. Outstanding: course-provider migration, repeated measurements, budget/model pinning, benchmark acceptance check, refreshed Phase1 package and exact upload details. Submitted proposal and historical release archives are not overwritten. Holdouts remain locked.
+
+October24 implementation update: generic single-field injection and static exact repair validated offline (185/185tests); source-version mismatch rejection retained. TritonAI authenticated access7routes/$50remaining/RPM100 verified, key expiresNov7; candidate costs fit caps but inference-quality and charged-price calibration remain open. Next: implement provider/caps on development, obtain key renewal before Nov13 formal window, and recheck balance. No heldout launch. Updated Phase1 package target output/phase1-2026-10-24.

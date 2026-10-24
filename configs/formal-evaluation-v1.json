@@ -22,7 +22,10 @@
     "model_id": null,
     "revision": null,
     "prices_verified": false,
-    "balance_verified": false
+    "balance_verified": true,
+    "public_candidate_prices_verified": true,
+    "account_verification": "docs/tritonai-verification-20261024.json",
+    "key_expires_utc": "2026-11-07T18:28:12.453000+00:00"
   },
   "budget": {
     "per_call_total_token_reservation": 60000,
@@ -48,7 +51,8 @@
     "runner enforces manifest, call/input/output/tool ceilings and locked split guard",
     "scoring rubric and input-only reviewer blind to labels frozen before execution",
     "source/dataset approval status resolved",
-    "code, dataset, protocol and prompt hashes frozen"
+    "code, dataset, protocol and prompt hashes frozen",
+    "course key expiry/renewal covers planned formal batch; recheck remaining balance"
   ],
   "heldout_opened": false,
   "tool_limit_per_collection_role": 4,
@@ -64,5 +68,8 @@
   },
   "primary_quality_gate": "strict benchmark joint: native root correct AND ECR=1 AND supported facts AND current valid publication",
   "secondary_quality_gate": "semantic joint without native ECR requirement, labeled separately",
-  "prevention_fault": "same deterministic transform before source-consistency check; independent exposure/eligibility recorded"
+  "prevention_fault": "same deterministic transform before source-consistency check; independent exposure/eligibility recorded",
+  "effective_tool_limit_per_collection_role": 3,
+  "generic_fault_mechanics_verified": true,
+  "generic_fault_model_calibration_verified": false
 }

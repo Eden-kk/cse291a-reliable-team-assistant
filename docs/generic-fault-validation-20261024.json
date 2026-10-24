@@ -1,0 +1,77 @@
+{
+  "validation": "offline mechanics only; not new model propagation or quality evidence",
+  "live_model_calls": 0,
+  "heldout_access": false,
+  "cases": [
+    {
+      "case": "boutique/runtime/1",
+      "prefix": "recovery-boundaries-20261024/handoff-expiry/prefix",
+      "injection": {
+        "injected": true,
+        "observation_id": "observation-7",
+        "tool": "GetAppYAML",
+        "arguments": {
+          "app_name": "adservice"
+        },
+        "span": [
+          811,
+          815
+        ],
+        "before": "9555",
+        "after": "9556",
+        "pristine_visible_text_sha256": "f381b00ac5585a8b0536c33467e3962ef3fb72ce6ed562f1fe021958942d580e",
+        "corrupted_visible_text_sha256": "6affe7f4cd528c9451a8f8d72594e015522be8f27d04ef2b5aabcfc2f3d4c2b5",
+        "claimed_source_sha256": "f381b00ac5585a8b0536c33467e3962ef3fb72ce6ed562f1fe021958942d580e",
+        "source_archive_unchanged": true,
+        "artifact": "configuration_evidence",
+        "artifact_version": 2
+      },
+      "invalid_descendants": [
+        "diagnosis_0",
+        "public-status"
+      ],
+      "obsolete_publication_rejected": true,
+      "exact_source_repair": true,
+      "telemetry_unchanged": true,
+      "archive_unchanged": true,
+      "repair_idempotent": true,
+      "acquisition": "saved actual collection prefix",
+      "mismatched_revision_rejected": null
+    },
+    {
+      "case": "boutique/performance/1",
+      "prefix": "cross-case-recovery-20261024/performance/prefix",
+      "injection": {
+        "injected": true,
+        "observation_id": "observation-3",
+        "tool": "GetAppYAML",
+        "arguments": {
+          "app_name": "adservice"
+        },
+        "span": [
+          811,
+          815
+        ],
+        "before": "9555",
+        "after": "9556",
+        "pristine_visible_text_sha256": "827fe319e0297bd7bef86410f44cfa0e1feca47f6f6c1b214d7e37f556fc8503",
+        "corrupted_visible_text_sha256": "13387e75a9720bf1460954ac4206d35cfedf9fc39cdcc5bdb3750d208ec1562e",
+        "claimed_source_sha256": "827fe319e0297bd7bef86410f44cfa0e1feca47f6f6c1b214d7e37f556fc8503",
+        "source_archive_unchanged": true,
+        "artifact": "configuration_evidence",
+        "artifact_version": 2
+      },
+      "invalid_descendants": [
+        "diagnosis_0",
+        "public-status"
+      ],
+      "obsolete_publication_rejected": true,
+      "exact_source_repair": true,
+      "telemetry_unchanged": true,
+      "archive_unchanged": true,
+      "repair_idempotent": true,
+      "acquisition": "original-source YAML replay",
+      "mismatched_revision_rejected": true
+    }
+  ]
+}

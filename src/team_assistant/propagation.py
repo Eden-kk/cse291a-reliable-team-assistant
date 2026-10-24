@@ -30,6 +30,9 @@ def corrupt_port(inv):
 def verify_inputs(inv, dependencies):
     started = time.perf_counter()
     cpu_start = time.process_time()
+    ids = [o['id'] for o in inv.snapshot.observations]
+    if len(ids) != len(set(ids)):
+        raise ValueError('Ambiguous duplicate source observation identities')
     pristine = {o['id']: Snapshot.visible(o) for o in inv.snapshot.observations}
     checked, repaired = 0, []
     store = inv.incident.store
