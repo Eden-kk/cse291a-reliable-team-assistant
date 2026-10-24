@@ -1,0 +1,49 @@
+{
+  "files_verified": 70,
+  "clean_extraction": true,
+  "saved_output_checks": {
+    "calls": 11,
+    "tokens": 57541,
+    "billed_usd": "0.0476411999999999984",
+    "arms": {
+      "prefix": {
+        "calls": 3,
+        "tokens": 9571,
+        "billed_usd": "0.00757625",
+        "wall_seconds": 5.291643681004643
+      },
+      "clean": {
+        "calls": 1,
+        "tokens": 8808,
+        "billed_usd": "0.011078",
+        "wall_seconds": 4.721462754532695
+      },
+      "corrupt": {
+        "calls": 1,
+        "tokens": 8811,
+        "billed_usd": "0.0042844",
+        "wall_seconds": 3.7801703810691833
+      },
+      "restart": {
+        "calls": 4,
+        "tokens": 18392,
+        "billed_usd": "0.0174698999999999987",
+        "wall_seconds": 10.24996493011713
+      },
+      "selective": {
+        "calls": 2,
+        "tokens": 11959,
+        "billed_usd": "0.0072326499999999997",
+        "wall_seconds": 4.758981185033917
+      }
+    },
+    "propagated_errors": 0,
+    "injected_errors": 1,
+    "repaired_propagated_diagnosis": false,
+    "unchanged_valid_artifacts": 5,
+    "limitations": "Checks saved facts/hashes/receipts, not independent semantic correctness or generalization."
+  },
+  "model_calls": 0,
+  "submitted": false,
+  "archive_sha256": "0e5c961299566cceca0e29dc6ce281d426f1132ca4b958c0a7553161ff97182b"
+}

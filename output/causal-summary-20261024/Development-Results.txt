@@ -1,0 +1,37 @@
+Causal-summary development pilot — October 24, 2026
+
+Conclusion
+The injected, causally relevant summary error did NOT propagate to the final diagnosis. The coordinator explicitly rejected the wrong grpc claim using raw YAML and pod evidence. Restart and selective recovery regenerated the intermediate summary correctly, but neither repaired an incorrect final diagnosis: the corrupt arm's diagnosis was already correct. This is one seen development case, not a new held-out evaluation.
+
+Protocol and evidence
+Code: 4dcf59ac0fe593a924febecae194e1a97fa6c8b3; configs/causal-summary-dev-v1.json.
+Seen case: boutique/runtime/1; pinned dataset ea05dafbc87b5985df8721622d63d4229c2b4224.
+Remote: CSE291A_FA26_003 DataHub 2 CPU/8 GB; Python3.11.9; api-glm-5.3, temperature0, low reasoning, max8192 output tokens. Four mock plumbing tests passed both locally and remotely; they are not model-semantic evidence.
+Raw records: runs/causal-summary-20261024/causal-summary-dev-20261024; portable companion: output/causal-summary-20261024/Development-Evidence.zip.
+One planned run, no retries or retargeting; no native labels read in this pilot. Formal evaluation remains unchanged.
+
+Intervention and causal trace
+1. Shared prefix runs two query planners and an LLM configuration summarizer. Actual YAML has livenessProbe.httpGet and readinessProbe.grpc.
+2. The clean summary correctly extracts httpGet. Its liveness field and sentence are changed to grpc, claiming agreement with readiness. Raw sources remain available and identical between clean/corrupt arms.
+3. Corrupt coordinator output still says httpGet and liveness_probe_incorrect_protocol. Its explanation explicitly identifies the summary/raw-source conflict and trusts the raw sources. Observed propagation:0/1 injected; repair of a propagated final-answer error: not demonstrated.
+4. A trusted notification identifies configuration_summary as invalid, supplying no correct field or diagnosis. Dependency invalidation includes configuration_summary and incident_brief. Obsolete republication is rejected. No-recovery's invalid status is a publication-policy result, not a semantic error label.
+5. Restart recomputes all work; selective regenerates the summary and brief (and re-reads summary_source). Both generated summaries return httpGet. Both new publications supersede publication1.
+6. Selective retains initial, configuration_plan, configuration_evidence, telemetry_plan and telemetry_evidence with identical pre/post artifact hashes. Restart retains none. No invalid artifact remains after recovery. Exact source quotes were checked for all four diagnosis outputs; contract errors are empty. This source audit is AI-assisted, not independent human ground truth or universal safety proof.
+
+Measured incremental work
+Arm                 Calls   Tokens   Billed USD      Wall seconds
+Shared prefix       3       9571     0.00757625      5.291644
+Clean continuation  1       8808     0.01107800      4.721463
+Corrupt continuation1       8811     0.00428440      3.780170
+Full restart        4       18392    0.01746990      10.249965
+Selective recovery  2       11959    0.00723265      4.758981
+Physical total      11      57541    0.04764120
+
+Selective uses 50% fewer incremental calls and 34.98% fewer incremental tokens than restart. Observed recovery wall time is 53.57% lower, but this is one fixed-order sample with provider/cache effects, not a statistical latency estimate. Clean prefix+continuation wall=10.013106s. Logical full paths include their shared work; physical total counts the shared prefix once. The 65.08 microsecond invalidation timer measures only that function, not integrated tracking overhead. Five unchanged artifacts are a dependency/version result; their count is not a token-equivalent saved-work metric.
+
+Budget reconciliation
+Hard caps12calls/$1.20; actual11calls, no API errors. Conservative provider reservation accounting charged$0.07298520; actual billing headers sum$0.04764120. Account spend before$0.62669165; immediate-after$0.65509730 lagged; refreshed$0.67433285 matches billed delta. Remaining course key credit$49.32566715 at check. Known Triton development spend including previous$0.21803355 is$0.26567475, within the$5 development envelope; formal$0.40225095 stays separate. Server exit0; stopped after archival, Start My Server observed.
+
+Limitations and decision
+The brief prompt explicitly warns that summaries are fallible and exposes raw evidence. This favors prevention, which is a legitimate result but restricts the question tested. A fixed extra adservice YAML read and a known seen-case intervention make eligibility deliberate; this is not natural error prevalence. All arms use a new summary step absent from the frozen formal workflow. One case, one run, fixed restart-before-selective order, no independent human review. Do not rerun until a favorable propagation outcome appears.
+Next protocol should distinguish (a) raw-visible coordinator and (b) a realistic, bandwidth-limited specialist handoff with source references and on-demand raw retrieval. Specify this information boundary for all arms before inference, not only for the faulty arm; allow retrieval/abstention as prevention outcomes. Compare accepted false conclusions, affected downstream actions, correction quality and quality-qualified cost. Use new development cases before selecting a genuinely unseen confirmatory set. If realistic information boundaries still prevent propagation, report recovery primarily as validity/expiry repair and quantify the strong prevention baseline.
