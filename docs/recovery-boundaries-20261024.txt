@@ -1,0 +1,33 @@
+Real semantic recovery boundary experiments — 2026-10-24
+
+Protocol/source: docs/recovery-boundaries-20261024-protocol.txt, commit186a332. Two frozen conditions on development_seen boutique/runtime/1;18 real task calls,313367 known tokens,0 unknown usage,0 retries. Existing subscription, no held-out access. All179 preflight tests passed after fixing missing PYTHONPATH in the initial test command. An initial launch from an older clone exited before any model calls; retained as setup error, not a model outcome. No experiments remain running.
+
+All outcomes (native JRA=ECR=1 and contract valid for EVERY answered arm):
+condition       arm          evidence workflow increment logical   wall-s
+handoff-expiry  prefix       True  True    52501   52501  33.51
+handoff-expiry  no-recovery  True  False       0   52501     NA
+handoff-expiry  selective    True  True    36620   89121  18.63
+handoff-expiry  restart      True  True    52499  105000  29.97
+wrong-content   prefix       False True    50788   50788  22.98
+wrong-content   no-recovery  False False       0   50788     NA
+wrong-content   restart      True  True    50973  101761  21.38
+wrong-content   selective    True  True    19221   70009   9.45
+wrong-content   prevention   True  True    50765   50765  24.12
+
+Handoff / widened dependency closure
+The actual configuration-plan request contains initial AND telemetry_evidence. Expiring telemetry invalidates five artifacts: telemetry evidence, configuration plan/evidence, diagnosis and local status. Initial and telemetry plan remain reusable. Selective makes2 new model calls versus restart3, refreshing5 tools versus7. Both retained correct protocol-mismatch diagnosis and source-consistent quotes. No-recovery still has a semantically correct answer because source content never changed; it fails the declared expiry/publication contract only. Do not claim factual repair here, or claim no-recovery is less accurate. The observed graph is a widened real handoff dependency, not a fully connected density sweep. The original independent expected closure assertion passed. Old publication was rejected and recovery corrections link to it.
+
+Wrong intermediate content
+Pristine snapshot remains9555; fixed corruption changes only configuration_evidence visible text to9556. Both altered observations appeared in the actual diagnosis request; the answer quoted9556 and repeated it in reasoning. Therefore applied, consumed and factual propagation are all observed. Root label remained protocol mismatch, so this is NOT wrong-root correction. Restart and selective output9555, all7 observations match archive, no9556 remains. No-recovery retains2 mismatched observations despite JRA/ECR1 and valid literal-quote contract. This shows that quote resolution against consumed evidence and native labels alone miss corrupted facts.
+Independent prevention also injected the same fault, repaired against the trusted local archive before diagnosis and returned9555. It uses local record equality, not a general semantic oracle or network freshness check. It incurs3 model calls/50765tokens end-to-end; selective costs70009 including the consumed prefix. Prevention remains cheaper here and starts from a different stage.
+
+Conditional paired costs
+handoff-expiry: selective incremental saving30.25%; including shared prefix15.12%.
+wrong-content: selective incremental saving62.29%; including shared prefix31.20%.
+
+Different conditions are not a randomized topology-only comparison: the handoff trial expires unchanged telemetry while corruption trial alters configuration. Do not attribute their entire cost difference solely to topology. Wall times are single-run measurements, not p95 or significance. No-recovery wall time is unmeasured/NA. Shared prefix physically paid once, logically included per arm; analysis/review costs excluded. All native scores are separate from source consistency and workflow validity. Semantic review is primary-assistant judgment before labels, not independent human validation.
+
+Evidence: raw requests/responses, state, notification/closure, linked ledgers, source audits, qualitative reviews, native scores and provider settlements archived at output/recovery-boundaries-20261024/raw-evidence.tar.gz. Checksums embedded and verified. Compact results: docs/recovery-boundaries-20261024-results.json. Frozen Phase1 artifacts untouched.
+
+Next plan
+These pilots close the real handoff and fact-corruption feasibility checks, not all P2 robustness. Retain three distinct outcomes: correct-but-expired, contaminated supporting fact, uncertain diagnosis. Next priority is an all-work-invalidated negative control where selective should converge to restart; predeclare case/initial-artifact expiry/identical resource caps and account tracking overhead rather than force a savings result. A true arbitrary-density semantic sweep and wrong-root repair remain unproven, not requirements to manufacture positive findings. Freeze full eligibility, joint gates and affordable complete-batch budget before opening any final8 incident. Formal evaluation still locked; scheduling/learning extensions remain secondary.

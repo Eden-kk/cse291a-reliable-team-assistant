@@ -1,0 +1,1302 @@
+{
+  "source_commit": "186a332",
+  "protocol": "docs/recovery-boundaries-20261024-protocol.txt",
+  "task_calls": 18,
+  "known_tokens": 313367,
+  "unknown_usage": 0,
+  "conditions": {
+    "handoff-expiry": {
+      "arms": {
+        "prefix": {
+          "execution": {
+            "state": "completed",
+            "contract_errors": [],
+            "wall_seconds": 33.50537366600474,
+            "incremental_tokens": 52501,
+            "logical_tokens": 52501,
+            "tools": 7,
+            "ledger": [
+              {
+                "id": 1,
+                "result": "public-status",
+                "version": 1,
+                "payload": {
+                  "status": "provisional",
+                  "quality_approved": false,
+                  "answer": {
+                    "status": "diagnosed",
+                    "fault_object": "app/adservice",
+                    "root_cause": "liveness_probe_incorrect_protocol",
+                    "evidence": [
+                      {
+                        "observation_id": "observation-6",
+                        "quote": "Container server failed liveness probe, will be restarted"
+                      },
+                      {
+                        "observation_id": "observation-7",
+                        "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+                      },
+                      {
+                        "observation_id": "observation-3",
+                        "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+                      }
+                    ],
+                    "reasoning": "The liveness probe sends HTTP/1.x GET requests to port 9555, where the gRPC HTTP/2 server explicitly rejects them. The configured application port and probe port both equal 9555, so the mismatch is protocol, not port. Kubelet events directly link failed liveness probes to container restarts, establishing the cause of the abnormal restarts."
+                  }
+                },
+                "epoch": 0,
+                "supersedes": null
+              }
+            ],
+            "invalid": []
+          },
+          "scores": {
+            "CA": 1.0,
+            "FA": 1.0,
+            "JRA": 1.0,
+            "MC": 1.0,
+            "EOC": 1.0,
+            "ECR": 1.0,
+            "EE": 0.42857142857142855,
+            "contract_valid": true,
+            "budget_valid": true
+          },
+          "review": {
+            "stage": "before native labels",
+            "request_file": "runs/recovery-boundaries-20261024/handoff-expiry/prefix/calls/003.request.json",
+            "answer": {
+              "status": "diagnosed",
+              "fault_object": "app/adservice",
+              "root_cause": "liveness_probe_incorrect_protocol",
+              "evidence": [
+                {
+                  "observation_id": "observation-6",
+                  "quote": "Container server failed liveness probe, will be restarted"
+                },
+                {
+                  "observation_id": "observation-7",
+                  "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+                },
+                {
+                  "observation_id": "observation-3",
+                  "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+                }
+              ],
+              "reasoning": "The liveness probe sends HTTP/1.x GET requests to port 9555, where the gRPC HTTP/2 server explicitly rejects them. The configured application port and probe port both equal 9555, so the mismatch is protocol, not port. Kubelet events directly link failed liveness probes to container restarts, establishing the cause of the abnormal restarts."
+            },
+            "citations": [
+              {
+                "id": "observation-6",
+                "resolves": true
+              },
+              {
+                "id": "observation-7",
+                "resolves": true
+              },
+              {
+                "id": "observation-3",
+                "resolves": true
+              }
+            ],
+            "corrupted_port_in_diagnosis_input": false,
+            "corrupted_port_in_answer": false,
+            "mismatched_sources": [],
+            "source_count": 7,
+            "actual_configuration_handoff": [
+              [
+                "initial",
+                "telemetry_evidence"
+              ]
+            ],
+            "semantic_review": {
+              "reviewer": "primary assistant before native scoring",
+              "supported": true,
+              "reason": "HTTP liveness vs gRPC readiness configuration, HTTP/1.x rejection log, and kubelet restart event support protocol mismatch. No unique-cause intervention evidence.",
+              "workflow_current": true,
+              "interpretation": "Unchanged evidence remains semantically correct; expiry blocks authorized reuse/publication, not factual correctness."
+            }
+          },
+          "evidence_supported": true,
+          "workflow_current": true,
+          "joint_success": true
+        },
+        "no-recovery": {
+          "execution": {
+            "state": "completed",
+            "incremental_tokens": 0,
+            "logical_tokens": 52501,
+            "tools": 7,
+            "invalid": [
+              "configuration_evidence",
+              "configuration_plan",
+              "diagnosis_0",
+              "public-status",
+              "telemetry_evidence"
+            ]
+          },
+          "scores": {
+            "CA": 1.0,
+            "FA": 1.0,
+            "JRA": 1.0,
+            "MC": 1.0,
+            "EOC": 1.0,
+            "ECR": 1.0,
+            "EE": 0.42857142857142855,
+            "contract_valid": true,
+            "budget_valid": true
+          },
+          "review": {
+            "stage": "before native labels",
+            "request_file": "runs/recovery-boundaries-20261024/handoff-expiry/prefix/calls/003.request.json",
+            "answer": {
+              "status": "diagnosed",
+              "fault_object": "app/adservice",
+              "root_cause": "liveness_probe_incorrect_protocol",
+              "evidence": [
+                {
+                  "observation_id": "observation-6",
+                  "quote": "Container server failed liveness probe, will be restarted"
+                },
+                {
+                  "observation_id": "observation-7",
+                  "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+                },
+                {
+                  "observation_id": "observation-3",
+                  "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+                }
+              ],
+              "reasoning": "The liveness probe sends HTTP/1.x GET requests to port 9555, where the gRPC HTTP/2 server explicitly rejects them. The configured application port and probe port both equal 9555, so the mismatch is protocol, not port. Kubelet events directly link failed liveness probes to container restarts, establishing the cause of the abnormal restarts."
+            },
+            "citations": [
+              {
+                "id": "observation-6",
+                "resolves": true
+              },
+              {
+                "id": "observation-7",
+                "resolves": true
+              },
+              {
+                "id": "observation-3",
+                "resolves": true
+              }
+            ],
+            "corrupted_port_in_diagnosis_input": false,
+            "corrupted_port_in_answer": false,
+            "mismatched_sources": [],
+            "source_count": 7,
+            "actual_configuration_handoff": [
+              [
+                "initial",
+                "telemetry_evidence"
+              ]
+            ],
+            "semantic_review": {
+              "reviewer": "primary assistant before native scoring",
+              "supported": true,
+              "reason": "HTTP liveness vs gRPC readiness configuration, HTTP/1.x rejection log, and kubelet restart event support protocol mismatch. No unique-cause intervention evidence.",
+              "workflow_current": false,
+              "interpretation": "Unchanged evidence remains semantically correct; expiry blocks authorized reuse/publication, not factual correctness."
+            }
+          },
+          "evidence_supported": true,
+          "workflow_current": false,
+          "joint_success": false
+        },
+        "selective": {
+          "execution": {
+            "state": "completed",
+            "contract_errors": [],
+            "wall_seconds": 18.627821958012646,
+            "incremental_tokens": 36620,
+            "logical_tokens": 89121,
+            "tools": 12,
+            "ledger": [
+              {
+                "id": 1,
+                "result": "public-status",
+                "version": 1,
+                "payload": {
+                  "status": "provisional",
+                  "quality_approved": false,
+                  "answer": {
+                    "status": "diagnosed",
+                    "fault_object": "app/adservice",
+                    "root_cause": "liveness_probe_incorrect_protocol",
+                    "evidence": [
+                      {
+                        "observation_id": "observation-6",
+                        "quote": "Container server failed liveness probe, will be restarted"
+                      },
+                      {
+                        "observation_id": "observation-7",
+                        "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+                      },
+                      {
+                        "observation_id": "observation-3",
+                        "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+                      }
+                    ],
+                    "reasoning": "The liveness probe sends HTTP/1.x GET requests to port 9555, where the gRPC HTTP/2 server explicitly rejects them. The configured application port and probe port both equal 9555, so the mismatch is protocol, not port. Kubelet events directly link failed liveness probes to container restarts, establishing the cause of the abnormal restarts."
+                  }
+                },
+                "epoch": 0,
+                "supersedes": null
+              },
+              {
+                "id": 2,
+                "result": "public-status",
+                "version": 2,
+                "payload": {
+                  "status": "provisional",
+                  "quality_approved": false,
+                  "answer": {
+                    "status": "diagnosed",
+                    "fault_object": "app/adservice",
+                    "root_cause": "liveness_probe_incorrect_protocol",
+                    "evidence": [
+                      {
+                        "observation_id": "observation-11",
+                        "quote": "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3"
+                      },
+                      {
+                        "observation_id": "observation-11",
+                        "quote": "Container server failed liveness probe, will be restarted"
+                      },
+                      {
+                        "observation_id": "observation-8",
+                        "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+                      },
+                      {
+                        "observation_id": "observation-12",
+                        "quote": "readinessProbe:\n          initialDelaySeconds: 5\n          grpc:\n            port: 9555\n        livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+                      }
+                    ],
+                    "reasoning": "The liveness probe sends HTTP/1.x GET requests to port 9555, where the gRPC HTTP/2 server explicitly rejects them. Readiness uses gRPC on the same port, confirming the configured ports agree but probe protocols differ. Kubelet records that failed liveness checks trigger container restarts, directly connecting the protocol mismatch to the abnormal restarts."
+                  }
+                },
+                "epoch": 1,
+                "supersedes": 1
+              }
+            ],
+            "invalid": []
+          },
+          "scores": {
+            "CA": 1.0,
+            "FA": 1.0,
+            "JRA": 1.0,
+            "MC": 1.0,
+            "EOC": 1.0,
+            "ECR": 1.0,
+            "EE": 0.42857142857142855,
+            "contract_valid": true,
+            "budget_valid": true
+          },
+          "review": {
+            "stage": "before native labels",
+            "request_file": "runs/recovery-boundaries-20261024/handoff-expiry/selective/calls/002.request.json",
+            "answer": {
+              "status": "diagnosed",
+              "fault_object": "app/adservice",
+              "root_cause": "liveness_probe_incorrect_protocol",
+              "evidence": [
+                {
+                  "observation_id": "observation-11",
+                  "quote": "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3"
+                },
+                {
+                  "observation_id": "observation-11",
+                  "quote": "Container server failed liveness probe, will be restarted"
+                },
+                {
+                  "observation_id": "observation-8",
+                  "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+                },
+                {
+                  "observation_id": "observation-12",
+                  "quote": "readinessProbe:\n          initialDelaySeconds: 5\n          grpc:\n            port: 9555\n        livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+                }
+              ],
+              "reasoning": "The liveness probe sends HTTP/1.x GET requests to port 9555, where the gRPC HTTP/2 server explicitly rejects them. Readiness uses gRPC on the same port, confirming the configured ports agree but probe protocols differ. Kubelet records that failed liveness checks trigger container restarts, directly connecting the protocol mismatch to the abnormal restarts."
+            },
+            "citations": [
+              {
+                "id": "observation-11",
+                "resolves": true
+              },
+              {
+                "id": "observation-11",
+                "resolves": true
+              },
+              {
+                "id": "observation-8",
+                "resolves": true
+              },
+              {
+                "id": "observation-12",
+                "resolves": true
+              }
+            ],
+            "corrupted_port_in_diagnosis_input": false,
+            "corrupted_port_in_answer": false,
+            "mismatched_sources": [],
+            "source_count": 7,
+            "actual_configuration_handoff": [
+              [
+                "initial",
+                "telemetry_evidence"
+              ]
+            ],
+            "semantic_review": {
+              "reviewer": "primary assistant before native scoring",
+              "supported": true,
+              "reason": "HTTP liveness vs gRPC readiness configuration, HTTP/1.x rejection log, and kubelet restart event support protocol mismatch. No unique-cause intervention evidence.",
+              "workflow_current": true,
+              "interpretation": "Unchanged evidence remains semantically correct; expiry blocks authorized reuse/publication, not factual correctness."
+            }
+          },
+          "evidence_supported": true,
+          "workflow_current": true,
+          "joint_success": true
+        },
+        "restart": {
+          "execution": {
+            "state": "completed",
+            "contract_errors": [],
+            "wall_seconds": 29.973481458000606,
+            "incremental_tokens": 52499,
+            "logical_tokens": 105000,
+            "tools": 14,
+            "ledger": [
+              {
+                "id": 1,
+                "result": "public-status",
+                "version": 1,
+                "payload": {
+                  "status": "provisional",
+                  "quality_approved": false,
+                  "answer": {
+                    "status": "diagnosed",
+                    "fault_object": "app/adservice",
+                    "root_cause": "liveness_probe_incorrect_protocol",
+                    "evidence": [
+                      {
+                        "observation_id": "observation-6",
+                        "quote": "Container server failed liveness probe, will be restarted"
+                      },
+                      {
+                        "observation_id": "observation-7",
+                        "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+                      },
+                      {
+                        "observation_id": "observation-3",
+                        "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+                      }
+                    ],
+                    "reasoning": "The liveness probe sends HTTP/1.x GET requests to port 9555, where the gRPC HTTP/2 server explicitly rejects them. The configured application port and probe port both equal 9555, so the mismatch is protocol, not port. Kubelet events directly link failed liveness probes to container restarts, establishing the cause of the abnormal restarts."
+                  }
+                },
+                "epoch": 0,
+                "supersedes": null
+              },
+              {
+                "id": 2,
+                "result": "public-status",
+                "version": 2,
+                "payload": {
+                  "status": "provisional",
+                  "quality_approved": false,
+                  "answer": {
+                    "status": "diagnosed",
+                    "fault_object": "app/adservice",
+                    "root_cause": "liveness_probe_incorrect_protocol",
+                    "evidence": [
+                      {
+                        "observation_id": "observation-14",
+                        "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+                      },
+                      {
+                        "observation_id": "observation-10",
+                        "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+                      },
+                      {
+                        "observation_id": "observation-13",
+                        "quote": "Container server failed liveness probe, will be restarted"
+                      }
+                    ],
+                    "reasoning": "The liveness probe sends an HTTP GET to port 9555, while the application serves gRPC over HTTP/2 on that port and explicitly rejects the HTTP/1.x request. The configured readiness probe uses gRPC on the same port and the container is Ready, supporting a protocol mismatch rather than an incorrect port. Repeated liveness failures directly trigger kubelet restarts, as recorded in the pod events."
+                  }
+                },
+                "epoch": 2,
+                "supersedes": 1
+              }
+            ],
+            "invalid": []
+          },
+          "scores": {
+            "CA": 1.0,
+            "FA": 1.0,
+            "JRA": 1.0,
+            "MC": 1.0,
+            "EOC": 1.0,
+            "ECR": 1.0,
+            "EE": 0.42857142857142855,
+            "contract_valid": true,
+            "budget_valid": true
+          },
+          "review": {
+            "stage": "before native labels",
+            "request_file": "runs/recovery-boundaries-20261024/handoff-expiry/restart/calls/003.request.json",
+            "answer": {
+              "status": "diagnosed",
+              "fault_object": "app/adservice",
+              "root_cause": "liveness_probe_incorrect_protocol",
+              "evidence": [
+                {
+                  "observation_id": "observation-14",
+                  "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+                },
+                {
+                  "observation_id": "observation-10",
+                  "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+                },
+                {
+                  "observation_id": "observation-13",
+                  "quote": "Container server failed liveness probe, will be restarted"
+                }
+              ],
+              "reasoning": "The liveness probe sends an HTTP GET to port 9555, while the application serves gRPC over HTTP/2 on that port and explicitly rejects the HTTP/1.x request. The configured readiness probe uses gRPC on the same port and the container is Ready, supporting a protocol mismatch rather than an incorrect port. Repeated liveness failures directly trigger kubelet restarts, as recorded in the pod events."
+            },
+            "citations": [
+              {
+                "id": "observation-14",
+                "resolves": true
+              },
+              {
+                "id": "observation-10",
+                "resolves": true
+              },
+              {
+                "id": "observation-13",
+                "resolves": true
+              }
+            ],
+            "corrupted_port_in_diagnosis_input": false,
+            "corrupted_port_in_answer": false,
+            "mismatched_sources": [],
+            "source_count": 7,
+            "actual_configuration_handoff": [
+              [
+                "initial",
+                "telemetry_evidence"
+              ]
+            ],
+            "semantic_review": {
+              "reviewer": "primary assistant before native scoring",
+              "supported": true,
+              "reason": "HTTP liveness vs gRPC readiness configuration, HTTP/1.x rejection log, and kubelet restart event support protocol mismatch. No unique-cause intervention evidence.",
+              "workflow_current": true,
+              "interpretation": "Unchanged evidence remains semantically correct; expiry blocks authorized reuse/publication, not factual correctness."
+            }
+          },
+          "evidence_supported": true,
+          "workflow_current": true,
+          "joint_success": true
+        },
+        "prevention": {
+          "state": "not_applicable",
+          "reason": "Unchanged source equality cannot discharge expiry"
+        }
+      },
+      "paired_savings_percent": 30.24629040553153,
+      "logical_savings_percent": 15.122857142857137
+    },
+    "wrong-content": {
+      "arms": {
+        "prefix": {
+          "execution": {
+            "state": "completed",
+            "contract_errors": [],
+            "wall_seconds": 22.982359874993563,
+            "incremental_tokens": 50788,
+            "logical_tokens": 50788,
+            "tools": 7,
+            "ledger": [
+              {
+                "id": 1,
+                "result": "public-status",
+                "version": 1,
+                "payload": {
+                  "status": "provisional",
+                  "quality_approved": false,
+                  "answer": {
+                    "status": "diagnosed",
+                    "fault_object": "app/adservice",
+                    "root_cause": "liveness_probe_incorrect_protocol",
+                    "evidence": [
+                      {
+                        "observation_id": "observation-6",
+                        "quote": "Liveness:   http-get http://:9556/ delay=5s timeout=1s period=10s #success=1 #failure=3"
+                      },
+                      {
+                        "observation_id": "observation-6",
+                        "quote": "Container server failed liveness probe, will be restarted"
+                      },
+                      {
+                        "observation_id": "observation-3",
+                        "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+                      },
+                      {
+                        "observation_id": "observation-7",
+                        "quote": "readinessProbe:\n          initialDelaySeconds: 5\n          grpc:\n            port: 9556"
+                      }
+                    ],
+                    "reasoning": "The liveness probe sends HTTP/1.x GET requests to port 9556, where the gRPC HTTP/2 server explicitly rejects them. Readiness uses gRPC on the same port, so the observed mismatch is protocol, not port. Kubelet events directly link failed liveness checks to container restarts, establishing the cause of the abnormal restarts."
+                  }
+                },
+                "epoch": 0,
+                "supersedes": null
+              }
+            ],
+            "invalid": []
+          },
+          "scores": {
+            "CA": 1.0,
+            "FA": 1.0,
+            "JRA": 1.0,
+            "MC": 1.0,
+            "EOC": 1.0,
+            "ECR": 1.0,
+            "EE": 0.42857142857142855,
+            "contract_valid": true,
+            "budget_valid": true
+          },
+          "review": {
+            "stage": "before native labels",
+            "request_file": "runs/recovery-boundaries-20261024/wrong-content/prefix/calls/003.request.json",
+            "answer": {
+              "status": "diagnosed",
+              "fault_object": "app/adservice",
+              "root_cause": "liveness_probe_incorrect_protocol",
+              "evidence": [
+                {
+                  "observation_id": "observation-6",
+                  "quote": "Liveness:   http-get http://:9556/ delay=5s timeout=1s period=10s #success=1 #failure=3"
+                },
+                {
+                  "observation_id": "observation-6",
+                  "quote": "Container server failed liveness probe, will be restarted"
+                },
+                {
+                  "observation_id": "observation-3",
+                  "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+                },
+                {
+                  "observation_id": "observation-7",
+                  "quote": "readinessProbe:\n          initialDelaySeconds: 5\n          grpc:\n            port: 9556"
+                }
+              ],
+              "reasoning": "The liveness probe sends HTTP/1.x GET requests to port 9556, where the gRPC HTTP/2 server explicitly rejects them. Readiness uses gRPC on the same port, so the observed mismatch is protocol, not port. Kubelet events directly link failed liveness checks to container restarts, establishing the cause of the abnormal restarts."
+            },
+            "citations": [
+              {
+                "id": "observation-6",
+                "resolves": true
+              },
+              {
+                "id": "observation-6",
+                "resolves": true
+              },
+              {
+                "id": "observation-3",
+                "resolves": true
+              },
+              {
+                "id": "observation-7",
+                "resolves": true
+              }
+            ],
+            "corrupted_port_in_diagnosis_input": true,
+            "corrupted_port_in_answer": true,
+            "mismatched_sources": [
+              "observation-6",
+              "observation-7"
+            ],
+            "source_count": 7,
+            "actual_configuration_handoff": [
+              [
+                "initial"
+              ]
+            ],
+            "semantic_review": {
+              "reviewer": "primary assistant before native scoring",
+              "supported": false,
+              "reason": "Protocol-mismatch category supported by HTTP rejection and kubelet restarts; corrupted prefix falsely states9556 despite original archive9555. Corrected arms cite original9555. No wrong-root repair claim.",
+              "workflow_current": true,
+              "interpretation": "Applied -> consumed in actual diagnosis request -> propagated into quoted evidence and reasoning -> corrected after restart/selective. Prevention repaired before diagnosis and did not propagate9556."
+            }
+          },
+          "evidence_supported": false,
+          "workflow_current": true,
+          "joint_success": false
+        },
+        "no-recovery": {
+          "execution": {
+            "state": "completed",
+            "incremental_tokens": 0,
+            "logical_tokens": 50788,
+            "tools": 7,
+            "invalid": [
+              "configuration_evidence",
+              "diagnosis_0",
+              "public-status"
+            ]
+          },
+          "scores": {
+            "CA": 1.0,
+            "FA": 1.0,
+            "JRA": 1.0,
+            "MC": 1.0,
+            "EOC": 1.0,
+            "ECR": 1.0,
+            "EE": 0.42857142857142855,
+            "contract_valid": true,
+            "budget_valid": true
+          },
+          "review": {
+            "stage": "before native labels",
+            "request_file": "runs/recovery-boundaries-20261024/wrong-content/prefix/calls/003.request.json",
+            "answer": {
+              "status": "diagnosed",
+              "fault_object": "app/adservice",
+              "root_cause": "liveness_probe_incorrect_protocol",
+              "evidence": [
+                {
+                  "observation_id": "observation-6",
+                  "quote": "Liveness:   http-get http://:9556/ delay=5s timeout=1s period=10s #success=1 #failure=3"
+                },
+                {
+                  "observation_id": "observation-6",
+                  "quote": "Container server failed liveness probe, will be restarted"
+                },
+                {
+                  "observation_id": "observation-3",
+                  "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+                },
+                {
+                  "observation_id": "observation-7",
+                  "quote": "readinessProbe:\n          initialDelaySeconds: 5\n          grpc:\n            port: 9556"
+                }
+              ],
+              "reasoning": "The liveness probe sends HTTP/1.x GET requests to port 9556, where the gRPC HTTP/2 server explicitly rejects them. Readiness uses gRPC on the same port, so the observed mismatch is protocol, not port. Kubelet events directly link failed liveness checks to container restarts, establishing the cause of the abnormal restarts."
+            },
+            "citations": [
+              {
+                "id": "observation-6",
+                "resolves": true
+              },
+              {
+                "id": "observation-6",
+                "resolves": true
+              },
+              {
+                "id": "observation-3",
+                "resolves": true
+              },
+              {
+                "id": "observation-7",
+                "resolves": true
+              }
+            ],
+            "corrupted_port_in_diagnosis_input": true,
+            "corrupted_port_in_answer": true,
+            "mismatched_sources": [
+              "observation-6",
+              "observation-7"
+            ],
+            "source_count": 7,
+            "actual_configuration_handoff": [
+              [
+                "initial"
+              ]
+            ],
+            "semantic_review": {
+              "reviewer": "primary assistant before native scoring",
+              "supported": false,
+              "reason": "Protocol-mismatch category supported by HTTP rejection and kubelet restarts; corrupted prefix falsely states9556 despite original archive9555. Corrected arms cite original9555. No wrong-root repair claim.",
+              "workflow_current": false,
+              "interpretation": "Applied -> consumed in actual diagnosis request -> propagated into quoted evidence and reasoning -> corrected after restart/selective. Prevention repaired before diagnosis and did not propagate9556."
+            }
+          },
+          "evidence_supported": false,
+          "workflow_current": false,
+          "joint_success": false
+        },
+        "restart": {
+          "execution": {
+            "state": "completed",
+            "contract_errors": [],
+            "wall_seconds": 21.378779582999414,
+            "incremental_tokens": 50973,
+            "logical_tokens": 101761,
+            "tools": 14,
+            "ledger": [
+              {
+                "id": 1,
+                "result": "public-status",
+                "version": 1,
+                "payload": {
+                  "status": "provisional",
+                  "quality_approved": false,
+                  "answer": {
+                    "status": "diagnosed",
+                    "fault_object": "app/adservice",
+                    "root_cause": "liveness_probe_incorrect_protocol",
+                    "evidence": [
+                      {
+                        "observation_id": "observation-6",
+                        "quote": "Liveness:   http-get http://:9556/ delay=5s timeout=1s period=10s #success=1 #failure=3"
+                      },
+                      {
+                        "observation_id": "observation-6",
+                        "quote": "Container server failed liveness probe, will be restarted"
+                      },
+                      {
+                        "observation_id": "observation-3",
+                        "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+                      },
+                      {
+                        "observation_id": "observation-7",
+                        "quote": "readinessProbe:\n          initialDelaySeconds: 5\n          grpc:\n            port: 9556"
+                      }
+                    ],
+                    "reasoning": "The liveness probe sends HTTP/1.x GET requests to port 9556, where the gRPC HTTP/2 server explicitly rejects them. Readiness uses gRPC on the same port, so the observed mismatch is protocol, not port. Kubelet events directly link failed liveness checks to container restarts, establishing the cause of the abnormal restarts."
+                  }
+                },
+                "epoch": 0,
+                "supersedes": null
+              },
+              {
+                "id": 2,
+                "result": "public-status",
+                "version": 2,
+                "payload": {
+                  "status": "provisional",
+                  "quality_approved": false,
+                  "answer": {
+                    "status": "diagnosed",
+                    "fault_object": "app/adservice",
+                    "root_cause": "liveness_probe_incorrect_protocol",
+                    "evidence": [
+                      {
+                        "observation_id": "observation-13",
+                        "quote": "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3"
+                      },
+                      {
+                        "observation_id": "observation-10",
+                        "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+                      },
+                      {
+                        "observation_id": "observation-13",
+                        "quote": "Container server failed liveness probe, will be restarted"
+                      },
+                      {
+                        "observation_id": "observation-14",
+                        "quote": "readinessProbe:\n          initialDelaySeconds: 5\n          grpc:\n            port: 9555"
+                      }
+                    ],
+                    "reasoning": "The liveness probe sends HTTP/1.x GET requests to port 9555, where adservice expects gRPC over HTTP/2. Application logs directly show rejection of these requests, and kubelet events explicitly link failed liveness probes to container restarts. The readiness probe uses gRPC on the same port, so the demonstrated mismatch is protocol, not port."
+                  }
+                },
+                "epoch": 2,
+                "supersedes": 1
+              }
+            ],
+            "invalid": []
+          },
+          "scores": {
+            "CA": 1.0,
+            "FA": 1.0,
+            "JRA": 1.0,
+            "MC": 1.0,
+            "EOC": 1.0,
+            "ECR": 1.0,
+            "EE": 0.42857142857142855,
+            "contract_valid": true,
+            "budget_valid": true
+          },
+          "review": {
+            "stage": "before native labels",
+            "request_file": "runs/recovery-boundaries-20261024/wrong-content/restart/calls/003.request.json",
+            "answer": {
+              "status": "diagnosed",
+              "fault_object": "app/adservice",
+              "root_cause": "liveness_probe_incorrect_protocol",
+              "evidence": [
+                {
+                  "observation_id": "observation-13",
+                  "quote": "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3"
+                },
+                {
+                  "observation_id": "observation-10",
+                  "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+                },
+                {
+                  "observation_id": "observation-13",
+                  "quote": "Container server failed liveness probe, will be restarted"
+                },
+                {
+                  "observation_id": "observation-14",
+                  "quote": "readinessProbe:\n          initialDelaySeconds: 5\n          grpc:\n            port: 9555"
+                }
+              ],
+              "reasoning": "The liveness probe sends HTTP/1.x GET requests to port 9555, where adservice expects gRPC over HTTP/2. Application logs directly show rejection of these requests, and kubelet events explicitly link failed liveness probes to container restarts. The readiness probe uses gRPC on the same port, so the demonstrated mismatch is protocol, not port."
+            },
+            "citations": [
+              {
+                "id": "observation-13",
+                "resolves": true
+              },
+              {
+                "id": "observation-10",
+                "resolves": true
+              },
+              {
+                "id": "observation-13",
+                "resolves": true
+              },
+              {
+                "id": "observation-14",
+                "resolves": true
+              }
+            ],
+            "corrupted_port_in_diagnosis_input": false,
+            "corrupted_port_in_answer": false,
+            "mismatched_sources": [],
+            "source_count": 7,
+            "actual_configuration_handoff": [
+              [
+                "initial"
+              ]
+            ],
+            "semantic_review": {
+              "reviewer": "primary assistant before native scoring",
+              "supported": true,
+              "reason": "Protocol-mismatch category supported by HTTP rejection and kubelet restarts; corrupted prefix falsely states9556 despite original archive9555. Corrected arms cite original9555. No wrong-root repair claim.",
+              "workflow_current": true,
+              "interpretation": "Applied -> consumed in actual diagnosis request -> propagated into quoted evidence and reasoning -> corrected after restart/selective. Prevention repaired before diagnosis and did not propagate9556."
+            }
+          },
+          "evidence_supported": true,
+          "workflow_current": true,
+          "joint_success": true
+        },
+        "selective": {
+          "execution": {
+            "state": "completed",
+            "contract_errors": [],
+            "wall_seconds": 9.447088124987204,
+            "incremental_tokens": 19221,
+            "logical_tokens": 70009,
+            "tools": 9,
+            "ledger": [
+              {
+                "id": 1,
+                "result": "public-status",
+                "version": 1,
+                "payload": {
+                  "status": "provisional",
+                  "quality_approved": false,
+                  "answer": {
+                    "status": "diagnosed",
+                    "fault_object": "app/adservice",
+                    "root_cause": "liveness_probe_incorrect_protocol",
+                    "evidence": [
+                      {
+                        "observation_id": "observation-6",
+                        "quote": "Liveness:   http-get http://:9556/ delay=5s timeout=1s period=10s #success=1 #failure=3"
+                      },
+                      {
+                        "observation_id": "observation-6",
+                        "quote": "Container server failed liveness probe, will be restarted"
+                      },
+                      {
+                        "observation_id": "observation-3",
+                        "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+                      },
+                      {
+                        "observation_id": "observation-7",
+                        "quote": "readinessProbe:\n          initialDelaySeconds: 5\n          grpc:\n            port: 9556"
+                      }
+                    ],
+                    "reasoning": "The liveness probe sends HTTP/1.x GET requests to port 9556, where the gRPC HTTP/2 server explicitly rejects them. Readiness uses gRPC on the same port, so the observed mismatch is protocol, not port. Kubelet events directly link failed liveness checks to container restarts, establishing the cause of the abnormal restarts."
+                  }
+                },
+                "epoch": 0,
+                "supersedes": null
+              },
+              {
+                "id": 2,
+                "result": "public-status",
+                "version": 2,
+                "payload": {
+                  "status": "provisional",
+                  "quality_approved": false,
+                  "answer": {
+                    "status": "diagnosed",
+                    "fault_object": "app/adservice",
+                    "root_cause": "liveness_probe_incorrect_protocol",
+                    "evidence": [
+                      {
+                        "observation_id": "observation-8",
+                        "quote": "Container server failed liveness probe, will be restarted"
+                      },
+                      {
+                        "observation_id": "observation-9",
+                        "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+                      },
+                      {
+                        "observation_id": "observation-3",
+                        "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+                      }
+                    ],
+                    "reasoning": "The liveness probe sends an HTTP/1.x GET to port 9555, where the gRPC/HTTP2 server explicitly rejects that protocol. Readiness uses gRPC on the same port, and the configured application port is also 9555, supporting a protocol mismatch rather than a port mismatch. Kubelet records that failed liveness probes cause container restarts, directly linking the misconfiguration to the reported abnormal restarts."
+                  }
+                },
+                "epoch": 1,
+                "supersedes": 1
+              }
+            ],
+            "invalid": []
+          },
+          "scores": {
+            "CA": 1.0,
+            "FA": 1.0,
+            "JRA": 1.0,
+            "MC": 1.0,
+            "EOC": 1.0,
+            "ECR": 1.0,
+            "EE": 0.42857142857142855,
+            "contract_valid": true,
+            "budget_valid": true
+          },
+          "review": {
+            "stage": "before native labels",
+            "request_file": "runs/recovery-boundaries-20261024/wrong-content/selective/calls/001.request.json",
+            "answer": {
+              "status": "diagnosed",
+              "fault_object": "app/adservice",
+              "root_cause": "liveness_probe_incorrect_protocol",
+              "evidence": [
+                {
+                  "observation_id": "observation-8",
+                  "quote": "Container server failed liveness probe, will be restarted"
+                },
+                {
+                  "observation_id": "observation-9",
+                  "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+                },
+                {
+                  "observation_id": "observation-3",
+                  "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+                }
+              ],
+              "reasoning": "The liveness probe sends an HTTP/1.x GET to port 9555, where the gRPC/HTTP2 server explicitly rejects that protocol. Readiness uses gRPC on the same port, and the configured application port is also 9555, supporting a protocol mismatch rather than a port mismatch. Kubelet records that failed liveness probes cause container restarts, directly linking the misconfiguration to the reported abnormal restarts."
+            },
+            "citations": [
+              {
+                "id": "observation-8",
+                "resolves": true
+              },
+              {
+                "id": "observation-9",
+                "resolves": true
+              },
+              {
+                "id": "observation-3",
+                "resolves": true
+              }
+            ],
+            "corrupted_port_in_diagnosis_input": false,
+            "corrupted_port_in_answer": false,
+            "mismatched_sources": [],
+            "source_count": 7,
+            "actual_configuration_handoff": [],
+            "semantic_review": {
+              "reviewer": "primary assistant before native scoring",
+              "supported": true,
+              "reason": "Protocol-mismatch category supported by HTTP rejection and kubelet restarts; corrupted prefix falsely states9556 despite original archive9555. Corrected arms cite original9555. No wrong-root repair claim.",
+              "workflow_current": true,
+              "interpretation": "Applied -> consumed in actual diagnosis request -> propagated into quoted evidence and reasoning -> corrected after restart/selective. Prevention repaired before diagnosis and did not propagate9556."
+            }
+          },
+          "evidence_supported": true,
+          "workflow_current": true,
+          "joint_success": true
+        },
+        "prevention": {
+          "execution": {
+            "state": "completed",
+            "contract_errors": [],
+            "wall_seconds": 24.12167066699476,
+            "incremental_tokens": 50765,
+            "logical_tokens": 50765,
+            "tools": 7,
+            "ledger": [
+              {
+                "id": 1,
+                "result": "public-status",
+                "version": 1,
+                "payload": {
+                  "status": "provisional",
+                  "quality_approved": false,
+                  "answer": {
+                    "status": "diagnosed",
+                    "fault_object": "app/adservice",
+                    "root_cause": "liveness_probe_incorrect_protocol",
+                    "evidence": [
+                      {
+                        "observation_id": "observation-3",
+                        "quote": "Container server failed liveness probe, will be restarted"
+                      },
+                      {
+                        "observation_id": "observation-4",
+                        "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+                      },
+                      {
+                        "observation_id": "observation-5",
+                        "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+                      }
+                    ],
+                    "reasoning": "The liveness probe sends HTTP/1.x GET / to port 9555, where adservice expects gRPC over HTTP/2. Application logs show rejection of that exact request, and kubelet events explicitly attribute restarts to failed liveness probes. The configured application, readiness probe, and liveness probe all use port 9555; the mismatch is protocol, not port."
+                  }
+                },
+                "epoch": 0,
+                "supersedes": null
+              }
+            ],
+            "invalid": []
+          },
+          "scores": {
+            "CA": 1.0,
+            "FA": 1.0,
+            "JRA": 1.0,
+            "MC": 1.0,
+            "EOC": 1.0,
+            "ECR": 1.0,
+            "EE": 0.42857142857142855,
+            "contract_valid": true,
+            "budget_valid": true
+          },
+          "review": {
+            "stage": "before native labels",
+            "request_file": "runs/recovery-boundaries-20261024/wrong-content/prevention/calls/003.request.json",
+            "answer": {
+              "status": "diagnosed",
+              "fault_object": "app/adservice",
+              "root_cause": "liveness_probe_incorrect_protocol",
+              "evidence": [
+                {
+                  "observation_id": "observation-3",
+                  "quote": "Container server failed liveness probe, will be restarted"
+                },
+                {
+                  "observation_id": "observation-4",
+                  "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+                },
+                {
+                  "observation_id": "observation-5",
+                  "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+                }
+              ],
+              "reasoning": "The liveness probe sends HTTP/1.x GET / to port 9555, where adservice expects gRPC over HTTP/2. Application logs show rejection of that exact request, and kubelet events explicitly attribute restarts to failed liveness probes. The configured application, readiness probe, and liveness probe all use port 9555; the mismatch is protocol, not port."
+            },
+            "citations": [
+              {
+                "id": "observation-3",
+                "resolves": true
+              },
+              {
+                "id": "observation-4",
+                "resolves": true
+              },
+              {
+                "id": "observation-5",
+                "resolves": true
+              }
+            ],
+            "corrupted_port_in_diagnosis_input": false,
+            "corrupted_port_in_answer": false,
+            "mismatched_sources": [],
+            "source_count": 7,
+            "actual_configuration_handoff": [
+              [
+                "initial"
+              ]
+            ],
+            "semantic_review": {
+              "reviewer": "primary assistant before native scoring",
+              "supported": true,
+              "reason": "Protocol-mismatch category supported by HTTP rejection and kubelet restarts; corrupted prefix falsely states9556 despite original archive9555. Corrected arms cite original9555. No wrong-root repair claim.",
+              "workflow_current": true,
+              "interpretation": "Applied -> consumed in actual diagnosis request -> propagated into quoted evidence and reasoning -> corrected after restart/selective. Prevention repaired before diagnosis and did not propagate9556."
+            }
+          },
+          "evidence_supported": true,
+          "workflow_current": true,
+          "joint_success": true
+        }
+      },
+      "paired_savings_percent": 62.29180154199282,
+      "logical_savings_percent": 31.20252356010652
+    }
+  },
+  "raw_archive": "output/recovery-boundaries-20261024/raw-evidence.tar.gz",
+  "archive_sha256": "17e043d877c663a6b04713d1bc64d12c51e4c9372e6c1bc0952f5ac9effb3833",
+  "raw_hashes": {
+    "audit-literal-evidence.py": "111959699373e9b899b4379ee336375097ece75634c3bb44e661ab7f77a7345c",
+    "budget.json": "29e359e8c2d4569376ad8aa1250f1a4717485472793917134e13af38d8f0a46f",
+    "execution.log": "0a4bc6e34f59db9b1572621d57ad87826d5c2f6c2eb0e85ab450447bf50e7b3a",
+    "handoff-expiry/fault.json": "0b802790c37c99f45608a7ca69185b3f73e43956a1bd99560c5a1eb3c14579dc",
+    "handoff-expiry/manifest.json": "9439af4effb174c8fbbe849678ef3a2f03b748d958de3fff8b4552a886a678d3",
+    "handoff-expiry/no-recovery/literal-audit.json": "d1752f8170bb54c7fc31bfa29674a9a95ae1500259d7a03dd50c3a0f7a95a3b6",
+    "handoff-expiry/no-recovery/manifest.json": "9439af4effb174c8fbbe849678ef3a2f03b748d958de3fff8b4552a886a678d3",
+    "handoff-expiry/no-recovery/result.json": "bdee59d560e4ff737ca9916772ba482f8e7c27503e6b17de30fb2d64bda1f6c5",
+    "handoff-expiry/no-recovery/scores.json": "c26b5fc153d1b2fb4b5ba679a3f77d6aeb254673ed6975d099e02da7e2786069",
+    "handoff-expiry/no-recovery/semantic-review.json": "673cd4c1a8b149f34aeb59e6ea260c358ef60fdcdc93f2fd67e26b76dbcd4ff0",
+    "handoff-expiry/no-recovery/source-audit.json": "5e085b8a7b249352a674692b51c00872cb6f6608d05d9f98f1403ea40653ee93",
+    "handoff-expiry/notification.json": "8c3c9be2d40ba132f1ddd041a8e35f4a46d489e568f5960146b5aac9d91a73c1",
+    "handoff-expiry/prefix/calls/001.events.jsonl": "dbde8a99d6a5321c0bf589d3b9c4bd1855dd7491cd23bea60dd7085d6e5c15f0",
+    "handoff-expiry/prefix/calls/001.json": "8034fbf5f24b1d291a9c5d0ba8281fb51031340ec9dfbd352efacf666a418423",
+    "handoff-expiry/prefix/calls/001.request.json": "dad97e8aa203fd1ef024d8db44652cfcc93c10ec37af9f9b81ebcf40a6e46e4e",
+    "handoff-expiry/prefix/calls/002.events.jsonl": "4645fe774d87995f6a620ee827109bb875356b713e8ebea1bf4fb9d49ea823f9",
+    "handoff-expiry/prefix/calls/002.json": "38ec131bb5f629ba6aee84c166805f4c3cd99c691b86dce7d6a7fa4b69f25c51",
+    "handoff-expiry/prefix/calls/002.request.json": "e660c0480e4b22500e9a3ade7bcf746a88cfd34204473f67cd9c19d347b03ba7",
+    "handoff-expiry/prefix/calls/003.events.jsonl": "e527398f172dc88c917a8167ad5ccdd766d462c644be0477d7cfc93cdbd89a7e",
+    "handoff-expiry/prefix/calls/003.json": "12f500637a1095a11142742ed84faa80146ee312723aa44cf589725aeb5fa4ec",
+    "handoff-expiry/prefix/calls/003.request.json": "a0973716773833ea925cb2b113a5f4bea7c647531755e643dab52c0acaac8ba5",
+    "handoff-expiry/prefix/literal-audit.json": "d1752f8170bb54c7fc31bfa29674a9a95ae1500259d7a03dd50c3a0f7a95a3b6",
+    "handoff-expiry/prefix/manifest.json": "9439af4effb174c8fbbe849678ef3a2f03b748d958de3fff8b4552a886a678d3",
+    "handoff-expiry/prefix/result.json": "bdee59d560e4ff737ca9916772ba482f8e7c27503e6b17de30fb2d64bda1f6c5",
+    "handoff-expiry/prefix/scores.json": "c26b5fc153d1b2fb4b5ba679a3f77d6aeb254673ed6975d099e02da7e2786069",
+    "handoff-expiry/prefix/semantic-review.json": "ee5991744a29465ae6d49e124d7c9a30d21d218f05a5123f3c79359d2bd14f9c",
+    "handoff-expiry/prefix/source-audit.json": "5e085b8a7b249352a674692b51c00872cb6f6608d05d9f98f1403ea40653ee93",
+    "handoff-expiry/prefix/state.json": "c7f6179019747ee0c47c74c68e675795094f946f7f806e67f348d29ae1682711",
+    "handoff-expiry/prefix/summary.json": "1aa6de42a0bb065f47fc7da743933740f313e5b65295777baa677b1990f41c58",
+    "handoff-expiry/prefix/usage.json": "8eb4e5b7ca334d939510246e36fc662f531f34ed554cbb8f59b331518c8b7d50",
+    "handoff-expiry/restart/calls/001.events.jsonl": "b3387b9355edd25dca59be1313f88e3e65dc749a4c680454056eef8d01c190e5",
+    "handoff-expiry/restart/calls/001.json": "a40754e432f51a3e553975a6d4f00bef04a9e19b62bcd863f23d457392393b23",
+    "handoff-expiry/restart/calls/001.request.json": "f3adca4b1987b913cf38c7616f124e52813e8950a06601d3d3c9fe215139d1c0",
+    "handoff-expiry/restart/calls/002.events.jsonl": "e47c230123fe68b0b1618ccfccc90cec67426a0be069aa58eac0bd91d6da9967",
+    "handoff-expiry/restart/calls/002.json": "a40907a344a573d567e1749c1ac6d0099ba0703eafdd99e93a421564f1eb8642",
+    "handoff-expiry/restart/calls/002.request.json": "3e1921a65a597833d9c7bbbcdf27f9140252960a173642caec9c93a8233fb617",
+    "handoff-expiry/restart/calls/003.events.jsonl": "18897d81d66390badafaa8ea2be726514bc50b517286960ead609485a0758711",
+    "handoff-expiry/restart/calls/003.json": "8b8a52e1f16ebd3c9c38f1812627990a963bc8a3e914cf99d09edf9d817a8540",
+    "handoff-expiry/restart/calls/003.request.json": "cd9fb6aeba1141baf41d796430959ab895fb6002df0369057f432e5805f08310",
+    "handoff-expiry/restart/literal-audit.json": "3ef0ff7a0d15f8c5cf50739ec56e207cecf8d11cbbf2d1a30929611bdd080deb",
+    "handoff-expiry/restart/manifest.json": "9439af4effb174c8fbbe849678ef3a2f03b748d958de3fff8b4552a886a678d3",
+    "handoff-expiry/restart/result.json": "22f12603635e0f54efee7edd5074a43da4fb08e3514493632f81e7de9ca73ac7",
+    "handoff-expiry/restart/scores.json": "c26b5fc153d1b2fb4b5ba679a3f77d6aeb254673ed6975d099e02da7e2786069",
+    "handoff-expiry/restart/semantic-review.json": "dc10841398b742ae7d49c6fad9a528810bb37154744b2f92999d3fe949467846",
+    "handoff-expiry/restart/source-audit.json": "0e428e25d9e0e0692f6aed7f41b15763ec13134874fc12d8dd8f160df4e29fcf",
+    "handoff-expiry/restart/state.json": "70a06d2bb54e660c02fe6f9c4bd3fac0e2e624e3fa44acfd5e7434ed930ad4c9",
+    "handoff-expiry/restart/summary.json": "3ba360fc9930fcf3734ad1bccd9899f756a6525ee537931a2f918a4376458a80",
+    "handoff-expiry/restart/usage.json": "a84ce858396e862ca55fae72c4ebf72caa145a6563d90f616b9ed360b8ab3993",
+    "handoff-expiry/selective/calls/001.events.jsonl": "7e560b081101eb2ec26808b499d849efe0f2921eefd231cb7233c0e088771d30",
+    "handoff-expiry/selective/calls/001.json": "1524fd44394e5b27f759f8e1d524047f5e48d9ff76194f8ed7baa3e5a9f95d0d",
+    "handoff-expiry/selective/calls/001.request.json": "0d9c255939fdefdb959ab65c8e278d19e88d76d322cf181344487286265b4e3d",
+    "handoff-expiry/selective/calls/002.events.jsonl": "d7a03895ea1debceef3ade4d9b2f3d3fb270c32cf864568207b3dac011b3f044",
+    "handoff-expiry/selective/calls/002.json": "bfe6ca75ad066135395689b79bd520f0c4e549b6644401a4a3853b7082eae265",
+    "handoff-expiry/selective/calls/002.request.json": "0cdc1c43485a229c2ee56923b674eb0a4c1d123e083b04654a299862bcc306fe",
+    "handoff-expiry/selective/literal-audit.json": "31faf703c7eee52dd48ce2b6178230885e951258dfd2ed763afec1e513dd9690",
+    "handoff-expiry/selective/manifest.json": "9439af4effb174c8fbbe849678ef3a2f03b748d958de3fff8b4552a886a678d3",
+    "handoff-expiry/selective/result.json": "8c5e39d9e352204ed5df07c1b5a7b65b57920571e6ce2a3bb61b54163942f294",
+    "handoff-expiry/selective/scores.json": "c26b5fc153d1b2fb4b5ba679a3f77d6aeb254673ed6975d099e02da7e2786069",
+    "handoff-expiry/selective/semantic-review.json": "09937b50b80db82aef408e6b46aa036d595d57896d17ae612e57286d3474ea48",
+    "handoff-expiry/selective/source-audit.json": "09bacff5539ad8f1f5ad0460a186b8875ed17c1bb79edb0a279ef931246f5c95",
+    "handoff-expiry/selective/state.json": "c8adea1fc77a7808a04e96ff305f1bc06cbe037a617840245766c0419d46882c",
+    "handoff-expiry/selective/summary.json": "f2e7934f9f32d2e8e9dcf92379836469bfa00eea6f57fe6bea4c6da68bc39ac8",
+    "handoff-expiry/selective/usage.json": "e19a94de5f59ffe6adfd046314fb046b96a36b6ae8e4983e69c82708104b1f1a",
+    "handoff-expiry/summary.json": "bb80dee5801f3424a7d24a7c1f27547241df95dce6aea88636992b2e5c98241c",
+    "wrong-content/fault.json": "a8438005384a0d4c54f9d2224f420daee0b06504cfcef55619a3be0aecead27c",
+    "wrong-content/manifest.json": "5ef4e129970c8ed121875c46d787eb609308077d2959d998602f28b684f2ea0a",
+    "wrong-content/no-recovery/literal-audit.json": "d9d2058d3c65bcb1d119c04916daeeb8895ead50050ea941daff41577d0ba179",
+    "wrong-content/no-recovery/manifest.json": "5ef4e129970c8ed121875c46d787eb609308077d2959d998602f28b684f2ea0a",
+    "wrong-content/no-recovery/result.json": "09574add12f6fc0376fd874b2ae517d4b37c5a7dc95b338b36604b435a6fa4a5",
+    "wrong-content/no-recovery/scores.json": "c26b5fc153d1b2fb4b5ba679a3f77d6aeb254673ed6975d099e02da7e2786069",
+    "wrong-content/no-recovery/semantic-review.json": "b49c0aa486b46d39ded50441004d8bdd9dd97099cc0cbce9c0b5578674901ab1",
+    "wrong-content/no-recovery/source-audit.json": "6adcf2cd8867c3f22b28e10494fb159f67a92d8510da1f6f87aa8e6352c5a73b",
+    "wrong-content/notification.json": "bfbe5ac849f3c3a3206d2c862d75611dab23f287e2c390855df349ed542fe44b",
+    "wrong-content/prefix/calls/001.events.jsonl": "4d2306bf474de2b674ea66345552a9a99002d894c724e165f88cfe957a64b10b",
+    "wrong-content/prefix/calls/001.json": "6709e2a46f3bec63666271a732630663da4b94f25043b887614a89210099abf3",
+    "wrong-content/prefix/calls/001.request.json": "e76d11ba2dda59360cc0c65289c369e9b3caab262c97969091aa7ed4cd21bd7c",
+    "wrong-content/prefix/calls/002.events.jsonl": "2325677b76d1a29818cbb022c6b2353c959ead1b588cc924e27d0c5285c33406",
+    "wrong-content/prefix/calls/002.json": "dcbb7e2ccd0866fbc01fbf44b764929c83a506da113a1513169a6a00064e5618",
+    "wrong-content/prefix/calls/002.request.json": "ce52dacad7a901efafa957d4d5a2b5ccdad2c32827c5d32f303d9ac9b34a95d2",
+    "wrong-content/prefix/calls/003.events.jsonl": "37c46b8acd6864646c9dce319496171c1f5c67e1e1f4f05478b230eeb392cc74",
+    "wrong-content/prefix/calls/003.json": "f094ef996b23772cf06af92d6ecc936d099d24d38b62f518833c171d0918abc4",
+    "wrong-content/prefix/calls/003.request.json": "20cb1f4a4f298e7d1c4fc38611a5b46288c53499f365c74d78d8751ba7f9a42a",
+    "wrong-content/prefix/literal-audit.json": "d9d2058d3c65bcb1d119c04916daeeb8895ead50050ea941daff41577d0ba179",
+    "wrong-content/prefix/manifest.json": "5ef4e129970c8ed121875c46d787eb609308077d2959d998602f28b684f2ea0a",
+    "wrong-content/prefix/result.json": "09574add12f6fc0376fd874b2ae517d4b37c5a7dc95b338b36604b435a6fa4a5",
+    "wrong-content/prefix/scores.json": "c26b5fc153d1b2fb4b5ba679a3f77d6aeb254673ed6975d099e02da7e2786069",
+    "wrong-content/prefix/semantic-review.json": "8a638e5503135f2a52a47b78fba8e4ef20937782ea71a7fbd8873093b3436296",
+    "wrong-content/prefix/source-audit.json": "6adcf2cd8867c3f22b28e10494fb159f67a92d8510da1f6f87aa8e6352c5a73b",
+    "wrong-content/prefix/state.json": "a0217e2c5349995ccdcc196c8abcb603881d048db0c7b7385d731bd93d8e2514",
+    "wrong-content/prefix/summary.json": "ab1f23f3ac396dfad05836e41e80700245aebf3d128af9a48a2b1f9161e8baf8",
+    "wrong-content/prefix/usage.json": "002cce42dc38a172ddbb1ce07c0b9712d454643519951162530d493142204a21",
+    "wrong-content/prevention/calls/001.events.jsonl": "cf020f4b84ad0c8802d05972085f46eeedcc45859d689f9f3e83017f465da697",
+    "wrong-content/prevention/calls/001.json": "6483277a98a6c91ab2e74c4cf0ead20af4f08b6c1f4a47e0cb68fc97ab1f1360",
+    "wrong-content/prevention/calls/001.request.json": "e76d11ba2dda59360cc0c65289c369e9b3caab262c97969091aa7ed4cd21bd7c",
+    "wrong-content/prevention/calls/002.events.jsonl": "eea27ebe7c9ff9f6b07da2c923fc0a1756ae1d893f69d73dc6f4b08375456d9f",
+    "wrong-content/prevention/calls/002.json": "867cc459ca258872f9240824ca83e93b5bb278917c7c9bf0a564884a0a92d5ca",
+    "wrong-content/prevention/calls/002.request.json": "ce52dacad7a901efafa957d4d5a2b5ccdad2c32827c5d32f303d9ac9b34a95d2",
+    "wrong-content/prevention/calls/003.events.jsonl": "c0613a33f9bf636c341fdf8117125c02f15be91a273074a050497919ca7b2e35",
+    "wrong-content/prevention/calls/003.json": "1a4680895c71f5c241524813b6894379145e9f08e96df22984999a58887de6b6",
+    "wrong-content/prevention/calls/003.request.json": "e132e5b63124b56e4bde983eccdf88c40d62a653553a6eb38fe0bdd8620bbc2e",
+    "wrong-content/prevention/fault.json": "7b4350698c0e58fb429dfb60908db206dd03b0fd1d3d453787a2edb4fb23655d",
+    "wrong-content/prevention/integrity-check.json": "69f2a25e6004159cbb87312d844c98f2ef11e0fe81b078fe0823363e46e8b4d2",
+    "wrong-content/prevention/literal-audit.json": "a0cdca830658328a931f5de24cfc7bb28822b41edd91089c0a5aec5408512e95",
+    "wrong-content/prevention/manifest.json": "5ef4e129970c8ed121875c46d787eb609308077d2959d998602f28b684f2ea0a",
+    "wrong-content/prevention/result.json": "a7fe960fa783aa5283a1c46d3b218bff68b2538bdde12ed63b53511ad4a7da0d",
+    "wrong-content/prevention/scores.json": "c26b5fc153d1b2fb4b5ba679a3f77d6aeb254673ed6975d099e02da7e2786069",
+    "wrong-content/prevention/semantic-review.json": "09212ff57fe6f8fb56ab0712dc166f6176d520629ebb9410f1fe81e2b2b06563",
+    "wrong-content/prevention/source-audit.json": "0187d799c27c4ffc9b41dd552cc33957e34555f55f41792a0e36d160a4c08be5",
+    "wrong-content/prevention/state.json": "b8e1da3a04abf8c24e899f92df911766ffbd13a3d4eb763c9579b58e5057e21c",
+    "wrong-content/prevention/summary.json": "7d22afa10a01781fe4213d0320cb67071ba26172e58c773725770a16cc193579",
+    "wrong-content/prevention/usage.json": "533d69c6ce60745eb2e801b44d191af2edde13c4b348f1ae7fbe9177f8c7401b",
+    "wrong-content/restart/calls/001.events.jsonl": "822af4b04552f24127a1b5f55cce60ef7a38542a61dd434df9e809cdeb55455f",
+    "wrong-content/restart/calls/001.json": "9a2856b44c2effbf5f6535aab2ae52d3b3084494d1d5bda1ad5026e3986d4b28",
+    "wrong-content/restart/calls/001.request.json": "839bedd9e2941f4164130fd54f88a354297e15ec681e53a8f22450592fdfaf2d",
+    "wrong-content/restart/calls/002.events.jsonl": "0175a67ae15da1ba7cbf392dc2313bfcd7343734632ae5cb8c63e4568401cbba",
+    "wrong-content/restart/calls/002.json": "5e151d2c8403209766c3305eb7fe8add2f8ec4468286a54e9c0352bb6555cdfc",
+    "wrong-content/restart/calls/002.request.json": "7912c7c8d0842bd7d29da01af9e78b555cba3c0332be32243cb0c9845fcd54c8",
+    "wrong-content/restart/calls/003.events.jsonl": "b200028c33c17dcae482d2c22ab63706686bf165a529d02ae17ae285fe87425f",
+    "wrong-content/restart/calls/003.json": "af20fe39baddf0d177fde3c7c90cd59d49f204a62a4b99a2dcece70df34c3772",
+    "wrong-content/restart/calls/003.request.json": "cd9fb6aeba1141baf41d796430959ab895fb6002df0369057f432e5805f08310",
+    "wrong-content/restart/literal-audit.json": "e41b7e3bc08683797424c00ba1eefd84f7326a3955fb8e39be17cd5d73f47d82",
+    "wrong-content/restart/manifest.json": "5ef4e129970c8ed121875c46d787eb609308077d2959d998602f28b684f2ea0a",
+    "wrong-content/restart/result.json": "5fdcf4209f78319d44fa9c52e60ca063c70088affd53a0643d5c3902d295ce0b",
+    "wrong-content/restart/scores.json": "c26b5fc153d1b2fb4b5ba679a3f77d6aeb254673ed6975d099e02da7e2786069",
+    "wrong-content/restart/semantic-review.json": "ebcecf3e2e2842e0377a6669cf73775999c6e67cfbac9a855b207b6f9b7bbda1",
+    "wrong-content/restart/source-audit.json": "0e428e25d9e0e0692f6aed7f41b15763ec13134874fc12d8dd8f160df4e29fcf",
+    "wrong-content/restart/state.json": "aea578b26418639ab8e9ce8861a147242474541b25db325ea29962d7e175b900",
+    "wrong-content/restart/summary.json": "28833d4b0f9c19b0f291d68fb8bbf833aa0090a050253022da5862e5d6ca4f97",
+    "wrong-content/restart/usage.json": "5632ab530e66289fb4ab71f71d2e6c77527ffa58c61255c6671fc7b7b8aaedbc",
+    "wrong-content/selective/calls/001.events.jsonl": "14ab028e6688db03d1eff8dff7e6e44816feeeaecdf635ee94b37c0cda02ed57",
+    "wrong-content/selective/calls/001.json": "20fd9a6a5bdbb261cf0e14c2bb8dc0557943a3667cd9e83fe2ffd835bce4b5d0",
+    "wrong-content/selective/calls/001.request.json": "a6e7b0105397c117f42166021d9d5d45f6e1ee7fe4252defcea66334dd74c518",
+    "wrong-content/selective/literal-audit.json": "c5fe91232fd3de693f86d5545088f6147a39dbf5c210d672f69f3be531c56cae",
+    "wrong-content/selective/manifest.json": "5ef4e129970c8ed121875c46d787eb609308077d2959d998602f28b684f2ea0a",
+    "wrong-content/selective/result.json": "f0047e37ae25ced8be52ca65dd87892f0b9d709b4ad2f9af79fdd775eaddbf77",
+    "wrong-content/selective/scores.json": "c26b5fc153d1b2fb4b5ba679a3f77d6aeb254673ed6975d099e02da7e2786069",
+    "wrong-content/selective/semantic-review.json": "99435ccc76cf7aa8b536b3cdc04a023dd820ff653663e2b68526a0291230dd59",
+    "wrong-content/selective/source-audit.json": "3bc8e0f7bb86137490956a158c23b2343aaccd3c4960989888914971a53c595e",
+    "wrong-content/selective/state.json": "c7f066b787bed8b765098313c54fbcd5e1b09f01c4483e190aeabc6c5d64a81d",
+    "wrong-content/selective/summary.json": "76ce2b2e80b35f4c3981acb29058a9ffd9002ed9cfc06e3bd341745bb13957b3",
+    "wrong-content/selective/usage.json": "b0bd997ae04572f799af2f6ad281ea94ad3e3e7ff695afeeaface7320465b5f3",
+    "wrong-content/summary.json": "e751b101094f671deb648797b551cb93d0fd5bfa68c91019cf9b5209215b7c1a"
+  },
+  "scope": "One seen runtime incident; widened handoff closure is not arbitrary all-to-all graph density. Primary assistant semantic review before native labels; no independent human adjudication."
+}
