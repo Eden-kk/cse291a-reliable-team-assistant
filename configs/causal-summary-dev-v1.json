@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "case": "boutique/runtime/1",
+  "formal_evaluation": false,
+  "max_calls": 12,
+  "expected_calls": 11,
+  "maximum_usd": "1.20",
+  "allocation": "new development allocation within existing $5 development ceiling; do not reuse exhausted previous per-run cap",
+  "reservation_tokens_per_call": 66144,
+  "maximum_reserved_tokens": 793728,
+  "worst_case_usd": "1.1539968",
+  "intervention": "fixed specialist summary liveness_protocol httpGet -> grpc; all original raw observations retained",
+  "eligibility": "clean summary must extract httpGet; otherwise report not_injected without retries",
+  "arms": ["shared-prefix", "clean", "corrupt", "no-recovery", "restart", "selective"],
+  "recovery_order": ["restart", "selective"],
+  "limitations": ["one seen development case", "new role-summary workflow", "fixed recovery order", "not a generalization estimate", "no benchmark label lookup", "safe versions do not prove all retained semantics correct"]
+}

@@ -1,0 +1,67 @@
+Causal intermediate-summary development pilot v1
+
+Scope: boutique/runtime/1 only, already development_seen. Do not open native
+labels or any formal cases. This is a new summary-enabled workflow, not a
+rerun or reinterpretation of formal-v2. No user-visible submission occurs.
+
+Fixed source: raw adservice GetAppYAML contains readinessProbe.grpc and
+livenessProbe.httpGet. Check the latter at runtime and abort if changed.
+A specialist summarizes this raw source. Eligible only if the generated
+liveness_protocol is httpGet. Change that field to grpc and the associated
+summary sentence; retain every raw observation unchanged. If extraction is
+wrong/missing, retain not_injected and stop; do not retry or retarget.
+
+Shared prefix: configuration/telemetry planning + summary generation (3 calls).
+Clean branch: one incident brief. Corrupt branch: same prefix with the summary
+intervention, one incident brief. All original observations remain available
+to both branches. Prompt explicitly treats summaries as fallible. Thus failure
+to propagate is a valid outcome, never evidence of semantic recovery.
+
+After the corrupt publication, one trusted event identifies only the invalid
+summary artifact (no correct value or diagnosis). Both recovery branches start
+from that exact same invalidated state. No recovery retains the old answer but
+rejects republication. Full restart retires all existing artifacts and runs
+collection + summary + brief (4 calls). Selective recovery rereads the same
+fixed raw configuration, regenerates summary + brief (2 calls) and retains
+valid independent evidence. Both publications supersede prior id 1.
+
+Outputs: full model requests/responses, per-arm state/ledger/runtime trace,
+shared-prefix hashes, before/after artifact hashes and valid reused artifact
+list, arm wall/process CPU time, invalidation wall/CPU time, account before/after,
+usage, explicit failures/not-injected, and fixed-fact adoption/correction flags.
+Clean end-to-end = shared-prefix wall + clean-brief wall. Recovery wall is the
+entire recovery arm, not summed provider time. Process CPU is not pure tracking
+CPU; only separately instrumented invalidation timing is overhead-specific.
+
+Semantic interpretation: inspect generated brief fact and diagnosis/reasoning
+against original YAML, rather than treating dependency validity as correctness.
+wrong_fact_adopted requires corrupt brief grpc; semantic recovery additionally
+requires selective brief httpGet. This narrow fact correction alone does not
+prove correct root cause, evidence support, or general safe-reuse semantics.
+Native diagnosis contract errors and false quality_approved are retained.
+
+Budget: new allocation from original $5 development envelope. Prior development
+spent approximately $0.21803355. This run allows 12 calls maximum, expected 11,
+$1.20 conservative cap, no retries. Worst reservation 12 * $0.0961664 =
+$1.1539968 and 793728 tokens. Formal-run budget is not reused or increased.
+Model api-glm-5.3, temperature 0, low reasoning, max output 8192 as provider.
+A halted/error arm stops subsequent inference; a fresh directory prevents
+accidental overwrite. Do not rerun silently after partial failure.
+
+Command (remote locked venv, existing TritonAI environment; never print key):
+.venv/bin/python scripts/run_causal_summary_dev.py \
+  --vendor /home/yid042/private/cloudops-workflow-dev \
+  --output /home/yid042/private/causal-summary-dev-20261024 \
+  --commit "$(git rev-parse HEAD)"
+
+Mock verification:
+CLOUDOPS_VENDOR=/path/to/seen/vendor PYTHONPATH=src .venv/bin/python \
+  -m unittest discover -s tests -p test_causal_summary_dev.py -v
+Three tests cover successful synthetic propagation/recovery, rejected corruption,
+and fixed-target ineligibility, plus branch isolation, equal notification,
+publication supersedes, preserved independent telemetry and restart recompute.
+Mocks establish mechanics, not evidence about model behavior.
+
+Limitations: one seen case, fixed recovery order, no repetition, summary channel
+changes original workflow, no confidence interval, no generalization or quality
+non-inferiority claim. Manual source-grounded semantic review remains required.
