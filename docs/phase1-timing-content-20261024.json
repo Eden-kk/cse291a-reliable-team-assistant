@@ -1,0 +1,90 @@
+{
+  "body": [
+    {
+      "title": "Reliable Team Assistant: Phase 1",
+      "sections": [
+        {
+          "text": "Yiting Dai | Solo | CSE 291 A Systems, Option 5 | October 24, 2026"
+        },
+        {
+          "heading": "Question and implemented scope",
+          "text": "Can dependency-aware recovery preserve evidence-backed diagnosis quality with less recomputation after a trusted invalidation event? Configuration and telemetry roles collect read-only snapshots; a coordinator diagnoses. The runtime records consumed versions, invalidates dependent work, retains independent artifacts, rejects obsolete publications and links corrections. Missing recorded provenance triggers restart in development controls; this fallback was not exercised in the formal batch. Arbitrary error discovery, operational writes and invisible dependencies are outside the implemented guarantee."
+        },
+        {
+          "heading": "Workload and frozen protocol",
+          "text": "Cloud-OpsBench is pinned to ea05dafbc87b5985df8721622d63d4229c2b4224. Formal cases boutique/runtime/32, service/12 and performance/5 each run twice, reversing restart/selective order on repeat 2. These are three independent cases, not six. TritonAI api-glm-5.3 uses low reasoning, temperature 0 and 8192 output tokens. Course DataHub CPU 2/8 GB runs isolated Python 3.11.9 with exact dependency pins. Source 1380c6b identifies execution; the complete freeze is archived."
+        },
+        {
+          "text": "The user advanced launch to October 24 before formal observations were inspected. Cases, order, model, budgets and scoring were unchanged. Course acceptance of the explicitly user-selected benchmark remains unverified. Earlier development experiments and the 17-call TritonAI seen-case workflow remain separate feasibility evidence. No email or assignment submission was sent."
+        },
+        {
+          "heading": "Formal quality results",
+          "text": "All 6 units completed. Strict pass counts over all 6 assigned units: clean 4/6; restart 3/6; selective 3/6; prevention 3/6; expiry-restart 2/6; expiry-selective 2/6; no-recovery 0/6. For numeric-port recovery, only 4 units were eligible: restart and selective each passed 3/4, with different failed units. The other 2 units remain not-injected, not quietly excluded. Collection is not a diagnosis endpoint. No-recovery fails the current-publication criterion by construction; 0/6 does not imply six incorrect diagnoses. Prevention checks source integrity, not arbitrary semantic truth."
+        },
+        {
+          "text": "Strict success requires diagnosed status, native joint root/target accuracy and evidence closure, input-supported reasoning, current publication, valid output contract and budget. Input-only judgments on all 36 produced answers were hash-sealed before native labels were accessed. Codex performed the review; it is not independent human validation. All 54 assigned arm slots remain in scoring. Provisional publication does not mean operational approval."
+        }
+      ]
+    },
+    {
+      "title": "Development, costs and limits",
+      "sections": [
+        {
+          "heading": "Formal result and measurement boundary",
+          "text": "Among four eligible formal units, selective recovery used 1 new call versus 3 for restart: 33,260 versus 64,902 incremental tokens (48.8% fewer). Equal 3/4 quality counts had different failed cases, not quality equivalence. None of four corrupted ports propagated. Both methods needed 3 calls on all six all-expired units. Formal timing sums API latency; full workflow latency and tracking overhead were not recorded."
+        },
+        {
+          "heading": "Separate repeated handoff development: one seen case",
+          "text": "handoff-dev-v2 ran three fresh prefixes on seen boutique/runtime/1 with R/S, S/R, R/S order. Specialists hand off summaries and a source catalog; the coordinator can retrieve 1-3 unchanged raw observations. A fixed summary edit changes httpGet to grpc. The raw-visible baseline differs in evidence exposure and call budget. All 21 arm slots remain, including three invalid no-recovery arms."
+        },
+        {
+          "heading": "Paired recovery work, not total service savings",
+          "text": "Restart/selective used 6/3 calls each repeat; tokens were 24,553/12,163, 25,825/12,176 and 25,660/12,020 (50.5%-53.2% fewer). Recovery-arm wall seconds were 14.319/6.640, 15.665/6.813 and 14.459/6.169, excluding notification, invalidation, cloning and final evidence persistence. Selective retained eight byte-identical valid artifacts per repeat; this alone does not establish semantic correctness."
+        },
+        {
+          "heading": "Semantic evidence",
+          "text": "Independent AI review was sealed before method mapping: all 15 core diagnoses were source-supported; corrupted handoff and raw-visible arms each adopted 0/3 false grpc claims. Both methods corrected the intermediate summary in 3/3 and restored six valid publications, but prior diagnoses were already correct. No-recovery rejected stale publication. Timing errors occurred in clean repeat 1 and selective repeats 1 and 3, none in restart. The reviewer had prior case context and is not human. Wrong-final-diagnosis repair and whole-answer equivalence remain unproven; one seen case supports no generalization claim."
+        },
+        {
+          "heading": "Offline timing guard and recovery controls",
+          "text": "Offline post-hoc replay flags 3/15 saved answers for timing conflict, 6/15 for review, and 6/15 with no detected conflict. All three known errors are flagged; this is retrospective development, not live correction or independent precision/recall. Five focused tests pass. Four synthetic seeded-state fixtures validate closure, stale-publication rejection and source refresh: restart/selective work units 6/3, 6/4, 6/6, 6/6. Handwritten recomputation proves no LLM semantic recovery. Nine tests pass in total."
+        },
+        {
+          "heading": "Separate costs and next decision",
+          "text": "Frozen formal: 92 calls, 519,696 tokens, $0.40225095 reconciled cost and no API errors. Separate handoff: 54 calls, 241,475 tokens, $0.2136544; settled course balance $49.11201275. Shared-prefix costs are excluded from paired recovery comparisons. Earlier causal-summary development stays separate. Retain nonpropagation under fixed faults; never select a fault because it causes failure."
+        }
+      ]
+    }
+  ],
+  "appendix": [
+    {
+      "title": "Reproduction and timeline appendix",
+      "sections": [
+        {
+          "heading": "Portable evidence and immutable formal archive",
+          "text": "The ZIP preserves formal traces/labels/hash seal and includes handoff raw inputs, outputs, costs, dependency records and blinded review. It adds timing-gate replay, synthetic controls, tests and preregistered protocol v3. Clean extraction verifies saved results without credentials or inference; installing pinned dependencies can require internet."
+        },
+        {
+          "heading": "Offline verification after extraction",
+          "text": "Create a Python >=3.11 environment and install requirements.lock. Run scripts/verify_formal_release.py for hashes, original review seal, 36 formal answers and 54 slots. Run summarize_handoff_saved.py on development/handoff-dev-v2. Re-run the timing and seeded-control scripts and compare JSON byte-for-byte; run the nine new tests. Exact commands are in docs/phase1-timing-reproduction-20261024.txt. Saved-output checks do not regenerate model responses or establish independent semantic validation."
+        },
+        {
+          "heading": "Completed October 24",
+          "text": "Frozen formal evaluation, native scoring, sealed evidence judgments, billing reconciliation and portable reproduction. Separate handoff development: three repeats on one seen case, fixed fault and order, all outcomes retained. AI assistance includes implementation, analysis and drafting. Independent AI review is distinct from student/human validation. No submission or operational action was performed."
+        },
+        {
+          "heading": "October 24-November 4",
+          "text": "Complete student review and exact live deadline/upload-slot verification. Saved overview lists November 4 for Phase 1. Benchmark course acceptance remains unverified. Timing guard is development-only: it proposes source-derived wording for review, does not silently rewrite old answers, and requires live generation calibration before a correction claim."
+        },
+        {
+          "heading": "Next experimental milestone",
+          "text": "Preregister separate natural-propagation and seeded conditional-recovery tracks; retain ineligible and nonpropagating outcomes. Require material ancillary correctness, source freshness and equal validation/repair budgets across methods. v3 proposes 6 timing-calibration plus at most 36 handoff calls; none executed. Verify model/key/price/balance and freeze an enforcing runner before spending. Next seen candidate is service/2; it is not an unseen test."
+        },
+        {
+          "heading": "Remaining term and limitations",
+          "text": "Analyze paired quality before resource savings. Multi-group scheduling and gated procedural learning follow the core recovery evidence. Prepare final artifacts/report/presentation in late November-December, checking official dates. Static snapshots, trusted invalidation and mutable model aliases limit claims. Sources: Cloud-OpsBench repository; saved course Option 5 overview and Piazza 46; TritonAI documentation."
+        }
+      ]
+    }
+  ]
+}

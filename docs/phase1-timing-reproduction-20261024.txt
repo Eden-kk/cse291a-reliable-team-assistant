@@ -1,0 +1,28 @@
+PHASE 1 TIMING AND CONDITIONAL-RECOVERY ADDENDUM
+
+Extract Phase1-Evidence.zip into an empty directory. Python >=3.11 is required.
+Create a venv and install requirements.lock (installation may use network).
+All checks below use saved data only; no API credentials or inference required.
+
+python scripts/verify_formal_release.py
+python scripts/summarize_handoff_saved.py development/handoff-dev-v2
+python scripts/replay_probe_timing.py development/blinded-ai-review/packets /tmp/timing-replay-new.json
+cmp /tmp/timing-replay-new.json output/probe-timing-replay-20261024/results.json
+python scripts/run_seeded_recovery.py --output /tmp/seeded-recovery-new.json
+cmp /tmp/seeded-recovery-new.json output/seeded-recovery-20261024/results.json
+PYTHONPATH=src python -m unittest tests.test_probe_timing tests.test_seeded_recovery
+
+Choose fresh output filenames; scripts refuse overwrite. The formal verifier
+validates all release hashes and original formal scoring; the previous handoff
+reproduction note documents packet/review-seal verification. Formal evidence
+has not been revised. The 15 saved answers remain byte-identical.
+
+Timing replay is retrospective development: three blocks, six review cases,
+six no-detected-conflict results. No finding is not semantic approval; six
+review cases imply a real review burden. The lexical guard is not integrated
+into the frozen online runner and did not fix model generation. Synthetic
+controls have hand-coded outputs and an oracle; their work counts are not
+model tokens, latency, natural propagation or semantic-recovery success.
+
+Read docs/recovery-protocol-v3-20261024.txt and experiment-plan.txt for the
+next preregistered design. No further inference, email or submission occurred.

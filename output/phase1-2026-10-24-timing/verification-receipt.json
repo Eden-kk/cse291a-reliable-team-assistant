@@ -1,0 +1,21 @@
+{
+  "clean_extraction": "/tmp/291a-phase1-timing-finalcheck",
+  "fresh_venv": "/tmp/291a-phase1-timing-clean/.venv",
+  "dependency_install": "requirements.lock",
+  "hashes_verified": 1080,
+  "native_answers_rescored": 36,
+  "assigned_slots_retained": 54,
+  "formal_files_byte_identical": 517,
+  "timing_replay_byte_identical": true,
+  "seeded_replay_byte_identical": true,
+  "new_unit_tests_passed": 9,
+  "pdf_pages": 3,
+  "visual_review": "All three rendered pages inspected; no overflow, clipping or overlap.",
+  "new_api_calls": 0,
+  "submitted": false,
+  "sha256": {
+    "Phase1-Report.pdf": "2df385b647c0dd3e208dd0d1e0e0dea4dde3f5f05d28445f213eb6a38763b9ee",
+    "Phase1-Report.txt": "4b07edd13ae6105ab24b822b808134edf44140367e8952dd3db12a9a5635caf9",
+    "Phase1-Evidence.zip": "699ad5924fc1cab1069c19dd0099dd7a52824c79a74bbc9173adcb19fbdbb37e"
+  }
+}
