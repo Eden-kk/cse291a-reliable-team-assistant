@@ -25,8 +25,12 @@ SPEC = {'case': 'boutique/runtime/1', 'split': 'development_seen',
         'fault_scope': 'query-fields-v2', 'repeats': 1, 'final_unlocked': False}
 
 
+PERFORMANCE_SPEC = {**SPEC, "case": "boutique/performance/1",
+                    "order": ["selective", "restart", "fallback"]}
+
+
 def preflight(spec, registry):
-    if spec != SPEC or spec['case'] not in registry['splits']['development_seen']:
+    if spec not in (SPEC, PERFORMANCE_SPEC) or spec['case'] not in registry['splits']['development_seen']:
         raise ValueError('Fixed development protocol required')
     if spec['physical_token_cap'] < spec['worst_case_calls'] * spec['call_reservation']:
         raise ValueError('Whole-batch reservation unavailable')
@@ -87,14 +91,15 @@ async def run_arm(path, inv, physical, operation, timings, manifest, prefix_toke
 
 
 async def main(args):
+    spec = PERFORMANCE_SPEC if getattr(args, "protocol", "runtime") == "performance" else SPEC
     if args.output.exists():
         raise ValueError('Refuse overwrite')
     if subprocess.check_output(['git', '-C', str(ROOT), 'status', '--porcelain'], text=True).strip():
         raise ValueError('Commit before inference')
     registry = json.loads((ROOT/'configs/splits.json').read_text())
-    preflight(SPEC, registry)
+    preflight(spec, registry)
     commit = subprocess.check_output(['git', '-C', str(ROOT), 'rev-parse', 'HEAD'], text=True).strip()
-    manifest = {**SPEC, 'code_commit': commit, 'dirty': False,
+    manifest = {**spec, 'code_commit': commit, 'dirty': False,
                 'dataset_commit': registry['dataset_commit'], 'model': 'gpt-6-astra',
                 'reasoning_effort': 'low', 'context_window': 131072,
                 'fallback_intervention': 'configuration_evidence.complete=false, independent of outcomes',
@@ -104,7 +109,7 @@ async def main(args):
                 'verification_scope': 'independent from-start source consistency, not shared-prefix or semantic oracle',
                 'scoring': 'current benchmark labels; consumed-source freshness separately; no retarget or retry'}
     write(args.output/'manifest.json', manifest)
-    physical = Budget(SPEC['physical_token_cap'])
+    physical = Budget(spec['physical_token_cap'])
     outcomes = {}
     def checkpoint():
         write(args.output/'summary.json', {'arms': outcomes, 'physical_tokens': physical.spent,
@@ -114,8 +119,8 @@ async def main(args):
         empty = {'rules': []}
         memory.promote('oncall', 'baseline', empty, {'accepted': True, 'sha256': digest(empty)})
         inv = RevisionInvestigation(Runtime(memory, Dispatcher(Budget(360000))),
-            provider(args.output/name, physical), Snapshot(args.vendor, SPEC['case'], registry, commit),
-            identifier='recovery', case=SPEC['case'], fault_scope=SPEC['fault_scope'],
+            provider(args.output/name, physical), Snapshot(args.vendor, spec['case'], registry, commit),
+            identifier='recovery', case=spec['case'], fault_scope=spec['fault_scope'],
             max_tools=24, diagnosis_rounds=1)
         inv.kind = 'recovery'
         return inv
@@ -146,7 +151,7 @@ async def main(args):
                                   'logical_total_tokens': prefix_tokens, 'logical_total_tools': attempts(base),
                                   'quality_scoring': 'pending current-label score; historical evidence preserved'}
         checkpoint()
-        for method in SPEC['order']:
+        for method in spec['order']:
             if physical.halted:
                 outcomes[method] = {'state': 'skipped', 'reason': 'unknown or overrun physical usage'}
                 checkpoint()
@@ -170,7 +175,7 @@ async def main(args):
                 raise AssertionError('Shared prefix or publication history mutated')
             checkpoint()
     else:
-        for name in ('no-recovery', *SPEC['order']):
+        for name in ('no-recovery', *spec['order']):
             outcomes[name] = {'state': 'skipped', 'reason': 'prefix failed or no fixed exposure'}
         checkpoint()
     name = 'source-consistency-from-start'
@@ -186,13 +191,14 @@ async def main(args):
             measured(timings, 'source_requery_and_refresh_including_tool_work', inv.refresh_inputs)
             return await inv.diagnose()
         outcomes[name] = await run_arm(args.output/name, inv, physical, prevention, timings, manifest)
-    if len(physical.settlements) > SPEC['worst_case_calls']:
+    if len(physical.settlements) > spec['worst_case_calls']:
         raise AssertionError('Predeclared call bound exceeded')
     checkpoint()
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
+    parser.add_argument('--protocol', choices=('runtime', 'performance'), default='runtime')
     parser.add_argument('--vendor', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     asyncio.run(main(parser.parse_args()))

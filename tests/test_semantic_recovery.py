@@ -27,6 +27,12 @@ class SemanticRecoveryTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             runner.preflight(runner.SPEC, {'splits': {'development_seen': []}})
 
+    def test_performance_protocol_remains_development_only(self):
+        registry = {"splits": {"development_seen": ["boutique/performance/1"]}}
+        runner.preflight(runner.PERFORMANCE_SPEC, registry)
+        with self.assertRaises(ValueError):
+            runner.preflight({**runner.PERFORMANCE_SPEC, "case": "boutique/performance/5"}, registry)
+
     def test_dirty_tree_fails_before_provider(self):
         with tempfile.TemporaryDirectory() as directory, \
              patch.object(runner.subprocess, 'check_output', return_value=' M tracked.py'), \
