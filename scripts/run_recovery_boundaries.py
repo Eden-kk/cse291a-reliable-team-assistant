@@ -21,6 +21,8 @@ from run_phase2_revision import attempts
 ROOT = Path(__file__).resolve().parents[1]
 CASE = 'boutique/runtime/1'
 EXPECTED = {
+    'all-expiry': {'initial', 'telemetry_plan', 'telemetry_evidence', 'configuration_plan',
+                   'configuration_evidence', 'diagnosis_0', 'public-status'},
     'handoff-expiry': {'telemetry_evidence', 'configuration_plan', 'configuration_evidence',
                        'diagnosis_0', 'public-status'},
     'wrong-content': {'configuration_evidence', 'diagnosis_0', 'public-status'}}
@@ -71,8 +73,8 @@ async def condition(path, name, vendor, registry, commit, physical):
     manifest = {'case': CASE, 'split': 'development_seen', 'condition': name,
                 'code_commit': commit, 'dataset_commit': registry['dataset_commit'],
                 'model': 'gpt-6-astra', 'diagnosis_rounds': 1, 'logical_cap': 360000,
-                'tool_cap_including_prefix': 24, 'physical_batch_cap': 1200000,
-                'max_batch_calls': 20, 'no_retries': True,
+                'tool_cap_including_prefix': 24, 'physical_batch_cap': 540000 if name == 'all-expiry' else 1200000,
+                'max_batch_calls': 9 if name == 'all-expiry' else 20, 'no_retries': True,
                 'collection_mode': 'telemetry_first' if name == 'handoff-expiry' else 'parallel'}
     write(path/'manifest.json', manifest)
     outcomes = {}
@@ -90,7 +92,7 @@ async def condition(path, name, vendor, registry, commit, physical):
     async def prefix():
         await base.collect()
         fault = (corrupt_port(base) if name == 'wrong-content' else
-                 {'injected': True, 'artifact': 'telemetry_evidence',
+                 {'injected': True, 'artifact': 'initial' if name == 'all-expiry' else 'telemetry_evidence',
                   'kind': 'expiry after consumption; unchanged source contents'})
         write(path/'fault.json', fault)
         if not fault['injected']:
@@ -149,8 +151,8 @@ async def condition(path, name, vendor, registry, commit, physical):
             return await inv.diagnose()
         outcomes['prevention'] = await execute(path/'prevention', inv, physical, prevent, manifest)
     else:
-        outcomes['prevention'] = {'state': 'not_applicable' if name == 'handoff-expiry' else 'skipped',
-                                 'reason': 'Unchanged source equality cannot discharge expiry' if name == 'handoff-expiry' else 'physical halt'}
+        outcomes['prevention'] = {'state': 'not_applicable' if name != 'wrong-content' else 'skipped',
+                                 'reason': 'Unchanged source equality cannot discharge expiry' if name != 'wrong-content' else 'physical halt'}
     checkpoint()
 
 
@@ -161,17 +163,20 @@ async def main(args):
     registry = json.loads((ROOT/'configs/splits.json').read_text())
     if CASE not in registry['splits']['development_seen']: raise ValueError('Development only')
     commit = subprocess.check_output(['git', '-C', str(ROOT), 'rev-parse', 'HEAD'], text=True).strip()
-    physical = Budget(1200000)
-    for name in ('handoff-expiry', 'wrong-content'):
+    negative = getattr(args, 'protocol', 'boundaries') == 'all-expiry'
+    cap, call_cap = (540000, 9) if negative else (1200000, 20)
+    physical = Budget(cap)
+    for name in (('all-expiry',) if negative else ('handoff-expiry', 'wrong-content')):
         if physical.halted: break
         await condition(args.output/name, name, args.vendor, registry, commit, physical)
         write(args.output/'budget.json', {'spent': physical.spent, 'halted': physical.halted,
-              'settlements': physical.settlements, 'cap': 1200000})
-    assert len(physical.settlements) <= 20
+              'settlements': physical.settlements, 'cap': cap})
+    assert len(physical.settlements) <= call_cap
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
+    parser.add_argument('--protocol', choices=('boundaries', 'all-expiry'), default='boundaries')
     parser.add_argument('--vendor', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     asyncio.run(main(parser.parse_args()))

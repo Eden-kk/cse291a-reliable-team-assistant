@@ -60,3 +60,20 @@ class BoundaryTests(unittest.TestCase):
         self.assertTrue(budget.halted)
         self.assertEqual(files['summary.json']['arms']['prefix']['state'], 'failed')
         self.assertEqual(files['summary.json']['arms']['selective']['state'], 'skipped')
+
+    def test_all_expired_recomputes_every_artifact_with_equal_calls(self):
+        files, budget = self.run_condition('all-expiry')
+        self.assertEqual(budget.spent, 90)
+        arms = files['summary.json']['arms']
+        self.assertEqual(set(files['notification.json']['invalid']), runner.EXPECTED['all-expiry'])
+        before = files['prefix/state.json']
+        for arm in ('selective', 'restart'):
+            self.assertEqual(arms[arm]['incremental_tokens'], 30)
+            self.assertEqual(arms[arm]['logical_tokens'], 60)
+            self.assertFalse(arms[arm]['invalid'])
+            after = files[arm+'/state.json']
+            self.assertEqual(set(after), set(before))
+            for name in before:
+                self.assertGreater(after[name]['version'], before[name]['version'])
+        self.assertEqual(arms['selective']['tools'], arms['restart']['tools'])
+        self.assertEqual(arms['prevention']['state'], 'not_applicable')
