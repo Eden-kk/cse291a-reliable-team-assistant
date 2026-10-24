@@ -1,0 +1,20 @@
+Formal evaluation readiness — October 24, 2026
+
+Completed
+- Real TritonAI full-workflow development validation:17calls, all recovery/prevention/expiry arms, saved source audit and billing receipts.
+- Executable formal-v2 runner:3fixedincidentIDs x2repetitions, <=102calls and$20. Shared provider accounting, no retries, per-request stop deadline and persistent single-host launch marker.
+- Order is frozen as case-major, repeat1restart-first/repeat2selective-first for both faults. This intentionally supersedes the older v1 repetition-major/case-parity plan before any evaluation access.
+- Input-only evidence review must be sealed and hash-verified before native labels are loaded. uncertain cannot pass; no-recovery invalid publication cannot pass even with correct native root; all assigned units and absent arms remain explicit.
+- All frozen source/config/runtime requirement files have checksum coverage. Stored split registry remains locked.
+
+Unresolved external evidence
+- Cloud-OpsBench was disclosed in the survey, but explicit course approval has not been found. See course-check-20261024/disposition.txt and the unsent staff-clarification.txt.
+- Piazza46 authorizes DataHub as an alternative to AWS; AWS-only is not a gate. Actual CPU-only orchestration profile is recorded rather than claiming the advertised GPU profile. Staff clarification asks whether this CPU-only profile is acceptable.
+
+Required launch-time checks, not failures
+- After external evidence resolves, record real evidence paths/hashes and bind review to the final freeze checksum. Do not fabricate accepted flags.
+- Recheck model availability/prices/account balance/keyexpiry, actual runtime/dependencies and absence of a prior launch marker on the one selected host.
+- TargetOct28-Nov2; no new batch afterNov4noonPST; stop online requestsNov5 18PST. No new launch authorization needed within previously authorized scope.
+- Formal run has NOT started. No heldout observation/label content was read by this preparation. Only previously frozen IDs were used to create the schedule.
+
+No messages to course staff have been sent. No personal billing or new infrastructure allocation.

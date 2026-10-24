@@ -1,0 +1,43 @@
+# **CSE 291A: Systems for LLMs and AI Agents**
+
+## **Fall 2026 TENTATIVE Course Projects**
+
+The course project is an opportunity to investigate a systems question about language models, AI agents, or AI-assisted security. Choose one of the seven options below. Each project has two phases: first establish a reproducible baseline and measure its behavior; then develop and evaluate an improvement or conduct a deeper controlled study.
+
+The emphasis is on a clear research question, sound system design, careful measurement, and evidence that explains the results. A strong project may demonstrate a useful improvement, identify when an approach fails, or establish that a simpler baseline is sufficient. Unsupported claims of better performance or security are not a substitute for a controlled experiment.
+
+## **Project options**
+
+1. Memory-Aware Agent Serving  
+2. CPU/GPU/NPU-Aware Agent Pipelines  
+3. Adaptive Routing Across Heterogeneous AWS Instances  
+4. Security–Performance Tradeoffs in Resource-Constrained Agents  
+5. Failure Propagation and Recovery in Multi-Agent Systems  
+6. Budget-Aware AI-Assisted Fuzzing  
+7. Resource-Bounded Cybersecurity Challenge Agents
+
+## **Organization and milestones**
+
+Projects may be completed individually or in groups of 2–5 students (**1–5 students per group**). Phase 1 implementation and measurements, and the Phase 1 writeup, are due **~~Wednesday, October 28, 2026~~** **Wednesday, Nov 4, 2026**. Phase 2 implementation and evaluation, and the final project report, are due **Thursday, December 10, 2026**.
+
+Phase 1 should produce a working baseline, a reproducible workload and evaluation procedure, initial measurements, and a justified Phase 2 direction. Phase 2 should produce the completed system or measurement study, comparisons against appropriate baselines, an explanation of the results, and reproducible artifacts.
+
+For both phases, submit the relevant source code, dataset, experiment instructions, results and logs needed to support the claims, and a concise report. The final report should describe the question, design, experimental setup, results, and limitations. Individual contribution statements or breakdowns of who did what are not required. If submitted, they will not be considered in grading. 
+
+This is a group project: **every student in a group receives the same score** on each project component and the same overall project score.
+
+## **Computing resources**
+
+Each student has \$50 in university-provided AWS credits. Eligible services and access restrictions are determined by the university IT. **GPU instances available on the course accounts are listed in the Useful Resources tab. For LLM API usage, use TritonAI.** If you really need more than these, let the instructor/TAs know as soon as possible, so we can request from the university. You may use your laptop for development. Options 1 and 3–7 use eligible AWS instances by default; bounded access to shared WukLab machines is reserved for Option 2\.
+
+## **Evaluation and scoring**
+
+Assessment will consider baseline reproduction and measurement quality; the justification and implementation of the Phase 2 design; experimental controls and comparison quality; depth of analysis; and reproducibility and clarity of the report.
+
+Use development workloads to design the method and separate evaluation workloads to assess it. Pin relevant model, runtime, dataset, and code versions. Account for setup and compilation when they affect the use case, and distinguish cold-start from steady-state behavior. Record failed runs and timeouts rather than silently excluding them. Repeat stochastic experiments and report variability.
+
+Security outcomes should be supported by programmatic checks, execution traces, or inspected evidence. Distinguish a model’s inability to complete a task from successful protection. Use course-provided or approved local benchmarks and simulated resources. New vulnerabilities, model training, and publication are not requirements.
+
+Sample lower-score final report: [https\://drive.google.com/file/d/1OHWL6W8iJks6SWXwNE7fbP\_FOEz3cgTi/view?usp=sharing](https://drive.google.com/file/d/1OHWL6W8iJks6SWXwNE7fbP_FOEz3cgTi/view?usp=sharing)
+
+Sample higher-score final report: https\://drive.google.com/file/d/1YU2NT-\_JSOU3w1odseubnzonLU748Yvr/view?usp=sharing

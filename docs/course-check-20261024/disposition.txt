@@ -1,0 +1,16 @@
+Course compatibility evidence review — 2026-10-24
+
+Official overview live-exported from https://docs.google.com/document/d/1WrtrdqP54ATGRPtq9TN3vkBFc1F8ESvkqWu9AAuvIkU/edit
+Explicit requirement: use course-provided or approved local benchmarks and simulated resources. LLM API use must be TritonAI. Eligible AWS instances are the default; laptop development allowed.
+
+Latest policy: Piazza @46, by Boqin Yuan, October23, read live October24:
+https://piazza.com/class/muhr8yxvobhn9?cid=46
+"You also have access to on-prem GPUs if you'd like to use university resources instead of AWS."
+AWS team allocation $200 total/$20 daily. Optional DataHub profile CSE291A_FA26_003 - Yiying Zhang [FA26],8CPU16GB1GPU,24GB slice RTX PRO6000; AWS recommended first. Stop unused instances.
+Disposition: AWS is not mandatory. Course DataHub is an authorized alternative; the observed CPU-only profile used for API orchestration is2CPU8GB and does not reproduce the advertised GPU profile. Record actual runtime and do not claim use of GPU or AWS. No GPU needed for replay/API orchestration. Clarify CPU-only resource profile alongside benchmark if contacting staff. Do not expand spending limits to match the larger AWS allocation.
+
+Submitted survey, Oct8, Gmail message1a11d969644ce9db, explicitly names Cloud-OpsBench snapshots/tools/native scoring and local replay, small AWS CPU only if deployment experiments require it. This establishes disclosure, not an explicit benchmark decision.
+Instructor feedback via Boqin, Oct21, message1a160a52b04db981: proposal ambitious; set milestones/must-haves/nice-to-haves. No explicit benchmark or resource approval wording.
+Live Gmail search afterOct1 for Cloud-OpsBench/option-5-group-3/proposalfeedback found survey, feedback and group notification. Piazza searches benchmark and Cloud each returned0results. These bounded searches did not find explicit approval; they do not prove no approval exists anywhere.
+
+Disposition: benchmark approval NOT VERIFIED. Preserve gate; prepare clarification, do not infer denial or approval from silence. No message sent. Formal heldouts remain locked. Source code can be frozen while this external gate remains open.

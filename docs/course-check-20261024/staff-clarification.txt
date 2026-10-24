@@ -1,0 +1,13 @@
+To: Boqin Yuan <b4yuan@ucsd.edu>
+Subject: Re: [CSE 291A] Project Proposal Feedback - option-5-group-3
+
+Hi Boqin,
+
+Thank you for the feedback. I have narrowed the must-have study to dependency-aware recovery after a trusted invalidation signal. Memory learning and multi-conversation scheduling are now optional extensions.
+
+Before freezing the final evaluation, could you confirm that Cloud-OpsBench (https://github.com/LLM4Ops/Cloud-OpsBench), which I named in my survey, is an acceptable benchmark for Option 5? I use its read-only incident snapshots and tools, keep diagnosis labels outside inference, and introduce controlled workflow faults. The comparisons are no recovery, full restart, selective recovery, and independent source-consistency checking; the study also includes an all-work-invalidated negative control. No live systems are modified.
+
+I use the course TritonAI API for inference. Is the course DataHub CPU-only environment (2 CPU, 8 GB RAM) acceptable for orchestrating these replay experiments, or should I use an AWS CPU instance? This workload does not need a GPU.
+
+Best,
+Yiting

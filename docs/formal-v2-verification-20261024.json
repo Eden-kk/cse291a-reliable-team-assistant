@@ -1,0 +1,13 @@
+{
+  "formal_started": false,
+  "heldout_opened": false,
+  "freeze_sha256": "9256ca40d004cf7086e646efb0b7dc6ebe8b48ab9abfe9e8b89b232d88ecdbfd",
+  "frozen_files_verified": 34,
+  "tests_run": 209,
+  "tests_passed": 197,
+  "tests_skipped": 12,
+  "online_calls": 0,
+  "benchmark_approval": "not_verified",
+  "resource_policy": "DataHub alternative confirmed by Piazza46; CPU-only profile clarification prepared",
+  "launch_window": "Oct28-Nov2; latest batch Nov4noonPST; stopNov5 18PST"
+}
