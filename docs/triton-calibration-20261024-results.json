@@ -1,0 +1,385 @@
+{
+  "scope": "two seen cases, diagnosis replay only; not formal evaluation",
+  "batches": [
+    {
+      "batch": "triton-calibration-20261024",
+      "scheduled": 6,
+      "completed_transport": 6,
+      "not_run": [],
+      "rows": [
+        {
+          "call": 1,
+          "case": "boutique/runtime/1",
+          "arm": "clean",
+          "tokens": 8053,
+          "modeled_usd": 0.013862,
+          "seconds": 24.41996462829411,
+          "finish_reason": "length",
+          "parse_error": "not_json_object",
+          "error_type": null,
+          "unknown_usage_reserved_tokens": null,
+          "usage": {
+            "completion_tokens": 2048,
+            "prompt_tokens": 6005,
+            "total_tokens": 8053,
+            "completion_tokens_details": {
+              "reasoning_tokens": 2048
+            },
+            "prompt_tokens_details": {
+              "cached_tokens": 0,
+              "created_cache_tokens": 5632
+            },
+            "cache_read_input_tokens": 0
+          },
+          "response_cost_header": "0.013862",
+          "answer_status": null
+        },
+        {
+          "call": 2,
+          "case": "boutique/runtime/1",
+          "arm": "corrupt",
+          "tokens": 8053,
+          "modeled_usd": 0.013862,
+          "seconds": 24.168223802000284,
+          "finish_reason": "length",
+          "parse_error": "not_json_object",
+          "error_type": null,
+          "unknown_usage_reserved_tokens": null,
+          "usage": {
+            "completion_tokens": 2048,
+            "prompt_tokens": 6005,
+            "total_tokens": 8053,
+            "completion_tokens_details": {
+              "reasoning_tokens": 2048
+            },
+            "prompt_tokens_details": {
+              "cached_tokens": 1536,
+              "created_cache_tokens": 4096
+            },
+            "cache_read_input_tokens": 1536
+          },
+          "response_cost_header": "0.0124796",
+          "answer_status": null
+        },
+        {
+          "call": 3,
+          "case": "boutique/runtime/1",
+          "arm": "repaired",
+          "tokens": 8053,
+          "modeled_usd": 0.013862,
+          "seconds": 23.46103003900498,
+          "finish_reason": "length",
+          "parse_error": "not_json_object",
+          "error_type": null,
+          "unknown_usage_reserved_tokens": null,
+          "usage": {
+            "completion_tokens": 2048,
+            "prompt_tokens": 6005,
+            "total_tokens": 8053,
+            "completion_tokens_details": {
+              "reasoning_tokens": 2048
+            },
+            "prompt_tokens_details": {
+              "cached_tokens": 5120,
+              "created_cache_tokens": 512
+            },
+            "cache_read_input_tokens": 5120
+          },
+          "response_cost_header": "0.009254",
+          "answer_status": null
+        },
+        {
+          "call": 4,
+          "case": "boutique/performance/1",
+          "arm": "corrupt",
+          "tokens": 14809,
+          "modeled_usd": 0.021969199999999998,
+          "seconds": 26.586447982117534,
+          "finish_reason": "length",
+          "parse_error": "not_json_object",
+          "error_type": null,
+          "unknown_usage_reserved_tokens": null,
+          "usage": {
+            "completion_tokens": 2048,
+            "prompt_tokens": 12761,
+            "total_tokens": 14809,
+            "completion_tokens_details": {
+              "reasoning_tokens": 2048
+            },
+            "prompt_tokens_details": {
+              "cached_tokens": 0,
+              "created_cache_tokens": 12288
+            },
+            "cache_read_input_tokens": 0
+          },
+          "response_cost_header": "0.021969199999999998",
+          "answer_status": null
+        },
+        {
+          "call": 5,
+          "case": "boutique/performance/1",
+          "arm": "repaired",
+          "tokens": 14809,
+          "modeled_usd": 0.021969199999999998,
+          "seconds": 26.338196884840727,
+          "finish_reason": "length",
+          "parse_error": "not_json_object",
+          "error_type": null,
+          "unknown_usage_reserved_tokens": null,
+          "usage": {
+            "completion_tokens": 2048,
+            "prompt_tokens": 12761,
+            "total_tokens": 14809,
+            "completion_tokens_details": {
+              "reasoning_tokens": 2048
+            },
+            "prompt_tokens_details": {
+              "cached_tokens": 0,
+              "created_cache_tokens": 12288
+            },
+            "cache_read_input_tokens": 0
+          },
+          "response_cost_header": "0.021969199999999998",
+          "answer_status": null
+        },
+        {
+          "call": 6,
+          "case": "boutique/performance/1",
+          "arm": "clean",
+          "tokens": 14809,
+          "modeled_usd": 0.021969199999999998,
+          "seconds": 24.15988051518798,
+          "finish_reason": "length",
+          "parse_error": "not_json_object",
+          "error_type": null,
+          "unknown_usage_reserved_tokens": null,
+          "usage": {
+            "completion_tokens": 2048,
+            "prompt_tokens": 12761,
+            "total_tokens": 14809,
+            "completion_tokens_details": {
+              "reasoning_tokens": 2048
+            },
+            "prompt_tokens_details": {
+              "cached_tokens": 11776,
+              "created_cache_tokens": 512
+            },
+            "cache_read_input_tokens": 11776
+          },
+          "response_cost_header": "0.0113708",
+          "answer_status": null
+        }
+      ],
+      "tokens": 68586,
+      "public_uncached_usd": 0.1074936,
+      "response_header_usd": 0.0909048,
+      "initial_usage": {
+        "spend": 0.0,
+        "max_budget": 50.0,
+        "expires": "2026-11-07T18:28:12.453000+00:00",
+        "rpm_limit": 100,
+        "tpm_limit": null
+      },
+      "final_usage": {
+        "spend": 0.079534,
+        "max_budget": 50.0,
+        "expires": "2026-11-07T18:28:12.453000+00:00",
+        "rpm_limit": 100,
+        "tpm_limit": null
+      },
+      "valid_json_objects": 0
+    },
+    {
+      "batch": "triton-calibration-v2-20261024",
+      "scheduled": 6,
+      "completed_transport": 6,
+      "not_run": [],
+      "rows": [
+        {
+          "call": 1,
+          "case": "boutique/runtime/1",
+          "arm": "clean",
+          "tokens": 6242,
+          "modeled_usd": 0.00797625,
+          "seconds": 3.8789097191765904,
+          "finish_reason": "stop",
+          "parse_error": null,
+          "error_type": null,
+          "unknown_usage_reserved_tokens": null,
+          "usage": {
+            "completion_tokens": 237,
+            "prompt_tokens": 6005,
+            "total_tokens": 6242,
+            "completion_tokens_details": {
+              "reasoning_tokens": 0
+            },
+            "prompt_tokens_details": {
+              "cached_tokens": 0,
+              "created_cache_tokens": 5632
+            },
+            "cache_read_input_tokens": 0
+          },
+          "response_cost_header": "0.007976249999999999",
+          "answer_status": "diagnosed"
+        },
+        {
+          "call": 2,
+          "case": "boutique/runtime/1",
+          "arm": "corrupt",
+          "tokens": 6201,
+          "modeled_usd": 0.007843,
+          "seconds": 3.2762135127559304,
+          "finish_reason": "stop",
+          "parse_error": null,
+          "error_type": null,
+          "unknown_usage_reserved_tokens": null,
+          "usage": {
+            "completion_tokens": 196,
+            "prompt_tokens": 6005,
+            "total_tokens": 6201,
+            "completion_tokens_details": {
+              "reasoning_tokens": 0
+            },
+            "prompt_tokens_details": {
+              "cached_tokens": 1536,
+              "created_cache_tokens": 4096
+            },
+            "cache_read_input_tokens": 1536
+          },
+          "response_cost_header": "0.0064606",
+          "answer_status": "diagnosed"
+        },
+        {
+          "call": 3,
+          "case": "boutique/runtime/1",
+          "arm": "repaired",
+          "tokens": 6210,
+          "modeled_usd": 0.00787225,
+          "seconds": 2.6409176057204604,
+          "finish_reason": "stop",
+          "parse_error": null,
+          "error_type": null,
+          "unknown_usage_reserved_tokens": null,
+          "usage": {
+            "completion_tokens": 205,
+            "prompt_tokens": 6005,
+            "total_tokens": 6210,
+            "completion_tokens_details": {
+              "reasoning_tokens": 0
+            },
+            "prompt_tokens_details": {
+              "cached_tokens": 5120,
+              "created_cache_tokens": 512
+            },
+            "cache_read_input_tokens": 5120
+          },
+          "response_cost_header": "0.00326425",
+          "answer_status": "diagnosed"
+        },
+        {
+          "call": 4,
+          "case": "boutique/performance/1",
+          "arm": "corrupt",
+          "tokens": 13052,
+          "modeled_usd": 0.016258949999999998,
+          "seconds": 6.027402689680457,
+          "finish_reason": "stop",
+          "parse_error": null,
+          "error_type": null,
+          "unknown_usage_reserved_tokens": null,
+          "usage": {
+            "completion_tokens": 291,
+            "prompt_tokens": 12761,
+            "total_tokens": 13052,
+            "completion_tokens_details": {
+              "reasoning_tokens": 100
+            },
+            "prompt_tokens_details": {
+              "cached_tokens": 0,
+              "created_cache_tokens": 12288
+            },
+            "cache_read_input_tokens": 0
+          },
+          "response_cost_header": "0.016258949999999998",
+          "answer_status": "diagnosed"
+        },
+        {
+          "call": 5,
+          "case": "boutique/performance/1",
+          "arm": "repaired",
+          "tokens": 13100,
+          "modeled_usd": 0.016414949999999998,
+          "seconds": 6.565377908758819,
+          "finish_reason": "stop",
+          "parse_error": null,
+          "error_type": null,
+          "unknown_usage_reserved_tokens": null,
+          "usage": {
+            "completion_tokens": 339,
+            "prompt_tokens": 12761,
+            "total_tokens": 13100,
+            "completion_tokens_details": {
+              "reasoning_tokens": 119
+            },
+            "prompt_tokens_details": {
+              "cached_tokens": 0,
+              "created_cache_tokens": 12288
+            },
+            "cache_read_input_tokens": 0
+          },
+          "response_cost_header": "0.016414949999999998",
+          "answer_status": "diagnosed"
+        },
+        {
+          "call": 6,
+          "case": "boutique/performance/1",
+          "arm": "clean",
+          "tokens": 13048,
+          "modeled_usd": 0.01624595,
+          "seconds": 3.6689641047269106,
+          "finish_reason": "stop",
+          "parse_error": null,
+          "error_type": null,
+          "unknown_usage_reserved_tokens": null,
+          "usage": {
+            "completion_tokens": 287,
+            "prompt_tokens": 12761,
+            "total_tokens": 13048,
+            "completion_tokens_details": {
+              "reasoning_tokens": 108
+            },
+            "prompt_tokens_details": {
+              "cached_tokens": 11776,
+              "created_cache_tokens": 512
+            },
+            "cache_read_input_tokens": 11776
+          },
+          "response_cost_header": "0.0056475499999999994",
+          "answer_status": "diagnosed"
+        }
+      ],
+      "tokens": 57853,
+      "public_uncached_usd": 0.07261134999999999,
+      "response_header_usd": 0.05602254999999999,
+      "initial_usage": {
+        "spend": 0.0909048,
+        "max_budget": 50.0,
+        "expires": "2026-11-07T18:28:12.453000+00:00",
+        "rpm_limit": 100,
+        "tpm_limit": null
+      },
+      "final_usage": {
+        "spend": 0.12486485,
+        "max_budget": 50.0,
+        "expires": "2026-11-07T18:28:12.453000+00:00",
+        "rpm_limit": 100,
+        "tpm_limit": null
+      },
+      "valid_json_objects": 6
+    }
+  ],
+  "known_api_tokens": 126439,
+  "response_header_usd": 0.14692734999999998,
+  "public_uncached_usd": 0.18010494999999999,
+  "formal_started": false
+}

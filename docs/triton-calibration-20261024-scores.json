@@ -1,0 +1,123 @@
+{
+  "review_sha256": "b3006531676aca5529c73f911c0c35da10429244cc83d28429df8d247fd78a0c",
+  "review_not_blind": true,
+  "rows": [
+    {
+      "case": "boutique/runtime/1",
+      "arm": "clean",
+      "root_cause": "liveness_probe_incorrect_protocol",
+      "scores": {
+        "CA": 1.0,
+        "FA": 1.0,
+        "JRA": 1.0,
+        "MC": 1.0,
+        "EOC": 1.0,
+        "ECR": 1.0,
+        "EE": 0.42857142857142855
+      },
+      "contract_errors": [],
+      "changed_observation_cited": true,
+      "injected_value_in_final_answer": false,
+      "source_support_review": "supported decisive facts with minor overstatement",
+      "publication_executed": false
+    },
+    {
+      "case": "boutique/runtime/1",
+      "arm": "corrupt",
+      "root_cause": "liveness_probe_incorrect_protocol",
+      "scores": {
+        "CA": 1.0,
+        "FA": 1.0,
+        "JRA": 1.0,
+        "MC": 1.0,
+        "EOC": 1.0,
+        "ECR": 1.0,
+        "EE": 0.42857142857142855
+      },
+      "contract_errors": [],
+      "changed_observation_cited": false,
+      "injected_value_in_final_answer": false,
+      "source_support_review": "supported decisive facts with minor overstatement",
+      "publication_executed": false
+    },
+    {
+      "case": "boutique/runtime/1",
+      "arm": "repaired",
+      "root_cause": "liveness_probe_incorrect_protocol",
+      "scores": {
+        "CA": 1.0,
+        "FA": 1.0,
+        "JRA": 1.0,
+        "MC": 1.0,
+        "EOC": 1.0,
+        "ECR": 1.0,
+        "EE": 0.42857142857142855
+      },
+      "contract_errors": [],
+      "changed_observation_cited": false,
+      "injected_value_in_final_answer": false,
+      "source_support_review": "supported decisive facts with minor overstatement",
+      "publication_executed": false
+    },
+    {
+      "case": "boutique/performance/1",
+      "arm": "corrupt",
+      "root_cause": "cpu_capacity_mismatch",
+      "scores": {
+        "CA": 1.0,
+        "FA": 0.0,
+        "JRA": 0.0,
+        "MC": 1.0,
+        "EOC": 1.0,
+        "ECR": 1.0,
+        "EE": 0.25
+      },
+      "contract_errors": [],
+      "changed_observation_cited": true,
+      "injected_value_in_final_answer": false,
+      "source_support_review": "causal sufficiency uncertain; broad absence claims",
+      "publication_executed": false
+    },
+    {
+      "case": "boutique/performance/1",
+      "arm": "repaired",
+      "root_cause": "pod_cpu_overload",
+      "scores": {
+        "CA": 1.0,
+        "FA": 1.0,
+        "JRA": 1.0,
+        "MC": 1.0,
+        "EOC": 1.0,
+        "ECR": 1.0,
+        "EE": 0.25
+      },
+      "contract_errors": [
+        "support must cite distinct tool observations"
+      ],
+      "changed_observation_cited": false,
+      "injected_value_in_final_answer": false,
+      "source_support_review": "causal sufficiency uncertain; broad absence claims",
+      "publication_executed": false
+    },
+    {
+      "case": "boutique/performance/1",
+      "arm": "clean",
+      "root_cause": "cpu_capacity_mismatch",
+      "scores": {
+        "CA": 1.0,
+        "FA": 0.0,
+        "JRA": 0.0,
+        "MC": 1.0,
+        "EOC": 1.0,
+        "ECR": 1.0,
+        "EE": 0.25
+      },
+      "contract_errors": [],
+      "changed_observation_cited": true,
+      "injected_value_in_final_answer": false,
+      "source_support_review": "causal sufficiency uncertain; broad absence claims",
+      "publication_executed": false
+    }
+  ],
+  "formal_evaluation": false
+}
