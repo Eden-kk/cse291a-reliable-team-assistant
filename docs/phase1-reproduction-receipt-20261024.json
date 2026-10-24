@@ -17,7 +17,13 @@
   "checked_date": "2026-10-24",
   "pdf_visual_check": "3 pages rendered and inspected; 2-page body plus 1-page timeline appendix",
   "pdf_pages": 3,
-  "archive_sha256": "aa683bfa04f9990d78396d86f894314e4918fe9086bb67dcfff114150e8c0c10",
-  "pdf_sha256": "7be855fbfe0f49f47b2f94e6ffba61c6f49b89895e24c7d5e50bd0fa9539f3f0",
-  "submitted": false
+  "archive_sha256": "327ed97be3d3f4ffbc7d140b52c6db6f39436f8627d380ac22e5bc47dbdbee47",
+  "pdf_sha256": "23d85d67244d1e0214525367752b05e30fa52059e9069d5446e5c1f14461bb6f",
+  "submitted": false,
+  "corrections": [
+    "Phase 1 due date updated to November 4 per saved course overview",
+    "Missing provenance fallback distinguished as development-only",
+    "No-recovery publication invalidity distinguished from diagnosis failure",
+    "Prevention source-integrity checking distinguished from semantic verification"
+  ]
 }

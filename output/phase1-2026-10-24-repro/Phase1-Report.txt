@@ -4,7 +4,7 @@ Yiting Dai | Solo | CSE 291 A Systems, Option 5 | October 24, 2026
 
 Question and implemented scope
 
-Can dependency-aware recovery preserve evidence-backed diagnosis quality with less recomputation after a trusted invalidation event? Configuration and telemetry roles collect read-only snapshots; a coordinator diagnoses. The runtime records consumed versions, invalidates dependent work, retains independent artifacts, rejects obsolete publications and links corrections. Missing recorded provenance triggers restart. Arbitrary error discovery, operational writes and invisible dependencies are outside the implemented guarantee.
+Can dependency-aware recovery preserve evidence-backed diagnosis quality with less recomputation after a trusted invalidation event? Configuration and telemetry roles collect read-only snapshots; a coordinator diagnoses. The runtime records consumed versions, invalidates dependent work, retains independent artifacts, rejects obsolete publications and links corrections. Missing recorded provenance triggers restart in development controls; this fallback was not exercised in the formal batch. Arbitrary error discovery, operational writes and invisible dependencies are outside the implemented guarantee.
 
 Workload and frozen protocol
 
@@ -14,7 +14,7 @@ The user advanced launch to October 24 before formal observations were inspected
 
 Formal quality results
 
-All 6 units completed. Strict pass counts over all 6 assigned units: clean 4/6; restart 3/6; selective 3/6; prevention 3/6; expiry-restart 2/6; expiry-selective 2/6; no-recovery 0/6. For numeric-port recovery, only 4 units were eligible: restart and selective each passed 3/4, with different failed units. The other 2 units remain not-injected, not quietly excluded. Collection is not a diagnosis endpoint.
+All 6 units completed. Strict pass counts over all 6 assigned units: clean 4/6; restart 3/6; selective 3/6; prevention 3/6; expiry-restart 2/6; expiry-selective 2/6; no-recovery 0/6. For numeric-port recovery, only 4 units were eligible: restart and selective each passed 3/4, with different failed units. The other 2 units remain not-injected, not quietly excluded. Collection is not a diagnosis endpoint. No-recovery fails the current-publication criterion by construction; 0/6 does not imply six incorrect diagnoses. Prevention checks source integrity, not arbitrary semantic truth.
 
 Strict success requires diagnosed status, native joint root/target accuracy and evidence closure, input-supported reasoning, current publication, valid output contract and budget. Input-only judgments on all 36 produced answers were hash-sealed before native labels were accessed. Codex performed the review; it is not independent human validation. All 54 assigned arm slots remain in scoring. Provisional publication does not mean operational approval.
 
@@ -59,12 +59,12 @@ Local pinned source and MIT LICENSE are available and bundled scoring subset is 
 New inference is NOT a reproduction check: mutable api-glm-5.3 responses, renewed credentials, budget approval and a new protocol/version would be required. Do not run run_formal_v2.py from this archival bundle; its launch gates and historical paths are preserved for provenance, not to authorize another batch.
 
 Measurement coverage:
-Clean task success and fault adoption, matched recovery calls/tokens and expiry boundary are measured. The time field in formal-results-20261024.json is summed API-call latency, not full workflow wall time. Do not relabel it end-to-end latency. Integrated tracking overhead and per-stage wasted-work timing were not instrumented in this formal batch. Earlier overhead microbenchmarks are development evidence only. Generic port errors were not adopted in any of four injected answers; two units were ineligible. Thus semantic propagation/repair remains unproven. No operational writes were available; this does not establish safety against arbitrary adversaries.
+Clean task success and fault adoption, matched recovery calls/tokens and expiry boundary are measured. The time field in formal-results-20261024.json is summed API-call latency, not full workflow wall time. Do not relabel it end-to-end latency. Integrated tracking overhead and per-stage wasted-work timing were not instrumented in this formal batch. Missing-provenance fallback was exercised in separate development controls, not this formal batch. No-recovery fails the current-publication criterion by construction, not necessarily native diagnosis accuracy. Prevention verifies source integrity rather than arbitrary semantic truth. Earlier overhead microbenchmarks are development evidence only. Generic port errors were not adopted in any of four injected answers; two units were ineligible. Thus semantic propagation/repair remains unproven. No operational writes were available; this does not establish safety against arbitrary adversaries.
 
 Timeline appendix:
 Completed Oct 24: three independent cases, two repetitions, 92 calls; sealed scoring and billing reconciled. Local release only, not submitted.
 Oct 24-27: clean package validation, causal intermediate-error development on seen cases; record ignored injections and correction failures as well as successes.
-Oct 28: Phase 1 submission target from saved course overview; verify live exact deadline and upload slots before submission.
+Nov 4: Updated Phase 1 submission date in saved course overview (Oct 28 is struck through); verify live exact deadline and upload slots before submission.
 Oct 29-Nov 2: freeze revised causal fault eligibility, matched-prefix comparisons, dependency boundaries and quality-first metrics; independently choose new cases only after development stabilizes.
 Before renewed online work: recheck model/key expiry, remaining quota and explicit batch cap; original formal budget is not automatically renewed.
 Nov 3-23: analyze paired quality/cost and conservative fallback; any further inference requires available approved resources. Extensions only after core results are convincing.
