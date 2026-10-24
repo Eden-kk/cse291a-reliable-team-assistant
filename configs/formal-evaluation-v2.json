@@ -99,5 +99,9 @@
     "propagation": "explicit factual adoption of injected numeric port; correct final root alone insufficient",
     "paired_analysis": "restart/selective paired within incident/repeat; repeated runs not independent incidents"
   },
-  "execution_host": "one approved host only; durable home-directory marker survives repository copies; cross-host launch forbidden"
+  "execution_host": "one approved host only; durable home-directory marker survives repository copies; cross-host launch forbidden",
+  "changes_from_v1": [
+    "v2 explicitly uses case-major then repetition order; original repeat-major plan is superseded before heldout access",
+    "within each case repeat1 restart-first and repeat2 selective-first; no case-index parity"
+  ]
 }

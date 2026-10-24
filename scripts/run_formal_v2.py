@@ -52,6 +52,26 @@ class DeadlineProvider(TritonProvider):
             return Outcome({}, 0, 'Online deadline reached')
         return await super().complete(instruction, request)
 
+async def run_units(output, vendor, cases, registry, commit, backend, freeze, units):
+    for case in cases:
+        for repeat in (1,2):
+            name=f'{case.replace("/","-")}-r{repeat}'
+            if backend.halted:return
+            units[name]={'state':'started'};write(output/'units.json',units)
+            order=('restart','selective') if repeat==1 else ('selective','restart')
+            try:
+                await matrix(output/name,vendor,registry,commit,backend,case=case,formal=True,order=order,freeze=freeze,artifact_root=ROOT)
+                summary=json.loads((output/name/'summary.json').read_text())
+                state='completed' if all(x.get('state') not in ('failed','not_run') for x in summary['arms'].values()) else 'incomplete'
+                units[name]={'state':state,'order':order}
+            except BaseException as exc:
+                units[name]={'state':'failed','order':order,'error_type':type(exc).__name__}
+                backend.halted=True
+                write(output/'units.json',units)
+                raise
+            write(output/'units.json',units)
+            if units[name]['state']=='incomplete':backend.halted=True
+
 async def main(args):
     now = datetime.now(timezone.utc)
     approvals = json.loads(args.approvals.read_text())
@@ -83,17 +103,7 @@ async def main(args):
     freeze['artifacts']['prompts']={'path':'src/team_assistant/investigation.py','sha256':sha(ROOT/'src/team_assistant/investigation.py')}
     backend=DeadlineProvider(args.output/'calls',max_calls=102,maximum_usd='20',stop=stop)
     try:
-        for case in spec['cases']:
-            for repeat in (1,2):
-                name=f'{case.replace("/","-")}-r{repeat}'
-                if backend.halted:break
-                units[name]={'state':'started'};write(args.output/'units.json',units)
-                order=('restart','selective') if repeat==1 else ('selective','restart')
-                await matrix(args.output/name,args.vendor,registry,commit,backend,case=case,formal=True,order=order,freeze=freeze,artifact_root=ROOT)
-                summary=json.loads((args.output/name/'summary.json').read_text())
-                units[name]={'state':'completed' if all(x.get('state') not in ('failed','not_run') for x in summary['arms'].values()) else 'incomplete','order':order}
-                write(args.output/'units.json',units)
-                if units[name]['state']=='incomplete':backend.halted=True
+        await run_units(args.output,args.vendor,spec['cases'],registry,commit,backend,freeze,units)
     finally:
         write(args.output/'usage.json',{'calls':backend.records,'halted':backend.halted,'conservative_spend_usd':str(backend.spent_usd)})
         write(args.output/'units.json',units)

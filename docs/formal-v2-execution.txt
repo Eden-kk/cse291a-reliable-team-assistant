@@ -52,3 +52,11 @@ Uncertain is never success. Assigned-unit statuses remain in the score output;
 not-run/failed/not-injected are reported explicitly and never silently dropped.
 The evidence-review seal proves immutable reviewed inputs; reviewer independence
 is an attestation, not something software can establish by itself.
+
+v2 order change: case-major then repetition replaces the earlier repeat-major
+plan. Comparator order is based only on repeat parity, not case index. Both
+choices are frozen before heldout access. Build/runtime exceptions explicitly
+mark the active unit failed, halt the provider, and retain subsequent not_run.
+Scoring emits all nine planned arm rows per unit, including not-injected and
+not-run. No-recovery reuses corrupt native scores but cannot pass either joint
+metric because its publication is invalid. Collection is not a diagnosis arm.

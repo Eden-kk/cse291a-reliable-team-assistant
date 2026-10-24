@@ -1,6 +1,5 @@
 """Seal input-only reviews before native scoring; uncertainty never passes quality."""
 import argparse
-import hashlib
 import json
 from pathlib import Path
 from run_formal_v2 import sha
@@ -36,7 +35,7 @@ def score(root,vendor):
     doc=json.loads(review.read_text())
     # Native evaluator and label access occur only after the review seal validates.
     from score_run import score as native_score
-    report=[]
+    report=[]; native_by_arm={}
     for name,row in doc['rows'].items():
         folder=root/name
         native_score(folder,vendor=vendor,output=folder/'native-scores.json')
@@ -44,8 +43,24 @@ def score(root,vendor):
         answer=json.loads((folder/'result.json').read_text()).get('answer',{})
         semantic=(answer.get('status')=='diagnosed' and scores['JRA']==1 and row['supported']=='yes'
                   and row['publication_current'] and scores['contract_valid'] and scores['budget_valid'])
-        report.append({'arm':name,'semantic_joint':semantic,'strict_joint':semantic and scores['ECR']==1,
+        native_by_arm[name]=scores
+        report.append({'arm':name,'state':'produced_answer','semantic_joint':semantic,'strict_joint':semantic and scores['ECR']==1,
                        'fault_adopted':row['fault_adopted'],'native':scores})
+    # Include every planned arm even when no answer was produced. No-recovery
+    # reuses the corrupt answer's native result but its publication is invalid.
+    assigned=json.loads((root/'units.json').read_text())
+    present={row['arm'] for row in report}
+    for unit in assigned:
+        path=root/unit/'summary.json'
+        arms=json.loads(path.read_text())['arms'] if path.exists() else {}
+        for arm in ('collection','clean','corrupt','no-recovery','restart','selective','prevention','expiry-restart','expiry-selective'):
+            name=unit+'/'+arm
+            if name in present:continue
+            state=arms.get(arm,{}).get('state','not_run')
+            native=native_by_arm.get(unit+'/corrupt') if arm=='no-recovery' and state=='invalid' else None
+            report.append({'arm':name,'state':state,'semantic_joint':False,'strict_joint':False,
+                           'native':native,'publication_current':False if state=='invalid' else None,
+                           'answer_source':unit+'/corrupt' if native is not None else None})
     output=root/'formal-scores.json'
     with output.open('x') as f:
         json.dump({'review_sha256':sealed['review_sha256'],'rows':report,
