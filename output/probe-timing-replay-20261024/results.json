@@ -1,0 +1,785 @@
+{
+  "mode": "offline post-hoc development replay, not new model validation",
+  "counts": {
+    "review": 6,
+    "no_detected_conflict": 6,
+    "block": 3
+  },
+  "rows": [
+    {
+      "packet": "item-01.json",
+      "packet_sha256": "4cbf29b4ed4d5d0fd6efb826ecf2d570ef7fda1f14bc251bffd962a6922528d4",
+      "original_output": {
+        "status": "diagnosed",
+        "fault_object": "app/adservice",
+        "root_cause": "liveness_probe_incorrect_protocol",
+        "evidence": [
+          {
+            "observation_id": "observation-17",
+            "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+          },
+          {
+            "observation_id": "observation-13",
+            "quote": "Liveness probe failed: Get \"http://172.20.2.163:9555/\": net/http: HTTP/1.x transport connection broken"
+          },
+          {
+            "observation_id": "observation-13",
+            "quote": "Container server failed liveness probe, will be restarted"
+          },
+          {
+            "observation_id": "observation-14",
+            "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+          }
+        ],
+        "reasoning": "The adservice container serves only gRPC (HTTP/2) on port 9555, as confirmed by the readinessProbe using grpc and the Service port named grpc. The livenessProbe is misconfigured to use httpGet against the same port, sending HTTP/1.x requests to an HTTP/2-only server. Netty rejects these with Http2Exception 'Unexpected HTTP/1.x request: GET /', the kubelet liveness probe fails repeatedly (9 Unhealthy events), and kubelet kills and restarts the container (exit code 143, restart count 2). The port and timing are correct; only the protocol is wrong, so the root cause is liveness_probe_incorrect_protocol.",
+        "adservice_liveness_protocol": "httpGet"
+      },
+      "validation": {
+        "decision": "review",
+        "findings": [
+          {
+            "text": "The port and timing are correct; only the protocol is wrong, so the root cause is liveness_probe_incorrect_protocol.",
+            "verdict": "review",
+            "reason": "Timing wording or source scope is outside this narrow validator."
+          }
+        ],
+        "evidence": [
+          {
+            "source_id": "observation-13",
+            "quote": "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3",
+            "values": [
+              5,
+              1,
+              10,
+              1,
+              3
+            ]
+          }
+        ],
+        "suggested_wording_for_review": "The observed liveness configuration is initial delay 5s, timeout 1s, period 10s, success threshold 1, and failure threshold 3. The failure threshold counts consecutive failed probes; it is not a count of failures within one period. These settings alone do not establish exact restart timing.",
+        "scope": "Lexical timing gate only; no_detected_conflict is not a correctness certificate."
+      }
+    },
+    {
+      "packet": "item-02.json",
+      "packet_sha256": "5788d9509cfa304171e21d86bf640a138c0d3488b65d949a37c05ae843cfeb2d",
+      "original_output": {
+        "status": "diagnosed",
+        "fault_object": "app/adservice",
+        "root_cause": "liveness_probe_incorrect_protocol",
+        "evidence": [
+          {
+            "observation_id": "observation-17",
+            "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+          },
+          {
+            "observation_id": "observation-16",
+            "quote": "Liveness probe failed: Get \"http://172.20.2.163:9555/\": net/http: HTTP/1.x transport connection broken: malformed HTTP status code"
+          },
+          {
+            "observation_id": "observation-14",
+            "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+          }
+        ],
+        "reasoning": "adservice is a gRPC (HTTP/2) server on port 9555, but its livenessProbe is configured as httpGet on that port. The HTTP/1.1 probe request is rejected by the gRPC server (Http2Exception 'Unexpected HTTP/1.x request'), the kubelet marks the probe failed 3 times, and kills the container (Exit Code 143, Restart Count 2, Killing events). The readiness probe correctly uses grpc on 9555 and the container is Ready, confirming the server itself is healthy \u2014 only the liveness probe protocol is wrong. Fix: change livenessProbe to grpc on port 9555.",
+        "adservice_liveness_protocol": "httpGet"
+      },
+      "validation": {
+        "decision": "no_detected_conflict",
+        "findings": [],
+        "evidence": [
+          {
+            "source_id": "observation-16",
+            "quote": "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3",
+            "values": [
+              5,
+              1,
+              10,
+              1,
+              3
+            ]
+          }
+        ],
+        "suggested_wording_for_review": "The observed liveness configuration is initial delay 5s, timeout 1s, period 10s, success threshold 1, and failure threshold 3. The failure threshold counts consecutive failed probes; it is not a count of failures within one period. These settings alone do not establish exact restart timing.",
+        "scope": "Lexical timing gate only; no_detected_conflict is not a correctness certificate."
+      }
+    },
+    {
+      "packet": "item-03.json",
+      "packet_sha256": "bd0bca52fd20ec8b8f6c42c8952263c93746b3da7b5236d40c9d612d7f4c0706",
+      "original_output": {
+        "status": "diagnosed",
+        "fault_object": "app/adservice",
+        "root_cause": "liveness_probe_incorrect_protocol",
+        "evidence": [
+          {
+            "observation_id": "observation-8",
+            "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+          },
+          {
+            "observation_id": "observation-4",
+            "quote": "Liveness probe failed: Get \"http://172.20.2.163:9555/\": net/http: HTTP/1.x transport connection broken: malformed HTTP status code"
+          },
+          {
+            "observation_id": "observation-4",
+            "quote": "Container server failed liveness probe, will be restarted"
+          }
+        ],
+        "reasoning": "The adservice container serves gRPC (HTTP/2) on port 9555, as confirmed by the readiness probe using grpc on 9555 which passes (pod Ready). However, the livenessProbe is configured as httpGet on the same port. The gRPC server rejects the HTTP/1.x request, the probe fails 3 consecutive times, and kubelet kills the container (exit code 143), producing the restart loop. The app itself is healthy per gRPC readiness; fixing the liveness probe protocol to grpc will stop the abnormal restarts.",
+        "adservice_liveness_protocol": "httpGet"
+      },
+      "validation": {
+        "decision": "no_detected_conflict",
+        "findings": [],
+        "evidence": [
+          {
+            "source_id": "observation-4",
+            "quote": "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3",
+            "values": [
+              5,
+              1,
+              10,
+              1,
+              3
+            ]
+          }
+        ],
+        "suggested_wording_for_review": "The observed liveness configuration is initial delay 5s, timeout 1s, period 10s, success threshold 1, and failure threshold 3. The failure threshold counts consecutive failed probes; it is not a count of failures within one period. These settings alone do not establish exact restart timing.",
+        "scope": "Lexical timing gate only; no_detected_conflict is not a correctness certificate."
+      }
+    },
+    {
+      "packet": "item-04.json",
+      "packet_sha256": "95eed8521fc1ffb9d7e38c0a2214cad1412835e6c13d1475c9eadb7ebfa55d1f",
+      "original_output": {
+        "status": "diagnosed",
+        "fault_object": "app/adservice",
+        "root_cause": "liveness_probe_incorrect_protocol",
+        "evidence": [
+          {
+            "observation_id": "observation-3",
+            "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+          },
+          {
+            "observation_id": "observation-4",
+            "quote": "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3"
+          },
+          {
+            "observation_id": "observation-4",
+            "quote": "Liveness probe failed: Get \"http://172.20.2.163:9555/\": net/http: HTTP/1.x transport connection broken: malformed HTTP status code"
+          }
+        ],
+        "reasoning": "The adservice container serves gRPC only on port 9555 (readiness probe correctly uses grpc). The deployment's livenessProbe is misconfigured as httpGet against the gRPC server; the gRPC/Netty server rejects the HTTP/1.x request, the probe fails 3 times, and kubelet kills the container (exit 143), producing the restart loop. Fixing the liveness probe to grpc on port 9555 resolves the abnormal restarts.",
+        "adservice_liveness_protocol": "httpGet"
+      },
+      "validation": {
+        "decision": "no_detected_conflict",
+        "findings": [],
+        "evidence": [
+          {
+            "source_id": "observation-4",
+            "quote": "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3",
+            "values": [
+              5,
+              1,
+              10,
+              1,
+              3
+            ]
+          }
+        ],
+        "suggested_wording_for_review": "The observed liveness configuration is initial delay 5s, timeout 1s, period 10s, success threshold 1, and failure threshold 3. The failure threshold counts consecutive failed probes; it is not a count of failures within one period. These settings alone do not establish exact restart timing.",
+        "scope": "Lexical timing gate only; no_detected_conflict is not a correctness certificate."
+      }
+    },
+    {
+      "packet": "item-05.json",
+      "packet_sha256": "7dee8a1da9886316eda4662249eda7ae0aaafab56c6afdb2e104814dd0f86a80",
+      "original_output": {
+        "status": "diagnosed",
+        "fault_object": "app/adservice",
+        "root_cause": "liveness_probe_incorrect_protocol",
+        "evidence": [
+          {
+            "observation_id": "observation-3",
+            "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+          },
+          {
+            "observation_id": "observation-4",
+            "quote": "Liveness probe failed: Get \"http://172.20.2.163:9555/\": net/http: HTTP/1.x transport connection broken: malformed HTTP status code"
+          },
+          {
+            "observation_id": "observation-4",
+            "quote": "Container server failed liveness probe, will be restarted"
+          },
+          {
+            "observation_id": "observation-5",
+            "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+          }
+        ],
+        "reasoning": "adservice is a gRPC-only server on port 9555 (readiness probe uses grpc and passes, pod is Ready). The livenessProbe is misconfigured as httpGet against the gRPC port; the gRPC/Netty server rejects the HTTP/1.x request, kubelet records repeated liveness failures (9 over 81s) and kills the container (exit 143), producing the restart loop. Fix: change livenessProbe to grpc on port 9555.",
+        "adservice_liveness_protocol": "httpGet"
+      },
+      "validation": {
+        "decision": "review",
+        "findings": [
+          {
+            "text": "The livenessProbe is misconfigured as httpGet against the gRPC port; the gRPC/Netty server rejects the HTTP/1.x request, kubelet records repeated liveness failures (9 over 81s) and kills the container (exit 143), producing the restart loop.",
+            "verdict": "review",
+            "reason": "Timing wording or source scope is outside this narrow validator."
+          }
+        ],
+        "evidence": [
+          {
+            "source_id": "observation-4",
+            "quote": "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3",
+            "values": [
+              5,
+              1,
+              10,
+              1,
+              3
+            ]
+          }
+        ],
+        "suggested_wording_for_review": "The observed liveness configuration is initial delay 5s, timeout 1s, period 10s, success threshold 1, and failure threshold 3. The failure threshold counts consecutive failed probes; it is not a count of failures within one period. These settings alone do not establish exact restart timing.",
+        "scope": "Lexical timing gate only; no_detected_conflict is not a correctness certificate."
+      }
+    },
+    {
+      "packet": "item-06.json",
+      "packet_sha256": "25582508ee8af0c5bbc151be36a0c3c56c96fa7e0e2bfe289d7fc9a6af7e616a",
+      "original_output": {
+        "status": "diagnosed",
+        "fault_object": "app/adservice",
+        "root_cause": "liveness_probe_incorrect_protocol",
+        "evidence": [
+          {
+            "observation_id": "observation-3",
+            "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+          },
+          {
+            "observation_id": "observation-4",
+            "quote": "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3"
+          },
+          {
+            "observation_id": "observation-4",
+            "quote": "Warning  Unhealthy  1s (x9 over 81s)  kubelet            Liveness probe failed: Get \"http://172.20.2.163:9555/\": net/http: HTTP/1.x transport connection broken: malformed HTTP status code"
+          },
+          {
+            "observation_id": "observation-6",
+            "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+          },
+          {
+            "observation_id": "observation-4",
+            "quote": "Normal   Killing    1s (x3 over 61s)  kubelet            Container server failed liveness probe, will be restarted"
+          }
+        ],
+        "reasoning": "The adservice container serves only gRPC (HTTP/2) on port 9555, but its livenessProbe is configured as httpGet against that port. The gRPC/Netty server rejects the HTTP/1.x probe request ('Unexpected HTTP/1.x request: GET /'), the kubelet liveness check fails repeatedly (9 failures), and kubelet kills and restarts the container (exit 143), producing the observed restart loop. The readinessProbe correctly uses grpc on 9555 and passes, confirming the app itself is healthy and the fault is the liveness probe protocol. Fix: change livenessProbe to grpc on port 9555.",
+        "adservice_liveness_protocol": "httpGet"
+      },
+      "validation": {
+        "decision": "no_detected_conflict",
+        "findings": [],
+        "evidence": [
+          {
+            "source_id": "observation-4",
+            "quote": "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3",
+            "values": [
+              5,
+              1,
+              10,
+              1,
+              3
+            ]
+          },
+          {
+            "source_id": "observation-8",
+            "quote": "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3",
+            "values": [
+              5,
+              1,
+              10,
+              1,
+              3
+            ]
+          }
+        ],
+        "suggested_wording_for_review": "The observed liveness configuration is initial delay 5s, timeout 1s, period 10s, success threshold 1, and failure threshold 3. The failure threshold counts consecutive failed probes; it is not a count of failures within one period. These settings alone do not establish exact restart timing.",
+        "scope": "Lexical timing gate only; no_detected_conflict is not a correctness certificate."
+      }
+    },
+    {
+      "packet": "item-07.json",
+      "packet_sha256": "38789b46b9396d06a3ea9ca8ad0c412f1a2319eab534fdb6a395b2b519707da4",
+      "original_output": {
+        "status": "diagnosed",
+        "fault_object": "app/adservice",
+        "root_cause": "liveness_probe_incorrect_protocol",
+        "evidence": [
+          {
+            "observation_id": "observation-3",
+            "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+          },
+          {
+            "observation_id": "observation-4",
+            "quote": "Liveness probe failed: Get \"http://172.20.2.163:9555/\": net/http: HTTP/1.x transport connection broken: malformed HTTP status code"
+          },
+          {
+            "observation_id": "observation-4",
+            "quote": "Container server failed liveness probe, will be restarted"
+          }
+        ],
+        "reasoning": "The adservice container serves only gRPC on port 9555, but the deployment's livenessProbe is configured as httpGet on port 9555. The gRPC (Netty HTTP/2) server rejects the HTTP/1.x probe request, so the liveness probe fails repeatedly (9 failures over 81s), kubelet kills the container (exit code 143) and restarts it, producing the observed restart loop. The readinessProbe correctly uses grpc on 9555 and the pod is Ready, confirming the app itself is healthy and only the liveness probe protocol is wrong.",
+        "adservice_liveness_protocol": "httpGet"
+      },
+      "validation": {
+        "decision": "review",
+        "findings": [
+          {
+            "text": "The gRPC (Netty HTTP/2) server rejects the HTTP/1.x probe request, so the liveness probe fails repeatedly (9 failures over 81s), kubelet kills the container (exit code 143) and restarts it, producing the observed restart loop.",
+            "verdict": "review",
+            "reason": "Timing wording or source scope is outside this narrow validator."
+          }
+        ],
+        "evidence": [
+          {
+            "source_id": "observation-4",
+            "quote": "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3",
+            "values": [
+              5,
+              1,
+              10,
+              1,
+              3
+            ]
+          }
+        ],
+        "suggested_wording_for_review": "The observed liveness configuration is initial delay 5s, timeout 1s, period 10s, success threshold 1, and failure threshold 3. The failure threshold counts consecutive failed probes; it is not a count of failures within one period. These settings alone do not establish exact restart timing.",
+        "scope": "Lexical timing gate only; no_detected_conflict is not a correctness certificate."
+      }
+    },
+    {
+      "packet": "item-08.json",
+      "packet_sha256": "3f773a1fa10ce797685fec41f7bab990e989dcbae703e763c9b28d8e91728cfd",
+      "original_output": {
+        "status": "diagnosed",
+        "fault_object": "app/adservice",
+        "root_cause": "liveness_probe_incorrect_protocol",
+        "evidence": [
+          {
+            "observation_id": "observation-8",
+            "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+          },
+          {
+            "observation_id": "observation-7",
+            "quote": "Liveness probe failed: Get \"http://172.20.2.163:9555/\": net/http: HTTP/1.x transport connection broken: malformed HTTP status code"
+          },
+          {
+            "observation_id": "observation-7",
+            "quote": "Container server failed liveness probe, will be restarted"
+          }
+        ],
+        "reasoning": "adservice is a gRPC-only server on port 9555 (readinessProbe correctly uses grpc). The livenessProbe is misconfigured as httpGet against the same gRPC port; the gRPC server responds with a binary HTTP/2 preface that the HTTP/1.x probe cannot parse, so the probe fails 3 times per period and kubelet kills the container (exit 143), producing the restart loop. The app itself is healthy per the passing gRPC readiness probe.",
+        "adservice_liveness_protocol": "httpGet"
+      },
+      "validation": {
+        "decision": "block",
+        "findings": [
+          {
+            "text": "The livenessProbe is misconfigured as httpGet against the same gRPC port; the gRPC server responds with a binary HTTP/2 preface that the HTTP/1.x probe cannot parse, so the probe fails 3 times per period and kubelet kills the container (exit 143), producing the restart loop.",
+            "verdict": "block",
+            "reason": "Conflates the consecutive-failure threshold with failures per probe period."
+          }
+        ],
+        "evidence": [
+          {
+            "source_id": "observation-7",
+            "quote": "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3",
+            "values": [
+              5,
+              1,
+              10,
+              1,
+              3
+            ]
+          }
+        ],
+        "suggested_wording_for_review": "The observed liveness configuration is initial delay 5s, timeout 1s, period 10s, success threshold 1, and failure threshold 3. The failure threshold counts consecutive failed probes; it is not a count of failures within one period. These settings alone do not establish exact restart timing.",
+        "scope": "Lexical timing gate only; no_detected_conflict is not a correctness certificate."
+      }
+    },
+    {
+      "packet": "item-09.json",
+      "packet_sha256": "0ee8d48f5634ed2ce873a7ea850d08aa0395bea437d99da37be48163af493a80",
+      "original_output": {
+        "status": "diagnosed",
+        "fault_object": "app/adservice",
+        "root_cause": "liveness_probe_incorrect_protocol",
+        "evidence": [
+          {
+            "observation_id": "observation-12",
+            "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+          },
+          {
+            "observation_id": "observation-13",
+            "quote": "Liveness probe failed: Get \"http://172.20.2.163:9555/\": net/http: HTTP/1.x transport connection broken: malformed HTTP status code"
+          },
+          {
+            "observation_id": "observation-13",
+            "quote": "Container server failed liveness probe, will be restarted"
+          }
+        ],
+        "reasoning": "The adservice container serves only gRPC (HTTP/2) on port 9555, as confirmed by the Service port named grpc and the grpc readinessProbe. The livenessProbe is configured as httpGet on port 9555, sending HTTP/1.x requests to an HTTP/2-only server. The server responds with HTTP/2 binary frames, which kubelet parses as a malformed HTTP status code, so the liveness probe fails 3 consecutive times each cycle and kubelet kills the container (Exit Code 143), producing the observed repeated restarts (Restart Count 2 within ~90s). Fixing the liveness probe to use grpc on port 9555 would stop the abnormal restarts.",
+        "adservice_liveness_protocol": "httpGet"
+      },
+      "validation": {
+        "decision": "review",
+        "findings": [
+          {
+            "text": "The server responds with HTTP/2 binary frames, which kubelet parses as a malformed HTTP status code, so the liveness probe fails 3 consecutive times each cycle and kubelet kills the container (Exit Code 143), producing the observed repeated restarts (Restart Count 2 within ~90s).",
+            "verdict": "review",
+            "reason": "Timing wording or source scope is outside this narrow validator."
+          }
+        ],
+        "evidence": [
+          {
+            "source_id": "observation-13",
+            "quote": "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3",
+            "values": [
+              5,
+              1,
+              10,
+              1,
+              3
+            ]
+          }
+        ],
+        "suggested_wording_for_review": "The observed liveness configuration is initial delay 5s, timeout 1s, period 10s, success threshold 1, and failure threshold 3. The failure threshold counts consecutive failed probes; it is not a count of failures within one period. These settings alone do not establish exact restart timing.",
+        "scope": "Lexical timing gate only; no_detected_conflict is not a correctness certificate."
+      }
+    },
+    {
+      "packet": "item-10.json",
+      "packet_sha256": "b80a8f43fb9f16c88bb1e9295a0b559a5d53c48702dc820fc52747f81e6b5c86",
+      "original_output": {
+        "status": "diagnosed",
+        "fault_object": "app/adservice",
+        "root_cause": "liveness_probe_incorrect_protocol",
+        "evidence": [
+          {
+            "observation_id": "observation-3",
+            "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+          },
+          {
+            "observation_id": "observation-4",
+            "quote": "Liveness probe failed: Get \"http://172.20.2.163:9555/\": net/http: HTTP/1.x transport connection broken: malformed HTTP status code"
+          },
+          {
+            "observation_id": "observation-4",
+            "quote": "Container server failed liveness probe, will be restarted"
+          }
+        ],
+        "reasoning": "The adservice container serves only gRPC/HTTP2 on port 9555 (readiness probe correctly uses grpc), but the livenessProbe is configured as httpGet on the same port. The HTTP/1.x probe request receives an HTTP/2 binary preface, which kubelet parses as a malformed status code, so the probe fails 3 times per period and kubelet kills and restarts the container (Restart Count 2, Exit Code 143, Killing x3). Fixing the liveness probe to grpc on port 9555 will stop the abnormal restarts.",
+        "adservice_liveness_protocol": "httpGet"
+      },
+      "validation": {
+        "decision": "block",
+        "findings": [
+          {
+            "text": "The HTTP/1.x probe request receives an HTTP/2 binary preface, which kubelet parses as a malformed status code, so the probe fails 3 times per period and kubelet kills and restarts the container (Restart Count 2, Exit Code 143, Killing x3).",
+            "verdict": "block",
+            "reason": "Conflates the consecutive-failure threshold with failures per probe period."
+          }
+        ],
+        "evidence": [
+          {
+            "source_id": "observation-4",
+            "quote": "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3",
+            "values": [
+              5,
+              1,
+              10,
+              1,
+              3
+            ]
+          }
+        ],
+        "suggested_wording_for_review": "The observed liveness configuration is initial delay 5s, timeout 1s, period 10s, success threshold 1, and failure threshold 3. The failure threshold counts consecutive failed probes; it is not a count of failures within one period. These settings alone do not establish exact restart timing.",
+        "scope": "Lexical timing gate only; no_detected_conflict is not a correctness certificate."
+      }
+    },
+    {
+      "packet": "item-11.json",
+      "packet_sha256": "74e65a2b3b0afbde6fefc1f18a53d6a6304de9cf8bbbd2c899b189e7289d6cd3",
+      "original_output": {
+        "status": "diagnosed",
+        "fault_object": "app/adservice",
+        "root_cause": "liveness_probe_incorrect_protocol",
+        "evidence": [
+          {
+            "observation_id": "observation-3",
+            "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+          },
+          {
+            "observation_id": "observation-4",
+            "quote": "Liveness probe failed: Get \"http://172.20.2.163:9555/\": net/http: HTTP/1.x transport connection broken: malformed HTTP status code"
+          },
+          {
+            "observation_id": "observation-4",
+            "quote": "Container server failed liveness probe, will be restarted"
+          }
+        ],
+        "reasoning": "The adservice container serves only gRPC/HTTP2 on port 9555 (readinessProbe correctly uses grpc), but the livenessProbe is configured as httpGet on the same port. The HTTP/1.x probe request receives an HTTP/2 binary preface, which kubelet parses as a malformed status code, so the probe fails 3 times per period and kubelet kills the container (Exit Code 143), producing the observed repeated restarts. Changing the liveness probe to grpc protocol on port 9555 would resolve the restarts.",
+        "adservice_liveness_protocol": "httpGet"
+      },
+      "validation": {
+        "decision": "block",
+        "findings": [
+          {
+            "text": "The HTTP/1.x probe request receives an HTTP/2 binary preface, which kubelet parses as a malformed status code, so the probe fails 3 times per period and kubelet kills the container (Exit Code 143), producing the observed repeated restarts.",
+            "verdict": "block",
+            "reason": "Conflates the consecutive-failure threshold with failures per probe period."
+          }
+        ],
+        "evidence": [
+          {
+            "source_id": "observation-4",
+            "quote": "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3",
+            "values": [
+              5,
+              1,
+              10,
+              1,
+              3
+            ]
+          }
+        ],
+        "suggested_wording_for_review": "The observed liveness configuration is initial delay 5s, timeout 1s, period 10s, success threshold 1, and failure threshold 3. The failure threshold counts consecutive failed probes; it is not a count of failures within one period. These settings alone do not establish exact restart timing.",
+        "scope": "Lexical timing gate only; no_detected_conflict is not a correctness certificate."
+      }
+    },
+    {
+      "packet": "item-12.json",
+      "packet_sha256": "0123a18e8762049e9a2ba6a9445b863d0c770b03ba43bc5651f2d9a5ef0ac5ed",
+      "original_output": {
+        "status": "diagnosed",
+        "fault_object": "app/adservice",
+        "root_cause": "liveness_probe_incorrect_protocol",
+        "evidence": [
+          {
+            "observation_id": "observation-3",
+            "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+          },
+          {
+            "observation_id": "observation-4",
+            "quote": "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3"
+          },
+          {
+            "observation_id": "observation-4",
+            "quote": "Liveness probe failed: Get \"http://172.20.2.163:9555/\": net/http: HTTP/1.x transport connection broken: malformed HTTP status code"
+          },
+          {
+            "observation_id": "observation-6",
+            "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+          },
+          {
+            "observation_id": "observation-1",
+            "quote": "adservice-d6c9fcc6b-d4nlb                1/1     Running   2 (30s ago)   90s"
+          }
+        ],
+        "reasoning": "The adservice container serves gRPC/HTTP2 only on port 9555 (readiness probe correctly uses grpc), but the livenessProbe is configured as httpGet against the same port. Kubelet's HTTP/1.x GET requests are rejected by the Netty HTTP2 server ('Unexpected HTTP/1.x request: GET /'), the probe fails 3 times, and kubelet kills and restarts the container (Exit Code 143, Killing x3), producing the abnormal restart loop. Fix: change the livenessProbe to grpc on port 9555.",
+        "adservice_liveness_protocol": "httpGet"
+      },
+      "validation": {
+        "decision": "no_detected_conflict",
+        "findings": [],
+        "evidence": [
+          {
+            "source_id": "observation-4",
+            "quote": "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3",
+            "values": [
+              5,
+              1,
+              10,
+              1,
+              3
+            ]
+          },
+          {
+            "source_id": "observation-8",
+            "quote": "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3",
+            "values": [
+              5,
+              1,
+              10,
+              1,
+              3
+            ]
+          }
+        ],
+        "suggested_wording_for_review": "The observed liveness configuration is initial delay 5s, timeout 1s, period 10s, success threshold 1, and failure threshold 3. The failure threshold counts consecutive failed probes; it is not a count of failures within one period. These settings alone do not establish exact restart timing.",
+        "scope": "Lexical timing gate only; no_detected_conflict is not a correctness certificate."
+      }
+    },
+    {
+      "packet": "item-13.json",
+      "packet_sha256": "3a72599a4ab63078a5ad6d7d1a52821ed52b37c4909fe43a59d80161c2e80d7d",
+      "original_output": {
+        "status": "diagnosed",
+        "fault_object": "app/adservice",
+        "root_cause": "liveness_probe_incorrect_protocol",
+        "evidence": [
+          {
+            "observation_id": "observation-3",
+            "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+          },
+          {
+            "observation_id": "observation-4",
+            "quote": "Liveness probe failed: Get \"http://172.20.2.163:9555/\": net/http: HTTP/1.x transport connection broken: malformed HTTP status code"
+          },
+          {
+            "observation_id": "observation-5",
+            "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+          },
+          {
+            "observation_id": "observation-4",
+            "quote": "Container server failed liveness probe, will be restarted"
+          }
+        ],
+        "reasoning": "The adservice container serves only gRPC (HTTP/2) on port 9555, but its livenessProbe is configured as httpGet against that port. The gRPC/Netty server rejects the HTTP/1.x probe request, kubelet records repeated liveness failures (9 over 81s) and kills the container (exit 143), producing the restart loop. The gRPC readiness probe passes and the app is otherwise healthy, confirming the probe protocol misconfiguration\u2014not an application fault\u2014is the cause. Fix: change livenessProbe to grpc on port 9555.",
+        "adservice_liveness_protocol": "httpGet"
+      },
+      "validation": {
+        "decision": "review",
+        "findings": [
+          {
+            "text": "The gRPC/Netty server rejects the HTTP/1.x probe request, kubelet records repeated liveness failures (9 over 81s) and kills the container (exit 143), producing the restart loop.",
+            "verdict": "review",
+            "reason": "Timing wording or source scope is outside this narrow validator."
+          }
+        ],
+        "evidence": [
+          {
+            "source_id": "observation-4",
+            "quote": "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3",
+            "values": [
+              5,
+              1,
+              10,
+              1,
+              3
+            ]
+          },
+          {
+            "source_id": "observation-7",
+            "quote": "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3",
+            "values": [
+              5,
+              1,
+              10,
+              1,
+              3
+            ]
+          }
+        ],
+        "suggested_wording_for_review": "The observed liveness configuration is initial delay 5s, timeout 1s, period 10s, success threshold 1, and failure threshold 3. The failure threshold counts consecutive failed probes; it is not a count of failures within one period. These settings alone do not establish exact restart timing.",
+        "scope": "Lexical timing gate only; no_detected_conflict is not a correctness certificate."
+      }
+    },
+    {
+      "packet": "item-14.json",
+      "packet_sha256": "c0e2fddca661538222550f652f20b390b2c7dece6ff1d9c287cd87625242bb85",
+      "original_output": {
+        "status": "diagnosed",
+        "fault_object": "app/adservice",
+        "root_cause": "liveness_probe_incorrect_protocol",
+        "evidence": [
+          {
+            "observation_id": "observation-3",
+            "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+          },
+          {
+            "observation_id": "observation-4",
+            "quote": "Liveness probe failed: Get \"http://172.20.2.163:9555/\": net/http: HTTP/1.x transport connection broken: malformed HTTP status code"
+          },
+          {
+            "observation_id": "observation-4",
+            "quote": "Container server failed liveness probe, will be restarted"
+          }
+        ],
+        "reasoning": "The adservice container serves gRPC/HTTP2 on port 9555 (readinessProbe correctly uses grpc), but the livenessProbe is configured as httpGet against the same port. The HTTP/1.x probe request hits an HTTP/2-only server, producing a malformed response, so kubelet's liveness checks fail repeatedly (Unhealthy x9), killing and restarting the container (Exit Code 143, Restart Count 2). Fixing the liveness probe protocol to grpc will stop the abnormal restarts.",
+        "adservice_liveness_protocol": "httpGet"
+      },
+      "validation": {
+        "decision": "no_detected_conflict",
+        "findings": [],
+        "evidence": [
+          {
+            "source_id": "observation-4",
+            "quote": "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3",
+            "values": [
+              5,
+              1,
+              10,
+              1,
+              3
+            ]
+          }
+        ],
+        "suggested_wording_for_review": "The observed liveness configuration is initial delay 5s, timeout 1s, period 10s, success threshold 1, and failure threshold 3. The failure threshold counts consecutive failed probes; it is not a count of failures within one period. These settings alone do not establish exact restart timing.",
+        "scope": "Lexical timing gate only; no_detected_conflict is not a correctness certificate."
+      }
+    },
+    {
+      "packet": "item-15.json",
+      "packet_sha256": "cd17135ed4307a99fed5162f8a934f2cac50daaa77b9e5e5dbd624d15ba90a96",
+      "original_output": {
+        "status": "diagnosed",
+        "fault_object": "app/adservice",
+        "root_cause": "liveness_probe_incorrect_protocol",
+        "evidence": [
+          {
+            "observation_id": "observation-3",
+            "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+          },
+          {
+            "observation_id": "observation-4",
+            "quote": "Liveness probe failed: Get \"http://172.20.2.163:9555/\": net/http: HTTP/1.x transport connection broken: malformed HTTP status code"
+          },
+          {
+            "observation_id": "observation-4",
+            "quote": "Container server failed liveness probe, will be restarted"
+          }
+        ],
+        "reasoning": "The adservice container serves only gRPC on port 9555 (readinessProbe correctly uses grpc). The livenessProbe is configured as httpGet on port 9555, so kubelet sends HTTP/1.x requests that the gRPC server rejects, producing malformed HTTP/2 binary responses. Liveness checks fail 3 consecutive times each cycle, kubelet kills the container (exit code 143) and restarts it, producing the observed restart loop. Fixing the liveness probe to grpc protocol on port 9555 resolves the abnormal restarts.",
+        "adservice_liveness_protocol": "httpGet"
+      },
+      "validation": {
+        "decision": "review",
+        "findings": [
+          {
+            "text": "Liveness checks fail 3 consecutive times each cycle, kubelet kills the container (exit code 143) and restarts it, producing the observed restart loop.",
+            "verdict": "review",
+            "reason": "Timing wording or source scope is outside this narrow validator."
+          }
+        ],
+        "evidence": [
+          {
+            "source_id": "observation-4",
+            "quote": "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3",
+            "values": [
+              5,
+              1,
+              10,
+              1,
+              3
+            ]
+          }
+        ],
+        "suggested_wording_for_review": "The observed liveness configuration is initial delay 5s, timeout 1s, period 10s, success threshold 1, and failure threshold 3. The failure threshold counts consecutive failed probes; it is not a count of failures within one period. These settings alone do not establish exact restart timing.",
+        "scope": "Lexical timing gate only; no_detected_conflict is not a correctness certificate."
+      }
+    }
+  ]
+}
