@@ -1,0 +1,30 @@
+{
+  "protocol": "triton-full-workflow-dev-v1",
+  "case": "boutique/runtime/1",
+  "formal_evaluation": false,
+  "max_calls": 17,
+  "max_usd": 1.7,
+  "per_call_input_byte_cap": 57952,
+  "per_call_output_cap": 8192,
+  "reservation_tokens": 1124448,
+  "reasoning_effort": "low",
+  "model": "api-glm-5.3",
+  "temperature": 0,
+  "retries": 0,
+  "amended_development_total_calls": 29,
+  "amended_development_reserved_tokens": 1881312,
+  "development_usd_cap_unchanged": 5,
+  "arms": [
+    "collection",
+    "clean",
+    "corrupt",
+    "no-recovery",
+    "restart",
+    "selective",
+    "prevention",
+    "expiry-restart",
+    "expiry-selective"
+  ],
+  "not_injected": "retain not-injected wrong-content arms; still execute independent prevention and expiry",
+  "quality": "uncertain/invalid diagnosis retained as failure; provisional publication never quality-approved"
+}
