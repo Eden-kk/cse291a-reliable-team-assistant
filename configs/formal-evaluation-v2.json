@@ -51,10 +51,11 @@
     "scoring rubric and input-only reviewer blind to labels frozen before execution",
     "explicit evidence of course-provided or approved benchmark; course-authorized compute environment recorded",
     "code, dataset, protocol and prompt hashes frozen",
-    "course key expiry/renewal covers planned formal batch; recheck remaining balance"
+    "course key expiry/renewal covers planned formal batch; recheck remaining balance",
+    "Installed dependency versions match exact requirements.lock pins; runtime receipt retained before inference"
   ],
   "heldout_opened": false,
-  "tool_limit_per_collection_role": 4,
+  "tool_limit_per_collection_role": 3,
   "diagnosis_rounds": 1,
   "stage_call_ceiling": {
     "clean_collection_and_diagnosis": 3,
@@ -68,7 +69,6 @@
   "primary_quality_gate": "strict benchmark joint: native root correct AND ECR=1 AND supported facts AND current valid publication",
   "secondary_quality_gate": "semantic joint without native ECR requirement, labeled separately",
   "prevention_fault": "same deterministic transform before source-consistency check; independent exposure/eligibility recorded",
-  "effective_tool_limit_per_collection_role": 3,
   "generic_fault_mechanics_verified": true,
   "generic_fault_model_calibration_verified": true,
   "order": {

@@ -3,6 +3,8 @@ import argparse
 import asyncio
 from datetime import datetime, timezone, timedelta
 import hashlib
+import importlib.metadata
+import platform
 import json
 from pathlib import Path
 import subprocess
@@ -40,6 +42,23 @@ def verify(root, approvals, now):
     if not timedelta(0) <= now-checked <= timedelta(hours=24):
         raise ValueError('Evidence review older than 24 hours')
     return spec, manifest, window
+
+def runtime_receipt(lock):
+    dependencies=[]
+    for line in lock.read_text().splitlines():
+        line=line.strip()
+        if not line or line.startswith('#'):continue
+        if line.count('==')!=1:
+            raise ValueError('Only exact dependency pins are supported')
+        name,expected=line.split('==')
+        try:actual=importlib.metadata.version(name)
+        except importlib.metadata.PackageNotFoundError:actual=None
+        dependencies.append({'package':name,'expected':expected,'actual':actual,'matches':actual==expected})
+    return {'python':sys.version,'python_executable':sys.executable,
+            'platform':platform.platform(),'machine':platform.machine(),
+            'python_supported':sys.version_info >= (3,11),
+            'lock_sha256':sha(lock),'dependencies':dependencies,
+            'valid':bool(dependencies) and sys.version_info >= (3,11) and all(x['matches'] for x in dependencies)}
 
 class DeadlineProvider(TritonProvider):
     def __init__(self, *args, stop, **kwargs):
@@ -82,6 +101,10 @@ async def main(args):
     with marker.open('x') as f:
         json.dump({'started':now.isoformat(),'output':str(args.output.resolve()),'freeze_sha256':sha(ROOT/'configs/formal-freeze-v2.json')},f)
     args.output.mkdir(parents=True,exist_ok=False)
+    runtime=runtime_receipt(ROOT/'requirements.lock')
+    write(args.output/'runtime.json',runtime)
+    if not runtime['valid']:
+        raise ValueError('Installed dependencies differ from frozen lock; see runtime.json')
     write(args.output/'approvals.json',approvals)
     write(args.output/'freeze.json',manifest)
     units={f'{case.replace("/","-")}-r{repeat}':{'state':'not_run'} for case in spec['cases'] for repeat in (1,2)}

@@ -97,3 +97,18 @@ class FormalTests(unittest.TestCase):
             self.assertFalse(rows['u/no-recovery']['strict_joint'])
             self.assertEqual(rows['v/clean']['state'],'not_run')
             self.assertEqual(rows['u/restart']['state'],'not_injected')
+    def test_runtime_receipt_checks_every_pin_and_missing_package(self):
+        from run_formal_v2 import runtime_receipt
+        import importlib.metadata
+        with tempfile.TemporaryDirectory() as d:
+            lock=Path(d)/'requirements.lock';lock.write_text('pydantic==2.14.0\ntyping_extensions==4.16.0\n')
+            with patch('run_formal_v2.importlib.metadata.version',side_effect=['2.14.0','4.16.0']) as versions:
+                good=runtime_receipt(lock)
+                self.assertTrue(good['valid']);self.assertEqual(versions.call_count,2)
+                self.assertIn('python',good);self.assertIn('platform',good)
+            with patch('run_formal_v2.importlib.metadata.version',side_effect=['2.14.1','4.16.0']):
+                bad=runtime_receipt(lock)
+                self.assertFalse(bad['valid']);self.assertFalse(bad['dependencies'][0]['matches'])
+            with patch('run_formal_v2.importlib.metadata.version',side_effect=importlib.metadata.PackageNotFoundError):
+                missing=runtime_receipt(lock)
+                self.assertFalse(missing['valid']);self.assertIsNone(missing['dependencies'][1]['actual'])

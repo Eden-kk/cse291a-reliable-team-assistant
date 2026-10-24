@@ -60,3 +60,10 @@ mark the active unit failed, halt the provider, and retain subsequent not_run.
 Scoring emits all nine planned arm rows per unit, including not-injected and
 not-run. No-recovery reuses corrupt native scores but cannot pass either joint
 metric because its publication is invalid. Collection is not a diagnosis arm.
+
+Before inference, runtime.json records Python, executable, OS/platform, machine,
+and each installed dependency version against requirements.lock. Missing or
+mismatched packages fail closed; installing a different pydantic patch version
+is not accepted. The receipt is saved even on version mismatch. Reconcile the
+launch marker before any corrected attempt. Each collection role issues at most
+3 tool requests; configuration has one authoritative tool-limit field.
