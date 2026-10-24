@@ -1,0 +1,36 @@
+{
+  "version": "formal-window-v1-20261024",
+  "timezone": "America/Los_Angeles",
+  "user_authorized_conditional_launch": true,
+  "authorization": "User: 按照目前的key调整窗口，在合适时机启动正式评估",
+  "authorization_date": "2026-10-24",
+  "formal_started": false,
+  "heldout_opened": false,
+  "key_expires_utc": "2026-11-07T18:28:12.453000+00:00",
+  "target_start_local": "2026-10-28T09:00:00-07:00",
+  "target_end_local": "2026-11-02T18:00:00-08:00",
+  "latest_new_batch_start_local": "2026-11-04T12:00:00-08:00",
+  "online_calls_stop_local": "2026-11-05T18:00:00-08:00",
+  "policy": "Launch once readiness gates pass within window; no further user launch confirmation needed. Earlier preparation does not unlock heldouts. Missing gates at latest start => no launch; preserve blockers and notify. Offline scoring/reporting may continue after cutoff.",
+  "budgets": {
+    "formal_usd_max": 20,
+    "development_usd_max": 5,
+    "combined_usd_max": 25,
+    "formal_max_calls": 102,
+    "personal_billing": false
+  },
+  "required_evidence": [
+    "Full TritonAI workflow verified on seen data, including source checks and all recovery arms",
+    "Versioned output/reasoning/call/token budget and unknown-usage accounting",
+    "Frozen code/prompt/config hashes and fair evidence/native scoring sequence",
+    "Refreshed authorized model, charged prices, balance and access through bounded run",
+    "Course workload compatibility reviewed against authoritative requirements; distinguish explicit rule from inferred approval requirement"
+  ],
+  "not_required": [
+    "Perfect accuracy",
+    "Positive fault propagation",
+    "Positive speedup",
+    "Repeated user authorization within this scope"
+  ],
+  "concurrency": "Never launch a second copy; check durable run marker, process status and receipts first; uncertain prior execution must be reconciled, not retried."
+}
