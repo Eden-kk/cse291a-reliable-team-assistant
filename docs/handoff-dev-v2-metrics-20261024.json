@@ -1,0 +1,421 @@
+{
+  "physical_calls": 54,
+  "physical_tokens": 241475,
+  "billed_usd": "0.2136543999999999917",
+  "remaining_usd": 49.11201275,
+  "assigned_arms": 21,
+  "rows": [
+    {
+      "repeat": 1,
+      "arm": "prefix",
+      "state": "completed",
+      "calls": 4,
+      "tokens": 15634,
+      "billed_usd": "0.01553860",
+      "wall_seconds": 10.354340963996947
+    },
+    {
+      "repeat": 1,
+      "arm": "clean",
+      "state": "completed",
+      "calls": 2,
+      "tokens": 8886,
+      "billed_usd": "0.011290499999999999",
+      "wall_seconds": 5.248531206510961,
+      "protocol": "httpGet",
+      "answer_status": "diagnosed",
+      "root_cause": "liveness_probe_incorrect_protocol",
+      "contract_errors": [],
+      "retrieved_ids": [
+        "observation-3",
+        "observation-4"
+      ],
+      "logical_total_tokens": 24520
+    },
+    {
+      "repeat": 1,
+      "arm": "raw-visible-corrupt",
+      "state": "completed",
+      "calls": 1,
+      "tokens": 9444,
+      "billed_usd": "0.01207695",
+      "wall_seconds": 5.882662660442293,
+      "protocol": "httpGet",
+      "answer_status": "diagnosed",
+      "root_cause": "liveness_probe_incorrect_protocol",
+      "contract_errors": [],
+      "retrieved_ids": [],
+      "logical_total_tokens": 25078
+    },
+    {
+      "repeat": 1,
+      "arm": "corrupt",
+      "state": "completed",
+      "calls": 2,
+      "tokens": 8776,
+      "billed_usd": "0.00748030",
+      "wall_seconds": 4.541290088556707,
+      "protocol": "httpGet",
+      "answer_status": "diagnosed",
+      "root_cause": "liveness_probe_incorrect_protocol",
+      "contract_errors": [],
+      "retrieved_ids": [
+        "observation-3",
+        "observation-4"
+      ],
+      "logical_total_tokens": 24410
+    },
+    {
+      "repeat": 1,
+      "arm": "no-recovery",
+      "state": "invalid",
+      "calls": 0,
+      "tokens": 0,
+      "billed_usd": "0",
+      "wall_seconds": null
+    },
+    {
+      "repeat": 1,
+      "arm": "restart",
+      "state": "completed",
+      "calls": 6,
+      "tokens": 24553,
+      "billed_usd": "0.0204441499999999993",
+      "wall_seconds": 14.318553020246327,
+      "protocol": "httpGet",
+      "answer_status": "diagnosed",
+      "root_cause": "liveness_probe_incorrect_protocol",
+      "contract_errors": [],
+      "retrieved_ids": [
+        "observation-12",
+        "observation-13"
+      ],
+      "logical_total_tokens": 48963,
+      "retained_artifacts": [],
+      "invalid_after": []
+    },
+    {
+      "repeat": 1,
+      "arm": "selective",
+      "state": "completed",
+      "calls": 3,
+      "tokens": 12163,
+      "billed_usd": "0.0099843999999999992",
+      "wall_seconds": 6.639701997861266,
+      "protocol": "httpGet",
+      "answer_status": "diagnosed",
+      "root_cause": "liveness_probe_incorrect_protocol",
+      "contract_errors": [],
+      "retrieved_ids": [
+        "observation-4",
+        "observation-3"
+      ],
+      "logical_total_tokens": 36573,
+      "retained_artifacts": [
+        "initial",
+        "configuration_plan",
+        "configuration_evidence",
+        "telemetry_plan",
+        "telemetry_evidence",
+        "summary_source",
+        "telemetry_summary",
+        "source_catalog"
+      ],
+      "invalid_after": []
+    },
+    {
+      "repeat": 2,
+      "arm": "prefix",
+      "state": "completed",
+      "calls": 4,
+      "tokens": 15614,
+      "billed_usd": "0.0090224000000000001",
+      "wall_seconds": 9.060243383049965
+    },
+    {
+      "repeat": 2,
+      "arm": "clean",
+      "state": "completed",
+      "calls": 2,
+      "tokens": 8875,
+      "billed_usd": "0.007621649999999999",
+      "wall_seconds": 4.5834579998627305,
+      "protocol": "httpGet",
+      "answer_status": "diagnosed",
+      "root_cause": "liveness_probe_incorrect_protocol",
+      "contract_errors": [],
+      "retrieved_ids": [
+        "observation-3",
+        "observation-4"
+      ],
+      "logical_total_tokens": 24489
+    },
+    {
+      "repeat": 2,
+      "arm": "raw-visible-corrupt",
+      "state": "completed",
+      "calls": 1,
+      "tokens": 9476,
+      "billed_usd": "0.010345949999999998",
+      "wall_seconds": 5.8569420371204615,
+      "protocol": "httpGet",
+      "answer_status": "diagnosed",
+      "root_cause": "liveness_probe_incorrect_protocol",
+      "contract_errors": [],
+      "retrieved_ids": [],
+      "logical_total_tokens": 25090
+    },
+    {
+      "repeat": 2,
+      "arm": "corrupt",
+      "state": "completed",
+      "calls": 2,
+      "tokens": 8780,
+      "billed_usd": "0.0075096999999999997",
+      "wall_seconds": 4.695614292286336,
+      "protocol": "httpGet",
+      "answer_status": "diagnosed",
+      "root_cause": "liveness_probe_incorrect_protocol",
+      "contract_errors": [],
+      "retrieved_ids": [
+        "observation-3",
+        "observation-4"
+      ],
+      "logical_total_tokens": 24394
+    },
+    {
+      "repeat": 2,
+      "arm": "no-recovery",
+      "state": "invalid",
+      "calls": 0,
+      "tokens": 0,
+      "billed_usd": "0",
+      "wall_seconds": null
+    },
+    {
+      "repeat": 2,
+      "arm": "restart",
+      "state": "completed",
+      "calls": 6,
+      "tokens": 25825,
+      "billed_usd": "0.02167990",
+      "wall_seconds": 15.665156201459467,
+      "protocol": "httpGet",
+      "answer_status": "diagnosed",
+      "root_cause": "liveness_probe_incorrect_protocol",
+      "contract_errors": [],
+      "retrieved_ids": [
+        "observation-13",
+        "observation-14",
+        "observation-17"
+      ],
+      "logical_total_tokens": 50219,
+      "retained_artifacts": [],
+      "invalid_after": []
+    },
+    {
+      "repeat": 2,
+      "arm": "selective",
+      "state": "completed",
+      "calls": 3,
+      "tokens": 12176,
+      "billed_usd": "0.0100307499999999988",
+      "wall_seconds": 6.813001479022205,
+      "protocol": "httpGet",
+      "answer_status": "diagnosed",
+      "root_cause": "liveness_probe_incorrect_protocol",
+      "contract_errors": [],
+      "retrieved_ids": [
+        "observation-3",
+        "observation-4"
+      ],
+      "logical_total_tokens": 36570,
+      "retained_artifacts": [
+        "initial",
+        "configuration_plan",
+        "configuration_evidence",
+        "telemetry_plan",
+        "telemetry_evidence",
+        "summary_source",
+        "telemetry_summary",
+        "source_catalog"
+      ],
+      "invalid_after": []
+    },
+    {
+      "repeat": 3,
+      "arm": "prefix",
+      "state": "completed",
+      "calls": 4,
+      "tokens": 15663,
+      "billed_usd": "0.0124072500000000006",
+      "wall_seconds": 10.124913614243269
+    },
+    {
+      "repeat": 3,
+      "arm": "clean",
+      "state": "completed",
+      "calls": 2,
+      "tokens": 10082,
+      "billed_usd": "0.00908235",
+      "wall_seconds": 4.9908251548185945,
+      "protocol": "httpGet",
+      "answer_status": "diagnosed",
+      "root_cause": "liveness_probe_incorrect_protocol",
+      "contract_errors": [],
+      "retrieved_ids": [
+        "observation-3",
+        "observation-4",
+        "observation-5"
+      ],
+      "logical_total_tokens": 25745
+    },
+    {
+      "repeat": 3,
+      "arm": "raw-visible-corrupt",
+      "state": "completed",
+      "calls": 1,
+      "tokens": 9169,
+      "billed_usd": "0.0097746",
+      "wall_seconds": 4.721611303277314,
+      "protocol": "httpGet",
+      "answer_status": "diagnosed",
+      "root_cause": "liveness_probe_incorrect_protocol",
+      "contract_errors": [],
+      "retrieved_ids": [],
+      "logical_total_tokens": 24832
+    },
+    {
+      "repeat": 3,
+      "arm": "corrupt",
+      "state": "completed",
+      "calls": 2,
+      "tokens": 8679,
+      "billed_usd": "0.007398749999999999",
+      "wall_seconds": 4.731430461630225,
+      "protocol": "httpGet",
+      "answer_status": "diagnosed",
+      "root_cause": "liveness_probe_incorrect_protocol",
+      "contract_errors": [],
+      "retrieved_ids": [
+        "observation-8",
+        "observation-4"
+      ],
+      "logical_total_tokens": 24342
+    },
+    {
+      "repeat": 3,
+      "arm": "no-recovery",
+      "state": "invalid",
+      "calls": 0,
+      "tokens": 0,
+      "billed_usd": "0",
+      "wall_seconds": null
+    },
+    {
+      "repeat": 3,
+      "arm": "restart",
+      "state": "completed",
+      "calls": 6,
+      "tokens": 25660,
+      "billed_usd": "0.02219645",
+      "wall_seconds": 14.458998585119843,
+      "protocol": "httpGet",
+      "answer_status": "diagnosed",
+      "root_cause": "liveness_probe_incorrect_protocol",
+      "contract_errors": [],
+      "retrieved_ids": [
+        "observation-17",
+        "observation-16",
+        "observation-14"
+      ],
+      "logical_total_tokens": 50002,
+      "retained_artifacts": [],
+      "invalid_after": []
+    },
+    {
+      "repeat": 3,
+      "arm": "selective",
+      "state": "completed",
+      "calls": 3,
+      "tokens": 12020,
+      "billed_usd": "0.009769749999999999",
+      "wall_seconds": 6.169356227852404,
+      "protocol": "httpGet",
+      "answer_status": "diagnosed",
+      "root_cause": "liveness_probe_incorrect_protocol",
+      "contract_errors": [],
+      "retrieved_ids": [
+        "observation-8",
+        "observation-7"
+      ],
+      "logical_total_tokens": 36362,
+      "retained_artifacts": [
+        "initial",
+        "configuration_plan",
+        "configuration_evidence",
+        "telemetry_plan",
+        "telemetry_evidence",
+        "summary_source",
+        "telemetry_summary",
+        "source_catalog"
+      ],
+      "invalid_after": []
+    }
+  ],
+  "paired_descriptive_deltas": [
+    {
+      "repeat": 1,
+      "token_reduction_fraction": 0.5046226530362888,
+      "wall_reduction_fraction": 0.5362868029700503
+    },
+    {
+      "repeat": 2,
+      "token_reduction_fraction": 0.5285188770571152,
+      "wall_reduction_fraction": 0.5650856339123218
+    },
+    {
+      "repeat": 3,
+      "token_reduction_fraction": 0.5315666406858924,
+      "wall_reduction_fraction": 0.5733206423990207
+    }
+  ],
+  "descriptive_aggregate": {
+    "restart": {
+      "calls": {
+        "mean": 6,
+        "min": 6,
+        "max": 6
+      },
+      "tokens": {
+        "mean": 25346,
+        "min": 24553,
+        "max": 25825
+      },
+      "wall_seconds": {
+        "mean": 14.814235935608545,
+        "min": 14.318553020246327,
+        "max": 15.665156201459467
+      }
+    },
+    "selective": {
+      "calls": {
+        "mean": 3,
+        "min": 3,
+        "max": 3
+      },
+      "tokens": {
+        "mean": 12119.666666666666,
+        "min": 12020,
+        "max": 12176
+      },
+      "wall_seconds": {
+        "mean": 6.540686568245292,
+        "min": 6.169356227852404,
+        "max": 6.813001479022205
+      }
+    }
+  },
+  "semantic_scoring": "Separate blinded AI review; not inferred by this script.",
+  "limits": "One seen case, three repeats; no generalization, significance, or p95 estimate."
+}

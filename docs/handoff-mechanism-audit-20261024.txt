@@ -1,0 +1,89 @@
+Handoff v2 mechanism audit — 2026-10-24
+
+Scope: offline technical audit of saved artifacts and runner/state code. No API
+calls, no native labels, no blind-review mapping or reviewer files accessed.
+This is a separate mechanism check, not an independent human audit or semantic
+verdict; the auditing agent previously implemented the pilot runner.
+
+Evidence root: runs/handoff-dev-v2-20261024/handoff-dev-v2-results-20261024/
+Relevant files: summary.json, usage.json, account-before.json,
+account-settled.json; repeat-{1,2,3}/notification.json; each arm's state.json,
+ledger.json and trace.json; restart/selective/reuse.json.
+Code: scripts/run_handoff_dev.py, scripts/summarize_handoff_saved.py,
+src/team_assistant/state.py and runtime.py.
+
+Checks performed and findings
+
+1. Recomputed the invalidation closure from each saved corrupt/state.json using
+ExecutionStore, restoring recorded source/shared versions. All three closures
+exactly matched notification.json:
+configuration_summary, coordinator_decision, retrieved_sources, incident_brief.
+The retrieved raw bytes themselves were not faulty; retrieval was conservatively
+invalidated because its selection consumed the affected coordinator decision.
+This demonstrates transitive dependency invalidation, not a proof that this is
+the smallest possible semantically necessary recomputation set.
+
+2. Both recovery branches' before_hashes exactly matched their repeat's saved
+corrupt state. Recomputed every after_hash from saved state, checked all parent
+version edges against the corresponding saved parent, and checked retained hash
+equality. Every selective branch retained the same eight valid artifacts:
+initial, configuration_plan, configuration_evidence, telemetry_plan,
+telemetry_evidence, summary_source, telemetry_summary, source_catalog.
+Every restart branch retained zero artifact hashes. All six recovery branches
+reported empty invalid_after, with consistent recorded parent versions.
+Unchanged bytes and dependency validity establish implementation-level reuse;
+they do not establish that every retained claim is semantically correct.
+
+3. Actual coordinator input edges include configuration_summary,
+telemetry_summary, and source_catalog. Retrieved-source edges include the
+coordinator decision and the raw artifact owners. Final-answer edges include
+both summaries, catalog, decision, and retrieved records. Thus the affected
+summary is a consumed dependency even if not cited in the final answer.
+Catalog dependencies are conservative: availability metadata depends on the
+raw-source artifacts, rather than claiming every available source was inspected.
+
+4. Reconstructed the no-recovery store and attempted publication after
+invalidation: publication raised ValueError in all three repeats. The saved
+no-recovery flags agree. All six recovery ledgers preserved original entry 1
+and appended entry 2 with supersedes=1 and result version 2. Selective publication
+epoch is 1; full restart epoch is 2 because it additionally invalidates all work.
+The original entry remains history. No real external message was sent: this is
+an in-process append-only ledger/publication fence, not a distributed crash-safe
+publication service. Version-valid publication bypasses semantic approval and
+results explicitly retain quality_approved=false.
+
+5. Ran summarize_handoff_saved.summarize against the saved evidence. All
+accounting/hash/cumulative-token checks passed: 54 physical calls, 241475 tokens,
+$0.2136544 actual response-header cost, matching settled account delta within
+floating-point tolerance. Logical branch totals include the shared prefix and
+corrupt path, rather than resetting consumption to zero after recovery.
+The script is a useful integrity/accounting check, not a semantic judge. It does
+not itself reconstruct the full invalidation closure or prove rejection from a
+Boolean flag; those checks were independently repeated above. It also should
+not be represented as proving coverage of arbitrary concurrent/stale attempts.
+
+Timing boundary and interpretation
+
+The arm timer begins after the branch clone and pre-recovery hash computation.
+It covers operation execution, provider waits, dependency/runtime work,
+publication, and dispatcher join. It stops before writing state/ledger/trace and
+reuse evidence files. Notification discovery, invalidation and branch cloning
+are excluded from recovery wall time. Report this as incremental recovery-arm
+latency, not total incident-to-correction latency or end-to-end persisted service
+latency. The separately timed invalidation traversal took approximately
+93.00, 55.80 and 91.07 microseconds. Those measurements cover only traversal,
+not complete tracking overhead. Process CPU is whole-process CPU, not a clean
+isolation of controller overhead.
+
+Restart: 6 calls each; tokens 24553–25825, mean 25346; wall 14.319–15.665 s,
+mean 14.814 s. Selective: 3 calls each; tokens 12020–12176, mean 12119.667;
+wall 6.169–6.813 s, mean 6.541 s. These are paired descriptive measurements on
+one seen snapshot. Fixed R/S, S/R, R/S order reduces one simple order bias but
+is neither randomized nor sufficient for significance, generalization or p95.
+Provider caching and time-varying service behavior remain possible contributors.
+
+Conclusion: the saved run supports paired-state isolation, version-consistent
+reuse, conservative transitive invalidation, stale-publication rejection and
+lower incremental recovery work in this pilot. It does not on its own establish
+wrong final-answer propagation, semantic correction, automatic fault detection,
+minimum recomputation, distributed recovery safety, or production reliability.

@@ -1,0 +1,27 @@
+Repeated specialist handoff: development evidence, October24,2026
+
+Scope and execution
+Three fresh collection prefixes on ONE already-seen Cloud-OpsBench boutique/runtime/1 snapshot. Frozen protocol docs/handoff-dev-v2.txt, configuration configs/handoff-dev-v2.json, runner commit d25ddb2. Each prefix uses two model query planners and two specialist summaries. The coordinator sees summaries and source IDs, can request1–3 unchanged raw records once, then diagnoses or expresses uncertainty. No native benchmark labels were used for this pilot. Fault: change only liveness-protocol summary httpGet→grpc plus matching sentence. The trusted invalidation notice identifies the summary but supplies neither correct value nor diagnosis. This is a constructed fault, not measured natural error frequency.
+
+All21 assigned arms retained, including three no-recovery invalid-publication outcomes;15 final answers.54 actual calls,241475tokens,exit0. Local and remote four-test handoff suites pass. Saved provider charges total$0.21365440 and match settled account delta; account balance$49.11201275. Known development total$0.47932915/$5. DataHub Start My Server state confirmed after stopping. No new inference or retry is scheduled.
+
+Independent semantic review
+Review files:output/handoff-review-20261024. An independent AI reviewer received shuffled packets with methods/costs hidden, sources and actual coordinator turns included. Initial15item review was hashed and sealed before mapping disclosure. Reviewer had prior case context from plan/v1 notes, so this is method-blinded, not case-naive or human validation. Native labels were not read. All cited raw quotes were verified in records actually available to the coordinator.
+All15 primary diagnoses are supported by source evidence;6 exposed answers adopted the false grpc-liveness claim0times. Specifically, corrupted handoff0/3 and raw-visible baseline0/3. Coordinator retrieval prevented propagation. Therefore this study does NOT show correction of a propagated wrong final diagnosis. Both recovery arms replace invalid configuration summaries with httpGet-consistent summaries, while the previous final diagnosis was already correct.
+Three final narratives incorrectly describe the failure threshold as three failures per period. Other broad claims about overall server health, exclusive cause or prospective fix are not fully established by this snapshot. Correct core diagnosis is not proof that every sentence is correct. These errors remain in original results and are disclosed separately; no retrospective editing of model outputs.
+
+Paired incremental recovery work
+Repeat   Restart calls/tokens/seconds   Selective calls/tokens/seconds
+1        6 /24553/14.319                3 /12163/6.640
+2        6 /25825/15.665                3 /12176/6.813
+3        6 /25660/14.459                3 /12020/6.169
+Means: restart25346tokens,14.814s; selective12119.667tokens,6.541s. Paired token reduction50.46%,52.85%,53.16%; wall reduction53.63%,56.51%,57.33%. All figures descriptive, no significance/p95/generalization claim. Orders R/S,S/R,R/S were fixed. Provider cache/service variation not isolated. Timing includes operation/provider/runtime/publication/join but excludes notification, invalidation, clone/prehash and final evidence persistence; it is not full end-to-end incident latency.
+
+Validity and safe reuse
+Every selective run retained8 unchanged valid artifacts: initial observation, configuration plan/evidence, telemetry plan/evidence/summary, summary source and source catalog. Transitive invalidation reached configuration_summary→coordinator_decision→retrieved_sources→incident_brief. Both recovery methods issued a valid replacement publication superseding version1; no-recovery stale republication was rejected3/3. Rejection is a policy-validity outcome, not three wrong diagnoses. Technical audit reconstructs closure and validates hashes/versions; it was performed by the runner implementation agent, not an independent human auditor. Semantic review is separate from this mechanism audit.
+
+Implications and next steps
+The claim currently supported is less recomputation after a trusted invalidation while retaining the same supported core diagnosis. Strong raw verification prevented the tested error from propagating. Do not weaken verification or repeatedly search errors until a success appears. Before new inference, preregister a credible fault class and independently selected unseen development cases, preserve raw-checking prevention as a comparator, and set eligibility/abstention/source-claim criteria before exposure. Include ancillary assertion correctness in future scoring. Add offline instrumentation controls and broader structural/partial-failure cases; a future confirmatory study requires a fresh unseen set and separate budget. Current formal-v2 records remain unchanged.
+
+Reproduction
+Run scripts/summarize_handoff_saved.py on runs/handoff-dev-v2-20261024/handoff-dev-v2-results-20261024 for accounting/hash/budget-lineage checks; it is not a semantic scorer. Blinded review seal, packets, paired mapping and mechanism audit are packaged with the updated Phase1 release. Phase1 remains unsubmitted. Course dataset acceptance and exact deadline time remain unverified; no email sent.
