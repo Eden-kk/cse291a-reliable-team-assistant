@@ -1,0 +1,68 @@
+{
+  "protocol_id": "formal-evaluation-v1-20261024",
+  "status": "design_frozen_launch_blocked",
+  "launch_authorized": false,
+  "dataset_commit": "ea05dafbc87b5985df8721622d63d4229c2b4224",
+  "cases": [
+    "boutique/runtime/32",
+    "boutique/service/12",
+    "boutique/performance/5"
+  ],
+  "selection": "first listed final_locked ID per category, registry only; no replacement",
+  "repetitions": 2,
+  "independent_incidents": 3,
+  "topology": "parallel-one",
+  "memory": "empty, learning disabled",
+  "faults": [
+    "wrong-intermediate-numeric-port",
+    "all-initial-work-expired"
+  ],
+  "provider": {
+    "required": "TritonAI",
+    "model_id": null,
+    "revision": null,
+    "prices_verified": false,
+    "balance_verified": false
+  },
+  "budget": {
+    "per_call_total_token_reservation": 60000,
+    "per_call_output_cap": 2048,
+    "per_call_input_cap": 57952,
+    "timeout_seconds": 180,
+    "automatic_retries": 0,
+    "maximum_calls_per_incident_repeat": 17,
+    "formal_maximum_calls": 102,
+    "formal_reserved_tokens": 6120000,
+    "development_maximum_calls": 18,
+    "development_reserved_tokens": 1080000,
+    "formal_usd_cap": 20,
+    "development_usd_cap": 5,
+    "combined_usd_cap": 25,
+    "personal_billing": false,
+    "unknown_usage": "charge full reservation; stop batch if safe remaining reservation cannot be proved"
+  },
+  "launch_gates": [
+    "TritonAI model/revision or alias manifest and pricing pinned",
+    "available course API balance verified; reserve complete batch plus development separately",
+    "generic fault contract validated on seen development cases",
+    "runner enforces manifest, call/input/output/tool ceilings and locked split guard",
+    "scoring rubric and input-only reviewer blind to labels frozen before execution",
+    "source/dataset approval status resolved",
+    "code, dataset, protocol and prompt hashes frozen"
+  ],
+  "heldout_opened": false,
+  "tool_limit_per_collection_role": 4,
+  "diagnosis_rounds": 1,
+  "stage_call_ceiling": {
+    "clean_collection_and_diagnosis": 3,
+    "wrong_content_diagnosis": 1,
+    "wrong_content_restart": 3,
+    "wrong_content_selective": 1,
+    "independent_prevention": 3,
+    "all_expiry_restart": 3,
+    "all_expiry_selective": 3
+  },
+  "primary_quality_gate": "strict benchmark joint: native root correct AND ECR=1 AND supported facts AND current valid publication",
+  "secondary_quality_gate": "semantic joint without native ECR requirement, labeled separately",
+  "prevention_fault": "same deterministic transform before source-consistency check; independent exposure/eligibility recorded"
+}

@@ -1,0 +1,15 @@
+Evidence map — 2026-10-24
+Scope: completed October24 real-model development pilots only; no held-out evidence. Earlier engineering and semantic pilots are separate records, not added to this subtotal.
+
+Claim | Evidence | Supported conclusion | Boundary
+Independent branches permit useful reuse | cross-case-recovery-20261024.txt/results.json: runtime/1 and performance/1, 26 calls,487598 task tokens | Both recovery methods pass declared gates; selective incremental savings62.06% and55.33% | Two seen incidents, same application; source prevention cheaper end-to-end. No universal superiority.
+Consumed handoff widens closure | recovery-boundaries-20261024.txt/results.json: handoff-expiry | Telemetry actually consumed by configuration;5 invalid artifacts, selective2 calls versus restart3,30.25% saving | Widened dependence, not arbitrary dense graph or topology-only causal comparison.
+False support can survive native scoring | same boundary record: wrong-content9555->9556 | Wrong supporting fact propagated, corrected to9555 by both recovery methods; selective62.29% incremental saving | Root label never became wrong. Native JRA/ECR alone misses this error.
+All work invalid means no reuse | all-expiry-20261024.txt/results.json:9 calls153025 tokens | Both methods regenerate7/7 artifacts, retain0, use3 calls/7 fresh tools; application requests identical | 0.77% token difference and single-run timing difference are accounting/stochastic observations, not reuse gain. Settled-prefix test does not prove concurrency-fence equivalence.
+Tracking can dominate | recovery-overhead-20261024.txt/json | Synthetic graph profiling identifies tracking overhead and optimization behavior | Synthetic CPU results are not real-model latency or semantic quality.
+Missing provenance must fail closed | provenance-fallback-results.json and engineering tests | Conservative restart preserves declared accounting and stale-write safety under observable missing provenance | Does not detect all unrecorded real-world dependence.
+
+October24 subtotal:26+18+9=53 real model calls;487598+313367+153025=953990 known task tokens; zero retries/unknown usage in these three records. No currency claim: Codex subscription accounting includes wrappers and differs from TritonAI API billing. Evidence is clustered on the same seen cases; do not sum conditions as independent incidents.
+
+Unproven: held-out recovery, wrong-root repair, arbitrary dependency density, new applications, TritonAI model transfer, repeat variability, formal budget affordability, real concurrent rate-limit scheduling, self-evolve efficacy. Scheduling and learning stay gated extensions.
+Source files and frozen protocol references remain unmodified. Formal design is in formal-evaluation-v1.txt; old feasibility percentages must not be presented as formal-test results.

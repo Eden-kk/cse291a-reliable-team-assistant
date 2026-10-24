@@ -1,0 +1,25 @@
+Course alignment audit — verified live October24,2026
+Sources:
+https://cseweb.ucsd.edu/~yiying/cse291a-fall26/project/
+https://docs.google.com/document/d/1WrtrdqP54ATGRPtq9TN3vkBFc1F8ESvkqWu9AAuvIkU/edit (Overview and Option5)
+https://piazza.com/class/muhr8yxvobhn9/post/45 (Oct22 deadline extension)
+https://piazza.com/class/muhr8yxvobhn9/post/32 (API access and conflicting credit amounts)
+https://canvas.ucsd.edu/courses/78326/assignments
+
+Requirement / status / action
+Option5 failure propagation and recovery / aligned / dependency invalidation and selective restoration are core; multi-group scheduling and learning are optional extensions.
+Working baseline, reproducible workload, initial measurements, justified Phase2 / substantial evidence present / rebuild Phase1 package with current code and dated results; current historical archives are not silently updated.
+Clean workflow, controlled faults, consumed-input traces, full restart and meaningful verification / present on development / formal provider and generic-fault migration still pending.
+Quality, affected stages, wasted work, latency, cost, tracking overhead / partial / separate native score, source fidelity and contract validity; add repeat variation and API-dollar accounting. Read-only tools cannot establish ability to undo irreversible actions.
+Development/evaluation separation and pinned versions / split locked / design frozen; model/prices/code launch annex still required. Same-app/template overlap disclosed.
+Repeat stochastic experiments and report variation / not yet satisfied by single-run pilots / fixed two repeats per selected incident; disclose low sample size.
+Use TritonAI for LLM API usage / not yet satisfied for formal runs / historical Codex calls remain development evidence; implement and validate course provider before formal evaluation.
+Compute / laptop allowed for Option5 / no GPU server or AWS inference requirement for this design. AWS $50 credit is distinct from API allocation.
+API budget / unresolved announcement inconsistency / Piazza32 says default$50, later$25 per key. Use <=$25 ceiling and verified remaining balance; do not assume affordable until model prices are pinned.
+Benchmark/resource approval / unverified / Cloud-OpsBench is not among named Option5 examples; verify survey/TA acceptance or seek clarification before formal launch. Absence from examples alone does not mean prohibited.
+Phase1 / Nov4,2026 / official GDoc and Piazza45 supersede stale Oct28 website. Exact cutoff time not shown in inspected sources; Canvas assignment upload item not yet visible. Plan internal completionNov2.
+Phase1 submission contents / not yet reassembled / source,dataset or reproducible acquisition manifest, instructions,results/logs,1–2page report plus timeline/milestone appendix. Verify packaged contents and regenerate report before submission.
+Phase2/final / Dec10,2026 / final4–6single-spaced pages including figures/tables,excluding references;10pt/12pt,two-column,Times-like,7x9inchtextblock,numberedpages,PDF. Recheck published upload rules before final export. No late submission accepted per website.
+Weights / project75% / Phase1code/data15%,Phase1report10%,Phase2code25%,finalreport25% of course.
+
+Verdict: project question and mechanism fit Option5, with sufficient development material for a substantive Phase1 report. Full course compliance and formal-launch readiness are NOT complete: TritonAI, repetitions, source acceptance, cost pinning, and refreshed deliverable packaging remain open. No submission made in this task.
