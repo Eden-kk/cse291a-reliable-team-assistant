@@ -22,7 +22,7 @@ def main():
             assert all(c['tokens'] is not None and not c['error'] for c in usage)
             assert sum(c['tokens'] for c in usage)==compact['known_tokens']==tokens
             for path in base.rglob('scores.json'):
-                out=Path(temp)/'scores.json'
+                out=Path(temp)/f'scores-{scored}.json'
                 subprocess.run([sys.executable,str(ROOT/'scripts/score_run.py'),str(path.parent),
                     '--vendor',str(ROOT/'vendor_offline/Cloud-OpsBench'),'--output',str(out)],
                     check=True,stdout=subprocess.DEVNULL)
