@@ -1,0 +1,33 @@
+PHASE 1 REPRODUCTION ADDENDUM - OCTOBER 24, 2026
+
+Purpose: reproduce saved formal scoring, not rerun model inference. Original formal inputs, input-only judgments and seal remain byte-identical. The original seal stores an author-specific absolute path; verify_formal_release.py resolves the included input-only-review.json by its sealed SHA-256 instead. It does not reseal or claim a new blind review.
+
+Clean extraction:
+  unzip Phase1-Evidence.zip -d phase1-check
+  cd phase1-check
+  python3 -m venv .venv
+  .venv/bin/python -m pip install -r requirements.lock
+  .venv/bin/python scripts/verify_formal_release.py > verification.log
+The last command disables socket connections and checks every release file, all 36 produced native/joint scores and 54 assigned slots. Package installation can require internet; saved-output verification does not. Python >=3.11. A local wheel cache can support offline dependency installation. Native scoring imports bundled pinned evaluator and three label directories. No credentials or model endpoint are required.
+
+Pinned dataset:
+  git clone --filter=blob:none --no-checkout https://github.com/LLM4Ops/Cloud-OpsBench.git Cloud-OpsBench
+  git -C Cloud-OpsBench checkout ea05dafbc87b5985df8721622d63d4229c2b4224
+  git -C Cloud-OpsBench rev-parse HEAD
+Local pinned source and MIT LICENSE are available and bundled scoring subset is sufficient for the offline check. Remote availability is separately reported in verification-receipt.json; future availability cannot be guaranteed. The full checkout exposes labels: never use it as an unseen-case inference sandbox. New evaluations must maintain their own label firewall. This release contains already-exposed formal cases, not unseen evaluation material.
+
+New inference is NOT a reproduction check: mutable api-glm-5.3 responses, renewed credentials, budget approval and a new protocol/version would be required. Do not run run_formal_v2.py from this archival bundle; its launch gates and historical paths are preserved for provenance, not to authorize another batch.
+
+Measurement coverage:
+Clean task success and fault adoption, matched recovery calls/tokens and expiry boundary are measured. The time field in formal-results-20261024.json is summed API-call latency, not full workflow wall time. Do not relabel it end-to-end latency. Integrated tracking overhead and per-stage wasted-work timing were not instrumented in this formal batch. Earlier overhead microbenchmarks are development evidence only. Generic port errors were not adopted in any of four injected answers; two units were ineligible. Thus semantic propagation/repair remains unproven. No operational writes were available; this does not establish safety against arbitrary adversaries.
+
+Timeline appendix:
+Completed Oct 24: three independent cases, two repetitions, 92 calls; sealed scoring and billing reconciled. Local release only, not submitted.
+Oct 24-27: clean package validation, causal intermediate-error development on seen cases; record ignored injections and correction failures as well as successes.
+Oct 28: Phase 1 submission target from saved course overview; verify live exact deadline and upload slots before submission.
+Oct 29-Nov 2: freeze revised causal fault eligibility, matched-prefix comparisons, dependency boundaries and quality-first metrics; independently choose new cases only after development stabilizes.
+Before renewed online work: recheck model/key expiry, remaining quota and explicit batch cap; original formal budget is not automatically renewed.
+Nov 3-23: analyze paired quality/cost and conservative fallback; any further inference requires available approved resources. Extensions only after core results are convincing.
+Nov 24-Dec 10: final artifact, report and presentation preparation; verify current official dates and requirements.
+
+AI use: Codex assisted implementation, tooling, analysis and document drafting. Human review and benchmark course acceptance remain outstanding; neither is implied by successful offline reproduction.

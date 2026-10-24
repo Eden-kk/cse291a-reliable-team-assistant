@@ -1,0 +1,23 @@
+{
+  "hashes_verified": 709,
+  "native_answers_rescored": 36,
+  "assigned_slots_retained": 54,
+  "network_disabled": true,
+  "model_calls": 0,
+  "saved_calls": 92,
+  "billed_usd": "0.4022509499999999903",
+  "review_hash_preserved": "22fbc8d60e63a7399e3e993f83c99f9c73369478b58d962b6dab25f1d6c0ce30",
+  "limitations": "Saved judgments verified, not independently re-reviewed; no new inference.",
+  "python": "3.14.8",
+  "clean_extraction": true,
+  "isolated_venv": true,
+  "requirements_lock_installed": true,
+  "dataset_exact_commit_fetch_succeeded": "ea05dafbc87b5985df8721622d63d4229c2b4224",
+  "source_repository": "https://github.com/LLM4Ops/Cloud-OpsBench.git",
+  "checked_date": "2026-10-24",
+  "pdf_visual_check": "3 pages rendered and inspected; 2-page body plus 1-page timeline appendix",
+  "pdf_pages": 3,
+  "archive_sha256": "aa683bfa04f9990d78396d86f894314e4918fe9086bb67dcfff114150e8c0c10",
+  "pdf_sha256": "7be855fbfe0f49f47b2f94e6ffba61c6f49b89895e24c7d5e50bd0fa9539f3f0",
+  "submitted": false
+}
