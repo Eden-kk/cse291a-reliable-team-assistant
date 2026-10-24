@@ -89,12 +89,18 @@ async def coordinate(inv, raw_visible=False):
 
 async def experiment(out, vendor, registry, commit, backend):
     assert CASE in registry['splits']['development_seen'] and not registry['final_unlocked']
-    all_repeats = []
+    names = ('prefix', 'clean', 'raw-visible-corrupt', 'corrupt', 'no-recovery', 'restart', 'selective')
+    all_repeats = [{'repeat': n + 1,
+                    'recovery_order': ('restart', 'selective') if n % 2 == 0 else ('selective', 'restart'),
+                    'arms': {name: {'state': 'not_run', 'calls': []} for name in names}} for n in range(3)]
+    def save_summary():
+        write(out/'summary.json', {'case': CASE, 'formal_evaluation': False, 'repeats': all_repeats,
+                                  'calls': len(backend.records), 'halted': backend.halted})
+    save_summary()
     for repeat in range(3):
         dest = out / f'repeat-{repeat + 1}'
-        arms = {}
-        order = ('restart', 'selective') if repeat % 2 == 0 else ('selective', 'restart')
-        all_repeats.append({'repeat': repeat + 1, 'recovery_order': order, 'arms': arms})
+        arms = all_repeats[repeat]['arms']
+        order = all_repeats[repeat]['recovery_order']
         async def run(name, inv, operation, supersedes=None):
             start = len(backend.records)
             wall, cpu = time.perf_counter(), time.process_time()
@@ -114,6 +120,7 @@ async def experiment(out, vendor, registry, commit, backend):
                 write(dest/name/'trace.json', inv.runtime.events)
                 write(dest/name/'result.json', arms[name])
                 write(dest/'summary.json', {'arms': arms, 'repeat': repeat + 1})
+                save_summary()
             return arms[name]['state'] == 'completed' and not backend.halted
         base = build(vendor, registry, commit, backend)
         base.reservation = 48192
@@ -127,7 +134,10 @@ async def experiment(out, vendor, registry, commit, backend):
         fault = inject(bad); write(dest/'fault.json', fault)
         assert raw_hash == digest(bad.snapshot.observations)
         if not fault['injected']:
-            arms['corrupt'] = {'state': 'not_injected'}
+            for name in ('raw-visible-corrupt', 'corrupt', 'no-recovery', 'restart', 'selective'):
+                arms[name] = {'state': 'not_injected', 'calls': []}
+            save_summary()
+            write(dest/'summary.json', {'arms': arms, 'repeat': repeat + 1})
             continue
         raw_baseline = clone(bad, backend)
         if not await run('raw-visible-corrupt', raw_baseline, lambda: coordinate(raw_baseline, True)): break
@@ -163,8 +173,7 @@ async def experiment(out, vendor, registry, commit, backend):
         assert base.incident.store.__dict__ == base_frozen
         if backend.halted or any(a['state'] == 'failed' for a in arms.values()): break
     assert len(backend.records) <= 54
-    write(out/'summary.json', {'case': CASE, 'formal_evaluation': False, 'repeats': all_repeats,
-                              'calls': len(backend.records), 'halted': backend.halted})
+    save_summary()
 
 
 async def main(args):

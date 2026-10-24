@@ -31,8 +31,8 @@ class Provider:
 
 @unittest.skipUnless(VENDOR.exists(), 'requires seen case')
 class TestHandoff(unittest.TestCase):
-    def run_pilot(self, retrieve):
-        provider = Provider(retrieve)
+    def run_pilot(self, retrieve, provider=None):
+        provider = provider or Provider(retrieve)
         with tempfile.TemporaryDirectory() as tmp:
             asyncio.run(runner.experiment(Path(tmp),VENDOR,json.loads((ROOT/'configs/splits.json').read_text()),'mock',provider))
             files = {str(p.relative_to(tmp)):json.loads(p.read_text()) for p in Path(tmp).rglob('*.json')}
@@ -58,3 +58,30 @@ class TestHandoff(unittest.TestCase):
         self.assertEqual(files['summary.json']['repeats'][1]['recovery_order'],['selective','restart'])
         self.assertEqual(len(files['summary.json']['repeats']),3)
         self.assertTrue(all(a['state'] != 'failed' for r in files['summary.json']['repeats'] for a in r['arms'].values()))
+
+    def test_failed_arm_and_unattempted_assignments_are_retained(self):
+        class Failing(Provider):
+            async def complete(self, instruction, request):
+                if request['step'] == 'coordinator_decision':
+                    raise ValueError('fixture failure')
+                return await super().complete(instruction, request)
+        files, _ = self.run_pilot(False, Failing(False))
+        repeats = files['summary.json']['repeats']
+        self.assertEqual(len(repeats), 3)
+        self.assertEqual(repeats[0]['arms']['clean']['state'], 'failed')
+        self.assertEqual(repeats[0]['arms']['corrupt']['state'], 'not_run')
+        self.assertEqual(repeats[1]['arms']['prefix']['state'], 'not_run')
+        self.assertEqual(repeats[2]['arms']['selective']['state'], 'not_run')
+
+    def test_ineligible_repeats_are_not_replaced(self):
+        class Ineligible(Provider):
+            async def complete(self, instruction, request):
+                result = await super().complete(instruction, request)
+                if request['step'] == 'configuration_summary':
+                    result.value['liveness_protocol'] = 'unknown'
+                return result
+        files, p = self.run_pilot(False, Ineligible(False))
+        self.assertEqual(len(p.records), 15)
+        for repeat in files['summary.json']['repeats']:
+            for name in ('raw-visible-corrupt', 'corrupt', 'no-recovery', 'restart', 'selective'):
+                self.assertEqual(repeat['arms'][name]['state'], 'not_injected')
