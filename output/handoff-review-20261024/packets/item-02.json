@@ -1,0 +1,426 @@
+{
+  "id": "item-02",
+  "output": {
+    "status": "diagnosed",
+    "fault_object": "app/adservice",
+    "root_cause": "liveness_probe_incorrect_protocol",
+    "evidence": [
+      {
+        "observation_id": "observation-17",
+        "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+      },
+      {
+        "observation_id": "observation-16",
+        "quote": "Liveness probe failed: Get \"http://172.20.2.163:9555/\": net/http: HTTP/1.x transport connection broken: malformed HTTP status code"
+      },
+      {
+        "observation_id": "observation-14",
+        "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+      }
+    ],
+    "reasoning": "adservice is a gRPC (HTTP/2) server on port 9555, but its livenessProbe is configured as httpGet on that port. The HTTP/1.1 probe request is rejected by the gRPC server (Http2Exception 'Unexpected HTTP/1.x request'), the kubelet marks the probe failed 3 times, and kills the container (Exit Code 143, Restart Count 2, Killing events). The readiness probe correctly uses grpc on 9555 and the container is Ready, confirming the server itself is healthy \u2014 only the liveness probe protocol is wrong. Fix: change livenessProbe to grpc on port 9555.",
+    "adservice_liveness_protocol": "httpGet"
+  },
+  "source_archive_for_review": [
+    {
+      "id": "observation-9",
+      "tool": "GetResources",
+      "arguments": {
+        "resource_type": "pods",
+        "namespace": "boutique",
+        "name": null,
+        "show_labels": false,
+        "output_wide": false,
+        "label_selector": null
+      },
+      "availability": "returned",
+      "text": "NAME                                     READY   STATUS    RESTARTS      AGE\nadservice-d6c9fcc6b-d4nlb                1/1     Running   2 (30s ago)   90s\ncartservice-79b49f5555-fmgk7             1/1     Running   0             92s\ncheckoutservice-8445f8b6cb-kk958         1/1     Running   0             92s\ncurrencyservice-75686c9564-bxbbm         1/1     Running   0             92s\nemailservice-c86b9b8f6-c6lvl             1/1     Running   0             92s\nfrontend-657dd795f-tpqs6                 1/1     Running   0             92s\npaymentservice-78c5996648-4nr2p          1/1     Running   0             91s\nproductcatalogservice-ddb46fc86-z8p6c    1/1     Running   0             91s\nrecommendationservice-7bf5b7d9b8-2cfzn   1/1     Running   0             91s\nredis-cart-6f966d9cc9-nwdl2              1/1     Running   0             91s\nshippingservice-7ff54bf6b6-2gcm8         1/1     Running   0             91s\n",
+      "truncated": false,
+      "sha256": "f87a5a335a7a527f4e46a24611b35e877009c01ee97356fe021ed11c2628b8a2"
+    },
+    {
+      "id": "observation-10",
+      "tool": "GetAlerts",
+      "arguments": {},
+      "availability": "returned",
+      "text": "No active metric anomalies detected at this time.",
+      "truncated": false,
+      "sha256": "3d72383ea72d6e5c4cf196b6807afbc81f99816e31e1a617b28911966e9b3497"
+    },
+    {
+      "id": "observation-11",
+      "tool": "GetAppYAML",
+      "arguments": {
+        "app_name": "adservice"
+      },
+      "availability": "returned",
+      "text": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: adservice\n  namespace: boutique \n  labels:\n    app: adservice\nspec:\n  selector:\n    matchLabels:\n      app: adservice\n  template:\n    metadata:\n      labels:\n        app: adservice\n    spec:\n      serviceAccountName: adservice\n      terminationGracePeriodSeconds: 5\n      securityContext:\n        fsGroup: 1000\n        runAsGroup: 1000\n        runAsNonRoot: true\n        runAsUser: 1000\n      containers:\n      - name: server\n        securityContext:\n          allowPrivilegeEscalation: false\n          capabilities:\n            drop:\n              - ALL\n          privileged: false\n          readOnlyRootFilesystem: true\n        image: us-central1-docker.pkg.dev/google-samples/microservices-demo/adservice:v0.10.3\n        ports:\n        - containerPort: 9555\n        env:\n        - name: PORT\n          value: \"9555\"\n        resources:\n          requests:\n            cpu: 200m\n            memory: 180Mi\n          limits:\n            cpu: 300m\n            memory: 300Mi\n        readinessProbe:\n          initialDelaySeconds: 5\n          grpc:\n            port: 9555\n        livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555\n---\napiVersion: v1\nkind: Service\nmetadata:\n  name: adservice\n  namespace: boutique\n  labels:\n    app: adservice\nspec:\n  type: ClusterIP\n  selector:\n    app: adservice\n  ports:\n  - name: grpc\n    port: 9555\n    targetPort: 9555\n\n---\napiVersion: v1\nkind: ServiceAccount\nmetadata:\n  name: adservice\n  namespace: boutique",
+      "truncated": false,
+      "sha256": "f381b00ac5585a8b0536c33467e3962ef3fb72ce6ed562f1fe021958942d580e"
+    },
+    {
+      "id": "observation-12",
+      "tool": "DescribeResource",
+      "arguments": {
+        "resource_type": "pod",
+        "name": "adservice-d6c9fcc6b-d4nlb",
+        "namespace": "boutique"
+      },
+      "availability": "returned",
+      "text": "Name:             adservice-d6c9fcc6b-d4nlb\nNamespace:        boutique\nPriority:         0\nService Account:  adservice\nNode:             worker-02/192.168.0.53\nStart Time:       Fri, 21 Nov 2025 19:49:19 +0800\nLabels:           app=adservice\n                  pod-template-hash=d6c9fcc6b\nAnnotations:      <none>\nStatus:           Running\nIP:               172.20.2.163\nIPs:\n  IP:           172.20.2.163\nControlled By:  ReplicaSet/adservice-d6c9fcc6b\nContainers:\n  server:\n    Container ID:   containerd://ba3c8e4a77bc83a544e2c83c231d548d3d19f10e73fa1bfbe9c507dc660ef004\n    Image:          us-central1-docker.pkg.dev/google-samples/microservices-demo/adservice:v0.10.3\n    Image ID:       us-central1-docker.pkg.dev/google-samples/microservices-demo/adservice@sha256:ff1a059bb8f1226b77b42a9102344cfc4b669a04696eb44aeed3db8ae2b04e9e\n    Port:           9555/TCP\n    Host Port:      0/TCP\n    State:          Running\n      Started:      Fri, 21 Nov 2025 19:50:19 +0800\n    Last State:     Terminated\n      Reason:       Error\n      Exit Code:    143\n      Started:      Fri, 21 Nov 2025 19:49:49 +0800\n      Finished:     Fri, 21 Nov 2025 19:50:19 +0800\n    Ready:          True\n    Restart Count:  2\n    Limits:\n      cpu:     300m\n      memory:  300Mi\n    Requests:\n      cpu:      200m\n      memory:   180Mi\n    Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3\n    Readiness:  grpc <pod>:9555  delay=5s timeout=1s period=10s #success=1 #failure=3\n    Environment:\n      PORT:  9555\n    Mounts:\n      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-rbzfn (ro)\nConditions:\n  Type                        Status\n  PodReadyToStartContainers   True \n  Initialized                 True \n  Ready                       True \n  ContainersReady             True \n  PodScheduled                True \nVolumes:\n  kube-api-access-rbzfn:\n    Type:                    Projected (a volume that contains injected data from multiple sources)\n    TokenExpirationSeconds:  3607\n    ConfigMapName:           kube-root-ca.crt\n    ConfigMapOptional:       <nil>\n    DownwardAPI:             true\nQoS Class:                   Burstable\nNode-Selectors:              <none>\nTolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s\n                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s\nEvents:\n  Type     Reason     Age               From               Message\n  ----     ------     ----              ----               -------\n  Normal   Scheduled  91s               default-scheduler  Successfully assigned boutique/adservice-d6c9fcc6b-d4nlb to worker-02\n  Normal   Pulled     1s (x4 over 91s)  kubelet            Container image \"us-central1-docker.pkg.dev/google-samples/microservices-demo/adservice:v0.10.3\" already present on machine\n  Normal   Created    1s (x4 over 91s)  kubelet            Created container server\n  Normal   Started    1s (x4 over 91s)  kubelet            Started container server\n  Warning  Unhealthy  1s (x9 over 81s)  kubelet            Liveness probe failed: Get \"http://172.20.2.163:9555/\": net/http: HTTP/1.x transport connection broken: malformed HTTP status code \"\\x00\\x00\\x00\\x04\\b\\x00\\x00\\x00\\x00\\x00\\x00\\x0f\\x00\\x01\\x00\\x00+\\a\\x00\\x00\\x00\\x00\\x00\\x7f\\xff\\xff\\xff\\x00\\x00\\x00\\x01Unexpected\"\n  Normal   Killing    1s (x3 over 61s)  kubelet            Container server failed liveness probe, will be restarted\n",
+      "truncated": false,
+      "sha256": "ba6935b3c9db5c6135aafabcf8db424d496f24c4f99e54eb44f5e83677674a66"
+    },
+    {
+      "id": "observation-13",
+      "tool": "GetResources",
+      "arguments": {
+        "resource_type": "deployments",
+        "namespace": "boutique",
+        "name": "adservice",
+        "show_labels": false,
+        "output_wide": false,
+        "label_selector": null
+      },
+      "availability": "returned",
+      "text": "NAME        READY   UP-TO-DATE   AVAILABLE   AGE\nadservice   0/1     1            0           96s\n",
+      "truncated": false,
+      "sha256": "cd31208b1a33ba160736e6b32a22f8d8268ffbf245ed1af7a8d88ba26c09a308"
+    },
+    {
+      "id": "observation-14",
+      "tool": "GetRecentLogs",
+      "arguments": {
+        "namespace": "boutique",
+        "service_name": "adservice"
+      },
+      "availability": "returned",
+      "text": "[\"From adservice logs:\", \"io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /\", \"at io.netty.handler.codec.http2.Http2Exception.connectionError(Http2Exception.java:107)\", \"at io.netty.handler.codec.http2.Http2ConnectionHandler$PrefaceDecoder.readClientPrefaceString(Http2ConnectionHandler.java:315)\", \"at io.netty.handler.codec.http2.Http2ConnectionHandler$PrefaceDecoder.decode(Http2ConnectionHandler.java:245)\", \"at io.netty.handler.codec.http2.Http2ConnectionHandler.decode(Http2ConnectionHandler.java:451)\", \"at io.netty.handler.codec.ByteToMessageDecoder.decodeRemovalReentryProtection(ByteToMessageDecoder.java:530)\", \"at io.netty.handler.codec.ByteToMessageDecoder.callDecode(ByteToMessageDecoder.java:469)\", \"at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:290)\", \"at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)\", \"at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)\", \"at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)\", \"at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1407)\", \"at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:440)\", \"at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)\", \"at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:918)\", \"at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:166)\", \"at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)\", \"at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)\", \"at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)\", \"at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)\", \"at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:994)\", \"at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)\", \"at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)\", \"at java.base/java.lang.Thread.run(Unknown Source)\", \"Nov 21, 2025 11:51:09 AM io.grpc.netty.NettyServerTransport notifyTerminated\", \"INFO: Transport failed\", \"io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /\", \"at io.netty.handler.codec.http2.Http2Exception.connectionError(Http2Exception.java:107)\", \"at io.netty.handler.codec.http2.Http2ConnectionHandler$PrefaceDecoder.readClientPrefaceString(Http2ConnectionHandler.java:315)\", \"at io.netty.handler.codec.http2.Http2ConnectionHandler$PrefaceDecoder.decode(Http2ConnectionHandler.java:245)\", \"at io.netty.handler.codec.http2.Http2ConnectionHandler.decode(Http2ConnectionHandler.java:451)\", \"at io.netty.handler.codec.ByteToMessageDecoder.decodeRemovalReentryProtection(ByteToMessageDecoder.java:530)\", \"at io.netty.handler.codec.ByteToMessageDecoder.callDecode(ByteToMessageDecoder.java:469)\", \"at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:290)\", \"at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)\", \"at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)\", \"at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)\", \"at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1407)\", \"at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:440)\", \"at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)\", \"at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:918)\", \"at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:166)\", \"at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)\", \"at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)\", \"at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)\", \"at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)\", \"at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:994)\", \"at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)\", \"at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)\", \"at java.base/java.lang.Thread.run(Unknown Source)\"]",
+      "truncated": false,
+      "sha256": "bd091d579d6f14c061838938a2ffe2946746af66cf16d3e851bc43646c4479c7"
+    },
+    {
+      "id": "observation-15",
+      "tool": "GetErrorLogs",
+      "arguments": {
+        "namespace": "boutique",
+        "service_name": "adservice"
+      },
+      "availability": "returned",
+      "text": "{\n  \"total_log_count\": 116,\n  \"total_errors\": 8,\n  \"total_error_ratio\": 0.069,\n  \"patterns\": [\n    {\n      \"count\": 4,\n      \"ratio\": 0.0345,\n      \"sample\": \"io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /\"\n    },\n    {\n      \"count\": 4,\n      \"ratio\": 0.0345,\n      \"sample\": \"at io.netty.handler.codec.http2.Http2Exception.connectionError(Http2Exception.java:107)\"\n    }\n  ]\n}",
+      "truncated": false,
+      "sha256": "96ad86c05ab077795beab6fc45f33b1e26206f36551391194a0363532ee78003"
+    },
+    {
+      "id": "observation-16",
+      "tool": "DescribeResource",
+      "arguments": {
+        "resource_type": "pod",
+        "name": "adservice-d6c9fcc6b-d4nlb",
+        "namespace": "boutique"
+      },
+      "availability": "returned",
+      "text": "Name:             adservice-d6c9fcc6b-d4nlb\nNamespace:        boutique\nPriority:         0\nService Account:  adservice\nNode:             worker-02/192.168.0.53\nStart Time:       Fri, 21 Nov 2025 19:49:19 +0800\nLabels:           app=adservice\n                  pod-template-hash=d6c9fcc6b\nAnnotations:      <none>\nStatus:           Running\nIP:               172.20.2.163\nIPs:\n  IP:           172.20.2.163\nControlled By:  ReplicaSet/adservice-d6c9fcc6b\nContainers:\n  server:\n    Container ID:   containerd://ba3c8e4a77bc83a544e2c83c231d548d3d19f10e73fa1bfbe9c507dc660ef004\n    Image:          us-central1-docker.pkg.dev/google-samples/microservices-demo/adservice:v0.10.3\n    Image ID:       us-central1-docker.pkg.dev/google-samples/microservices-demo/adservice@sha256:ff1a059bb8f1226b77b42a9102344cfc4b669a04696eb44aeed3db8ae2b04e9e\n    Port:           9555/TCP\n    Host Port:      0/TCP\n    State:          Running\n      Started:      Fri, 21 Nov 2025 19:50:19 +0800\n    Last State:     Terminated\n      Reason:       Error\n      Exit Code:    143\n      Started:      Fri, 21 Nov 2025 19:49:49 +0800\n      Finished:     Fri, 21 Nov 2025 19:50:19 +0800\n    Ready:          True\n    Restart Count:  2\n    Limits:\n      cpu:     300m\n      memory:  300Mi\n    Requests:\n      cpu:      200m\n      memory:   180Mi\n    Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3\n    Readiness:  grpc <pod>:9555  delay=5s timeout=1s period=10s #success=1 #failure=3\n    Environment:\n      PORT:  9555\n    Mounts:\n      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-rbzfn (ro)\nConditions:\n  Type                        Status\n  PodReadyToStartContainers   True \n  Initialized                 True \n  Ready                       True \n  ContainersReady             True \n  PodScheduled                True \nVolumes:\n  kube-api-access-rbzfn:\n    Type:                    Projected (a volume that contains injected data from multiple sources)\n    TokenExpirationSeconds:  3607\n    ConfigMapName:           kube-root-ca.crt\n    ConfigMapOptional:       <nil>\n    DownwardAPI:             true\nQoS Class:                   Burstable\nNode-Selectors:              <none>\nTolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s\n                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s\nEvents:\n  Type     Reason     Age               From               Message\n  ----     ------     ----              ----               -------\n  Normal   Scheduled  91s               default-scheduler  Successfully assigned boutique/adservice-d6c9fcc6b-d4nlb to worker-02\n  Normal   Pulled     1s (x4 over 91s)  kubelet            Container image \"us-central1-docker.pkg.dev/google-samples/microservices-demo/adservice:v0.10.3\" already present on machine\n  Normal   Created    1s (x4 over 91s)  kubelet            Created container server\n  Normal   Started    1s (x4 over 91s)  kubelet            Started container server\n  Warning  Unhealthy  1s (x9 over 81s)  kubelet            Liveness probe failed: Get \"http://172.20.2.163:9555/\": net/http: HTTP/1.x transport connection broken: malformed HTTP status code \"\\x00\\x00\\x00\\x04\\b\\x00\\x00\\x00\\x00\\x00\\x00\\x0f\\x00\\x01\\x00\\x00+\\a\\x00\\x00\\x00\\x00\\x00\\x7f\\xff\\xff\\xff\\x00\\x00\\x00\\x01Unexpected\"\n  Normal   Killing    1s (x3 over 61s)  kubelet            Container server failed liveness probe, will be restarted\n",
+      "truncated": false,
+      "sha256": "ba6935b3c9db5c6135aafabcf8db424d496f24c4f99e54eb44f5e83677674a66"
+    },
+    {
+      "id": "observation-17",
+      "tool": "GetAppYAML",
+      "arguments": {
+        "app_name": "adservice"
+      },
+      "availability": "returned",
+      "text": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: adservice\n  namespace: boutique \n  labels:\n    app: adservice\nspec:\n  selector:\n    matchLabels:\n      app: adservice\n  template:\n    metadata:\n      labels:\n        app: adservice\n    spec:\n      serviceAccountName: adservice\n      terminationGracePeriodSeconds: 5\n      securityContext:\n        fsGroup: 1000\n        runAsGroup: 1000\n        runAsNonRoot: true\n        runAsUser: 1000\n      containers:\n      - name: server\n        securityContext:\n          allowPrivilegeEscalation: false\n          capabilities:\n            drop:\n              - ALL\n          privileged: false\n          readOnlyRootFilesystem: true\n        image: us-central1-docker.pkg.dev/google-samples/microservices-demo/adservice:v0.10.3\n        ports:\n        - containerPort: 9555\n        env:\n        - name: PORT\n          value: \"9555\"\n        resources:\n          requests:\n            cpu: 200m\n            memory: 180Mi\n          limits:\n            cpu: 300m\n            memory: 300Mi\n        readinessProbe:\n          initialDelaySeconds: 5\n          grpc:\n            port: 9555\n        livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555\n---\napiVersion: v1\nkind: Service\nmetadata:\n  name: adservice\n  namespace: boutique\n  labels:\n    app: adservice\nspec:\n  type: ClusterIP\n  selector:\n    app: adservice\n  ports:\n  - name: grpc\n    port: 9555\n    targetPort: 9555\n\n---\napiVersion: v1\nkind: ServiceAccount\nmetadata:\n  name: adservice\n  namespace: boutique",
+      "truncated": false,
+      "sha256": "f381b00ac5585a8b0536c33467e3962ef3fb72ce6ed562f1fe021958942d580e"
+    }
+  ],
+  "coordinator_turns": [
+    {
+      "instruction": "You are an incident coordinator receiving specialist handoffs.\nUse supplied summaries and available sources to investigate; specialist claims are not proof.\nIf raw evidence is needed, return {\"retrieve_source_ids\":[\"ID\", ...]} (at most three IDs).\nOnly one retrieval round is available. Otherwise return a final JSON object with\n\"status\":\"diagnosed\" or \"uncertain\", \"fault_object\":\"app/NAME or node/NAME or namespace/NAME\",\n\"root_cause\":\"exact allowed label\", \"evidence\":[{\"observation_id\":\"ID\",\"quote\":\"literal raw substring\"}],\n\"reasoning\":\"causal explanation\", \"adservice_liveness_protocol\":\"httpGet|grpc|tcpSocket|unknown\".\nDo not invent raw quotations from summaries. If evidence is insufficient, return uncertain.\nThe source catalog lists retrievable original observations. Cite only raw records actually inspected.",
+      "inputs": {
+        "configuration_summary": {
+          "service": "adservice",
+          "liveness_protocol": "httpGet",
+          "readiness_protocol": "grpc",
+          "summary": "adservice's readinessProbe uses grpc on port 9555, but its livenessProbe uses httpGet on path / port 9555. The container is a gRPC service (Service port named grpc), so an HTTP GET liveness probe against a gRPC-only server will fail, causing repeated container restarts (abnormal restarts).",
+          "source_ids": [
+            "observation-17"
+          ]
+        },
+        "telemetry_summary": {
+          "summary": "Observed: adservice pod adservice-d6c9fcc6b-d4nlb has restarted 2 times within ~90s of creation (all other boutique pods show 0 restarts). Pod describe shows liveness probe configured as http-get on port 9555 failing repeatedly (9 Unhealthy events, 3 Killing events); container last terminated with Exit Code 143 (SIGTERM after probe failure). Readiness probe uses grpc on the same port 9555 and the container is currently Ready. adservice logs show repeated io.netty Http2Exception 'Unexpected HTTP/1.x request: GET /' \u2014 the server speaks gRPC/HTTP2 on 9555, so the HTTP/1.1 liveness probe receives a malformed response. Error stats: 8 errors of 116 log lines (~6.9%), all matching the HTTP/2 preface exception. No active metric alerts. Hypothesis (not yet confirmed): liveness probe protocol mismatch (liveness_probe_incorrect_protocol) \u2014 probe should be grpc, not http-get. Uncertainty: whether the probe config was recently changed; YAML config not yet inspected.",
+          "source_ids": [
+            "observation-9",
+            "observation-10",
+            "observation-14",
+            "observation-15",
+            "observation-16"
+          ]
+        },
+        "source_catalog": {
+          "sources": [
+            {
+              "id": "observation-9",
+              "tool": "GetResources",
+              "arguments": {
+                "resource_type": "pods",
+                "namespace": "boutique",
+                "name": null,
+                "show_labels": false,
+                "output_wide": false,
+                "label_selector": null
+              }
+            },
+            {
+              "id": "observation-10",
+              "tool": "GetAlerts",
+              "arguments": {}
+            },
+            {
+              "id": "observation-11",
+              "tool": "GetAppYAML",
+              "arguments": {
+                "app_name": "adservice"
+              }
+            },
+            {
+              "id": "observation-12",
+              "tool": "DescribeResource",
+              "arguments": {
+                "resource_type": "pod",
+                "name": "adservice-d6c9fcc6b-d4nlb",
+                "namespace": "boutique"
+              }
+            },
+            {
+              "id": "observation-13",
+              "tool": "GetResources",
+              "arguments": {
+                "resource_type": "deployments",
+                "namespace": "boutique",
+                "name": "adservice",
+                "show_labels": false,
+                "output_wide": false,
+                "label_selector": null
+              }
+            },
+            {
+              "id": "observation-14",
+              "tool": "GetRecentLogs",
+              "arguments": {
+                "namespace": "boutique",
+                "service_name": "adservice"
+              }
+            },
+            {
+              "id": "observation-15",
+              "tool": "GetErrorLogs",
+              "arguments": {
+                "namespace": "boutique",
+                "service_name": "adservice"
+              }
+            },
+            {
+              "id": "observation-16",
+              "tool": "DescribeResource",
+              "arguments": {
+                "resource_type": "pod",
+                "name": "adservice-d6c9fcc6b-d4nlb",
+                "namespace": "boutique"
+              }
+            },
+            {
+              "id": "observation-17",
+              "tool": "GetAppYAML",
+              "arguments": {
+                "app_name": "adservice"
+              }
+            }
+          ]
+        }
+      },
+      "output": {
+        "retrieve_source_ids": [
+          "observation-17",
+          "observation-16",
+          "observation-14"
+        ]
+      }
+    },
+    {
+      "instruction": "You are an incident coordinator receiving specialist handoffs.\nUse supplied summaries and available sources to investigate; specialist claims are not proof.\nIf raw evidence is needed, return {\"retrieve_source_ids\":[\"ID\", ...]} (at most three IDs).\nOnly one retrieval round is available. Otherwise return a final JSON object with\n\"status\":\"diagnosed\" or \"uncertain\", \"fault_object\":\"app/NAME or node/NAME or namespace/NAME\",\n\"root_cause\":\"exact allowed label\", \"evidence\":[{\"observation_id\":\"ID\",\"quote\":\"literal raw substring\"}],\n\"reasoning\":\"causal explanation\", \"adservice_liveness_protocol\":\"httpGet|grpc|tcpSocket|unknown\".\nDo not invent raw quotations from summaries. If evidence is insufficient, return uncertain.\nThe source catalog lists retrievable original observations. Cite only raw records actually inspected.\nRetrieval exhausted. Return final diagnosis or uncertain; do not request more.",
+      "inputs": {
+        "configuration_summary": {
+          "service": "adservice",
+          "liveness_protocol": "httpGet",
+          "readiness_protocol": "grpc",
+          "summary": "adservice's readinessProbe uses grpc on port 9555, but its livenessProbe uses httpGet on path / port 9555. The container is a gRPC service (Service port named grpc), so an HTTP GET liveness probe against a gRPC-only server will fail, causing repeated container restarts (abnormal restarts).",
+          "source_ids": [
+            "observation-17"
+          ]
+        },
+        "telemetry_summary": {
+          "summary": "Observed: adservice pod adservice-d6c9fcc6b-d4nlb has restarted 2 times within ~90s of creation (all other boutique pods show 0 restarts). Pod describe shows liveness probe configured as http-get on port 9555 failing repeatedly (9 Unhealthy events, 3 Killing events); container last terminated with Exit Code 143 (SIGTERM after probe failure). Readiness probe uses grpc on the same port 9555 and the container is currently Ready. adservice logs show repeated io.netty Http2Exception 'Unexpected HTTP/1.x request: GET /' \u2014 the server speaks gRPC/HTTP2 on 9555, so the HTTP/1.1 liveness probe receives a malformed response. Error stats: 8 errors of 116 log lines (~6.9%), all matching the HTTP/2 preface exception. No active metric alerts. Hypothesis (not yet confirmed): liveness probe protocol mismatch (liveness_probe_incorrect_protocol) \u2014 probe should be grpc, not http-get. Uncertainty: whether the probe config was recently changed; YAML config not yet inspected.",
+          "source_ids": [
+            "observation-9",
+            "observation-10",
+            "observation-14",
+            "observation-15",
+            "observation-16"
+          ]
+        },
+        "source_catalog": {
+          "sources": [
+            {
+              "id": "observation-9",
+              "tool": "GetResources",
+              "arguments": {
+                "resource_type": "pods",
+                "namespace": "boutique",
+                "name": null,
+                "show_labels": false,
+                "output_wide": false,
+                "label_selector": null
+              }
+            },
+            {
+              "id": "observation-10",
+              "tool": "GetAlerts",
+              "arguments": {}
+            },
+            {
+              "id": "observation-11",
+              "tool": "GetAppYAML",
+              "arguments": {
+                "app_name": "adservice"
+              }
+            },
+            {
+              "id": "observation-12",
+              "tool": "DescribeResource",
+              "arguments": {
+                "resource_type": "pod",
+                "name": "adservice-d6c9fcc6b-d4nlb",
+                "namespace": "boutique"
+              }
+            },
+            {
+              "id": "observation-13",
+              "tool": "GetResources",
+              "arguments": {
+                "resource_type": "deployments",
+                "namespace": "boutique",
+                "name": "adservice",
+                "show_labels": false,
+                "output_wide": false,
+                "label_selector": null
+              }
+            },
+            {
+              "id": "observation-14",
+              "tool": "GetRecentLogs",
+              "arguments": {
+                "namespace": "boutique",
+                "service_name": "adservice"
+              }
+            },
+            {
+              "id": "observation-15",
+              "tool": "GetErrorLogs",
+              "arguments": {
+                "namespace": "boutique",
+                "service_name": "adservice"
+              }
+            },
+            {
+              "id": "observation-16",
+              "tool": "DescribeResource",
+              "arguments": {
+                "resource_type": "pod",
+                "name": "adservice-d6c9fcc6b-d4nlb",
+                "namespace": "boutique"
+              }
+            },
+            {
+              "id": "observation-17",
+              "tool": "GetAppYAML",
+              "arguments": {
+                "app_name": "adservice"
+              }
+            }
+          ]
+        },
+        "coordinator_decision": {
+          "retrieve_source_ids": [
+            "observation-17",
+            "observation-16",
+            "observation-14"
+          ]
+        },
+        "retrieved_sources": {
+          "observations": [
+            {
+              "id": "observation-17",
+              "tool": "GetAppYAML",
+              "arguments": {
+                "app_name": "adservice"
+              },
+              "availability": "returned",
+              "text": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: adservice\n  namespace: boutique \n  labels:\n    app: adservice\nspec:\n  selector:\n    matchLabels:\n      app: adservice\n  template:\n    metadata:\n      labels:\n        app: adservice\n    spec:\n      serviceAccountName: adservice\n      terminationGracePeriodSeconds: 5\n      securityContext:\n        fsGroup: 1000\n        runAsGroup: 1000\n        runAsNonRoot: true\n        runAsUser: 1000\n      containers:\n      - name: server\n        securityContext:\n          allowPrivilegeEscalation: false\n          capabilities:\n            drop:\n              - ALL\n          privileged: false\n          readOnlyRootFilesystem: true\n        image: us-central1-docker.pkg.dev/google-samples/microservices-demo/adservice:v0.10.3\n        ports:\n        - containerPort: 9555\n        env:\n        - name: PORT\n          value: \"9555\"\n        resources:\n          requests:\n            cpu: 200m\n            memory: 180Mi\n          limits:\n            cpu: 300m\n            memory: 300Mi\n        readinessProbe:\n          initialDelaySeconds: 5\n          grpc:\n            port: 9555\n        livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555\n---\napiVersion: v1\nkind: Service\nmetadata:\n  name: adservice\n  namespace: boutique\n  labels:\n    app: adservice\nspec:\n  type: ClusterIP\n  selector:\n    app: adservice\n  ports:\n  - name: grpc\n    port: 9555\n    targetPort: 9555\n\n---\napiVersion: v1\nkind: ServiceAccount\nmetadata:\n  name: adservice\n  namespace: boutique",
+              "truncated": false,
+              "sha256": "f381b00ac5585a8b0536c33467e3962ef3fb72ce6ed562f1fe021958942d580e"
+            },
+            {
+              "id": "observation-16",
+              "tool": "DescribeResource",
+              "arguments": {
+                "resource_type": "pod",
+                "name": "adservice-d6c9fcc6b-d4nlb",
+                "namespace": "boutique"
+              },
+              "availability": "returned",
+              "text": "Name:             adservice-d6c9fcc6b-d4nlb\nNamespace:        boutique\nPriority:         0\nService Account:  adservice\nNode:             worker-02/192.168.0.53\nStart Time:       Fri, 21 Nov 2025 19:49:19 +0800\nLabels:           app=adservice\n                  pod-template-hash=d6c9fcc6b\nAnnotations:      <none>\nStatus:           Running\nIP:               172.20.2.163\nIPs:\n  IP:           172.20.2.163\nControlled By:  ReplicaSet/adservice-d6c9fcc6b\nContainers:\n  server:\n    Container ID:   containerd://ba3c8e4a77bc83a544e2c83c231d548d3d19f10e73fa1bfbe9c507dc660ef004\n    Image:          us-central1-docker.pkg.dev/google-samples/microservices-demo/adservice:v0.10.3\n    Image ID:       us-central1-docker.pkg.dev/google-samples/microservices-demo/adservice@sha256:ff1a059bb8f1226b77b42a9102344cfc4b669a04696eb44aeed3db8ae2b04e9e\n    Port:           9555/TCP\n    Host Port:      0/TCP\n    State:          Running\n      Started:      Fri, 21 Nov 2025 19:50:19 +0800\n    Last State:     Terminated\n      Reason:       Error\n      Exit Code:    143\n      Started:      Fri, 21 Nov 2025 19:49:49 +0800\n      Finished:     Fri, 21 Nov 2025 19:50:19 +0800\n    Ready:          True\n    Restart Count:  2\n    Limits:\n      cpu:     300m\n      memory:  300Mi\n    Requests:\n      cpu:      200m\n      memory:   180Mi\n    Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3\n    Readiness:  grpc <pod>:9555  delay=5s timeout=1s period=10s #success=1 #failure=3\n    Environment:\n      PORT:  9555\n    Mounts:\n      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-rbzfn (ro)\nConditions:\n  Type                        Status\n  PodReadyToStartContainers   True \n  Initialized                 True \n  Ready                       True \n  ContainersReady             True \n  PodScheduled                True \nVolumes:\n  kube-api-access-rbzfn:\n    Type:                    Projected (a volume that contains injected data from multiple sources)\n    TokenExpirationSeconds:  3607\n    ConfigMapName:           kube-root-ca.crt\n    ConfigMapOptional:       <nil>\n    DownwardAPI:             true\nQoS Class:                   Burstable\nNode-Selectors:              <none>\nTolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s\n                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s\nEvents:\n  Type     Reason     Age               From               Message\n  ----     ------     ----              ----               -------\n  Normal   Scheduled  91s               default-scheduler  Successfully assigned boutique/adservice-d6c9fcc6b-d4nlb to worker-02\n  Normal   Pulled     1s (x4 over 91s)  kubelet            Container image \"us-central1-docker.pkg.dev/google-samples/microservices-demo/adservice:v0.10.3\" already present on machine\n  Normal   Created    1s (x4 over 91s)  kubelet            Created container server\n  Normal   Started    1s (x4 over 91s)  kubelet            Started container server\n  Warning  Unhealthy  1s (x9 over 81s)  kubelet            Liveness probe failed: Get \"http://172.20.2.163:9555/\": net/http: HTTP/1.x transport connection broken: malformed HTTP status code \"\\x00\\x00\\x00\\x04\\b\\x00\\x00\\x00\\x00\\x00\\x00\\x0f\\x00\\x01\\x00\\x00+\\a\\x00\\x00\\x00\\x00\\x00\\x7f\\xff\\xff\\xff\\x00\\x00\\x00\\x01Unexpected\"\n  Normal   Killing    1s (x3 over 61s)  kubelet            Container server failed liveness probe, will be restarted\n",
+              "truncated": false,
+              "sha256": "ba6935b3c9db5c6135aafabcf8db424d496f24c4f99e54eb44f5e83677674a66"
+            },
+            {
+              "id": "observation-14",
+              "tool": "GetRecentLogs",
+              "arguments": {
+                "namespace": "boutique",
+                "service_name": "adservice"
+              },
+              "availability": "returned",
+              "text": "[\"From adservice logs:\", \"io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /\", \"at io.netty.handler.codec.http2.Http2Exception.connectionError(Http2Exception.java:107)\", \"at io.netty.handler.codec.http2.Http2ConnectionHandler$PrefaceDecoder.readClientPrefaceString(Http2ConnectionHandler.java:315)\", \"at io.netty.handler.codec.http2.Http2ConnectionHandler$PrefaceDecoder.decode(Http2ConnectionHandler.java:245)\", \"at io.netty.handler.codec.http2.Http2ConnectionHandler.decode(Http2ConnectionHandler.java:451)\", \"at io.netty.handler.codec.ByteToMessageDecoder.decodeRemovalReentryProtection(ByteToMessageDecoder.java:530)\", \"at io.netty.handler.codec.ByteToMessageDecoder.callDecode(ByteToMessageDecoder.java:469)\", \"at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:290)\", \"at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)\", \"at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)\", \"at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)\", \"at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1407)\", \"at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:440)\", \"at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)\", \"at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:918)\", \"at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:166)\", \"at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)\", \"at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)\", \"at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)\", \"at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)\", \"at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:994)\", \"at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)\", \"at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)\", \"at java.base/java.lang.Thread.run(Unknown Source)\", \"Nov 21, 2025 11:51:09 AM io.grpc.netty.NettyServerTransport notifyTerminated\", \"INFO: Transport failed\", \"io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /\", \"at io.netty.handler.codec.http2.Http2Exception.connectionError(Http2Exception.java:107)\", \"at io.netty.handler.codec.http2.Http2ConnectionHandler$PrefaceDecoder.readClientPrefaceString(Http2ConnectionHandler.java:315)\", \"at io.netty.handler.codec.http2.Http2ConnectionHandler$PrefaceDecoder.decode(Http2ConnectionHandler.java:245)\", \"at io.netty.handler.codec.http2.Http2ConnectionHandler.decode(Http2ConnectionHandler.java:451)\", \"at io.netty.handler.codec.ByteToMessageDecoder.decodeRemovalReentryProtection(ByteToMessageDecoder.java:530)\", \"at io.netty.handler.codec.ByteToMessageDecoder.callDecode(ByteToMessageDecoder.java:469)\", \"at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:290)\", \"at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)\", \"at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)\", \"at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)\", \"at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1407)\", \"at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:440)\", \"at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)\", \"at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:918)\", \"at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:166)\", \"at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)\", \"at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)\", \"at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)\", \"at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)\", \"at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:994)\", \"at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)\", \"at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)\", \"at java.base/java.lang.Thread.run(Unknown Source)\"]",
+              "truncated": false,
+              "sha256": "bd091d579d6f14c061838938a2ffe2946746af66cf16d3e851bc43646c4479c7"
+            }
+          ]
+        }
+      },
+      "output": {
+        "status": "diagnosed",
+        "fault_object": "app/adservice",
+        "root_cause": "liveness_probe_incorrect_protocol",
+        "evidence": [
+          {
+            "observation_id": "observation-17",
+            "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+          },
+          {
+            "observation_id": "observation-16",
+            "quote": "Liveness probe failed: Get \"http://172.20.2.163:9555/\": net/http: HTTP/1.x transport connection broken: malformed HTTP status code"
+          },
+          {
+            "observation_id": "observation-14",
+            "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+          }
+        ],
+        "reasoning": "adservice is a gRPC (HTTP/2) server on port 9555, but its livenessProbe is configured as httpGet on that port. The HTTP/1.1 probe request is rejected by the gRPC server (Http2Exception 'Unexpected HTTP/1.x request'), the kubelet marks the probe failed 3 times, and kills the container (Exit Code 143, Restart Count 2, Killing events). The readiness probe correctly uses grpc on 9555 and the container is Ready, confirming the server itself is healthy \u2014 only the liveness probe protocol is wrong. Fix: change livenessProbe to grpc on port 9555.",
+        "adservice_liveness_protocol": "httpGet"
+      }
+    }
+  ]
+}

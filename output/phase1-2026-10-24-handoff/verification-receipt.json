@@ -1,0 +1,28 @@
+{
+  "clean_extraction": true,
+  "handoff_usage": {
+    "physical_calls": 54,
+    "physical_tokens": 241475,
+    "billed_usd": "0.2136543999999999917",
+    "assigned_arms": 21
+  },
+  "review_seals": "Original review, 15 input packets, and separate paired-review seal verified.",
+  "handoff_tests": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.742s\n\nOK",
+  "formal_files_byte_identical": 517,
+  "model_calls": 0,
+  "submission": false,
+  "formal": {
+    "hashes_verified": 1071,
+    "native_answers_rescored": 36,
+    "assigned_slots_retained": 54,
+    "network_disabled": true,
+    "model_calls": 0,
+    "saved_calls": 92,
+    "billed_usd": "0.4022509499999999903",
+    "review_hash_preserved": "22fbc8d60e63a7399e3e993f83c99f9c73369478b58d962b6dab25f1d6c0ce30",
+    "limitations": "Saved judgments verified, not independently re-reviewed; no new inference."
+  },
+  "formal_scoring_records": 36,
+  "pdf_pages": 3,
+  "pdf_visual_review": "All three rendered final pages inspected; no clipping, overlap or missing glyphs."
+}

@@ -1,0 +1,12 @@
+{
+  "sealed_at_utc": "2026-10-24T21:57:41.020985+00:00",
+  "review_type": "independent AI, not human",
+  "mapping_disclosed_before_seal": false,
+  "sha256": {
+    "independent-review.json": "ee8e25252bd2606394ab937da23db7d6aaf2bd5f966662147019a6769da5bd66",
+    "independent-review.txt": "74037951fe7a900391993ad2c331f00b9982446da518b3e40a0564afaacf7580",
+    "packets/MANIFEST.json": "5e711ea3335cd1b19fd79eee0f1426e946ec02f0cf3d9ec1732aad3255db2c4e"
+  },
+  "packet_manifest_verified": true,
+  "packet_count": 15
+}

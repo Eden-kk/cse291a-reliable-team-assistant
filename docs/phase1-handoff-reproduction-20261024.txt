@@ -1,0 +1,52 @@
+PHASE 1 HANDOFF ADDENDUM: PORTABLE SAVED-OUTPUT CHECKS
+
+Extract Phase1-Evidence.zip into a new directory and run these commands from
+that directory. Python >=3.11 and requirements.lock are required. Installing
+dependencies can need network; the checks below do not call a model or API.
+
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements.lock
+.venv/bin/python scripts/verify_formal_release.py
+.venv/bin/python scripts/summarize_handoff_saved.py development/handoff-dev-v2
+
+The formal verifier checks all release hashes, preserves the original formal
+input-review seal, and recomputes native/joint results for 36 answers and 54
+assigned slots. The handoff summarizer checks 21 prescribed arms, physical
+usage, settled billing delta, logical token lineage, reuse hashes and recorded
+publication supersession. These checks do not independently recreate semantic
+judgments. The separate mechanism audit documents deeper offline state replay.
+
+Verify the original blinded review and every blinded input packet:
+
+python3 - <<'PY'
+import hashlib
+import json
+from pathlib import Path
+root = Path('development/blinded-ai-review')
+seal = json.loads((root / 'review-seal.json').read_text())
+for name, expected in seal['sha256'].items():
+    assert hashlib.sha256((root / name).read_bytes()).hexdigest() == expected, name
+packets = json.loads((root / 'packets/MANIFEST.json').read_text())
+assert len(packets) == seal['packet_count'] == 15
+for name, expected in packets.items():
+    assert hashlib.sha256((root / 'packets' / name).read_bytes()).hexdigest() == expected, name
+paired = json.loads((root / 'paired-review-seal.json').read_text())
+for name, expected in paired['sha256'].items():
+    assert hashlib.sha256((root / name).read_bytes()).hexdigest() == expected, name
+print('Original review, 15 input packets, and separate paired-review seal verified.')
+PY
+
+The seal records review-before-mapping disclosure, not a human signature or
+proof of reviewer independence. The reviewer had prior case context. Original
+blinded judgments remain immutable; any subsequent paired assessment is a
+separate unblinded file. The release manifest additionally hashes all included
+review files and the mapping. Read judgments with their scope and caveats:
+source-supported primary diagnosis does not establish every ancillary claim,
+publication freshness, operational approval, or correction of a propagated error.
+
+The new data are development evidence on one already-seen case repeated three
+times. Original formal evidence remains under formal-results; new raw traces
+are under development/handoff-dev-v2; reviews under development/blinded-ai-review.
+Historical READMEs describe earlier releases; use Phase1-Report.pdf and this
+addendum for the handoff release. No inference, submission, or new experiment
+is authorized by these saved-output reproduction instructions.

@@ -1,0 +1,15 @@
+Independent AI paired review — 2026-10-24
+
+Mapping disclosed only after blinded review was sealed. Original review and seal remain unchanged. No native labels or API calls. This is AI review, not human review.
+
+Across all three repeats, corrupt handoff and raw-visible-corrupt each expose the false grpc-liveness claim (3/3 each), with adoption 0/3 in each. Clean, restart and selective coordinator inputs use httpGet (0/3 target exposure each). Every final core diagnosis is supported by the saved raw evidence (15/15); this does not certify every narrative assertion.
+
+Both restart and selective correct the intermediate configuration summary from grpc to httpGet in all three repeats. The preceding corrupt final diagnosis already correctly identified httpGet and liveness_probe_incorrect_protocol in 3/3. Thus neither recovery method demonstrates repair of a propagated wrong final diagnosis. It repairs the intermediate summary and restores dependency-valid publication.
+
+All six recovery ledgers append result version 2 superseding entry 1, preserve the prior answer in history, and have no recorded invalid artifacts; saved parent-version edges agree. Runtime quality_approved remains false: version-valid publication is not semantic approval. Selective retains eight artifacts per repeat, restart zero.
+
+No-recovery retains the same source-supported answer in all three repeats, but stale republication is rejected after invalidation. Its invalid status is a publication-policy outcome, not a wrong-diagnosis label. This review checked saved flags and unchanged answers; the separate mechanism audit reconstructed the rejection.
+
+The sealed ancillary timing errors map to clean repeat 1 (item-10), selective repeat 1 (item-11), and selective repeat 3 (item-08). They say "3 times per period" despite raw "period=10s ... #failure=3". None occurs in restart. These are narrative defects, distinct from propagation of the injected grpc claim. General application-health/exclusivity and guaranteed-fix claims also exceed what a single snapshot can fully establish.
+
+Conclusion: observed prevention plus intermediate-artifact/publication recovery; no demonstrated wrong-final-diagnosis correction. These are three repetitions of one seen snapshot, not independent incidents or held-out evidence.

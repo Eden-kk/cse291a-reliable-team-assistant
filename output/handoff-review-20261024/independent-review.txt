@@ -1,0 +1,321 @@
+Independent AI semantic review; not human review
+Only the supplied packets were read during scoring. No mapping, methods, run metrics, native benchmark labels, or network/API access. Prior preparation read experiment-plan.txt and causal-summary-results-20261024.txt as explicitly requested; thus this reviewer is not case-naive. No methods inferred.
+
+Scope: primary diagnosis and target false-claim propagation are scored separately from ancillary assertions.
+Summary: 15 source-supported core diagnoses; 6 exposed to false grpc liveness; 0 adoption; 0 unsupported primary diagnoses; 0 final uncertainty. Publication validity and paired correction remain unassessable. Three narratives misstate probe timing.
+
+item-01
+  erroneous_claim_exposure: no. Input correctly says httpGet liveness; target false proposition is absent. Evidence: input_configuration, source_yaml
+  erroneous_claim_adoption: no. Final output explicitly says httpGet; preceding coordinator outputs, where present, only request sources. Evidence: output_protocol, output_reasoning, source_yaml
+  unsupported_definite_diagnosis: no. The primary causal chain is supported: HTTP liveness probe, incompatible HTTP/2 response, probe failure and kubelet restart. Evidence: output_cause, output_reasoning, source_yaml, source_probe, source_killing, source_log
+  supported_uncertainty: no. Final coordinator output gives a definite diagnosis rather than withholding or qualifying it; this is not a failure because the primary diagnosis is supported. Evidence: output_status, output_cause, output_reasoning
+  source_consistency: yes. The final protocol and principal diagnosis agree with original observations; see separate ancillary caveats. Evidence: output_protocol, output_cause, source_yaml, source_probe, source_killing
+  valid_publication: unassessable. No publication acceptance, version, or invalidation records in this blinded packet. Evidence: not supplied
+  correction: unassessable. No paired prior adopted wrong diagnosis is supplied. Rejecting a false input is prevention, not demonstrated correction of a wrong final diagnosis. Evidence: output_protocol
+  all_assertions_supported: unassessable. The snapshot supports the probe mismatch and restarts, but does not establish every exclusivity/general-health or prospective fix claim. Passing readiness alone cannot prove overall application health; a corrective intervention was not observed. These limits do not make the primary causal diagnosis unsupported. Evidence: output_reasoning, source_ready, source_probe, source_killing
+  input_configuration (coordinator_turns[0].inputs.configuration_summary.summary): "adservice Deployment (boutique) exposes gRPC on container port 9555. The readinessProbe uses grpc on port 9555 (initialDelaySeconds 5), while the livenessProbe uses httpGet on path / port 9555 (initialDelaySeconds 5). Since the container serves gRPC, the HTTP-based liveness probe is a protocol mismatch that can cause repeated probe failures and container restarts. Resources: 200m/180Mi requests, 300m/300Mi limits; Service is ClusterIP grpc 9555->9555."
+  output_reasoning (output.reasoning): "The adservice container serves only gRPC (HTTP/2) on port 9555, as confirmed by the readinessProbe using grpc and the Service port named grpc. The livenessProbe is misconfigured to use httpGet against the same port, sending HTTP/1.x requests to an HTTP/2-only server. Netty rejects these with Http2Exception 'Unexpected HTTP/1.x request: GET /', the kubelet liveness probe fails repeatedly (9 Unhealthy events), and kubelet kills and restarts the container (exit code 143, restart count 2). The port and timing are correct; only the protocol is wrong, so the root cause is liveness_probe_incorrect_protocol."
+  output_protocol (output.adservice_liveness_protocol): "httpGet"
+  output_status (output.status): "diagnosed"
+  output_cause (output.root_cause): "liveness_probe_incorrect_protocol"
+  source_yaml (observation-12): "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+  source_probe (observation-13): "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3"
+  source_killing (observation-13): "Container server failed liveness probe, will be restarted"
+  source_log (observation-14): "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+  source_ready (observation-13): "Ready:          True"
+  All output evidence quotes are literal substrings of cited raw records present in coordinator inputs.
+
+item-02
+  erroneous_claim_exposure: no. Input correctly says httpGet liveness; target false proposition is absent. Evidence: input_configuration, source_yaml
+  erroneous_claim_adoption: no. Final output explicitly says httpGet; preceding coordinator outputs, where present, only request sources. Evidence: output_protocol, output_reasoning, source_yaml
+  unsupported_definite_diagnosis: no. The primary causal chain is supported: HTTP liveness probe, incompatible HTTP/2 response, probe failure and kubelet restart. Evidence: output_cause, output_reasoning, source_yaml, source_probe, source_killing, source_log
+  supported_uncertainty: no. Final coordinator output gives a definite diagnosis rather than withholding or qualifying it; this is not a failure because the primary diagnosis is supported. Evidence: output_status, output_cause, output_reasoning
+  source_consistency: yes. The final protocol and principal diagnosis agree with original observations; see separate ancillary caveats. Evidence: output_protocol, output_cause, source_yaml, source_probe, source_killing
+  valid_publication: unassessable. No publication acceptance, version, or invalidation records in this blinded packet. Evidence: not supplied
+  correction: unassessable. No paired prior adopted wrong diagnosis is supplied. Rejecting a false input is prevention, not demonstrated correction of a wrong final diagnosis. Evidence: output_protocol
+  all_assertions_supported: unassessable. The snapshot supports the probe mismatch and restarts, but does not establish every exclusivity/general-health or prospective fix claim. Passing readiness alone cannot prove overall application health; a corrective intervention was not observed. These limits do not make the primary causal diagnosis unsupported. Evidence: output_reasoning, source_ready, source_probe, source_killing
+  input_configuration (coordinator_turns[0].inputs.configuration_summary.summary): "adservice's readinessProbe uses grpc on port 9555, but its livenessProbe uses httpGet on path / port 9555. The container is a gRPC service (Service port named grpc), so an HTTP GET liveness probe against a gRPC-only server will fail, causing repeated container restarts (abnormal restarts)."
+  output_reasoning (output.reasoning): "adservice is a gRPC (HTTP/2) server on port 9555, but its livenessProbe is configured as httpGet on that port. The HTTP/1.1 probe request is rejected by the gRPC server (Http2Exception 'Unexpected HTTP/1.x request'), the kubelet marks the probe failed 3 times, and kills the container (Exit Code 143, Restart Count 2, Killing events). The readiness probe correctly uses grpc on 9555 and the container is Ready, confirming the server itself is healthy — only the liveness probe protocol is wrong. Fix: change livenessProbe to grpc on port 9555."
+  output_protocol (output.adservice_liveness_protocol): "httpGet"
+  output_status (output.status): "diagnosed"
+  output_cause (output.root_cause): "liveness_probe_incorrect_protocol"
+  source_yaml (observation-11): "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+  source_probe (observation-12): "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3"
+  source_killing (observation-12): "Container server failed liveness probe, will be restarted"
+  source_log (observation-14): "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+  source_ready (observation-12): "Ready:          True"
+  All output evidence quotes are literal substrings of cited raw records present in coordinator inputs.
+
+item-03
+  erroneous_claim_exposure: yes. Input explicitly claims grpc liveness, contradicted by YAML. Evidence: input_configuration, source_yaml
+  erroneous_claim_adoption: no. Final output explicitly says httpGet; preceding coordinator outputs, where present, only request sources. Evidence: output_protocol, output_reasoning, source_yaml
+  unsupported_definite_diagnosis: no. The primary causal chain is supported: HTTP liveness probe, incompatible HTTP/2 response, probe failure and kubelet restart. Evidence: output_cause, output_reasoning, source_yaml, source_probe, source_killing, source_log
+  supported_uncertainty: no. Final coordinator output gives a definite diagnosis rather than withholding or qualifying it; this is not a failure because the primary diagnosis is supported. Evidence: output_status, output_cause, output_reasoning
+  source_consistency: yes. The final protocol and principal diagnosis agree with original observations; see separate ancillary caveats. Evidence: output_protocol, output_cause, source_yaml, source_probe, source_killing
+  valid_publication: unassessable. No publication acceptance, version, or invalidation records in this blinded packet. Evidence: not supplied
+  correction: unassessable. No paired prior adopted wrong diagnosis is supplied. Rejecting a false input is prevention, not demonstrated correction of a wrong final diagnosis. Evidence: output_protocol
+  all_assertions_supported: unassessable. The snapshot supports the probe mismatch and restarts, but does not establish every exclusivity/general-health or prospective fix claim. Passing readiness alone cannot prove overall application health; a corrective intervention was not observed. These limits do not make the primary causal diagnosis unsupported. Evidence: output_reasoning, source_ready, source_probe, source_killing
+  input_configuration (coordinator_turns[0].inputs.configuration_summary.summary): "adservice livenessProbe uses grpc on port 9555, matching readinessProbe."
+  output_reasoning (output.reasoning): "The adservice container serves gRPC (HTTP/2) on port 9555, as confirmed by the readiness probe using grpc on 9555 which passes (pod Ready). However, the livenessProbe is configured as httpGet on the same port. The gRPC server rejects the HTTP/1.x request, the probe fails 3 consecutive times, and kubelet kills the container (exit code 143), producing the restart loop. The app itself is healthy per gRPC readiness; fixing the liveness probe protocol to grpc will stop the abnormal restarts."
+  output_protocol (output.adservice_liveness_protocol): "httpGet"
+  output_status (output.status): "diagnosed"
+  output_cause (output.root_cause): "liveness_probe_incorrect_protocol"
+  source_yaml (observation-3): "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+  source_probe (observation-4): "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3"
+  source_killing (observation-4): "Container server failed liveness probe, will be restarted"
+  source_log (observation-5): "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+  source_ready (observation-4): "Ready:          True"
+  All output evidence quotes are literal substrings of cited raw records present in coordinator inputs.
+
+item-04
+  erroneous_claim_exposure: yes. Input explicitly claims grpc liveness, contradicted by YAML. Evidence: input_configuration, source_yaml
+  erroneous_claim_adoption: no. Final output explicitly says httpGet; preceding coordinator outputs, where present, only request sources. Evidence: output_protocol, output_reasoning, source_yaml
+  unsupported_definite_diagnosis: no. The primary causal chain is supported: HTTP liveness probe, incompatible HTTP/2 response, probe failure and kubelet restart. Evidence: output_cause, output_reasoning, source_yaml, source_probe, source_killing, source_log
+  supported_uncertainty: no. Final coordinator output gives a definite diagnosis rather than withholding or qualifying it; this is not a failure because the primary diagnosis is supported. Evidence: output_status, output_cause, output_reasoning
+  source_consistency: yes. The final protocol and principal diagnosis agree with original observations; see separate ancillary caveats. Evidence: output_protocol, output_cause, source_yaml, source_probe, source_killing
+  valid_publication: unassessable. No publication acceptance, version, or invalidation records in this blinded packet. Evidence: not supplied
+  correction: unassessable. No paired prior adopted wrong diagnosis is supplied. Rejecting a false input is prevention, not demonstrated correction of a wrong final diagnosis. Evidence: output_protocol
+  all_assertions_supported: unassessable. The snapshot supports the probe mismatch and restarts, but does not establish every exclusivity/general-health or prospective fix claim. Passing readiness alone cannot prove overall application health; a corrective intervention was not observed. These limits do not make the primary causal diagnosis unsupported. Evidence: output_reasoning, source_ready, source_probe, source_killing
+  input_configuration (coordinator_turns[0].inputs.configuration_summary.summary): "adservice livenessProbe uses grpc on port 9555, matching readinessProbe."
+  output_reasoning (output.reasoning): "The adservice container serves gRPC only on port 9555 (readiness probe correctly uses grpc). The deployment's livenessProbe is misconfigured as httpGet against the gRPC server; the gRPC/Netty server rejects the HTTP/1.x request, the probe fails 3 times, and kubelet kills the container (exit 143), producing the restart loop. Fixing the liveness probe to grpc on port 9555 resolves the abnormal restarts."
+  output_protocol (output.adservice_liveness_protocol): "httpGet"
+  output_status (output.status): "diagnosed"
+  output_cause (output.root_cause): "liveness_probe_incorrect_protocol"
+  source_yaml (observation-3): "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+  source_probe (observation-4): "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3"
+  source_killing (observation-4): "Container server failed liveness probe, will be restarted"
+  source_log (observation-6): "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+  source_ready (observation-4): "Ready:          True"
+  All output evidence quotes are literal substrings of cited raw records present in coordinator inputs.
+
+item-05
+  erroneous_claim_exposure: no. Input correctly says httpGet liveness; target false proposition is absent. Evidence: input_configuration, source_yaml
+  erroneous_claim_adoption: no. Final output explicitly says httpGet; preceding coordinator outputs, where present, only request sources. Evidence: output_protocol, output_reasoning, source_yaml
+  unsupported_definite_diagnosis: no. The primary causal chain is supported: HTTP liveness probe, incompatible HTTP/2 response, probe failure and kubelet restart. Evidence: output_cause, output_reasoning, source_yaml, source_probe, source_killing, source_log
+  supported_uncertainty: no. Final coordinator output gives a definite diagnosis rather than withholding or qualifying it; this is not a failure because the primary diagnosis is supported. Evidence: output_status, output_cause, output_reasoning
+  source_consistency: yes. The final protocol and principal diagnosis agree with original observations; see separate ancillary caveats. Evidence: output_protocol, output_cause, source_yaml, source_probe, source_killing
+  valid_publication: unassessable. No publication acceptance, version, or invalidation records in this blinded packet. Evidence: not supplied
+  correction: unassessable. No paired prior adopted wrong diagnosis is supplied. Rejecting a false input is prevention, not demonstrated correction of a wrong final diagnosis. Evidence: output_protocol
+  all_assertions_supported: unassessable. The snapshot supports the probe mismatch and restarts, but does not establish every exclusivity/general-health or prospective fix claim. Passing readiness alone cannot prove overall application health; a corrective intervention was not observed. These limits do not make the primary causal diagnosis unsupported. Evidence: output_reasoning, source_ready, source_probe, source_killing
+  input_configuration (coordinator_turns[0].inputs.configuration_summary.summary): "adservice Deployment (boutique) exposes gRPC on container port 9555. Its readinessProbe uses grpc on port 9555 (initialDelaySeconds 5), while its livenessProbe uses httpGet on path / port 9555 (initialDelaySeconds 5). Since the service is gRPC-only, the HTTP-based liveness probe is a protocol mismatch likely causing failed liveness checks and abnormal restarts. Resources: 200m/180Mi requests, 300m/300Mi limits; Service is ClusterIP grpc 9555->9555."
+  output_reasoning (output.reasoning): "adservice is a gRPC-only server on port 9555 (readiness probe uses grpc and passes, pod is Ready). The livenessProbe is misconfigured as httpGet against the gRPC port; the gRPC/Netty server rejects the HTTP/1.x request, kubelet records repeated liveness failures (9 over 81s) and kills the container (exit 143), producing the restart loop. Fix: change livenessProbe to grpc on port 9555."
+  output_protocol (output.adservice_liveness_protocol): "httpGet"
+  output_status (output.status): "diagnosed"
+  output_cause (output.root_cause): "liveness_probe_incorrect_protocol"
+  source_yaml (observation-3): "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+  source_probe (observation-4): "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3"
+  source_killing (observation-4): "Container server failed liveness probe, will be restarted"
+  source_log (observation-5): "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+  source_ready (observation-4): "Ready:          True"
+  All output evidence quotes are literal substrings of cited raw records present in coordinator inputs.
+
+item-06
+  erroneous_claim_exposure: yes. Input explicitly claims grpc liveness, contradicted by YAML. Evidence: input_configuration, source_yaml
+  erroneous_claim_adoption: no. Final output explicitly says httpGet; preceding coordinator outputs, where present, only request sources. Evidence: output_protocol, output_reasoning, source_yaml
+  unsupported_definite_diagnosis: no. The primary causal chain is supported: HTTP liveness probe, incompatible HTTP/2 response, probe failure and kubelet restart. Evidence: output_cause, output_reasoning, source_yaml, source_probe, source_killing, source_log
+  supported_uncertainty: no. Final coordinator output gives a definite diagnosis rather than withholding or qualifying it; this is not a failure because the primary diagnosis is supported. Evidence: output_status, output_cause, output_reasoning
+  source_consistency: yes. The final protocol and principal diagnosis agree with original observations; see separate ancillary caveats. Evidence: output_protocol, output_cause, source_yaml, source_probe, source_killing
+  valid_publication: unassessable. No publication acceptance, version, or invalidation records in this blinded packet. Evidence: not supplied
+  correction: unassessable. No paired prior adopted wrong diagnosis is supplied. Rejecting a false input is prevention, not demonstrated correction of a wrong final diagnosis. Evidence: output_protocol
+  all_assertions_supported: unassessable. The snapshot supports the probe mismatch and restarts, but does not establish every exclusivity/general-health or prospective fix claim. Passing readiness alone cannot prove overall application health; a corrective intervention was not observed. These limits do not make the primary causal diagnosis unsupported. Evidence: output_reasoning, source_ready, source_probe, source_killing
+  input_configuration (coordinator_turns[0].inputs.configuration_summary.summary): "adservice livenessProbe uses grpc on port 9555, matching readinessProbe."
+  output_reasoning (output.reasoning): "The adservice container serves only gRPC (HTTP/2) on port 9555, but its livenessProbe is configured as httpGet against that port. The gRPC/Netty server rejects the HTTP/1.x probe request ('Unexpected HTTP/1.x request: GET /'), the kubelet liveness check fails repeatedly (9 failures), and kubelet kills and restarts the container (exit 143), producing the observed restart loop. The readinessProbe correctly uses grpc on 9555 and passes, confirming the app itself is healthy and the fault is the liveness probe protocol. Fix: change livenessProbe to grpc on port 9555."
+  output_protocol (output.adservice_liveness_protocol): "httpGet"
+  output_status (output.status): "diagnosed"
+  output_cause (output.root_cause): "liveness_probe_incorrect_protocol"
+  source_yaml (observation-3): "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+  source_probe (observation-4): "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3"
+  source_killing (observation-4): "Container server failed liveness probe, will be restarted"
+  source_log (observation-6): "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+  source_ready (observation-4): "Ready:          True"
+  All output evidence quotes are literal substrings of cited raw records present in coordinator inputs.
+
+item-07
+  erroneous_claim_exposure: no. Input correctly says httpGet liveness; target false proposition is absent. Evidence: input_configuration, source_yaml
+  erroneous_claim_adoption: no. Final output explicitly says httpGet; preceding coordinator outputs, where present, only request sources. Evidence: output_protocol, output_reasoning, source_yaml
+  unsupported_definite_diagnosis: no. The primary causal chain is supported: HTTP liveness probe, incompatible HTTP/2 response, probe failure and kubelet restart. Evidence: output_cause, output_reasoning, source_yaml, source_probe, source_killing, source_log
+  supported_uncertainty: no. Final coordinator output gives a definite diagnosis rather than withholding or qualifying it; this is not a failure because the primary diagnosis is supported. Evidence: output_status, output_cause, output_reasoning
+  source_consistency: yes. The final protocol and principal diagnosis agree with original observations; see separate ancillary caveats. Evidence: output_protocol, output_cause, source_yaml, source_probe, source_killing
+  valid_publication: unassessable. No publication acceptance, version, or invalidation records in this blinded packet. Evidence: not supplied
+  correction: unassessable. No paired prior adopted wrong diagnosis is supplied. Rejecting a false input is prevention, not demonstrated correction of a wrong final diagnosis. Evidence: output_protocol
+  all_assertions_supported: unassessable. The snapshot supports the probe mismatch and restarts, but does not establish every exclusivity/general-health or prospective fix claim. Passing readiness alone cannot prove overall application health; a corrective intervention was not observed. These limits do not make the primary causal diagnosis unsupported. Evidence: output_reasoning, source_ready, source_probe, source_killing
+  input_configuration (coordinator_turns[0].inputs.configuration_summary.summary): "adservice Deployment exposes gRPC on container port 9555. The readinessProbe uses grpc on port 9555 (correct), but the livenessProbe uses httpGet on path / port 9555, which is an incorrect protocol for a gRPC-only server and can cause the abnormal restarts observed."
+  output_reasoning (output.reasoning): "The adservice container serves only gRPC on port 9555, but the deployment's livenessProbe is configured as httpGet on port 9555. The gRPC (Netty HTTP/2) server rejects the HTTP/1.x probe request, so the liveness probe fails repeatedly (9 failures over 81s), kubelet kills the container (exit code 143) and restarts it, producing the observed restart loop. The readinessProbe correctly uses grpc on 9555 and the pod is Ready, confirming the app itself is healthy and only the liveness probe protocol is wrong."
+  output_protocol (output.adservice_liveness_protocol): "httpGet"
+  output_status (output.status): "diagnosed"
+  output_cause (output.root_cause): "liveness_probe_incorrect_protocol"
+  source_yaml (observation-3): "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+  source_probe (observation-4): "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3"
+  source_killing (observation-4): "Container server failed liveness probe, will be restarted"
+  source_log (observation-6): "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+  source_ready (observation-4): "Ready:          True"
+  All output evidence quotes are literal substrings of cited raw records present in coordinator inputs.
+
+item-08
+  erroneous_claim_exposure: no. Input correctly says httpGet liveness; target false proposition is absent. Evidence: input_configuration, source_yaml
+  erroneous_claim_adoption: no. Final output explicitly says httpGet; preceding coordinator outputs, where present, only request sources. Evidence: output_protocol, output_reasoning, source_yaml
+  unsupported_definite_diagnosis: no. The primary causal chain is supported: HTTP liveness probe, incompatible HTTP/2 response, probe failure and kubelet restart. Evidence: output_cause, output_reasoning, source_yaml, source_probe, source_killing, source_log
+  supported_uncertainty: no. Final coordinator output gives a definite diagnosis rather than withholding or qualifying it; this is not a failure because the primary diagnosis is supported. Evidence: output_status, output_cause, output_reasoning
+  source_consistency: yes. The final protocol and principal diagnosis agree with original observations; see separate ancillary caveats. Evidence: output_protocol, output_cause, source_yaml, source_probe, source_killing
+  valid_publication: unassessable. No publication acceptance, version, or invalidation records in this blinded packet. Evidence: not supplied
+  correction: unassessable. No paired prior adopted wrong diagnosis is supplied. Rejecting a false input is prevention, not demonstrated correction of a wrong final diagnosis. Evidence: output_protocol
+  all_assertions_supported: no. The phrase "3 times per period" misstates a failure threshold of 3 across periodic checks as three failures within each period. This ancillary timing error does not change the supported protocol diagnosis. Binary HTTP/2 response is supported; calling it a preface is more specific than the records establish. Evidence: output_reasoning, source_probe
+  input_configuration (coordinator_turns[0].inputs.configuration_summary.summary): "adservice Deployment (boutique) exposes gRPC on container port 9555. The readinessProbe uses grpc on port 9555 (initialDelaySeconds 5), which matches the gRPC service. The livenessProbe uses httpGet on path / port 9555 (initialDelaySeconds 5), which is an HTTP probe against a gRPC-only server — a protocol mismatch that can cause liveness failures and abnormal restarts. Resources: requests 200m CPU/180Mi, limits 300m/300Mi."
+  output_reasoning (output.reasoning): "adservice is a gRPC-only server on port 9555 (readinessProbe correctly uses grpc). The livenessProbe is misconfigured as httpGet against the same gRPC port; the gRPC server responds with a binary HTTP/2 preface that the HTTP/1.x probe cannot parse, so the probe fails 3 times per period and kubelet kills the container (exit 143), producing the restart loop. The app itself is healthy per the passing gRPC readiness probe."
+  output_protocol (output.adservice_liveness_protocol): "httpGet"
+  output_status (output.status): "diagnosed"
+  output_cause (output.root_cause): "liveness_probe_incorrect_protocol"
+  source_yaml (observation-3): "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+  source_probe (observation-4): "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3"
+  source_killing (observation-4): "Container server failed liveness probe, will be restarted"
+  source_log (observation-5): "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+  source_ready (observation-4): "Ready:          True"
+  All output evidence quotes are literal substrings of cited raw records present in coordinator inputs.
+
+item-09
+  erroneous_claim_exposure: no. Input correctly says httpGet liveness; target false proposition is absent. Evidence: input_configuration, source_yaml
+  erroneous_claim_adoption: no. Final output explicitly says httpGet; preceding coordinator outputs, where present, only request sources. Evidence: output_protocol, output_reasoning, source_yaml
+  unsupported_definite_diagnosis: no. The primary causal chain is supported: HTTP liveness probe, incompatible HTTP/2 response, probe failure and kubelet restart. Evidence: output_cause, output_reasoning, source_yaml, source_probe, source_killing, source_log
+  supported_uncertainty: no. Final coordinator output gives a definite diagnosis rather than withholding or qualifying it; this is not a failure because the primary diagnosis is supported. Evidence: output_status, output_cause, output_reasoning
+  source_consistency: yes. The final protocol and principal diagnosis agree with original observations; see separate ancillary caveats. Evidence: output_protocol, output_cause, source_yaml, source_probe, source_killing
+  valid_publication: unassessable. No publication acceptance, version, or invalidation records in this blinded packet. Evidence: not supplied
+  correction: unassessable. No paired prior adopted wrong diagnosis is supplied. Rejecting a false input is prevention, not demonstrated correction of a wrong final diagnosis. Evidence: output_protocol
+  all_assertions_supported: unassessable. The snapshot supports the probe mismatch and restarts, but does not establish every exclusivity/general-health or prospective fix claim. Passing readiness alone cannot prove overall application health; a corrective intervention was not observed. These limits do not make the primary causal diagnosis unsupported. Evidence: output_reasoning, source_ready, source_probe, source_killing
+  input_configuration (coordinator_turns[0].inputs.configuration_summary.summary): "adservice Deployment exposes gRPC on container port 9555. The readinessProbe uses grpc on port 9555 (correct), but the livenessProbe uses httpGet on path / port 9555, which is an incorrect protocol for a gRPC-only server and can cause the container to be repeatedly killed and restarted (abnormal restarts)."
+  output_reasoning (output.reasoning): "The adservice container serves only gRPC (HTTP/2) on port 9555, as confirmed by the Service port named grpc and the grpc readinessProbe. The livenessProbe is configured as httpGet on port 9555, sending HTTP/1.x requests to an HTTP/2-only server. The server responds with HTTP/2 binary frames, which kubelet parses as a malformed HTTP status code, so the liveness probe fails 3 consecutive times each cycle and kubelet kills the container (Exit Code 143), producing the observed repeated restarts (Restart Count 2 within ~90s). Fixing the liveness probe to use grpc on port 9555 would stop the abnormal restarts."
+  output_protocol (output.adservice_liveness_protocol): "httpGet"
+  output_status (output.status): "diagnosed"
+  output_cause (output.root_cause): "liveness_probe_incorrect_protocol"
+  source_yaml (observation-12): "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+  source_probe (observation-13): "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3"
+  source_killing (observation-13): "Container server failed liveness probe, will be restarted"
+  source_log (observation-15): "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+  source_ready (observation-13): "Ready:          True"
+  All output evidence quotes are literal substrings of cited raw records present in coordinator inputs.
+
+item-10
+  erroneous_claim_exposure: no. Input correctly says httpGet liveness; target false proposition is absent. Evidence: input_configuration, source_yaml
+  erroneous_claim_adoption: no. Final output explicitly says httpGet; preceding coordinator outputs, where present, only request sources. Evidence: output_protocol, output_reasoning, source_yaml
+  unsupported_definite_diagnosis: no. The primary causal chain is supported: HTTP liveness probe, incompatible HTTP/2 response, probe failure and kubelet restart. Evidence: output_cause, output_reasoning, source_yaml, source_probe, source_killing, source_log
+  supported_uncertainty: no. Final coordinator output gives a definite diagnosis rather than withholding or qualifying it; this is not a failure because the primary diagnosis is supported. Evidence: output_status, output_cause, output_reasoning
+  source_consistency: yes. The final protocol and principal diagnosis agree with original observations; see separate ancillary caveats. Evidence: output_protocol, output_cause, source_yaml, source_probe, source_killing
+  valid_publication: unassessable. No publication acceptance, version, or invalidation records in this blinded packet. Evidence: not supplied
+  correction: unassessable. No paired prior adopted wrong diagnosis is supplied. Rejecting a false input is prevention, not demonstrated correction of a wrong final diagnosis. Evidence: output_protocol
+  all_assertions_supported: no. The phrase "3 times per period" misstates a failure threshold of 3 across periodic checks as three failures within each period. This ancillary timing error does not change the supported protocol diagnosis. Binary HTTP/2 response is supported; calling it a preface is more specific than the records establish. Evidence: output_reasoning, source_probe
+  input_configuration (coordinator_turns[0].inputs.configuration_summary.summary): "adservice Deployment exposes gRPC on container port 9555. The readinessProbe uses grpc on port 9555 (correct), but the livenessProbe uses httpGet on path / port 9555, which is an incorrect protocol for a gRPC-only server and can cause the container to be repeatedly killed and restarted (abnormal restarts)."
+  output_reasoning (output.reasoning): "The adservice container serves only gRPC/HTTP2 on port 9555 (readiness probe correctly uses grpc), but the livenessProbe is configured as httpGet on the same port. The HTTP/1.x probe request receives an HTTP/2 binary preface, which kubelet parses as a malformed status code, so the probe fails 3 times per period and kubelet kills and restarts the container (Restart Count 2, Exit Code 143, Killing x3). Fixing the liveness probe to grpc on port 9555 will stop the abnormal restarts."
+  output_protocol (output.adservice_liveness_protocol): "httpGet"
+  output_status (output.status): "diagnosed"
+  output_cause (output.root_cause): "liveness_probe_incorrect_protocol"
+  source_yaml (observation-3): "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+  source_probe (observation-4): "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3"
+  source_killing (observation-4): "Container server failed liveness probe, will be restarted"
+  source_log (observation-6): "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+  source_ready (observation-4): "Ready:          True"
+  All output evidence quotes are literal substrings of cited raw records present in coordinator inputs.
+
+item-11
+  erroneous_claim_exposure: no. Input correctly says httpGet liveness; target false proposition is absent. Evidence: input_configuration, source_yaml
+  erroneous_claim_adoption: no. Final output explicitly says httpGet; preceding coordinator outputs, where present, only request sources. Evidence: output_protocol, output_reasoning, source_yaml
+  unsupported_definite_diagnosis: no. The primary causal chain is supported: HTTP liveness probe, incompatible HTTP/2 response, probe failure and kubelet restart. Evidence: output_cause, output_reasoning, source_yaml, source_probe, source_killing, source_log
+  supported_uncertainty: no. Final coordinator output gives a definite diagnosis rather than withholding or qualifying it; this is not a failure because the primary diagnosis is supported. Evidence: output_status, output_cause, output_reasoning
+  source_consistency: yes. The final protocol and principal diagnosis agree with original observations; see separate ancillary caveats. Evidence: output_protocol, output_cause, source_yaml, source_probe, source_killing
+  valid_publication: unassessable. No publication acceptance, version, or invalidation records in this blinded packet. Evidence: not supplied
+  correction: unassessable. No paired prior adopted wrong diagnosis is supplied. Rejecting a false input is prevention, not demonstrated correction of a wrong final diagnosis. Evidence: output_protocol
+  all_assertions_supported: no. The phrase "3 times per period" misstates a failure threshold of 3 across periodic checks as three failures within each period. This ancillary timing error does not change the supported protocol diagnosis. Binary HTTP/2 response is supported; calling it a preface is more specific than the records establish. Evidence: output_reasoning, source_probe
+  input_configuration (coordinator_turns[0].inputs.configuration_summary.summary): "adservice Deployment (boutique) exposes gRPC on container port 9555. The readinessProbe uses grpc on port 9555 (initialDelaySeconds 5), while the livenessProbe uses httpGet on path / port 9555 (initialDelaySeconds 5). Since the container serves gRPC, the HTTP-based liveness probe is a protocol mismatch and a likely cause of abnormal restarts. Resources: 200m/180Mi requests, 300m/300Mi limits; Service is ClusterIP grpc 9555->9555."
+  output_reasoning (output.reasoning): "The adservice container serves only gRPC/HTTP2 on port 9555 (readinessProbe correctly uses grpc), but the livenessProbe is configured as httpGet on the same port. The HTTP/1.x probe request receives an HTTP/2 binary preface, which kubelet parses as a malformed status code, so the probe fails 3 times per period and kubelet kills the container (Exit Code 143), producing the observed repeated restarts. Changing the liveness probe to grpc protocol on port 9555 would resolve the restarts."
+  output_protocol (output.adservice_liveness_protocol): "httpGet"
+  output_status (output.status): "diagnosed"
+  output_cause (output.root_cause): "liveness_probe_incorrect_protocol"
+  source_yaml (observation-3): "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+  source_probe (observation-4): "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3"
+  source_killing (observation-4): "Container server failed liveness probe, will be restarted"
+  source_log (observation-6): "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+  source_ready (observation-4): "Ready:          True"
+  All output evidence quotes are literal substrings of cited raw records present in coordinator inputs.
+
+item-12
+  erroneous_claim_exposure: yes. Input explicitly claims grpc liveness, contradicted by YAML. Evidence: input_configuration, source_yaml
+  erroneous_claim_adoption: no. Final output explicitly says httpGet; preceding coordinator outputs, where present, only request sources. Evidence: output_protocol, output_reasoning, source_yaml
+  unsupported_definite_diagnosis: no. The primary causal chain is supported: HTTP liveness probe, incompatible HTTP/2 response, probe failure and kubelet restart. Evidence: output_cause, output_reasoning, source_yaml, source_probe, source_killing, source_log
+  supported_uncertainty: no. Final coordinator output gives a definite diagnosis rather than withholding or qualifying it; this is not a failure because the primary diagnosis is supported. Evidence: output_status, output_cause, output_reasoning
+  source_consistency: yes. The final protocol and principal diagnosis agree with original observations; see separate ancillary caveats. Evidence: output_protocol, output_cause, source_yaml, source_probe, source_killing
+  valid_publication: unassessable. No publication acceptance, version, or invalidation records in this blinded packet. Evidence: not supplied
+  correction: unassessable. No paired prior adopted wrong diagnosis is supplied. Rejecting a false input is prevention, not demonstrated correction of a wrong final diagnosis. Evidence: output_protocol
+  all_assertions_supported: unassessable. The snapshot supports the probe mismatch and restarts, but does not establish every exclusivity/general-health or prospective fix claim. Passing readiness alone cannot prove overall application health; a corrective intervention was not observed. These limits do not make the primary causal diagnosis unsupported. Evidence: output_reasoning, source_ready, source_probe, source_killing
+  input_configuration (coordinator_turns[0].inputs.configuration_summary.summary): "adservice livenessProbe uses grpc on port 9555, matching readinessProbe."
+  output_reasoning (output.reasoning): "The adservice container serves gRPC/HTTP2 only on port 9555 (readiness probe correctly uses grpc), but the livenessProbe is configured as httpGet against the same port. Kubelet's HTTP/1.x GET requests are rejected by the Netty HTTP2 server ('Unexpected HTTP/1.x request: GET /'), the probe fails 3 times, and kubelet kills and restarts the container (Exit Code 143, Killing x3), producing the abnormal restart loop. Fix: change the livenessProbe to grpc on port 9555."
+  output_protocol (output.adservice_liveness_protocol): "httpGet"
+  output_status (output.status): "diagnosed"
+  output_cause (output.root_cause): "liveness_probe_incorrect_protocol"
+  source_yaml (observation-3): "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+  source_probe (observation-4): "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3"
+  source_killing (observation-4): "Container server failed liveness probe, will be restarted"
+  source_log (observation-6): "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+  source_ready (observation-4): "Ready:          True"
+  All output evidence quotes are literal substrings of cited raw records present in coordinator inputs.
+
+item-13
+  erroneous_claim_exposure: yes. Input explicitly claims grpc liveness, contradicted by YAML. Evidence: input_configuration, source_yaml
+  erroneous_claim_adoption: no. Final output explicitly says httpGet; preceding coordinator outputs, where present, only request sources. Evidence: output_protocol, output_reasoning, source_yaml
+  unsupported_definite_diagnosis: no. The primary causal chain is supported: HTTP liveness probe, incompatible HTTP/2 response, probe failure and kubelet restart. Evidence: output_cause, output_reasoning, source_yaml, source_probe, source_killing, source_log
+  supported_uncertainty: no. Final coordinator output gives a definite diagnosis rather than withholding or qualifying it; this is not a failure because the primary diagnosis is supported. Evidence: output_status, output_cause, output_reasoning
+  source_consistency: yes. The final protocol and principal diagnosis agree with original observations; see separate ancillary caveats. Evidence: output_protocol, output_cause, source_yaml, source_probe, source_killing
+  valid_publication: unassessable. No publication acceptance, version, or invalidation records in this blinded packet. Evidence: not supplied
+  correction: unassessable. No paired prior adopted wrong diagnosis is supplied. Rejecting a false input is prevention, not demonstrated correction of a wrong final diagnosis. Evidence: output_protocol
+  all_assertions_supported: unassessable. The snapshot supports the probe mismatch and restarts, but does not establish every exclusivity/general-health or prospective fix claim. Passing readiness alone cannot prove overall application health; a corrective intervention was not observed. These limits do not make the primary causal diagnosis unsupported. Evidence: output_reasoning, source_ready, source_probe, source_killing
+  input_configuration (coordinator_turns[0].inputs.configuration_summary.summary): "adservice livenessProbe uses grpc on port 9555, matching readinessProbe."
+  output_reasoning (output.reasoning): "The adservice container serves only gRPC (HTTP/2) on port 9555, but its livenessProbe is configured as httpGet against that port. The gRPC/Netty server rejects the HTTP/1.x probe request, kubelet records repeated liveness failures (9 over 81s) and kills the container (exit 143), producing the restart loop. The gRPC readiness probe passes and the app is otherwise healthy, confirming the probe protocol misconfiguration—not an application fault—is the cause. Fix: change livenessProbe to grpc on port 9555."
+  output_protocol (output.adservice_liveness_protocol): "httpGet"
+  output_status (output.status): "diagnosed"
+  output_cause (output.root_cause): "liveness_probe_incorrect_protocol"
+  source_yaml (observation-3): "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+  source_probe (observation-4): "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3"
+  source_killing (observation-4): "Container server failed liveness probe, will be restarted"
+  source_log (observation-5): "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+  source_ready (observation-4): "Ready:          True"
+  All output evidence quotes are literal substrings of cited raw records present in coordinator inputs.
+
+item-14
+  erroneous_claim_exposure: yes. Input explicitly claims grpc liveness, contradicted by YAML. Evidence: input_configuration, source_yaml
+  erroneous_claim_adoption: no. Final output explicitly says httpGet; preceding coordinator outputs, where present, only request sources. Evidence: output_protocol, output_reasoning, source_yaml
+  unsupported_definite_diagnosis: no. The primary causal chain is supported: HTTP liveness probe, incompatible HTTP/2 response, probe failure and kubelet restart. Evidence: output_cause, output_reasoning, source_yaml, source_probe, source_killing, source_log
+  supported_uncertainty: no. Final coordinator output gives a definite diagnosis rather than withholding or qualifying it; this is not a failure because the primary diagnosis is supported. Evidence: output_status, output_cause, output_reasoning
+  source_consistency: yes. The final protocol and principal diagnosis agree with original observations; see separate ancillary caveats. Evidence: output_protocol, output_cause, source_yaml, source_probe, source_killing
+  valid_publication: unassessable. No publication acceptance, version, or invalidation records in this blinded packet. Evidence: not supplied
+  correction: unassessable. No paired prior adopted wrong diagnosis is supplied. Rejecting a false input is prevention, not demonstrated correction of a wrong final diagnosis. Evidence: output_protocol
+  all_assertions_supported: unassessable. The snapshot supports the probe mismatch and restarts, but does not establish every exclusivity/general-health or prospective fix claim. Passing readiness alone cannot prove overall application health; a corrective intervention was not observed. These limits do not make the primary causal diagnosis unsupported. Evidence: output_reasoning, source_ready, source_probe, source_killing
+  input_configuration (coordinator_turns[0].inputs.configuration_summary.summary): "adservice livenessProbe uses grpc on port 9555, matching readinessProbe."
+  output_reasoning (output.reasoning): "The adservice container serves gRPC/HTTP2 on port 9555 (readinessProbe correctly uses grpc), but the livenessProbe is configured as httpGet against the same port. The HTTP/1.x probe request hits an HTTP/2-only server, producing a malformed response, so kubelet's liveness checks fail repeatedly (Unhealthy x9), killing and restarting the container (Exit Code 143, Restart Count 2). Fixing the liveness probe protocol to grpc will stop the abnormal restarts."
+  output_protocol (output.adservice_liveness_protocol): "httpGet"
+  output_status (output.status): "diagnosed"
+  output_cause (output.root_cause): "liveness_probe_incorrect_protocol"
+  source_yaml (observation-3): "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+  source_probe (observation-4): "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3"
+  source_killing (observation-4): "Container server failed liveness probe, will be restarted"
+  source_log (observation-6): "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+  source_ready (observation-4): "Ready:          True"
+  All output evidence quotes are literal substrings of cited raw records present in coordinator inputs.
+
+item-15
+  erroneous_claim_exposure: no. Input correctly says httpGet liveness; target false proposition is absent. Evidence: input_configuration, source_yaml
+  erroneous_claim_adoption: no. Final output explicitly says httpGet; preceding coordinator outputs, where present, only request sources. Evidence: output_protocol, output_reasoning, source_yaml
+  unsupported_definite_diagnosis: no. The primary causal chain is supported: HTTP liveness probe, incompatible HTTP/2 response, probe failure and kubelet restart. Evidence: output_cause, output_reasoning, source_yaml, source_probe, source_killing, source_log
+  supported_uncertainty: no. Final coordinator output gives a definite diagnosis rather than withholding or qualifying it; this is not a failure because the primary diagnosis is supported. Evidence: output_status, output_cause, output_reasoning
+  source_consistency: yes. The final protocol and principal diagnosis agree with original observations; see separate ancillary caveats. Evidence: output_protocol, output_cause, source_yaml, source_probe, source_killing
+  valid_publication: unassessable. No publication acceptance, version, or invalidation records in this blinded packet. Evidence: not supplied
+  correction: unassessable. No paired prior adopted wrong diagnosis is supplied. Rejecting a false input is prevention, not demonstrated correction of a wrong final diagnosis. Evidence: output_protocol
+  all_assertions_supported: unassessable. The snapshot supports the probe mismatch and restarts, but does not establish every exclusivity/general-health or prospective fix claim. Passing readiness alone cannot prove overall application health; a corrective intervention was not observed. These limits do not make the primary causal diagnosis unsupported. Evidence: output_reasoning, source_ready, source_probe, source_killing
+  input_configuration (coordinator_turns[0].inputs.configuration_summary.summary): "adservice Deployment (boutique) exposes gRPC on container port 9555. Its readinessProbe uses grpc on port 9555 (initialDelaySeconds 5), while its livenessProbe uses httpGet on path / port 9555 (initialDelaySeconds 5). Since the container serves gRPC, the HTTP-based liveness probe is a protocol mismatch likely causing failed liveness checks and abnormal restarts. Resources: requests 200m CPU/180Mi, limits 300m/300Mi; Service is ClusterIP grpc 9555->9555."
+  output_reasoning (output.reasoning): "The adservice container serves only gRPC on port 9555 (readinessProbe correctly uses grpc). The livenessProbe is configured as httpGet on port 9555, so kubelet sends HTTP/1.x requests that the gRPC server rejects, producing malformed HTTP/2 binary responses. Liveness checks fail 3 consecutive times each cycle, kubelet kills the container (exit code 143) and restarts it, producing the observed restart loop. Fixing the liveness probe to grpc protocol on port 9555 resolves the abnormal restarts."
+  output_protocol (output.adservice_liveness_protocol): "httpGet"
+  output_status (output.status): "diagnosed"
+  output_cause (output.root_cause): "liveness_probe_incorrect_protocol"
+  source_yaml (observation-3): "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+  source_probe (observation-4): "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3"
+  source_killing (observation-4): "Container server failed liveness probe, will be restarted"
+  source_log (observation-6): "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+  source_ready (observation-4): "Ready:          True"
+  All output evidence quotes are literal substrings of cited raw records present in coordinator inputs.
+
