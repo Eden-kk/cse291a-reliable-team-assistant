@@ -97,10 +97,12 @@ class ExecutionStore:
         for key, version in result.shared_reads.items():
             if self.shared_versions.get(key) != version:
                 raise ValueError("Stale shared-state read")
+        # No state changes during this synchronous commit; reuse only within this call.
+        invalid_inputs = self.invalid() if result.inputs else set()
         for parent, version in result.inputs.items():
             if parent not in self.results or self.results[parent].version != version:
                 raise ValueError("Input version changed")
-            if parent in self.invalid():
+            if parent in invalid_inputs:
                 raise ValueError("Invalid parent input")
         self.results[result.name] = copy.deepcopy(result)
 

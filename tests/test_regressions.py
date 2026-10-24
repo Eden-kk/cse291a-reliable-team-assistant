@@ -8,6 +8,25 @@ from team_assistant.state import ExecutionStore, Result
 
 
 class RegressionTests(unittest.IsolatedAsyncioTestCase):
+    async def test_commit_rechecks_transitive_source_and_shared_changes(self):
+        for kind in ('source_versions', 'shared_versions'):
+            with self.subTest(kind=kind):
+                store = ExecutionStore()
+                versions = getattr(store, kind)
+                versions['input'] = 1
+                metadata = {'sources' if kind == 'source_versions' else 'shared_reads':
+                            {'input': 1}}
+                store.commit(Result('root', 1, {}, **metadata), 0)
+                store.commit(Result('branch', 1, {}, inputs={'root': 1}), 0)
+                store.commit(Result('independent', 1, {}), 0)
+                parents = {'independent': 1, 'branch': 1}
+                store.commit(Result('answer', 1, {}, inputs=parents), 0)
+                versions['input'] = 2
+                with self.assertRaisesRegex(ValueError, 'Invalid parent'):
+                    store.commit(Result('answer', 2, {}, inputs=parents), 0)
+                self.assertEqual(store.results['answer'].version, 1)
+                store.commit(Result('independent', 2, {}), 0)
+
     async def test_provider_cancelled_settles_and_halts(self):
         dispatcher = Dispatcher(Budget(100))
         async def cancelled():

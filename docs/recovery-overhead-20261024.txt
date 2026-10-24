@@ -1,0 +1,21 @@
+P2 dependency tracking overhead — 2026-10-24
+
+Completed a narrow synchronous commit optimization: calculate the invalid closure once per commit, rather than once for every consumed parent. No persistent cache, so subsequent source/shared-version changes are rechecked. All original epoch, version, provenance and parent checks remain.
+
+Same-machine CPU median (7 samples per condition; one warmup):
+8 nodes sparse: 0.083 -> 0.083 ms (1.00x)
+8 nodes dense: 0.205 -> 0.112 ms (1.83x)
+24 nodes sparse: 0.311 -> 0.310 ms (1.00x)
+24 nodes dense: 5.798 -> 0.777 ms (7.46x)
+48 nodes sparse: 0.802 -> 0.970 ms (0.83x)
+48 nodes dense: 69.141 -> 3.521 ms (19.64x)
+96 nodes sparse: 2.538 -> 2.472 ms (1.03x)
+96 nodes dense: 920.626 -> 20.117 ms (45.76x)
+
+Full suite: 175 tests, 8 skipped, OK. Added regression checks for transitive invalidation after both source and shared-memory version changes, rejected write preservation and independent branch commits. Skipped tests are not passes.
+
+Raw timing samples and environment are embedded in recovery-overhead-20261024.json. Before and after ran sequentially, not randomized/interleaved. These are local synthetic timings, not model latency or statistical generalization. Sparse graphs have no consistent benefit. Historical Oct21 figures are not the same-machine comparison. No model calls, no held-out data, no paid resources.
+
+Phase1 Oct23 package remains a frozen historical artifact and has not been rebuilt or submitted here. This optimization is later P2 evidence.
+
+Next core work: freeze a development-only fault/baseline matrix across the already seen runtime/service/performance cases, with unchanged/version-only, changed content, dense dependency and incomplete provenance conditions. Establish fault applicability and independent expected closures before calls. Then estimate complete-batch reservations using existing trace costs; formal held-out launch still needs a frozen affordable protocol.
