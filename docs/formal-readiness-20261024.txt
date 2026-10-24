@@ -9,7 +9,7 @@ Completed
 
 Unresolved external evidence
 - Cloud-OpsBench was disclosed in the survey, but explicit course approval has not been found. See course-check-20261024/disposition.txt and the unsent staff-clarification.txt.
-- Piazza46 authorizes DataHub as an alternative to AWS; AWS-only is not a gate. Actual CPU-only orchestration profile is recorded rather than claiming the advertised GPU profile. Staff clarification asks whether this CPU-only profile is acceptable.
+- Piazza46 authorizes DataHub as an alternative to AWS; AWS-only is not a gate. The course CPU-only 2CPU/8GB profile was directly selected and validated; no GPU is required for API orchestration. Resource gate is resolved. See launch-evidence-20261024/resource-profile.txt.
 
 Required launch-time checks, not failures
 - After external evidence resolves, record real evidence paths/hashes and bind review to the final freeze checksum. Do not fabricate accepted flags.
@@ -18,3 +18,5 @@ Required launch-time checks, not failures
 - Formal run has NOT started. No heldout observation/label content was read by this preparation. Only previously frozen IDs were used to create the schedule.
 
 No messages to course staff have been sent. No personal billing or new infrastructure allocation.
+
+Remote deployment completed: exact lock pins and 34 mock calls passed in isolated Python3.11.9; zero model calls. Evidence: docs/launch-evidence-20261024/index.json. Benchmark acceptance and launch-time fresh checks remain pending.

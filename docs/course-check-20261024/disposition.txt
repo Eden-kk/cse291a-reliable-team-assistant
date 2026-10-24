@@ -14,3 +14,5 @@ Instructor feedback via Boqin, Oct21, message1a160a52b04db981: proposal ambitiou
 Live Gmail search afterOct1 for Cloud-OpsBench/option-5-group-3/proposalfeedback found survey, feedback and group notification. Piazza searches benchmark and Cloud each returned0results. These bounded searches did not find explicit approval; they do not prove no approval exists anywhere.
 
 Disposition: benchmark approval NOT VERIFIED. Preserve gate; prepare clarification, do not infer denial or approval from silence. No message sent. Formal heldouts remain locked. Source code can be frozen while this external gate remains open.
+
+Follow-up same day: directly selected the named CSE291A_FA26_003 CPU 2CPU/8GB profile in DataHub and completed offline preflight. Resource profile clarification is no longer a pending gate. See ../launch-evidence-20261024/resource-profile.txt. Earlier CPU clarification wording above is historical. Benchmark acceptance remains unverified; no email sent.

@@ -1,0 +1,53 @@
+{
+  "formal_started": false,
+  "online_calls": 0,
+  "heldout_opened": false,
+  "checked_at": "2026-10-24T20:54:11.298060+00:00",
+  "runtime": {
+    "python": "3.11.9 | packaged by conda-forge | (main, Apr 19 2024, 18:36:13) [GCC 12.3.0]",
+    "python_executable": "/home/yid042/private/formal-v2-deploy/.venv/bin/python",
+    "platform": "Linux-6.1.0-51-amd64-x86_64-with-glibc2.35",
+    "machine": "x86_64",
+    "python_supported": true,
+    "lock_sha256": "f9f98ed207d7d41a5d913d12d60f3a31e73d49a35bb0bbd6238584f0081441b7",
+    "dependencies": [
+      {
+        "package": "annotated-types",
+        "expected": "0.8.0",
+        "actual": "0.8.0",
+        "matches": true
+      },
+      {
+        "package": "pydantic",
+        "expected": "2.14.0",
+        "actual": "2.14.0",
+        "matches": true
+      },
+      {
+        "package": "pydantic_core",
+        "expected": "2.50.0",
+        "actual": "2.50.0",
+        "matches": true
+      },
+      {
+        "package": "typing-inspection",
+        "expected": "0.4.4",
+        "actual": "0.4.4",
+        "matches": true
+      },
+      {
+        "package": "typing_extensions",
+        "expected": "4.16.0",
+        "actual": "4.16.0",
+        "matches": true
+      }
+    ],
+    "valid": true
+  },
+  "freeze_sha256": "9256ca40d004cf7086e646efb0b7dc6ebe8b48ab9abfe9e8b89b232d88ecdbfd",
+  "frozen_files": 34,
+  "existing_launch_marker": false,
+  "missing_approval_rejected": true,
+  "mock_calls": 34,
+  "passed": true
+}

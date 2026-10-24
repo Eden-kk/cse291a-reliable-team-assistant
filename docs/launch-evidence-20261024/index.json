@@ -1,0 +1,31 @@
+{
+  "kind": "preparation_dossier_not_launch_approval",
+  "formal_started": false,
+  "heldout_opened": false,
+  "inference_calls_this_preparation": 0,
+  "deployed_commit": "f08f17358eb09b8223c5fe85a6805ea596bf5173",
+  "remote_root": "/home/yid042/private/formal-v2-deploy",
+  "freeze": {
+    "path": "configs/formal-freeze-v2.json",
+    "sha256": "9256ca40d004cf7086e646efb0b7dc6ebe8b48ab9abfe9e8b89b232d88ecdbfd"
+  },
+  "remote_preflight": {
+    "path": "docs/launch-evidence-20261024/formal-v2-preflight-20261024.json",
+    "sha256": "aa2cdd2df41ea385cb0b485d7e24f286acc38ded75aa661fdc7a37892ed47bde"
+  },
+  "resource": {
+    "path": "docs/launch-evidence-20261024/resource-profile.txt",
+    "sha256": "42d73c96e0d7d7b691b7c25ab319b57330ceb0fc8bc5dcef9b1c6b822a1e8a4d"
+  },
+  "workflow": {
+    "path": "docs/triton-workflow-20261024-results.json",
+    "sha256": "cf4e49fb3f6efb12e2d8c69d1bd046302b8a5978d4e728de682af3ebe06a7fca"
+  },
+  "ready_to_launch": false,
+  "remaining": [
+    "Cloud-OpsBench course acceptance evidence not verified; email remains unsent.",
+    "Frozen launch window begins 2026-10-28 09:00 America/Los_Angeles.",
+    "At launch, refresh model access/prices/balance/key expiry and bind genuine accepted evidence to freeze, checked within 24 hours.",
+    "Recheck selected host launch marker/process state; never start a second copy."
+  ]
+}
