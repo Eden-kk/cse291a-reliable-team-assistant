@@ -1,0 +1,2078 @@
+{
+  "source_commit": "2012b71",
+  "protocol": "docs/cross-case-recovery-20261024-protocol.txt",
+  "total_physical_calls": 26,
+  "known_tokens": 487598,
+  "unknown_usage": 0,
+  "model": "gpt-6-astra",
+  "heldout_access": false,
+  "reviewer": "primary assistant; evidence review before native labels, not independent human validation",
+  "cases": {
+    "runtime": {
+      "physical_tokens": 226208,
+      "physical_calls": 13,
+      "arms": {
+        "prefix": {
+          "execution": {
+            "state": "completed",
+            "contract_errors": [],
+            "wall_seconds": 27.910111749981297,
+            "logical_total_tokens": 51887,
+            "physical_incremental_tokens": 51887,
+            "logical_total_tools": 7,
+            "source_rereads": 0,
+            "logical_halted": false,
+            "provenance_fallback": false,
+            "timings": {
+              "post_run_source_inspection": {
+                "wall_seconds": 7.770798401907086e-05,
+                "process_cpu_seconds": 7.799999999999474e-05
+              }
+            },
+            "settlements": [
+              {
+                "reservation": 60000,
+                "actual": 16064,
+                "charged": 16064,
+                "halted": false
+              },
+              {
+                "reservation": 60000,
+                "actual": 16063,
+                "charged": 16063,
+                "halted": false
+              },
+              {
+                "reservation": 60000,
+                "actual": 19760,
+                "charged": 19760,
+                "halted": false
+              }
+            ],
+            "ledger": [
+              {
+                "id": 1,
+                "result": "public-status",
+                "version": 1,
+                "payload": {
+                  "status": "provisional",
+                  "quality_approved": false,
+                  "answer": {
+                    "status": "diagnosed",
+                    "fault_object": "app/adservice",
+                    "root_cause": "liveness_probe_incorrect_protocol",
+                    "evidence": [
+                      {
+                        "observation_id": "observation-7-r1",
+                        "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9556"
+                      },
+                      {
+                        "observation_id": "observation-3-r1",
+                        "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+                      },
+                      {
+                        "observation_id": "observation-6-r1",
+                        "quote": "Container server failed liveness probe, will be restarted"
+                      }
+                    ],
+                    "reasoning": "The liveness probe sends an HTTP GET to port 9556, while the application serves gRPC over HTTP/2 and explicitly rejects the HTTP/1.x request. The configured container port, PORT environment variable, readiness probe port, and liveness probe port all match at 9556; the mismatch is protocol. Kubelet events directly connect the failed liveness probes to container restarts, establishing the cause of the abnormal restarts."
+                  }
+                },
+                "epoch": 0,
+                "supersedes": null
+              }
+            ],
+            "quality_scoring": "pending post-inference native and semantic review"
+          },
+          "scores": {
+            "CA": 1.0,
+            "FA": 1.0,
+            "JRA": 1.0,
+            "MC": 1.0,
+            "EOC": 1.0,
+            "ECR": 1.0,
+            "EE": 0.42857142857142855,
+            "contract_valid": true,
+            "budget_valid": true
+          },
+          "semantic_review": {
+            "review_stage": "before native label scoring",
+            "actual_request": "runs/cross-case-recovery-20261024/runtime/prefix/calls/003.request.json",
+            "answer": {
+              "status": "diagnosed",
+              "fault_object": "app/adservice",
+              "root_cause": "liveness_probe_incorrect_protocol",
+              "evidence": [
+                {
+                  "observation_id": "observation-7-r1",
+                  "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9556"
+                },
+                {
+                  "observation_id": "observation-3-r1",
+                  "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+                },
+                {
+                  "observation_id": "observation-6-r1",
+                  "quote": "Container server failed liveness probe, will be restarted"
+                }
+              ],
+              "reasoning": "The liveness probe sends an HTTP GET to port 9556, while the application serves gRPC over HTTP/2 and explicitly rejects the HTTP/1.x request. The configured container port, PORT environment variable, readiness probe port, and liveness probe port all match at 9556; the mismatch is protocol. Kubelet events directly connect the failed liveness probes to container restarts, establishing the cause of the abnormal restarts."
+            },
+            "literal_checks": [
+              {
+                "id": "observation-7-r1",
+                "quote_resolves": true
+              },
+              {
+                "id": "observation-3-r1",
+                "quote_resolves": true
+              },
+              {
+                "id": "observation-6-r1",
+                "quote_resolves": true
+              }
+            ],
+            "request_observations": 7,
+            "current_sources": 7,
+            "total_sources": 7,
+            "stale_ids": [],
+            "limitations": "Literal checks and current sources do not establish semantic sufficiency; qualitative review recorded separately.",
+            "qualitative_review": {
+              "reviewer": "primary assistant, before native scores",
+              "support": "Configuration explicitly gives HTTP liveness and gRPC readiness on the same port; rejection of HTTP/1.x and kubelet restart events support protocol mismatch. No intervention test establishes unique causality.",
+              "current_evidence_sufficient": true,
+              "post_transition_stale_fact": null,
+              "classification": "supported diagnosis under snapshot evidence"
+            }
+          },
+          "joint_success": true,
+          "note": "prefix assessed at historical state; not part of post-transition outcome comparisons"
+        },
+        "no-recovery": {
+          "execution": {
+            "state": "completed",
+            "physical_incremental_tokens": 0,
+            "logical_total_tokens": 51887,
+            "logical_total_tools": 7,
+            "quality_scoring": "pending current-label score; historical evidence preserved"
+          },
+          "scores": {
+            "CA": 1.0,
+            "FA": 1.0,
+            "JRA": 1.0,
+            "MC": 1.0,
+            "EOC": 1.0,
+            "ECR": 1.0,
+            "EE": 0.42857142857142855,
+            "contract_valid": true,
+            "budget_valid": true
+          },
+          "semantic_review": {
+            "review_stage": "before native label scoring",
+            "actual_request": "runs/cross-case-recovery-20261024/runtime/prefix/calls/003.request.json",
+            "answer": {
+              "status": "diagnosed",
+              "fault_object": "app/adservice",
+              "root_cause": "liveness_probe_incorrect_protocol",
+              "evidence": [
+                {
+                  "observation_id": "observation-7-r1",
+                  "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9556"
+                },
+                {
+                  "observation_id": "observation-3-r1",
+                  "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+                },
+                {
+                  "observation_id": "observation-6-r1",
+                  "quote": "Container server failed liveness probe, will be restarted"
+                }
+              ],
+              "reasoning": "The liveness probe sends an HTTP GET to port 9556, while the application serves gRPC over HTTP/2 and explicitly rejects the HTTP/1.x request. The configured container port, PORT environment variable, readiness probe port, and liveness probe port all match at 9556; the mismatch is protocol. Kubelet events directly connect the failed liveness probes to container restarts, establishing the cause of the abnormal restarts."
+            },
+            "literal_checks": [
+              {
+                "id": "observation-7-r1",
+                "quote_resolves": true
+              },
+              {
+                "id": "observation-3-r1",
+                "quote_resolves": true
+              },
+              {
+                "id": "observation-6-r1",
+                "quote_resolves": true
+              }
+            ],
+            "request_observations": 7,
+            "current_sources": 5,
+            "total_sources": 7,
+            "stale_ids": [
+              "observation-6-r1",
+              "observation-7-r1"
+            ],
+            "limitations": "Literal checks and current sources do not establish semantic sufficiency; qualitative review recorded separately.",
+            "qualitative_review": {
+              "reviewer": "primary assistant, before native scores",
+              "support": "Configuration explicitly gives HTTP liveness and gRPC readiness on the same port; rejection of HTTP/1.x and kubelet restart events support protocol mismatch. No intervention test establishes unique causality.",
+              "current_evidence_sufficient": false,
+              "post_transition_stale_fact": "9556",
+              "classification": "outdated supporting fact after transition"
+            }
+          },
+          "joint_success": false,
+          "note": ""
+        },
+        "restart": {
+          "execution": {
+            "state": "completed",
+            "contract_errors": [],
+            "wall_seconds": 29.2328149160021,
+            "logical_total_tokens": 103588,
+            "physical_incremental_tokens": 51701,
+            "logical_total_tools": 14,
+            "source_rereads": 0,
+            "logical_halted": false,
+            "provenance_fallback": false,
+            "timings": {
+              "fork_preparation": {
+                "wall_seconds": 0.00048591700033284724,
+                "process_cpu_seconds": 0.0004860000000000142
+              },
+              "full_restart_invalidation": {
+                "wall_seconds": 2.145799226127565e-05,
+                "process_cpu_seconds": 2.1999999999994246e-05
+              },
+              "pre_recovery_provenance_check": {
+                "wall_seconds": 1.8339778762310743e-06,
+                "process_cpu_seconds": 1.000000000001e-06
+              },
+              "post_run_source_inspection": {
+                "wall_seconds": 0.0001077089982572943,
+                "process_cpu_seconds": 9.699999999995823e-05
+              }
+            },
+            "settlements": [
+              {
+                "reservation": 60000,
+                "actual": 16065,
+                "charged": 16065,
+                "halted": false
+              },
+              {
+                "reservation": 60000,
+                "actual": 16050,
+                "charged": 16050,
+                "halted": false
+              },
+              {
+                "reservation": 60000,
+                "actual": 19586,
+                "charged": 19586,
+                "halted": false
+              }
+            ],
+            "ledger": [
+              {
+                "id": 1,
+                "result": "public-status",
+                "version": 1,
+                "payload": {
+                  "status": "provisional",
+                  "quality_approved": false,
+                  "answer": {
+                    "status": "diagnosed",
+                    "fault_object": "app/adservice",
+                    "root_cause": "liveness_probe_incorrect_protocol",
+                    "evidence": [
+                      {
+                        "observation_id": "observation-7-r1",
+                        "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9556"
+                      },
+                      {
+                        "observation_id": "observation-3-r1",
+                        "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+                      },
+                      {
+                        "observation_id": "observation-6-r1",
+                        "quote": "Container server failed liveness probe, will be restarted"
+                      }
+                    ],
+                    "reasoning": "The liveness probe sends an HTTP GET to port 9556, while the application serves gRPC over HTTP/2 and explicitly rejects the HTTP/1.x request. The configured container port, PORT environment variable, readiness probe port, and liveness probe port all match at 9556; the mismatch is protocol. Kubelet events directly connect the failed liveness probes to container restarts, establishing the cause of the abnormal restarts."
+                  }
+                },
+                "epoch": 0,
+                "supersedes": null
+              },
+              {
+                "id": 2,
+                "result": "public-status",
+                "version": 2,
+                "payload": {
+                  "status": "provisional",
+                  "quality_approved": false,
+                  "answer": {
+                    "status": "diagnosed",
+                    "fault_object": "app/adservice",
+                    "root_cause": "liveness_probe_incorrect_protocol",
+                    "evidence": [
+                      {
+                        "observation_id": "observation-13-r2",
+                        "quote": "Container server failed liveness probe, will be restarted"
+                      },
+                      {
+                        "observation_id": "observation-14-r2",
+                        "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+                      },
+                      {
+                        "observation_id": "observation-10-r1",
+                        "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+                      }
+                    ],
+                    "reasoning": "The liveness probe sends an HTTP/1.x GET to port 9555, where adservice expects gRPC over HTTP/2. The server logs explicitly show rejection of that request, and kubelet events directly link failed liveness checks to container restarts. The configured readiness gRPC port, container port, and liveness port all equal 9555, identifying a protocol mismatch rather than a port mismatch."
+                  }
+                },
+                "epoch": 2,
+                "supersedes": 1
+              }
+            ],
+            "quality_scoring": "pending post-inference native and semantic review"
+          },
+          "scores": {
+            "CA": 1.0,
+            "FA": 1.0,
+            "JRA": 1.0,
+            "MC": 1.0,
+            "EOC": 1.0,
+            "ECR": 1.0,
+            "EE": 0.42857142857142855,
+            "contract_valid": true,
+            "budget_valid": true
+          },
+          "semantic_review": {
+            "review_stage": "before native label scoring",
+            "actual_request": "runs/cross-case-recovery-20261024/runtime/restart/calls/003.request.json",
+            "answer": {
+              "status": "diagnosed",
+              "fault_object": "app/adservice",
+              "root_cause": "liveness_probe_incorrect_protocol",
+              "evidence": [
+                {
+                  "observation_id": "observation-13-r2",
+                  "quote": "Container server failed liveness probe, will be restarted"
+                },
+                {
+                  "observation_id": "observation-14-r2",
+                  "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+                },
+                {
+                  "observation_id": "observation-10-r1",
+                  "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+                }
+              ],
+              "reasoning": "The liveness probe sends an HTTP/1.x GET to port 9555, where adservice expects gRPC over HTTP/2. The server logs explicitly show rejection of that request, and kubelet events directly link failed liveness checks to container restarts. The configured readiness gRPC port, container port, and liveness port all equal 9555, identifying a protocol mismatch rather than a port mismatch."
+            },
+            "literal_checks": [
+              {
+                "id": "observation-13-r2",
+                "quote_resolves": true
+              },
+              {
+                "id": "observation-14-r2",
+                "quote_resolves": true
+              },
+              {
+                "id": "observation-10-r1",
+                "quote_resolves": true
+              }
+            ],
+            "request_observations": 7,
+            "current_sources": 7,
+            "total_sources": 7,
+            "stale_ids": [],
+            "limitations": "Literal checks and current sources do not establish semantic sufficiency; qualitative review recorded separately.",
+            "qualitative_review": {
+              "reviewer": "primary assistant, before native scores",
+              "support": "Configuration explicitly gives HTTP liveness and gRPC readiness on the same port; rejection of HTTP/1.x and kubelet restart events support protocol mismatch. No intervention test establishes unique causality.",
+              "current_evidence_sufficient": true,
+              "post_transition_stale_fact": null,
+              "classification": "supported diagnosis under snapshot evidence"
+            }
+          },
+          "joint_success": true,
+          "note": ""
+        },
+        "selective": {
+          "execution": {
+            "state": "completed",
+            "contract_errors": [],
+            "wall_seconds": 10.126182292005979,
+            "logical_total_tokens": 71503,
+            "physical_incremental_tokens": 19616,
+            "logical_total_tools": 9,
+            "source_rereads": 0,
+            "logical_halted": false,
+            "provenance_fallback": false,
+            "timings": {
+              "fork_preparation": {
+                "wall_seconds": 0.000804667011834681,
+                "process_cpu_seconds": 0.0007599999999999829
+              },
+              "pre_recovery_provenance_check": {
+                "wall_seconds": 7.542024832218885e-06,
+                "process_cpu_seconds": 6.999999999979245e-06
+              },
+              "post_run_source_inspection": {
+                "wall_seconds": 9.200000204145908e-05,
+                "process_cpu_seconds": 9.300000000000974e-05
+              }
+            },
+            "settlements": [
+              {
+                "reservation": 60000,
+                "actual": 19616,
+                "charged": 19616,
+                "halted": false
+              }
+            ],
+            "ledger": [
+              {
+                "id": 1,
+                "result": "public-status",
+                "version": 1,
+                "payload": {
+                  "status": "provisional",
+                  "quality_approved": false,
+                  "answer": {
+                    "status": "diagnosed",
+                    "fault_object": "app/adservice",
+                    "root_cause": "liveness_probe_incorrect_protocol",
+                    "evidence": [
+                      {
+                        "observation_id": "observation-7-r1",
+                        "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9556"
+                      },
+                      {
+                        "observation_id": "observation-3-r1",
+                        "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+                      },
+                      {
+                        "observation_id": "observation-6-r1",
+                        "quote": "Container server failed liveness probe, will be restarted"
+                      }
+                    ],
+                    "reasoning": "The liveness probe sends an HTTP GET to port 9556, while the application serves gRPC over HTTP/2 and explicitly rejects the HTTP/1.x request. The configured container port, PORT environment variable, readiness probe port, and liveness probe port all match at 9556; the mismatch is protocol. Kubelet events directly connect the failed liveness probes to container restarts, establishing the cause of the abnormal restarts."
+                  }
+                },
+                "epoch": 0,
+                "supersedes": null
+              },
+              {
+                "id": 2,
+                "result": "public-status",
+                "version": 2,
+                "payload": {
+                  "status": "provisional",
+                  "quality_approved": false,
+                  "answer": {
+                    "status": "diagnosed",
+                    "fault_object": "app/adservice",
+                    "root_cause": "liveness_probe_incorrect_protocol",
+                    "evidence": [
+                      {
+                        "observation_id": "observation-8-r2",
+                        "quote": "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3"
+                      },
+                      {
+                        "observation_id": "observation-8-r2",
+                        "quote": "Container server failed liveness probe, will be restarted"
+                      },
+                      {
+                        "observation_id": "observation-3-r1",
+                        "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+                      },
+                      {
+                        "observation_id": "observation-9-r2",
+                        "quote": "readinessProbe:\n          initialDelaySeconds: 5\n          grpc:\n            port: 9555"
+                      }
+                    ],
+                    "reasoning": "The liveness probe sends HTTP/1.x GET requests to port 9555, where adservice serves gRPC over HTTP/2. Application logs directly show rejection of these requests, and kubelet events explicitly attribute restarts to failed liveness probes. The gRPC readiness probe uses the same port, supporting a protocol mismatch rather than an incorrect port."
+                  }
+                },
+                "epoch": 1,
+                "supersedes": 1
+              }
+            ],
+            "quality_scoring": "pending post-inference native and semantic review"
+          },
+          "scores": {
+            "CA": 1.0,
+            "FA": 1.0,
+            "JRA": 1.0,
+            "MC": 1.0,
+            "EOC": 1.0,
+            "ECR": 1.0,
+            "EE": 0.42857142857142855,
+            "contract_valid": true,
+            "budget_valid": true
+          },
+          "semantic_review": {
+            "review_stage": "before native label scoring",
+            "actual_request": "runs/cross-case-recovery-20261024/runtime/selective/calls/001.request.json",
+            "answer": {
+              "status": "diagnosed",
+              "fault_object": "app/adservice",
+              "root_cause": "liveness_probe_incorrect_protocol",
+              "evidence": [
+                {
+                  "observation_id": "observation-8-r2",
+                  "quote": "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3"
+                },
+                {
+                  "observation_id": "observation-8-r2",
+                  "quote": "Container server failed liveness probe, will be restarted"
+                },
+                {
+                  "observation_id": "observation-3-r1",
+                  "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+                },
+                {
+                  "observation_id": "observation-9-r2",
+                  "quote": "readinessProbe:\n          initialDelaySeconds: 5\n          grpc:\n            port: 9555"
+                }
+              ],
+              "reasoning": "The liveness probe sends HTTP/1.x GET requests to port 9555, where adservice serves gRPC over HTTP/2. Application logs directly show rejection of these requests, and kubelet events explicitly attribute restarts to failed liveness probes. The gRPC readiness probe uses the same port, supporting a protocol mismatch rather than an incorrect port."
+            },
+            "literal_checks": [
+              {
+                "id": "observation-8-r2",
+                "quote_resolves": true
+              },
+              {
+                "id": "observation-8-r2",
+                "quote_resolves": true
+              },
+              {
+                "id": "observation-3-r1",
+                "quote_resolves": true
+              },
+              {
+                "id": "observation-9-r2",
+                "quote_resolves": true
+              }
+            ],
+            "request_observations": 7,
+            "current_sources": 7,
+            "total_sources": 7,
+            "stale_ids": [],
+            "limitations": "Literal checks and current sources do not establish semantic sufficiency; qualitative review recorded separately.",
+            "qualitative_review": {
+              "reviewer": "primary assistant, before native scores",
+              "support": "Configuration explicitly gives HTTP liveness and gRPC readiness on the same port; rejection of HTTP/1.x and kubelet restart events support protocol mismatch. No intervention test establishes unique causality.",
+              "current_evidence_sufficient": true,
+              "post_transition_stale_fact": null,
+              "classification": "supported diagnosis under snapshot evidence"
+            }
+          },
+          "joint_success": true,
+          "note": ""
+        },
+        "fallback": {
+          "execution": {
+            "state": "completed",
+            "contract_errors": [],
+            "wall_seconds": 22.388499208987923,
+            "logical_total_tokens": 103489,
+            "physical_incremental_tokens": 51602,
+            "logical_total_tools": 14,
+            "source_rereads": 0,
+            "logical_halted": false,
+            "provenance_fallback": true,
+            "timings": {
+              "fork_preparation": {
+                "wall_seconds": 0.0005582080048043281,
+                "process_cpu_seconds": 0.0005580000000000029
+              },
+              "pre_recovery_provenance_check": {
+                "wall_seconds": 6.582995411008596e-06,
+                "process_cpu_seconds": 8.000000000008e-06
+              },
+              "post_run_source_inspection": {
+                "wall_seconds": 9.012498776428401e-05,
+                "process_cpu_seconds": 8.999999999997899e-05
+              }
+            },
+            "settlements": [
+              {
+                "reservation": 60000,
+                "actual": 15891,
+                "charged": 15891,
+                "halted": false
+              },
+              {
+                "reservation": 60000,
+                "actual": 15891,
+                "charged": 15891,
+                "halted": false
+              },
+              {
+                "reservation": 60000,
+                "actual": 19820,
+                "charged": 19820,
+                "halted": false
+              }
+            ],
+            "ledger": [
+              {
+                "id": 1,
+                "result": "public-status",
+                "version": 1,
+                "payload": {
+                  "status": "provisional",
+                  "quality_approved": false,
+                  "answer": {
+                    "status": "diagnosed",
+                    "fault_object": "app/adservice",
+                    "root_cause": "liveness_probe_incorrect_protocol",
+                    "evidence": [
+                      {
+                        "observation_id": "observation-7-r1",
+                        "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9556"
+                      },
+                      {
+                        "observation_id": "observation-3-r1",
+                        "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+                      },
+                      {
+                        "observation_id": "observation-6-r1",
+                        "quote": "Container server failed liveness probe, will be restarted"
+                      }
+                    ],
+                    "reasoning": "The liveness probe sends an HTTP GET to port 9556, while the application serves gRPC over HTTP/2 and explicitly rejects the HTTP/1.x request. The configured container port, PORT environment variable, readiness probe port, and liveness probe port all match at 9556; the mismatch is protocol. Kubelet events directly connect the failed liveness probes to container restarts, establishing the cause of the abnormal restarts."
+                  }
+                },
+                "epoch": 0,
+                "supersedes": null
+              },
+              {
+                "id": 2,
+                "result": "public-status",
+                "version": 2,
+                "payload": {
+                  "status": "provisional",
+                  "quality_approved": false,
+                  "answer": {
+                    "status": "diagnosed",
+                    "fault_object": "app/adservice",
+                    "root_cause": "liveness_probe_incorrect_protocol",
+                    "evidence": [
+                      {
+                        "observation_id": "observation-13-r2",
+                        "quote": "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3"
+                      },
+                      {
+                        "observation_id": "observation-13-r2",
+                        "quote": "Container server failed liveness probe, will be restarted"
+                      },
+                      {
+                        "observation_id": "observation-10-r1",
+                        "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+                      },
+                      {
+                        "observation_id": "observation-14-r2",
+                        "quote": "readinessProbe:\n          initialDelaySeconds: 5\n          grpc:\n            port: 9555\n        livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+                      }
+                    ],
+                    "reasoning": "The liveness probe sends HTTP/1.x GET requests to port 9555, where adservice expects gRPC/HTTP2. Application logs directly show rejection of those requests. Both probes target the same port, but their protocols differ. Kubelet explicitly records restarting the container after liveness failures, linking the protocol mismatch to the abnormal restarts."
+                  }
+                },
+                "epoch": 2,
+                "supersedes": 1
+              }
+            ],
+            "quality_scoring": "pending post-inference native and semantic review"
+          },
+          "scores": {
+            "CA": 1.0,
+            "FA": 1.0,
+            "JRA": 1.0,
+            "MC": 1.0,
+            "EOC": 1.0,
+            "ECR": 1.0,
+            "EE": 0.42857142857142855,
+            "contract_valid": true,
+            "budget_valid": true
+          },
+          "semantic_review": {
+            "review_stage": "before native label scoring",
+            "actual_request": "runs/cross-case-recovery-20261024/runtime/fallback/calls/003.request.json",
+            "answer": {
+              "status": "diagnosed",
+              "fault_object": "app/adservice",
+              "root_cause": "liveness_probe_incorrect_protocol",
+              "evidence": [
+                {
+                  "observation_id": "observation-13-r2",
+                  "quote": "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3"
+                },
+                {
+                  "observation_id": "observation-13-r2",
+                  "quote": "Container server failed liveness probe, will be restarted"
+                },
+                {
+                  "observation_id": "observation-10-r1",
+                  "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+                },
+                {
+                  "observation_id": "observation-14-r2",
+                  "quote": "readinessProbe:\n          initialDelaySeconds: 5\n          grpc:\n            port: 9555\n        livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+                }
+              ],
+              "reasoning": "The liveness probe sends HTTP/1.x GET requests to port 9555, where adservice expects gRPC/HTTP2. Application logs directly show rejection of those requests. Both probes target the same port, but their protocols differ. Kubelet explicitly records restarting the container after liveness failures, linking the protocol mismatch to the abnormal restarts."
+            },
+            "literal_checks": [
+              {
+                "id": "observation-13-r2",
+                "quote_resolves": true
+              },
+              {
+                "id": "observation-13-r2",
+                "quote_resolves": true
+              },
+              {
+                "id": "observation-10-r1",
+                "quote_resolves": true
+              },
+              {
+                "id": "observation-14-r2",
+                "quote_resolves": true
+              }
+            ],
+            "request_observations": 7,
+            "current_sources": 7,
+            "total_sources": 7,
+            "stale_ids": [],
+            "limitations": "Literal checks and current sources do not establish semantic sufficiency; qualitative review recorded separately.",
+            "qualitative_review": {
+              "reviewer": "primary assistant, before native scores",
+              "support": "Configuration explicitly gives HTTP liveness and gRPC readiness on the same port; rejection of HTTP/1.x and kubelet restart events support protocol mismatch. No intervention test establishes unique causality.",
+              "current_evidence_sufficient": true,
+              "post_transition_stale_fact": null,
+              "classification": "supported diagnosis under snapshot evidence"
+            }
+          },
+          "joint_success": true,
+          "note": ""
+        },
+        "source-consistency-from-start": {
+          "execution": {
+            "state": "completed",
+            "contract_errors": [],
+            "wall_seconds": 21.024670834012795,
+            "logical_total_tokens": 51402,
+            "physical_incremental_tokens": 51402,
+            "logical_total_tools": 9,
+            "source_rereads": 2,
+            "logical_halted": false,
+            "provenance_fallback": false,
+            "timings": {
+              "source_advance_and_invalidation": {
+                "wall_seconds": 4.791599349118769e-05,
+                "process_cpu_seconds": 4.900000000002125e-05
+              },
+              "source_requery_and_refresh_including_tool_work": {
+                "wall_seconds": 0.0010117089841514826,
+                "process_cpu_seconds": 0.0010120000000000129
+              },
+              "post_run_source_inspection": {
+                "wall_seconds": 5.5333017371594906e-05,
+                "process_cpu_seconds": 5.700000000002925e-05
+              }
+            },
+            "settlements": [
+              {
+                "reservation": 60000,
+                "actual": 15886,
+                "charged": 15886,
+                "halted": false
+              },
+              {
+                "reservation": 60000,
+                "actual": 15888,
+                "charged": 15888,
+                "halted": false
+              },
+              {
+                "reservation": 60000,
+                "actual": 19628,
+                "charged": 19628,
+                "halted": false
+              }
+            ],
+            "ledger": [
+              {
+                "id": 1,
+                "result": "public-status",
+                "version": 1,
+                "payload": {
+                  "status": "provisional",
+                  "quality_approved": false,
+                  "answer": {
+                    "status": "diagnosed",
+                    "fault_object": "app/adservice",
+                    "root_cause": "liveness_probe_incorrect_protocol",
+                    "evidence": [
+                      {
+                        "observation_id": "observation-9-r2",
+                        "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+                      },
+                      {
+                        "observation_id": "observation-3-r1",
+                        "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+                      },
+                      {
+                        "observation_id": "observation-8-r2",
+                        "quote": "Container server failed liveness probe, will be restarted"
+                      }
+                    ],
+                    "reasoning": "The liveness probe sends an HTTP/1.x GET to port 9555, where adservice expects gRPC over HTTP/2. Application logs explicitly show rejection of that request, and kubelet events directly attribute restarts to failed liveness probes. The configured application port, readiness gRPC port, and liveness port all equal 9555, identifying a protocol mismatch rather than an incorrect port."
+                  }
+                },
+                "epoch": 1,
+                "supersedes": null
+              }
+            ],
+            "quality_scoring": "pending post-inference native and semantic review"
+          },
+          "scores": {
+            "CA": 1.0,
+            "FA": 1.0,
+            "JRA": 1.0,
+            "MC": 1.0,
+            "EOC": 1.0,
+            "ECR": 1.0,
+            "EE": 0.42857142857142855,
+            "contract_valid": true,
+            "budget_valid": true
+          },
+          "semantic_review": {
+            "review_stage": "before native label scoring",
+            "actual_request": "runs/cross-case-recovery-20261024/runtime/source-consistency-from-start/calls/003.request.json",
+            "answer": {
+              "status": "diagnosed",
+              "fault_object": "app/adservice",
+              "root_cause": "liveness_probe_incorrect_protocol",
+              "evidence": [
+                {
+                  "observation_id": "observation-9-r2",
+                  "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+                },
+                {
+                  "observation_id": "observation-3-r1",
+                  "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+                },
+                {
+                  "observation_id": "observation-8-r2",
+                  "quote": "Container server failed liveness probe, will be restarted"
+                }
+              ],
+              "reasoning": "The liveness probe sends an HTTP/1.x GET to port 9555, where adservice expects gRPC over HTTP/2. Application logs explicitly show rejection of that request, and kubelet events directly attribute restarts to failed liveness probes. The configured application port, readiness gRPC port, and liveness port all equal 9555, identifying a protocol mismatch rather than an incorrect port."
+            },
+            "literal_checks": [
+              {
+                "id": "observation-9-r2",
+                "quote_resolves": true
+              },
+              {
+                "id": "observation-3-r1",
+                "quote_resolves": true
+              },
+              {
+                "id": "observation-8-r2",
+                "quote_resolves": true
+              }
+            ],
+            "request_observations": 7,
+            "current_sources": 7,
+            "total_sources": 7,
+            "stale_ids": [],
+            "limitations": "Literal checks and current sources do not establish semantic sufficiency; qualitative review recorded separately.",
+            "qualitative_review": {
+              "reviewer": "primary assistant, before native scores",
+              "support": "Configuration explicitly gives HTTP liveness and gRPC readiness on the same port; rejection of HTTP/1.x and kubelet restart events support protocol mismatch. No intervention test establishes unique causality.",
+              "current_evidence_sufficient": true,
+              "post_transition_stale_fact": null,
+              "classification": "supported diagnosis under snapshot evidence"
+            }
+          },
+          "joint_success": true,
+          "note": ""
+        }
+      },
+      "conditional_paired_savings": {
+        "incremental_tokens_percent": 62.058760952399375,
+        "logical_total_tokens_percent": 30.97366490327065
+      }
+    },
+    "performance": {
+      "physical_tokens": 261390,
+      "physical_calls": 13,
+      "arms": {
+        "prefix": {
+          "execution": {
+            "state": "completed",
+            "contract_errors": [
+              "uncertain: not a successful diagnosis"
+            ],
+            "wall_seconds": 26.904757957992842,
+            "logical_total_tokens": 58693,
+            "physical_incremental_tokens": 58693,
+            "logical_total_tools": 8,
+            "source_rereads": 0,
+            "logical_halted": false,
+            "provenance_fallback": false,
+            "timings": {
+              "post_run_source_inspection": {
+                "wall_seconds": 5.1875016652047634e-05,
+                "process_cpu_seconds": 5.299999999996974e-05
+              }
+            },
+            "settlements": [
+              {
+                "reservation": 60000,
+                "actual": 16180,
+                "charged": 16180,
+                "halted": false
+              },
+              {
+                "reservation": 60000,
+                "actual": 16144,
+                "charged": 16144,
+                "halted": false
+              },
+              {
+                "reservation": 60000,
+                "actual": 26369,
+                "charged": 26369,
+                "halted": false
+              }
+            ],
+            "ledger": [
+              {
+                "id": 1,
+                "result": "public-status",
+                "version": 1,
+                "payload": {
+                  "status": "provisional",
+                  "quality_approved": false,
+                  "answer": {
+                    "status": "uncertain",
+                    "fault_object": "app/adservice",
+                    "root_cause": "pod_cpu_overload",
+                    "evidence": [
+                      {
+                        "observation_id": "observation-2-r1",
+                        "quote": "RESOURCE_SATURATION [cpu_cfs] | Val: 0.824s (Throttled)"
+                      },
+                      {
+                        "observation_id": "observation-2-r1",
+                        "quote": "LATENCY_DEGRADATION [Slow Response] | adservice-p95latency: Normal=4.85ms -> Current=70.04ms (+1343.0%)"
+                      },
+                      {
+                        "observation_id": "observation-4-r1",
+                        "quote": "Limits:\n      cpu:     800m\n      memory:  300Mi"
+                      },
+                      {
+                        "observation_id": "observation-3-r1",
+                        "quote": "limits:\n            cpu: 800m\n            memory: 300Mi"
+                      }
+                    ],
+                    "reasoning": "CPU throttling could delay adservice requests, making pod_cpu_overload a candidate rather than an established root cause. However, reported CPU usage is 0.16 cores versus the server's 0.8-core limit; burst saturation is possible but unmeasured. Configured and live server limits agree. The distinct configuration observations establish the limit, not independent evidence of overload. Container-specific CPU time series and throttling attribution are missing, so causation cannot be confirmed. Node utilization of 4.91% does not demonstrate node exhaustion. No namespace quota evidence is supplied, and absence of error logs is not proof of healthy execution."
+                  }
+                },
+                "epoch": 0,
+                "supersedes": null
+              }
+            ],
+            "quality_scoring": "pending post-inference native and semantic review"
+          },
+          "scores": {
+            "CA": 0.0,
+            "FA": 0.0,
+            "JRA": 0.0,
+            "MC": 0.5,
+            "EOC": 0.5,
+            "ECR": 0.0,
+            "EE": 0.125,
+            "contract_valid": false,
+            "budget_valid": true
+          },
+          "semantic_review": {
+            "review_stage": "before native label scoring",
+            "actual_request": "runs/cross-case-recovery-20261024/performance/prefix/calls/003.request.json",
+            "answer": {
+              "status": "uncertain",
+              "fault_object": "app/adservice",
+              "root_cause": "pod_cpu_overload",
+              "evidence": [
+                {
+                  "observation_id": "observation-2-r1",
+                  "quote": "RESOURCE_SATURATION [cpu_cfs] | Val: 0.824s (Throttled)"
+                },
+                {
+                  "observation_id": "observation-2-r1",
+                  "quote": "LATENCY_DEGRADATION [Slow Response] | adservice-p95latency: Normal=4.85ms -> Current=70.04ms (+1343.0%)"
+                },
+                {
+                  "observation_id": "observation-4-r1",
+                  "quote": "Limits:\n      cpu:     800m\n      memory:  300Mi"
+                },
+                {
+                  "observation_id": "observation-3-r1",
+                  "quote": "limits:\n            cpu: 800m\n            memory: 300Mi"
+                }
+              ],
+              "reasoning": "CPU throttling could delay adservice requests, making pod_cpu_overload a candidate rather than an established root cause. However, reported CPU usage is 0.16 cores versus the server's 0.8-core limit; burst saturation is possible but unmeasured. Configured and live server limits agree. The distinct configuration observations establish the limit, not independent evidence of overload. Container-specific CPU time series and throttling attribution are missing, so causation cannot be confirmed. Node utilization of 4.91% does not demonstrate node exhaustion. No namespace quota evidence is supplied, and absence of error logs is not proof of healthy execution."
+            },
+            "literal_checks": [
+              {
+                "id": "observation-2-r1",
+                "quote_resolves": true
+              },
+              {
+                "id": "observation-2-r1",
+                "quote_resolves": true
+              },
+              {
+                "id": "observation-4-r1",
+                "quote_resolves": true
+              },
+              {
+                "id": "observation-3-r1",
+                "quote_resolves": true
+              }
+            ],
+            "request_observations": 8,
+            "current_sources": 8,
+            "total_sources": 8,
+            "stale_ids": [],
+            "limitations": "Literal checks and current sources do not establish semantic sufficiency; qualitative review recorded separately.",
+            "qualitative_review": {
+              "reviewer": "primary assistant, before native scores",
+              "support": "Actual evidence combines service CPU throttling 0.824s, CPU usage0.16 cores and latency70.04ms with live server CPU limit200m after refresh. This supports CPU bottleneck as an operational hypothesis; does not identify demand origin, measure burst timing, or prove unique causality. Node4.91% is not node saturation. Configuration queries are corroboration, not independent performance measurements.",
+              "current_evidence_sufficient": false,
+              "post_transition_stale_fact": null,
+              "classification": "appropriate abstention, not diagnosis success",
+              "claim_limit": "No observed transition from wrong root to correct root: original answer abstained. The constructed revision changes configuration evidence, not telemetry history."
+            }
+          },
+          "joint_success": false,
+          "note": "prefix assessed at historical state; not part of post-transition outcome comparisons"
+        },
+        "no-recovery": {
+          "execution": {
+            "state": "completed",
+            "physical_incremental_tokens": 0,
+            "logical_total_tokens": 58693,
+            "logical_total_tools": 8,
+            "quality_scoring": "pending current-label score; historical evidence preserved"
+          },
+          "scores": {
+            "CA": 0.0,
+            "FA": 0.0,
+            "JRA": 0.0,
+            "MC": 0.5,
+            "EOC": 0.5,
+            "ECR": 0.0,
+            "EE": 0.125,
+            "contract_valid": false,
+            "budget_valid": true
+          },
+          "semantic_review": {
+            "review_stage": "before native label scoring",
+            "actual_request": "runs/cross-case-recovery-20261024/performance/prefix/calls/003.request.json",
+            "answer": {
+              "status": "uncertain",
+              "fault_object": "app/adservice",
+              "root_cause": "pod_cpu_overload",
+              "evidence": [
+                {
+                  "observation_id": "observation-2-r1",
+                  "quote": "RESOURCE_SATURATION [cpu_cfs] | Val: 0.824s (Throttled)"
+                },
+                {
+                  "observation_id": "observation-2-r1",
+                  "quote": "LATENCY_DEGRADATION [Slow Response] | adservice-p95latency: Normal=4.85ms -> Current=70.04ms (+1343.0%)"
+                },
+                {
+                  "observation_id": "observation-4-r1",
+                  "quote": "Limits:\n      cpu:     800m\n      memory:  300Mi"
+                },
+                {
+                  "observation_id": "observation-3-r1",
+                  "quote": "limits:\n            cpu: 800m\n            memory: 300Mi"
+                }
+              ],
+              "reasoning": "CPU throttling could delay adservice requests, making pod_cpu_overload a candidate rather than an established root cause. However, reported CPU usage is 0.16 cores versus the server's 0.8-core limit; burst saturation is possible but unmeasured. Configured and live server limits agree. The distinct configuration observations establish the limit, not independent evidence of overload. Container-specific CPU time series and throttling attribution are missing, so causation cannot be confirmed. Node utilization of 4.91% does not demonstrate node exhaustion. No namespace quota evidence is supplied, and absence of error logs is not proof of healthy execution."
+            },
+            "literal_checks": [
+              {
+                "id": "observation-2-r1",
+                "quote_resolves": true
+              },
+              {
+                "id": "observation-2-r1",
+                "quote_resolves": true
+              },
+              {
+                "id": "observation-4-r1",
+                "quote_resolves": true
+              },
+              {
+                "id": "observation-3-r1",
+                "quote_resolves": true
+              }
+            ],
+            "request_observations": 8,
+            "current_sources": 6,
+            "total_sources": 8,
+            "stale_ids": [
+              "observation-3-r1",
+              "observation-4-r1"
+            ],
+            "limitations": "Literal checks and current sources do not establish semantic sufficiency; qualitative review recorded separately.",
+            "qualitative_review": {
+              "reviewer": "primary assistant, before native scores",
+              "support": "Actual evidence combines service CPU throttling 0.824s, CPU usage0.16 cores and latency70.04ms with live server CPU limit200m after refresh. This supports CPU bottleneck as an operational hypothesis; does not identify demand origin, measure burst timing, or prove unique causality. Node4.91% is not node saturation. Configuration queries are corroboration, not independent performance measurements.",
+              "current_evidence_sufficient": false,
+              "post_transition_stale_fact": "800m",
+              "classification": "appropriate abstention, not diagnosis success",
+              "claim_limit": "No observed transition from wrong root to correct root: original answer abstained. The constructed revision changes configuration evidence, not telemetry history."
+            }
+          },
+          "joint_success": false,
+          "note": ""
+        },
+        "selective": {
+          "execution": {
+            "state": "completed",
+            "contract_errors": [],
+            "wall_seconds": 13.014657333987998,
+            "logical_total_tokens": 84994,
+            "physical_incremental_tokens": 26301,
+            "logical_total_tools": 11,
+            "source_rereads": 0,
+            "logical_halted": false,
+            "provenance_fallback": false,
+            "timings": {
+              "fork_preparation": {
+                "wall_seconds": 0.0006129999819677323,
+                "process_cpu_seconds": 0.0006129999999999747
+              },
+              "pre_recovery_provenance_check": {
+                "wall_seconds": 7.291993824765086e-06,
+                "process_cpu_seconds": 8.000000000008e-06
+              },
+              "post_run_source_inspection": {
+                "wall_seconds": 5.791700095869601e-05,
+                "process_cpu_seconds": 5.900000000003125e-05
+              }
+            },
+            "settlements": [
+              {
+                "reservation": 60000,
+                "actual": 26301,
+                "charged": 26301,
+                "halted": false
+              }
+            ],
+            "ledger": [
+              {
+                "id": 1,
+                "result": "public-status",
+                "version": 1,
+                "payload": {
+                  "status": "provisional",
+                  "quality_approved": false,
+                  "answer": {
+                    "status": "uncertain",
+                    "fault_object": "app/adservice",
+                    "root_cause": "pod_cpu_overload",
+                    "evidence": [
+                      {
+                        "observation_id": "observation-2-r1",
+                        "quote": "RESOURCE_SATURATION [cpu_cfs] | Val: 0.824s (Throttled)"
+                      },
+                      {
+                        "observation_id": "observation-2-r1",
+                        "quote": "LATENCY_DEGRADATION [Slow Response] | adservice-p95latency: Normal=4.85ms -> Current=70.04ms (+1343.0%)"
+                      },
+                      {
+                        "observation_id": "observation-4-r1",
+                        "quote": "Limits:\n      cpu:     800m\n      memory:  300Mi"
+                      },
+                      {
+                        "observation_id": "observation-3-r1",
+                        "quote": "limits:\n            cpu: 800m\n            memory: 300Mi"
+                      }
+                    ],
+                    "reasoning": "CPU throttling could delay adservice requests, making pod_cpu_overload a candidate rather than an established root cause. However, reported CPU usage is 0.16 cores versus the server's 0.8-core limit; burst saturation is possible but unmeasured. Configured and live server limits agree. The distinct configuration observations establish the limit, not independent evidence of overload. Container-specific CPU time series and throttling attribution are missing, so causation cannot be confirmed. Node utilization of 4.91% does not demonstrate node exhaustion. No namespace quota evidence is supplied, and absence of error logs is not proof of healthy execution."
+                  }
+                },
+                "epoch": 0,
+                "supersedes": null
+              },
+              {
+                "id": 2,
+                "result": "public-status",
+                "version": 2,
+                "payload": {
+                  "status": "provisional",
+                  "quality_approved": false,
+                  "answer": {
+                    "status": "diagnosed",
+                    "fault_object": "app/adservice",
+                    "root_cause": "pod_cpu_overload",
+                    "evidence": [
+                      {
+                        "observation_id": "observation-2-r1",
+                        "quote": "RESOURCE_SATURATION [cpu_cfs] | Val: 0.824s (Throttled)"
+                      },
+                      {
+                        "observation_id": "observation-2-r1",
+                        "quote": "adservice-p95latency: Normal=4.85ms -> Current=70.04ms (+1343.0%)"
+                      },
+                      {
+                        "observation_id": "observation-10-r2",
+                        "quote": "Limits:\n      cpu:     200m\n      memory:  300Mi"
+                      }
+                    ],
+                    "reasoning": "Adservice exhibits measured CPU throttling alongside increased CPU use and latency. Its running server container has a 200m CPU limit, supporting a local CPU bottleneck: exhausting CPU time within enforcement periods delays request processing. Average usage of 0.16 cores does not exclude bursts reaching that limit. Worker-02 CPU utilization is only 4.91%, so the measurements do not indicate node-wide CPU exhaustion. The configured and running server limits agree; this is not a configuration mismatch or evidence of namespace quota exhaustion. The evidence supports pod CPU overload, but does not establish what increased CPU demand, such as a busy loop."
+                  }
+                },
+                "epoch": 1,
+                "supersedes": 1
+              }
+            ],
+            "quality_scoring": "pending post-inference native and semantic review"
+          },
+          "scores": {
+            "CA": 1.0,
+            "FA": 1.0,
+            "JRA": 1.0,
+            "MC": 1.0,
+            "EOC": 1.0,
+            "ECR": 1.0,
+            "EE": 0.25,
+            "contract_valid": true,
+            "budget_valid": true
+          },
+          "semantic_review": {
+            "review_stage": "before native label scoring",
+            "actual_request": "runs/cross-case-recovery-20261024/performance/selective/calls/001.request.json",
+            "answer": {
+              "status": "diagnosed",
+              "fault_object": "app/adservice",
+              "root_cause": "pod_cpu_overload",
+              "evidence": [
+                {
+                  "observation_id": "observation-2-r1",
+                  "quote": "RESOURCE_SATURATION [cpu_cfs] | Val: 0.824s (Throttled)"
+                },
+                {
+                  "observation_id": "observation-2-r1",
+                  "quote": "adservice-p95latency: Normal=4.85ms -> Current=70.04ms (+1343.0%)"
+                },
+                {
+                  "observation_id": "observation-10-r2",
+                  "quote": "Limits:\n      cpu:     200m\n      memory:  300Mi"
+                }
+              ],
+              "reasoning": "Adservice exhibits measured CPU throttling alongside increased CPU use and latency. Its running server container has a 200m CPU limit, supporting a local CPU bottleneck: exhausting CPU time within enforcement periods delays request processing. Average usage of 0.16 cores does not exclude bursts reaching that limit. Worker-02 CPU utilization is only 4.91%, so the measurements do not indicate node-wide CPU exhaustion. The configured and running server limits agree; this is not a configuration mismatch or evidence of namespace quota exhaustion. The evidence supports pod CPU overload, but does not establish what increased CPU demand, such as a busy loop."
+            },
+            "literal_checks": [
+              {
+                "id": "observation-2-r1",
+                "quote_resolves": true
+              },
+              {
+                "id": "observation-2-r1",
+                "quote_resolves": true
+              },
+              {
+                "id": "observation-10-r2",
+                "quote_resolves": true
+              }
+            ],
+            "request_observations": 8,
+            "current_sources": 8,
+            "total_sources": 8,
+            "stale_ids": [],
+            "limitations": "Literal checks and current sources do not establish semantic sufficiency; qualitative review recorded separately.",
+            "qualitative_review": {
+              "reviewer": "primary assistant, before native scores",
+              "support": "Actual evidence combines service CPU throttling 0.824s, CPU usage0.16 cores and latency70.04ms with live server CPU limit200m after refresh. This supports CPU bottleneck as an operational hypothesis; does not identify demand origin, measure burst timing, or prove unique causality. Node4.91% is not node saturation. Configuration queries are corroboration, not independent performance measurements.",
+              "current_evidence_sufficient": true,
+              "post_transition_stale_fact": null,
+              "classification": "supported operational diagnosis with causal uncertainty",
+              "claim_limit": "No observed transition from wrong root to correct root: original answer abstained. The constructed revision changes configuration evidence, not telemetry history."
+            }
+          },
+          "joint_success": true,
+          "note": ""
+        },
+        "restart": {
+          "execution": {
+            "state": "completed",
+            "contract_errors": [],
+            "wall_seconds": 22.364612249977654,
+            "logical_total_tokens": 117567,
+            "physical_incremental_tokens": 58874,
+            "logical_total_tools": 16,
+            "source_rereads": 0,
+            "logical_halted": false,
+            "provenance_fallback": false,
+            "timings": {
+              "fork_preparation": {
+                "wall_seconds": 0.0005170420045033097,
+                "process_cpu_seconds": 0.0005179999999999629
+              },
+              "full_restart_invalidation": {
+                "wall_seconds": 2.691699774004519e-05,
+                "process_cpu_seconds": 2.8000000000028002e-05
+              },
+              "pre_recovery_provenance_check": {
+                "wall_seconds": 1.5830155462026596e-06,
+                "process_cpu_seconds": 2.9999999999752447e-06
+              },
+              "post_run_source_inspection": {
+                "wall_seconds": 6.983301136642694e-05,
+                "process_cpu_seconds": 7.00000000000145e-05
+              }
+            },
+            "settlements": [
+              {
+                "reservation": 60000,
+                "actual": 16154,
+                "charged": 16154,
+                "halted": false
+              },
+              {
+                "reservation": 60000,
+                "actual": 16190,
+                "charged": 16190,
+                "halted": false
+              },
+              {
+                "reservation": 60000,
+                "actual": 26530,
+                "charged": 26530,
+                "halted": false
+              }
+            ],
+            "ledger": [
+              {
+                "id": 1,
+                "result": "public-status",
+                "version": 1,
+                "payload": {
+                  "status": "provisional",
+                  "quality_approved": false,
+                  "answer": {
+                    "status": "uncertain",
+                    "fault_object": "app/adservice",
+                    "root_cause": "pod_cpu_overload",
+                    "evidence": [
+                      {
+                        "observation_id": "observation-2-r1",
+                        "quote": "RESOURCE_SATURATION [cpu_cfs] | Val: 0.824s (Throttled)"
+                      },
+                      {
+                        "observation_id": "observation-2-r1",
+                        "quote": "LATENCY_DEGRADATION [Slow Response] | adservice-p95latency: Normal=4.85ms -> Current=70.04ms (+1343.0%)"
+                      },
+                      {
+                        "observation_id": "observation-4-r1",
+                        "quote": "Limits:\n      cpu:     800m\n      memory:  300Mi"
+                      },
+                      {
+                        "observation_id": "observation-3-r1",
+                        "quote": "limits:\n            cpu: 800m\n            memory: 300Mi"
+                      }
+                    ],
+                    "reasoning": "CPU throttling could delay adservice requests, making pod_cpu_overload a candidate rather than an established root cause. However, reported CPU usage is 0.16 cores versus the server's 0.8-core limit; burst saturation is possible but unmeasured. Configured and live server limits agree. The distinct configuration observations establish the limit, not independent evidence of overload. Container-specific CPU time series and throttling attribution are missing, so causation cannot be confirmed. Node utilization of 4.91% does not demonstrate node exhaustion. No namespace quota evidence is supplied, and absence of error logs is not proof of healthy execution."
+                  }
+                },
+                "epoch": 0,
+                "supersedes": null
+              },
+              {
+                "id": 2,
+                "result": "public-status",
+                "version": 2,
+                "payload": {
+                  "status": "provisional",
+                  "quality_approved": false,
+                  "answer": {
+                    "status": "diagnosed",
+                    "fault_object": "app/adservice",
+                    "root_cause": "pod_cpu_overload",
+                    "evidence": [
+                      {
+                        "observation_id": "observation-10-r1",
+                        "quote": "RESOURCE_SATURATION [cpu_cfs] | Val: 0.824s (Throttled)"
+                      },
+                      {
+                        "observation_id": "observation-10-r1",
+                        "quote": "RESOURCE_SATURATION [cpu core] | Normal=0.03 cores -> Current=0.16 cores (+375.0%)"
+                      },
+                      {
+                        "observation_id": "observation-10-r1",
+                        "quote": "adservice-p95latency: Normal=4.85ms -> Current=70.04ms (+1343.0%)"
+                      },
+                      {
+                        "observation_id": "observation-15-r2",
+                        "quote": "Limits:\n      cpu:     200m\n      memory:  300Mi"
+                      }
+                    ],
+                    "reasoning": "Adservice exhibits measured CPU throttling and increased CPU consumption concurrent with elevated latency. Its running server container has a 200m (0.2-core) CPU limit; average consumption of 0.16 cores does not exclude bursts exhausting the CPU allowance, as the measured throttling demonstrates. CPU restriction delays request processing, supporting pod_cpu_overload. Node CPU utilization is only 4.91%, so the relative node increase does not establish node saturation. The live server limit matches the YAML; it is not a namespace quota. Missing error logs do not establish absence of failure. The evidence identifies CPU overload but does not establish the underlying source of increased CPU demand, such as a code busy loop."
+                  }
+                },
+                "epoch": 2,
+                "supersedes": 1
+              }
+            ],
+            "quality_scoring": "pending post-inference native and semantic review"
+          },
+          "scores": {
+            "CA": 1.0,
+            "FA": 1.0,
+            "JRA": 1.0,
+            "MC": 1.0,
+            "EOC": 1.0,
+            "ECR": 1.0,
+            "EE": 0.25,
+            "contract_valid": true,
+            "budget_valid": true
+          },
+          "semantic_review": {
+            "review_stage": "before native label scoring",
+            "actual_request": "runs/cross-case-recovery-20261024/performance/restart/calls/003.request.json",
+            "answer": {
+              "status": "diagnosed",
+              "fault_object": "app/adservice",
+              "root_cause": "pod_cpu_overload",
+              "evidence": [
+                {
+                  "observation_id": "observation-10-r1",
+                  "quote": "RESOURCE_SATURATION [cpu_cfs] | Val: 0.824s (Throttled)"
+                },
+                {
+                  "observation_id": "observation-10-r1",
+                  "quote": "RESOURCE_SATURATION [cpu core] | Normal=0.03 cores -> Current=0.16 cores (+375.0%)"
+                },
+                {
+                  "observation_id": "observation-10-r1",
+                  "quote": "adservice-p95latency: Normal=4.85ms -> Current=70.04ms (+1343.0%)"
+                },
+                {
+                  "observation_id": "observation-15-r2",
+                  "quote": "Limits:\n      cpu:     200m\n      memory:  300Mi"
+                }
+              ],
+              "reasoning": "Adservice exhibits measured CPU throttling and increased CPU consumption concurrent with elevated latency. Its running server container has a 200m (0.2-core) CPU limit; average consumption of 0.16 cores does not exclude bursts exhausting the CPU allowance, as the measured throttling demonstrates. CPU restriction delays request processing, supporting pod_cpu_overload. Node CPU utilization is only 4.91%, so the relative node increase does not establish node saturation. The live server limit matches the YAML; it is not a namespace quota. Missing error logs do not establish absence of failure. The evidence identifies CPU overload but does not establish the underlying source of increased CPU demand, such as a code busy loop."
+            },
+            "literal_checks": [
+              {
+                "id": "observation-10-r1",
+                "quote_resolves": true
+              },
+              {
+                "id": "observation-10-r1",
+                "quote_resolves": true
+              },
+              {
+                "id": "observation-10-r1",
+                "quote_resolves": true
+              },
+              {
+                "id": "observation-15-r2",
+                "quote_resolves": true
+              }
+            ],
+            "request_observations": 8,
+            "current_sources": 8,
+            "total_sources": 8,
+            "stale_ids": [],
+            "limitations": "Literal checks and current sources do not establish semantic sufficiency; qualitative review recorded separately.",
+            "qualitative_review": {
+              "reviewer": "primary assistant, before native scores",
+              "support": "Actual evidence combines service CPU throttling 0.824s, CPU usage0.16 cores and latency70.04ms with live server CPU limit200m after refresh. This supports CPU bottleneck as an operational hypothesis; does not identify demand origin, measure burst timing, or prove unique causality. Node4.91% is not node saturation. Configuration queries are corroboration, not independent performance measurements.",
+              "current_evidence_sufficient": true,
+              "post_transition_stale_fact": null,
+              "classification": "supported operational diagnosis with causal uncertainty",
+              "claim_limit": "No observed transition from wrong root to correct root: original answer abstained. The constructed revision changes configuration evidence, not telemetry history."
+            }
+          },
+          "joint_success": true,
+          "note": ""
+        },
+        "fallback": {
+          "execution": {
+            "state": "completed",
+            "contract_errors": [],
+            "wall_seconds": 20.454871791996993,
+            "logical_total_tokens": 117381,
+            "physical_incremental_tokens": 58688,
+            "logical_total_tools": 16,
+            "source_rereads": 0,
+            "logical_halted": false,
+            "provenance_fallback": true,
+            "timings": {
+              "fork_preparation": {
+                "wall_seconds": 0.0005270410038065165,
+                "process_cpu_seconds": 0.0005260000000000264
+              },
+              "pre_recovery_provenance_check": {
+                "wall_seconds": 5.207984941080213e-06,
+                "process_cpu_seconds": 5.999999999950489e-06
+              },
+              "post_run_source_inspection": {
+                "wall_seconds": 6.870899233035743e-05,
+                "process_cpu_seconds": 6.899999999998574e-05
+              }
+            },
+            "settlements": [
+              {
+                "reservation": 60000,
+                "actual": 16160,
+                "charged": 16160,
+                "halted": false
+              },
+              {
+                "reservation": 60000,
+                "actual": 16174,
+                "charged": 16174,
+                "halted": false
+              },
+              {
+                "reservation": 60000,
+                "actual": 26354,
+                "charged": 26354,
+                "halted": false
+              }
+            ],
+            "ledger": [
+              {
+                "id": 1,
+                "result": "public-status",
+                "version": 1,
+                "payload": {
+                  "status": "provisional",
+                  "quality_approved": false,
+                  "answer": {
+                    "status": "uncertain",
+                    "fault_object": "app/adservice",
+                    "root_cause": "pod_cpu_overload",
+                    "evidence": [
+                      {
+                        "observation_id": "observation-2-r1",
+                        "quote": "RESOURCE_SATURATION [cpu_cfs] | Val: 0.824s (Throttled)"
+                      },
+                      {
+                        "observation_id": "observation-2-r1",
+                        "quote": "LATENCY_DEGRADATION [Slow Response] | adservice-p95latency: Normal=4.85ms -> Current=70.04ms (+1343.0%)"
+                      },
+                      {
+                        "observation_id": "observation-4-r1",
+                        "quote": "Limits:\n      cpu:     800m\n      memory:  300Mi"
+                      },
+                      {
+                        "observation_id": "observation-3-r1",
+                        "quote": "limits:\n            cpu: 800m\n            memory: 300Mi"
+                      }
+                    ],
+                    "reasoning": "CPU throttling could delay adservice requests, making pod_cpu_overload a candidate rather than an established root cause. However, reported CPU usage is 0.16 cores versus the server's 0.8-core limit; burst saturation is possible but unmeasured. Configured and live server limits agree. The distinct configuration observations establish the limit, not independent evidence of overload. Container-specific CPU time series and throttling attribution are missing, so causation cannot be confirmed. Node utilization of 4.91% does not demonstrate node exhaustion. No namespace quota evidence is supplied, and absence of error logs is not proof of healthy execution."
+                  }
+                },
+                "epoch": 0,
+                "supersedes": null
+              },
+              {
+                "id": 2,
+                "result": "public-status",
+                "version": 2,
+                "payload": {
+                  "status": "provisional",
+                  "quality_approved": false,
+                  "answer": {
+                    "status": "diagnosed",
+                    "fault_object": "app/adservice",
+                    "root_cause": "pod_cpu_overload",
+                    "evidence": [
+                      {
+                        "observation_id": "observation-10-r1",
+                        "quote": "RESOURCE_SATURATION [cpu_cfs] | Val: 0.824s (Throttled)"
+                      },
+                      {
+                        "observation_id": "observation-10-r1",
+                        "quote": "LATENCY_DEGRADATION [Slow Response] | adservice-p95latency: Normal=4.85ms -> Current=70.04ms (+1343.0%)"
+                      },
+                      {
+                        "observation_id": "observation-15-r2",
+                        "quote": "Limits:\n      cpu:     200m\n      memory:  300Mi"
+                      }
+                    ],
+                    "reasoning": "Adservice exhibits measured CPU throttling alongside increased CPU consumption and latency. Its running server container has a 200m CPU limit, supporting a container CPU bottleneck: throttling delays request processing even when average consumption of 0.16 cores is below the limit because bursts can exhaust individual CPU scheduling periods. Worker-02 utilization is only 4.91%, which does not support node-wide CPU exhaustion. The deployed CPU limit matches the YAML; it is not a namespace quota. These observations support pod_cpu_overload, but do not establish what triggered the increased CPU demand. The absence of error logs is not proof of healthy performance."
+                  }
+                },
+                "epoch": 2,
+                "supersedes": 1
+              }
+            ],
+            "quality_scoring": "pending post-inference native and semantic review"
+          },
+          "scores": {
+            "CA": 1.0,
+            "FA": 1.0,
+            "JRA": 1.0,
+            "MC": 1.0,
+            "EOC": 1.0,
+            "ECR": 1.0,
+            "EE": 0.25,
+            "contract_valid": true,
+            "budget_valid": true
+          },
+          "semantic_review": {
+            "review_stage": "before native label scoring",
+            "actual_request": "runs/cross-case-recovery-20261024/performance/fallback/calls/003.request.json",
+            "answer": {
+              "status": "diagnosed",
+              "fault_object": "app/adservice",
+              "root_cause": "pod_cpu_overload",
+              "evidence": [
+                {
+                  "observation_id": "observation-10-r1",
+                  "quote": "RESOURCE_SATURATION [cpu_cfs] | Val: 0.824s (Throttled)"
+                },
+                {
+                  "observation_id": "observation-10-r1",
+                  "quote": "LATENCY_DEGRADATION [Slow Response] | adservice-p95latency: Normal=4.85ms -> Current=70.04ms (+1343.0%)"
+                },
+                {
+                  "observation_id": "observation-15-r2",
+                  "quote": "Limits:\n      cpu:     200m\n      memory:  300Mi"
+                }
+              ],
+              "reasoning": "Adservice exhibits measured CPU throttling alongside increased CPU consumption and latency. Its running server container has a 200m CPU limit, supporting a container CPU bottleneck: throttling delays request processing even when average consumption of 0.16 cores is below the limit because bursts can exhaust individual CPU scheduling periods. Worker-02 utilization is only 4.91%, which does not support node-wide CPU exhaustion. The deployed CPU limit matches the YAML; it is not a namespace quota. These observations support pod_cpu_overload, but do not establish what triggered the increased CPU demand. The absence of error logs is not proof of healthy performance."
+            },
+            "literal_checks": [
+              {
+                "id": "observation-10-r1",
+                "quote_resolves": true
+              },
+              {
+                "id": "observation-10-r1",
+                "quote_resolves": true
+              },
+              {
+                "id": "observation-15-r2",
+                "quote_resolves": true
+              }
+            ],
+            "request_observations": 8,
+            "current_sources": 8,
+            "total_sources": 8,
+            "stale_ids": [],
+            "limitations": "Literal checks and current sources do not establish semantic sufficiency; qualitative review recorded separately.",
+            "qualitative_review": {
+              "reviewer": "primary assistant, before native scores",
+              "support": "Actual evidence combines service CPU throttling 0.824s, CPU usage0.16 cores and latency70.04ms with live server CPU limit200m after refresh. This supports CPU bottleneck as an operational hypothesis; does not identify demand origin, measure burst timing, or prove unique causality. Node4.91% is not node saturation. Configuration queries are corroboration, not independent performance measurements.",
+              "current_evidence_sufficient": true,
+              "post_transition_stale_fact": null,
+              "classification": "supported operational diagnosis with causal uncertainty",
+              "claim_limit": "No observed transition from wrong root to correct root: original answer abstained. The constructed revision changes configuration evidence, not telemetry history."
+            }
+          },
+          "joint_success": true,
+          "note": ""
+        },
+        "source-consistency-from-start": {
+          "execution": {
+            "state": "completed",
+            "contract_errors": [],
+            "wall_seconds": 27.46418291699956,
+            "logical_total_tokens": 58834,
+            "physical_incremental_tokens": 58834,
+            "logical_total_tools": 11,
+            "source_rereads": 3,
+            "logical_halted": false,
+            "provenance_fallback": false,
+            "timings": {
+              "source_advance_and_invalidation": {
+                "wall_seconds": 4.7707988414913416e-05,
+                "process_cpu_seconds": 4.899999999996574e-05
+              },
+              "source_requery_and_refresh_including_tool_work": {
+                "wall_seconds": 0.057480999996187165,
+                "process_cpu_seconds": 0.04884500000000003
+              },
+              "post_run_source_inspection": {
+                "wall_seconds": 6.550000398419797e-05,
+                "process_cpu_seconds": 6.600000000012152e-05
+              }
+            },
+            "settlements": [
+              {
+                "reservation": 60000,
+                "actual": 16150,
+                "charged": 16150,
+                "halted": false
+              },
+              {
+                "reservation": 60000,
+                "actual": 16180,
+                "charged": 16180,
+                "halted": false
+              },
+              {
+                "reservation": 60000,
+                "actual": 26504,
+                "charged": 26504,
+                "halted": false
+              }
+            ],
+            "ledger": [
+              {
+                "id": 1,
+                "result": "public-status",
+                "version": 1,
+                "payload": {
+                  "status": "provisional",
+                  "quality_approved": false,
+                  "answer": {
+                    "status": "diagnosed",
+                    "fault_object": "app/adservice",
+                    "root_cause": "pod_cpu_overload",
+                    "evidence": [
+                      {
+                        "observation_id": "observation-2-r1",
+                        "quote": "RESOURCE_SATURATION [cpu_cfs] | Val: 0.824s (Throttled)"
+                      },
+                      {
+                        "observation_id": "observation-2-r1",
+                        "quote": "LATENCY_DEGRADATION [Slow Response] | adservice-p95latency: Normal=4.85ms -> Current=70.04ms (+1343.0%)"
+                      },
+                      {
+                        "observation_id": "observation-10-r2",
+                        "quote": "Limits:\n      cpu:     200m\n      memory:  300Mi"
+                      },
+                      {
+                        "observation_id": "observation-9-r2",
+                        "quote": "limits:\n            cpu: 200m\n            memory: 300Mi"
+                      }
+                    ],
+                    "reasoning": "Adservice exhibits measured CPU throttling alongside increased CPU consumption and p95 latency. Its live server CPU limit is 0.2 cores, matching the deployment configuration. CPU throttling restricts execution time and explains slower responses; average consumption of 0.16 cores does not exclude bursts exhausting the limit. Worker-02 utilization is only 4.91%, which does not indicate node CPU exhaustion. This supports pod CPU overload, not namespace quota exhaustion or a configuration mismatch. The evidence does not establish what triggered the increased CPU demand; absent error logs do not establish absence of degradation."
+                  }
+                },
+                "epoch": 1,
+                "supersedes": null
+              }
+            ],
+            "quality_scoring": "pending post-inference native and semantic review"
+          },
+          "scores": {
+            "CA": 1.0,
+            "FA": 1.0,
+            "JRA": 1.0,
+            "MC": 1.0,
+            "EOC": 1.0,
+            "ECR": 1.0,
+            "EE": 0.25,
+            "contract_valid": true,
+            "budget_valid": true
+          },
+          "semantic_review": {
+            "review_stage": "before native label scoring",
+            "actual_request": "runs/cross-case-recovery-20261024/performance/source-consistency-from-start/calls/003.request.json",
+            "answer": {
+              "status": "diagnosed",
+              "fault_object": "app/adservice",
+              "root_cause": "pod_cpu_overload",
+              "evidence": [
+                {
+                  "observation_id": "observation-2-r1",
+                  "quote": "RESOURCE_SATURATION [cpu_cfs] | Val: 0.824s (Throttled)"
+                },
+                {
+                  "observation_id": "observation-2-r1",
+                  "quote": "LATENCY_DEGRADATION [Slow Response] | adservice-p95latency: Normal=4.85ms -> Current=70.04ms (+1343.0%)"
+                },
+                {
+                  "observation_id": "observation-10-r2",
+                  "quote": "Limits:\n      cpu:     200m\n      memory:  300Mi"
+                },
+                {
+                  "observation_id": "observation-9-r2",
+                  "quote": "limits:\n            cpu: 200m\n            memory: 300Mi"
+                }
+              ],
+              "reasoning": "Adservice exhibits measured CPU throttling alongside increased CPU consumption and p95 latency. Its live server CPU limit is 0.2 cores, matching the deployment configuration. CPU throttling restricts execution time and explains slower responses; average consumption of 0.16 cores does not exclude bursts exhausting the limit. Worker-02 utilization is only 4.91%, which does not indicate node CPU exhaustion. This supports pod CPU overload, not namespace quota exhaustion or a configuration mismatch. The evidence does not establish what triggered the increased CPU demand; absent error logs do not establish absence of degradation."
+            },
+            "literal_checks": [
+              {
+                "id": "observation-2-r1",
+                "quote_resolves": true
+              },
+              {
+                "id": "observation-2-r1",
+                "quote_resolves": true
+              },
+              {
+                "id": "observation-10-r2",
+                "quote_resolves": true
+              },
+              {
+                "id": "observation-9-r2",
+                "quote_resolves": true
+              }
+            ],
+            "request_observations": 8,
+            "current_sources": 8,
+            "total_sources": 8,
+            "stale_ids": [],
+            "limitations": "Literal checks and current sources do not establish semantic sufficiency; qualitative review recorded separately.",
+            "qualitative_review": {
+              "reviewer": "primary assistant, before native scores",
+              "support": "Actual evidence combines service CPU throttling 0.824s, CPU usage0.16 cores and latency70.04ms with live server CPU limit200m after refresh. This supports CPU bottleneck as an operational hypothesis; does not identify demand origin, measure burst timing, or prove unique causality. Node4.91% is not node saturation. Configuration queries are corroboration, not independent performance measurements.",
+              "current_evidence_sufficient": true,
+              "post_transition_stale_fact": null,
+              "classification": "supported operational diagnosis with causal uncertainty",
+              "claim_limit": "No observed transition from wrong root to correct root: original answer abstained. The constructed revision changes configuration evidence, not telemetry history."
+            }
+          },
+          "joint_success": true,
+          "note": ""
+        }
+      },
+      "conditional_paired_savings": {
+        "incremental_tokens_percent": 55.32662975167306,
+        "logical_total_tokens_percent": 27.705903867581895
+      }
+    }
+  },
+  "raw_archive": "output/cross-case-recovery-20261024/raw-evidence.tar.gz",
+  "raw_archive_sha256": "5e8c68cd8f8cc65a7cca8b42f9d001c0aec38542b111a648f3447fcd97b772ca",
+  "raw_file_hashes": {
+    "performance/advanced-prefix/sources.json": "524304cbc0e0b6bd841f84c0bca93d1f28489d89edcc82dccacd4ca4a35cd76a",
+    "performance/advanced-prefix/state.json": "38d440578c919a837246a7d34b57f5900e4de7b9d8c628f8f9425dc44e2396ee",
+    "performance/advanced-prefix/usage.json": "b40fc69d52910ad6e0ef42e1cd97cb9468cf9f26a7290fd5501c261a9abc1cf1",
+    "performance/fallback/calls/001.events.jsonl": "5a1b67393745322a6dd8a976743990d42ceb0414d5de0acf9c86cf059bbaef4e",
+    "performance/fallback/calls/001.json": "9abc4f189322b14d7c2971ff030b962b518e0380ed2e618e3963aeb50f869c61",
+    "performance/fallback/calls/001.request.json": "cd97c926ca4fed0087c439df9ef8e0c85fcc03e4bf6f4cbf76c35409c0ee1fbe",
+    "performance/fallback/calls/002.events.jsonl": "57d59407808e34d83e61d3d93c14d43dc8f7370e7b41db186c7968fd01d195f6",
+    "performance/fallback/calls/002.json": "a098490d293a17fcf2e41b3c927a0b1501a2058db2895364dfe7581e71492c11",
+    "performance/fallback/calls/002.request.json": "eed675bfcec0b12aa0bcceb9f52af1d60aaadf73ef9e4a050e5885c461df3eaa",
+    "performance/fallback/calls/003.events.jsonl": "a0e3785271917511aad98f53fd49411cfa003d35be35a0ef80bee3e1b1ee3d4b",
+    "performance/fallback/calls/003.json": "821dc97119b0fc796bbbbc62a6b6659a806cb183b206e8d762987cc0787251ca",
+    "performance/fallback/calls/003.request.json": "5e05f6d62faac980d421829bfc7e654584a79b7dd634210f48627b6b12950530",
+    "performance/fallback/intervention.json": "ff393816e67fe170cc902ff442b6a449ba87f9027b6e6b8651e0cd8c89ef6fec",
+    "performance/fallback/literal-evidence-audit.json": "2d2493e869c0310b90013e8df0c0d57b59ff4cc96731b440ecef5c8592cbd9a0",
+    "performance/fallback/manifest.json": "df8418aa62bf79998a37fa4d2a808c9aacc3a422800fc9cb93081bb6a4eb038e",
+    "performance/fallback/result.json": "3b90550023a187edb70e7731157385550beedd0f6c7c1efa8bd7945b9e4deee0",
+    "performance/fallback/scores.json": "26d73f5bc67451a7fdad47cb8ad6f77f0e3b1c1b15da695361922beb24c0dfb3",
+    "performance/fallback/semantic-review.json": "cc013de926b4b93949b27442c72935a3a568f845b24c5b0d776bb17e12f910d0",
+    "performance/fallback/source-audit.json": "97f9139f6b726e8482511c6ee4ed360eb81ff4d9ed1663927ec6718ffee5ed2f",
+    "performance/fallback/sources.json": "524304cbc0e0b6bd841f84c0bca93d1f28489d89edcc82dccacd4ca4a35cd76a",
+    "performance/fallback/state.json": "5711bc9c429d92c55c3e3ebf1f1e154110b80ad1275b1ec64b6cf2be6ce2b130",
+    "performance/fallback/summary.json": "80799315372dbd3f575ffa053892311bdec6adce1b45a9e4047287a776e61cc0",
+    "performance/fallback/usage.json": "33860c83e062c3cdb11424a0094b0ac9e927e25b3b72f3348901930f4a9e8b33",
+    "performance/manifest.json": "50d626f60c9c36190a67b408b9cdf420629978ef6ae9b269e22746c0d03abaea",
+    "performance/no-recovery/literal-evidence-audit.json": "4285fa1139bb70bc0675a99328c8b4d672b4d49e1c094bbbe72aad81ace4c142",
+    "performance/no-recovery/manifest.json": "50d626f60c9c36190a67b408b9cdf420629978ef6ae9b269e22746c0d03abaea",
+    "performance/no-recovery/publication-check.json": "3de9cb5c35c01b1a7cc325d3616477cecb691a23f0eb17ccace1625c7f463c07",
+    "performance/no-recovery/result.json": "7f59f2d7bd5fd84d2e005fbfdc8ae40760e6514842af27131deb15a9d285900e",
+    "performance/no-recovery/scores.json": "c5a05dc6bae2d7a6b5dc1537db1929f69aeb1fcd3f4446f5f655bfcb37d934bb",
+    "performance/no-recovery/semantic-review.json": "ed83f7143b91cd32cebbab28ddcda63fe438b1b1acdd22dd6019188c7b790150",
+    "performance/no-recovery/source-audit.json": "33581d0daf3bc84da9c52b885c9ba0190c242b231deb771c041e27e10b6c946c",
+    "performance/prefix/calls/001.events.jsonl": "98027341984a30478bb715f2999f0c96dc814a130bfe330bb027946b815a4f07",
+    "performance/prefix/calls/001.json": "76c75bce300f278b4b0e9d035255498396be83324efa6b27a78857942d8896a5",
+    "performance/prefix/calls/001.request.json": "3299e5487e39927449b605e67a58c2e6768a9ef0ee5f9f129cb40a58d2396271",
+    "performance/prefix/calls/002.events.jsonl": "c5cac61b798671c7b68fb1dc9fb8f4fb07c315069de1b119eb41260285ca4dfc",
+    "performance/prefix/calls/002.json": "362872dd575179516c75200aacbee43723049709d8c0bb0527c0fa2828c2bc74",
+    "performance/prefix/calls/002.request.json": "ed290e5210942ef76f03e69196fd08316929e177fabcc3721eb105641fe53cf9",
+    "performance/prefix/calls/003.events.jsonl": "3b1b8c5109f7b4658f7a11a31ad66802a83fbf8a9411e3bedd19e79c9859b625",
+    "performance/prefix/calls/003.json": "4b590a7e73fabbe6519519d4e6558939033cc864ffa387b6e0f0e93669d23f8a",
+    "performance/prefix/calls/003.request.json": "5eab1dc6408f7cdd3f3c939bad9e29c0cb7cfe45798e880bb32900cef343e348",
+    "performance/prefix/literal-evidence-audit.json": "6b25dfdd684ec45a8b6575722ffa68f2b5af13975d3b145f1c639dbb14116327",
+    "performance/prefix/manifest.json": "d504eeccb89df1bea9884af40e645da92813299988049e4a9740732ba5333fb2",
+    "performance/prefix/result.json": "7f59f2d7bd5fd84d2e005fbfdc8ae40760e6514842af27131deb15a9d285900e",
+    "performance/prefix/scores.json": "c5a05dc6bae2d7a6b5dc1537db1929f69aeb1fcd3f4446f5f655bfcb37d934bb",
+    "performance/prefix/semantic-review.json": "6b0d37b704414a2312176e9d22a37ec8eb992f6319faae6eb1c2a1965a833f85",
+    "performance/prefix/source-audit.json": "940d99b167d0eb97b0930151facb59a359913cd1929d14730ac751f1ce89571a",
+    "performance/prefix/sources.json": "5ce6affe786bd63ac52d7d762b2a542b3ff747dd8fcf926eaa75c9f38b1c0961",
+    "performance/prefix/state.json": "38d440578c919a837246a7d34b57f5900e4de7b9d8c628f8f9425dc44e2396ee",
+    "performance/prefix/summary.json": "2e6bdc60eb8d3fad56c10ad19c29bf3652e1ae6665396da9285fe3f82373b201",
+    "performance/prefix/usage.json": "b40fc69d52910ad6e0ef42e1cd97cb9468cf9f26a7290fd5501c261a9abc1cf1",
+    "performance/restart/calls/001.events.jsonl": "10d2a9f8200aa1afb820e98c0f891787da1baa410acac818e9d02f2122a54e92",
+    "performance/restart/calls/001.json": "77ea5df05d7357f16e9b70b759a3f9f96390163cd2e85f9277c57204c39f43b3",
+    "performance/restart/calls/001.request.json": "cd97c926ca4fed0087c439df9ef8e0c85fcc03e4bf6f4cbf76c35409c0ee1fbe",
+    "performance/restart/calls/002.events.jsonl": "88effac414d76e2811e169534f24cf15c4c92b9ca0f7a4627a825efe63dcad3e",
+    "performance/restart/calls/002.json": "7f30290f04830c58d8213429402c655f03a330ee1ae059bee7a1ba47cecf241c",
+    "performance/restart/calls/002.request.json": "eed675bfcec0b12aa0bcceb9f52af1d60aaadf73ef9e4a050e5885c461df3eaa",
+    "performance/restart/calls/003.events.jsonl": "2dbf7676394571807448de24a04ee9d7e1943665d041160c7b19fb3b11dd47ce",
+    "performance/restart/calls/003.json": "0775fd75beeb7d766be5afcca8a9cb373d95da5d221ae2a5720182bd1d48e084",
+    "performance/restart/calls/003.request.json": "5c0f3bfa6eb3c971332302b149eaca328fcadef8ad90ed11496d76828745a036",
+    "performance/restart/intervention.json": "de069c0050d5b330ddcb8e4cf488e330cf5a868af5559ec6ad2e0c6729423ac6",
+    "performance/restart/literal-evidence-audit.json": "444b267463683b3e819b71c2a3ed3f2fd8bd4176119a38bc099cb2374e9714bb",
+    "performance/restart/manifest.json": "df8418aa62bf79998a37fa4d2a808c9aacc3a422800fc9cb93081bb6a4eb038e",
+    "performance/restart/result.json": "ab41eba3b87931e7070890d214f182fb529a4de39d964f5cb0675436f1ca6ee2",
+    "performance/restart/scores.json": "26d73f5bc67451a7fdad47cb8ad6f77f0e3b1c1b15da695361922beb24c0dfb3",
+    "performance/restart/semantic-review.json": "106e4fb1510e6019fb6ddc7a9617ad6f68a972244afca3c6f32995ddc4349bd9",
+    "performance/restart/source-audit.json": "97f9139f6b726e8482511c6ee4ed360eb81ff4d9ed1663927ec6718ffee5ed2f",
+    "performance/restart/sources.json": "524304cbc0e0b6bd841f84c0bca93d1f28489d89edcc82dccacd4ca4a35cd76a",
+    "performance/restart/state.json": "cf5809d99b68ca3ccd78817200706f2bbf57274fe2058968f612a5c6b5fe0e2b",
+    "performance/restart/summary.json": "8c7ea47958b97562d0b06d2f127a43000c671a35b6b9839e26d18288a40e370b",
+    "performance/restart/usage.json": "5006f221d033d627f919a5345dd8b242a163cb1aa01cfa08938046005cf68119",
+    "performance/selective/calls/001.events.jsonl": "fdfecaad0874a9d1dc531e5edd9f42056ac31521c425919de27ab4179b09054e",
+    "performance/selective/calls/001.json": "45fba4d0cec2e9f91726938a3ae01fa2cf09edf4f1774b6e154f6397822cef25",
+    "performance/selective/calls/001.request.json": "8706e98cae8b7d59ec045c905512b50f59e2140dfd6ad39bec9acf28879b93eb",
+    "performance/selective/intervention.json": "bc643ab51f0c22e840e3b669400022c700b63399dc9f7c1afaf6578b1a130c88",
+    "performance/selective/literal-evidence-audit.json": "2fa28a275f46d3a72aa47f56eaec284215a3ff48de6be816a01fb3f8794955d8",
+    "performance/selective/manifest.json": "df8418aa62bf79998a37fa4d2a808c9aacc3a422800fc9cb93081bb6a4eb038e",
+    "performance/selective/result.json": "b3ab98881933c2e1bcd6450c9ddcf068ee325596caceb92517482ce5e07a970a",
+    "performance/selective/scores.json": "26d73f5bc67451a7fdad47cb8ad6f77f0e3b1c1b15da695361922beb24c0dfb3",
+    "performance/selective/semantic-review.json": "d5810259ac1a8548213da7acf16252ef148b4ec21f9cfa7fa4fa76c037a9c6a5",
+    "performance/selective/source-audit.json": "2086772af224e18ddf9989810d221c3c3979d8d9ea186e4f84123495f140d369",
+    "performance/selective/sources.json": "524304cbc0e0b6bd841f84c0bca93d1f28489d89edcc82dccacd4ca4a35cd76a",
+    "performance/selective/state.json": "c55874cd917265d1d13283131664addfcf1f8a14a7e26a0309c5b26a35e39cdc",
+    "performance/selective/summary.json": "bf22cf95a58b9311a460ada7b24190e2e8c3dc3382b6169df6952b9a2c29ad71",
+    "performance/selective/usage.json": "562657c9fc6a1c2e5dd43dfaf20736af1bdb483d187c4da030f813d5ca1d1357",
+    "performance/source-consistency-from-start/calls/001.events.jsonl": "32a7c9d879f7d6ac276d9c08e9de6e04338f43363379db4a41ceac57504a414b",
+    "performance/source-consistency-from-start/calls/001.json": "8147435f271ff267398103f8633566d8a3759b7883685393444f44900f6b9714",
+    "performance/source-consistency-from-start/calls/001.request.json": "3299e5487e39927449b605e67a58c2e6768a9ef0ee5f9f129cb40a58d2396271",
+    "performance/source-consistency-from-start/calls/002.events.jsonl": "8e709b83ba0deaebe52470d96dfddb3e5a7ef46109375564e44618b436ac1920",
+    "performance/source-consistency-from-start/calls/002.json": "9789db6d36d0a46e3b690cc1bc3418d6a308dfe15d14db5b18bb45a80136d352",
+    "performance/source-consistency-from-start/calls/002.request.json": "ed290e5210942ef76f03e69196fd08316929e177fabcc3721eb105641fe53cf9",
+    "performance/source-consistency-from-start/calls/003.events.jsonl": "bb7568e882830c0408515afb8f673c0b2718d5842b1dd8b728d5274bd1017906",
+    "performance/source-consistency-from-start/calls/003.json": "dbcf010c4ce3eb54b97681495dede0cc417c64c4e30cd7c324ebadbacdb6bd6f",
+    "performance/source-consistency-from-start/calls/003.request.json": "f81c56725bdff73eabf6b9c34afabc1037a83ea514895edd61b1fd0492ebcdf4",
+    "performance/source-consistency-from-start/literal-evidence-audit.json": "b42af400a98a603087ec6f75c913ec7a71d08b3a6598387b51431a4f0ff456ca",
+    "performance/source-consistency-from-start/manifest.json": "d504eeccb89df1bea9884af40e645da92813299988049e4a9740732ba5333fb2",
+    "performance/source-consistency-from-start/result.json": "c139e9f58cbe2f45b15469f92a7d16031ddfc2429066ab32a2b468edb6552c2a",
+    "performance/source-consistency-from-start/scores.json": "26d73f5bc67451a7fdad47cb8ad6f77f0e3b1c1b15da695361922beb24c0dfb3",
+    "performance/source-consistency-from-start/semantic-review.json": "5aa2850955c998ef472476ffbf335a84550637a3a10708dc72b8c0a40e1f8f72",
+    "performance/source-consistency-from-start/source-audit.json": "c1c29bd6f597eeb288ffd536e749697dbb2246872bc3d9591971d78e1f8febf6",
+    "performance/source-consistency-from-start/sources.json": "fafdd7565d9c82a4a2f076684a7a908f246025cbcbf6a35b1c8ac65cb13976fd",
+    "performance/source-consistency-from-start/state.json": "4361b022650767040e17daae1533c6494e782dc0863754b12c763f9c68b35cb9",
+    "performance/source-consistency-from-start/summary.json": "7acff6f4f53b2d342c5707a2343e4f30e0187dbab2231cfb23a878da92983f6b",
+    "performance/source-consistency-from-start/usage.json": "9c9678553820ea827028c56be60c32525cc39e17a7e3e38bba7f7380cb46a159",
+    "performance/summary.json": "4ab78950a8820e4608ab2b397ac171c4cb8434dd5c78286bc6a15327c57b2971",
+    "performance/transition.json": "89a1c2ea4e1b5c41db70eb2103008627fd52e4b4ec2aa4f1b227b6367d625679",
+    "runtime/advanced-prefix/sources.json": "1658c8db143b0fc24516c238998ebbe516b0d892079c7b3bb4a3e3331285e4ff",
+    "runtime/advanced-prefix/state.json": "9fb88f21ab8b1967a1c00b8f6e0857ee3fc19bfe20bf08e54bd86bdb32fa2399",
+    "runtime/advanced-prefix/usage.json": "57a9f7a85485b905497fc59bfa3fee780f664a9682f1555529788efe59a972a8",
+    "runtime/fallback/calls/001.events.jsonl": "d98c0051cf8711445674c2fabab7997067b11236bc33e0bc97e5bdd912e9680b",
+    "runtime/fallback/calls/001.json": "b899202140f8e59e8b948e8d748703d797ec17716082d76f25a8e7c8e93a620a",
+    "runtime/fallback/calls/001.request.json": "eb47e7e3478def3d8f36297e4453de96e3dfac11d57f6001c9810ddf3fdc793a",
+    "runtime/fallback/calls/002.events.jsonl": "2909ba5dd3114aeeb92a196e3335e47a5d2d79331e24e4308c6ca358a219ff0c",
+    "runtime/fallback/calls/002.json": "3f45a49104d9aeff34514aac529586a72ad6d11109f9fc3da03cd8c7bb6e9d3f",
+    "runtime/fallback/calls/002.request.json": "1d58c46623c65f83d789663f8e2093022d878d09d5d9a34d4094dee3e672ea28",
+    "runtime/fallback/calls/003.events.jsonl": "cccced19df7d5b410ac982ce3ae0b331b46e8e983575ad7d7c10c3099b3584bb",
+    "runtime/fallback/calls/003.json": "e13a5d6db31ffb1f92be19d480ed6934cf3302ae6edcca82d6e4a9023e718be1",
+    "runtime/fallback/calls/003.request.json": "abc950bad5b9a30cec55110983ceb12597b65c60455a92c8455f09712b72b35d",
+    "runtime/fallback/intervention.json": "ff393816e67fe170cc902ff442b6a449ba87f9027b6e6b8651e0cd8c89ef6fec",
+    "runtime/fallback/literal-evidence-audit.json": "34da0799a8db64b3b64200a5b71aa8142a8c6ea19a0d2e69e3cea8125e396203",
+    "runtime/fallback/manifest.json": "5e9d037f64d5d26d5eb615e5ae6af02f32f9388a0b86716bef369e23f117ee42",
+    "runtime/fallback/result.json": "b76b373c8bca25785f7965a23fdb9956cb69f217e3fc3819dfadab959ea56b26",
+    "runtime/fallback/scores.json": "c26b5fc153d1b2fb4b5ba679a3f77d6aeb254673ed6975d099e02da7e2786069",
+    "runtime/fallback/semantic-review.json": "1075a609a9a2b60bd0517c9255886dc182c212f7bdee4a7a41eccdfb3b64b973",
+    "runtime/fallback/source-audit.json": "5595a6df5441fd892cb9048a4d962db863a5f56a78a32afcea9528fd37a33ed1",
+    "runtime/fallback/sources.json": "1658c8db143b0fc24516c238998ebbe516b0d892079c7b3bb4a3e3331285e4ff",
+    "runtime/fallback/state.json": "864a4936a7a8ad2d5ff4dd1a672570d14b015b8f24568413f728a105b5e279e9",
+    "runtime/fallback/summary.json": "20e7932b32f810cddb8d3cb22a5d0b6cd1f0cc5e5c47b921c63a57ab8fe2529e",
+    "runtime/fallback/usage.json": "8ea4412fe13b820e9c587adde55a13452b7d8eede6969e0ad6e51032ddf0ebcf",
+    "runtime/manifest.json": "fac20332fd2743c7199051da399f58eeca44e3e01bf207e54e82113ead9acfe6",
+    "runtime/no-recovery/literal-evidence-audit.json": "ba1caf3c35e30922c0cef1ecd9d5da0afac6a970b73b4292c5e4ac32d026a6d6",
+    "runtime/no-recovery/manifest.json": "fac20332fd2743c7199051da399f58eeca44e3e01bf207e54e82113ead9acfe6",
+    "runtime/no-recovery/publication-check.json": "3de9cb5c35c01b1a7cc325d3616477cecb691a23f0eb17ccace1625c7f463c07",
+    "runtime/no-recovery/result.json": "af26b985e76171b3b6f811e54c53a1713e98631318daba81b0aaf18a448c9581",
+    "runtime/no-recovery/scores.json": "c26b5fc153d1b2fb4b5ba679a3f77d6aeb254673ed6975d099e02da7e2786069",
+    "runtime/no-recovery/semantic-review.json": "fd060e4bc8979eddc3d5207b3833ec36a577e9e5d58cbe5e0c889c3842c6d4af",
+    "runtime/no-recovery/source-audit.json": "05aa75af271ba03f4b26d3742b3b2dfc57701d5d30e671c8accdf5a2e952d5a5",
+    "runtime/prefix/calls/001.events.jsonl": "f64c031949f0cbe3a6440b3f67f467904ce84a5b0aef7f2c0ca9d67b8a56a9a6",
+    "runtime/prefix/calls/001.json": "5274a972cedfb7ab50ef8d4c60ae8eaedd3bbac57d96079c1d31a11caa91a658",
+    "runtime/prefix/calls/001.request.json": "e3211ab0dfacb08865898b2042fb7a98e4dc4c22bacf0a33f05b5e2d93ed114c",
+    "runtime/prefix/calls/002.events.jsonl": "9a18f43c9d89ffbbe2dee9f6097281cb5c3b6db3a188d4f98e86941d52659557",
+    "runtime/prefix/calls/002.json": "c580ecc99aee03511e0fbceb703c1fe69fe3a112b78e9d940675d6a1a043cadc",
+    "runtime/prefix/calls/002.request.json": "7e605ffe219d0affb7ee3961f9ea90f2373d35f2db1d0ac678d36a2aa2964b37",
+    "runtime/prefix/calls/003.events.jsonl": "8eb9e8adae2375e315a011537c3967d08c2471447ef52185903c15d4baf70436",
+    "runtime/prefix/calls/003.json": "075199cee50265e4d2d5236ac8d4d8b668ff72b9835a997ef526160fa2e2f130",
+    "runtime/prefix/calls/003.request.json": "526d8310d9de827ce0df51a73dee3064e78342b33e63691f5045de4dca380448",
+    "runtime/prefix/literal-evidence-audit.json": "4e0eedc4c208cc29e95500103d8d68f58a378efdb1794066ebdf40cad29eac3e",
+    "runtime/prefix/manifest.json": "1d19db654eea3018bf518428e0fe84629ac5bfe47ec85cb8068b4a3005d14ffa",
+    "runtime/prefix/result.json": "af26b985e76171b3b6f811e54c53a1713e98631318daba81b0aaf18a448c9581",
+    "runtime/prefix/scores.json": "c26b5fc153d1b2fb4b5ba679a3f77d6aeb254673ed6975d099e02da7e2786069",
+    "runtime/prefix/semantic-review.json": "50891790156acf43feeead2f79a14115822de385213589b9bb1f619f088dcc90",
+    "runtime/prefix/source-audit.json": "54c0cc41bbf2724293f728924e9b8be9702fa70a70500e69d13ba381a728bcc3",
+    "runtime/prefix/sources.json": "f320bf6d31e4cae82ea593686b1c4c6a669f67fa865ee75fd5c30886c7e05694",
+    "runtime/prefix/state.json": "9fb88f21ab8b1967a1c00b8f6e0857ee3fc19bfe20bf08e54bd86bdb32fa2399",
+    "runtime/prefix/summary.json": "b14d5a0d66de2f0a6537b344d4cee5df7464b6da4d0226d3449295940f275cf2",
+    "runtime/prefix/usage.json": "57a9f7a85485b905497fc59bfa3fee780f664a9682f1555529788efe59a972a8",
+    "runtime/restart/calls/001.events.jsonl": "775559b951e4b93c28f63a8f506e704581d6a0f5d4c4a819fdb9555f1d8693e2",
+    "runtime/restart/calls/001.json": "4441f236bb601cbb7b66cdba1713d092a6b55b6123efde030d16d1d86fce9064",
+    "runtime/restart/calls/001.request.json": "eb47e7e3478def3d8f36297e4453de96e3dfac11d57f6001c9810ddf3fdc793a",
+    "runtime/restart/calls/002.events.jsonl": "6c820de7ff39a4d12e57d1061ef2f950e1d715d43b6a7f78ea29b79ac0025386",
+    "runtime/restart/calls/002.json": "71f60292238b57e4e6a2308a947da74f05fbbfc5d2cfa35bc0d30863f6e6f6ff",
+    "runtime/restart/calls/002.request.json": "1d58c46623c65f83d789663f8e2093022d878d09d5d9a34d4094dee3e672ea28",
+    "runtime/restart/calls/003.events.jsonl": "308ba4e9e60bf02fd602bc4e0f23c3d97bb92ec90fd1053d66f8a48b38050969",
+    "runtime/restart/calls/003.json": "03266bda61c7033a3e16240ff06f48f92fe0133836448e3f6c875c972d7e92ab",
+    "runtime/restart/calls/003.request.json": "abc950bad5b9a30cec55110983ceb12597b65c60455a92c8455f09712b72b35d",
+    "runtime/restart/intervention.json": "de069c0050d5b330ddcb8e4cf488e330cf5a868af5559ec6ad2e0c6729423ac6",
+    "runtime/restart/literal-evidence-audit.json": "05a5b9ac1e3f04f5a3567f82eb41f33f0f901277fcb2af47f87741a0822fbf9b",
+    "runtime/restart/manifest.json": "5e9d037f64d5d26d5eb615e5ae6af02f32f9388a0b86716bef369e23f117ee42",
+    "runtime/restart/result.json": "c534c73cc51caa42bbbf8f95960c60c5d1a60bb57f9011acb7cf644620e59173",
+    "runtime/restart/scores.json": "c26b5fc153d1b2fb4b5ba679a3f77d6aeb254673ed6975d099e02da7e2786069",
+    "runtime/restart/semantic-review.json": "34e3c0b8d51491fefc47655ac4ec877a189abaf3156929907b9160d945ce372a",
+    "runtime/restart/source-audit.json": "5595a6df5441fd892cb9048a4d962db863a5f56a78a32afcea9528fd37a33ed1",
+    "runtime/restart/sources.json": "1658c8db143b0fc24516c238998ebbe516b0d892079c7b3bb4a3e3331285e4ff",
+    "runtime/restart/state.json": "6c589c24d034a75518f2ca57d2e94a651635aa51e9acace10d54259cf3eb6543",
+    "runtime/restart/summary.json": "6b69155945907b6e966e66f9a22c7299e8055b888862deba9227d57591b5ca3c",
+    "runtime/restart/usage.json": "22dd5b8abfdf82279054fcd13447383cff63280267155c587156b857d445ecf2",
+    "runtime/selective/calls/001.events.jsonl": "56897a2417c5f05cfe5da79b2d4be90cecb66035864ad5963456cbcad3e2f0fd",
+    "runtime/selective/calls/001.json": "5698cfb6aad651b4342e785b8e68fdcdf294995e94ef2a12bcf9395b1c03936e",
+    "runtime/selective/calls/001.request.json": "eafbc05f5701f79ba7deeed67412c77b18957476a04315711fd707711222afe8",
+    "runtime/selective/intervention.json": "bc643ab51f0c22e840e3b669400022c700b63399dc9f7c1afaf6578b1a130c88",
+    "runtime/selective/literal-evidence-audit.json": "2158b20d882cc43d1bef15af2989e6f81dc955b6e891f71d4ea470c081e94a7a",
+    "runtime/selective/manifest.json": "5e9d037f64d5d26d5eb615e5ae6af02f32f9388a0b86716bef369e23f117ee42",
+    "runtime/selective/result.json": "1832519de8e9ee1798b51eaf9b53134deb119c9b91addc6b369b3e69e8063dd2",
+    "runtime/selective/scores.json": "c26b5fc153d1b2fb4b5ba679a3f77d6aeb254673ed6975d099e02da7e2786069",
+    "runtime/selective/semantic-review.json": "a044adc76dfc9e47541758fca33503fe2f2b99353806c07c8b44ddd3ba613836",
+    "runtime/selective/source-audit.json": "655d23eab7ba46a1fd55da268f487f83c6ae1aeaa99bc8cf53202318b2ce10f1",
+    "runtime/selective/sources.json": "1658c8db143b0fc24516c238998ebbe516b0d892079c7b3bb4a3e3331285e4ff",
+    "runtime/selective/state.json": "d57d0cfd885d322182461aa995045004f9677e725bf9b52abdc3a0a96856645e",
+    "runtime/selective/summary.json": "5e26a50018466eff92c5729030dd3ea71f34bfa5d521a2a5073cfe9658200566",
+    "runtime/selective/usage.json": "abd713621e9fecfda1bcb7c950c606b3d112df6f7bae234bd308408ed391bd3f",
+    "runtime/source-consistency-from-start/calls/001.events.jsonl": "73fbf6d0a301c334ab0a7b04d153feeef1cddb10aca2c51e71db42989bc1b264",
+    "runtime/source-consistency-from-start/calls/001.json": "36d8655311254b29cdf67b0eeb9cdbf4b077a37a3d7526cfb4a9f36373b98075",
+    "runtime/source-consistency-from-start/calls/001.request.json": "e3211ab0dfacb08865898b2042fb7a98e4dc4c22bacf0a33f05b5e2d93ed114c",
+    "runtime/source-consistency-from-start/calls/002.events.jsonl": "dce6493e5017fcc6dc49cc51cdb6b3831bd0b8ee3f6a7d00276c064a63961604",
+    "runtime/source-consistency-from-start/calls/002.json": "2231ae318a36967039d71e2ed7d830f4f00d3352663a4a978b769f147a5d938a",
+    "runtime/source-consistency-from-start/calls/002.request.json": "7e605ffe219d0affb7ee3961f9ea90f2373d35f2db1d0ac678d36a2aa2964b37",
+    "runtime/source-consistency-from-start/calls/003.events.jsonl": "2045cb0408153be5877b5f24c06dc39eeb41e21038d4d9b2791123e4bf8185b6",
+    "runtime/source-consistency-from-start/calls/003.json": "2eccf06f62e5cd540bd0eb69700011a5bbb08079ee6f8694a27958d317bbfd1a",
+    "runtime/source-consistency-from-start/calls/003.request.json": "3a406310c932af0de48a01245b4b5a08fa9bed1c6786fd0f6717b6578bfe5c07",
+    "runtime/source-consistency-from-start/literal-evidence-audit.json": "5e76713013ffb42e7e270e6280d59f93800a7376362cba150804ee15530b2b51",
+    "runtime/source-consistency-from-start/manifest.json": "1d19db654eea3018bf518428e0fe84629ac5bfe47ec85cb8068b4a3005d14ffa",
+    "runtime/source-consistency-from-start/result.json": "a66d41d01488feb4967b81b3e69ac7512a10605a9b527a311bd4aea2413588a8",
+    "runtime/source-consistency-from-start/scores.json": "c26b5fc153d1b2fb4b5ba679a3f77d6aeb254673ed6975d099e02da7e2786069",
+    "runtime/source-consistency-from-start/semantic-review.json": "6cafdfefcf4afe651b3131d5195e05975d404c24e215632ab8d1e37413d51398",
+    "runtime/source-consistency-from-start/source-audit.json": "655d23eab7ba46a1fd55da268f487f83c6ae1aeaa99bc8cf53202318b2ce10f1",
+    "runtime/source-consistency-from-start/sources.json": "1658c8db143b0fc24516c238998ebbe516b0d892079c7b3bb4a3e3331285e4ff",
+    "runtime/source-consistency-from-start/state.json": "997841b68c18449a5bca11db1d7a53a2f600a492e94c3d6332a74d54da205f24",
+    "runtime/source-consistency-from-start/summary.json": "b725f6d12579bc980877fa486f59f9d3975f58c34b404d98836683d95ad3b1d1",
+    "runtime/source-consistency-from-start/usage.json": "1c47d602fcebf4a4ce3c331e439b957f0e55604c28c34b78194f26d3f456c455",
+    "runtime/summary.json": "09051dabeb641015b0e2264c2bf49bea2556e7e189993822ff6d093e7ea9cdb6",
+    "runtime/transition.json": "50c9fe4a38ebaeab391248de3f084937f989a5d0a64286357c5628579944fe86"
+  }
+}

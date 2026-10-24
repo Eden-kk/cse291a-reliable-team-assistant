@@ -1,0 +1,35 @@
+Cross-development semantic recovery — 2026-10-24
+
+Completed: two predeclared development_seen cases, runtime/1 and performance/1. Source commit2012b71, clean isolated clone;176 preflight tests passed.26 real task model calls,487598 recorded tokens,0 unknown usage,0 retries, no held-out data. All physical/logical ledgers settled; preserved prefix and linked correction checks passed. Raw archive and checksums: output/cross-case-recovery-20261024/raw-evidence.tar.gz; compact review/accounting: docs/cross-case-recovery-20261024-results.json. All task calls use existing subscription; these are not API-dollar measurements.
+
+All-arm outcomes (prefix assessed before transition; others after transition):
+case         arm                            joint JRA/ECR incremental logical-total wall-s
+runtime      prefix                         True  1/1   51887   51887  27.91
+runtime      no-recovery                    False 1/1       0   51887     NA
+runtime      restart                        True  1/1   51701  103588  29.23
+runtime      selective                      True  1/1   19616   71503  10.13
+runtime      fallback                       True  1/1   51602  103489  22.39
+runtime      source-consistency-from-start  True  1/1   51402   51402  21.02
+performance  prefix                         False 0/0   58693   58693  26.90
+performance  no-recovery                    False 0/0       0   58693     NA
+performance  selective                      True  1/1   26301   84994  13.01
+performance  restart                        True  1/1   58874  117567  22.36
+performance  fallback                       True  1/1   58688  117381  20.45
+performance  source-consistency-from-start  True  1/1   58834   58834  27.46
+
+Semantic findings before reading native labels
+Runtime: original/no-recovery answer cites9556, while source heads after the constructed transition give9555. Root category remains protocol mismatch. Restart/selective/fallback/prevention cite current configuration, HTTP/1.x rejection and kubelet restart evidence. No-recovery has5/7 current sources and fails joint success despite native JRA/ECR1. This is supporting-fact refresh, not correction of a wrong root.
+Performance: original800m evidence led to an uncertain answer, explicitly recognizing insufficient support. No-recovery retains6/8 current sources and remains uncertain. After refresh to200m, all four active methods diagnose CPU overload and cite throttling0.824s, latency70.04ms and live CPU limits. Each has8/8 current sources and native JRA/ECR1. CPU demand origin and instantaneous bursts are not measured; no unique causal proof or production remediation claim. This is abstention-to-supported-diagnosis, not wrong-root repair. The constructed transition changes configuration evidence while retaining telemetry; it is not a recorded temporal incident.
+
+All cited IDs/quotes resolved in actual final model requests. Source authenticity/freshness was checked separately. Review by the primary assistant, before native scores, is recorded qualitative judgment; no independent human adjudication. Runtime and performance are both boutique/adservice and already-seen development incidents: no statistical generalization, service coverage or independent-app claim.
+
+Per-method descriptive outcomes: no-recovery0/2 joint successes; restart2/2; selective2/2; fallback2/2. Separate from-start prevention2/2. Do not pool prevention with post-fault recovery to imply identical starting conditions. Prefix performance uncertainty is retained, not discarded.
+
+Quality-preserving cost comparisons
+runtime: selective saves62.06% recovery-increment tokens and30.97% including logical shared-prefix cost versus restart.
+performance: selective saves55.33% recovery-increment tokens and27.71% including logical shared-prefix cost versus restart.
+
+Independent source-consistency prevention costs51402/58834 tokens end-to-end versus selective71503/84994 including their already-consumed prefixes. Prevention is cheaper here and must remain a strong baseline. It starts before the fault has propagated and does not solve the same post-consumption recovery obligation. Shared prefix paid once physically, included once per logical method. Wall times are single observations, not percentiles, confidence intervals or causal proof of speed improvement. Auxiliary review/analysis costs excluded from task ledger.
+
+What remains and next decision
+This closes a two-case semantic development pilot, not P2 or formal evaluation. Both transitions affect the same sparse configuration branch. Missing-provenance fallback is semantically successful here; dense actual-consumption and wrong-intermediate-content real-model cases remain missing. Next freeze one development dense/handoff condition and one wrong-content intervention with independent applicability/closure expectations. Preserve no-recovery, restart and prevention baselines and all non-propagating outcomes. Only then freeze an affordable held-out matrix; final8 remain locked. Do not extend the current batch or tune its outcomes retrospectively. Phase1 frozen packages remain unchanged.
