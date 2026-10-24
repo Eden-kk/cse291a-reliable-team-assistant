@@ -1,0 +1,157 @@
+{
+  "rows": [
+    {
+      "arm": "collection",
+      "state": "completed",
+      "calls": 2,
+      "tokens": 6442,
+      "conservative_usd": 0.008244950000000001
+    },
+    {
+      "arm": "clean",
+      "state": "completed",
+      "calls": 1,
+      "tokens": 7824,
+      "conservative_usd": 0.00982955,
+      "scores": {
+        "CA": 1.0,
+        "FA": 1.0,
+        "JRA": 1.0,
+        "MC": 1.0,
+        "EOC": 0.6666666666666666,
+        "ECR": 1.0,
+        "EE": 0.5714285714285714,
+        "contract_valid": true,
+        "budget_valid": true
+      }
+    },
+    {
+      "arm": "corrupt",
+      "state": "completed",
+      "calls": 1,
+      "tokens": 7830,
+      "conservative_usd": 0.00984905,
+      "scores": {
+        "CA": 1.0,
+        "FA": 1.0,
+        "JRA": 1.0,
+        "MC": 1.0,
+        "EOC": 0.6666666666666666,
+        "ECR": 1.0,
+        "EE": 0.5714285714285714,
+        "contract_valid": true,
+        "budget_valid": true
+      }
+    },
+    {
+      "arm": "no-recovery",
+      "state": "invalid",
+      "calls": 0,
+      "tokens": 0,
+      "conservative_usd": 0
+    },
+    {
+      "arm": "restart",
+      "state": "completed",
+      "calls": 3,
+      "tokens": 15446,
+      "conservative_usd": 0.0194659,
+      "scores": {
+        "CA": 1.0,
+        "FA": 1.0,
+        "JRA": 1.0,
+        "MC": 1.0,
+        "EOC": 1.0,
+        "ECR": 1.0,
+        "EE": 0.5,
+        "contract_valid": true,
+        "budget_valid": true
+      }
+    },
+    {
+      "arm": "selective",
+      "state": "completed",
+      "calls": 1,
+      "tokens": 7830,
+      "conservative_usd": 0.00984905,
+      "scores": {
+        "CA": 1.0,
+        "FA": 1.0,
+        "JRA": 1.0,
+        "MC": 1.0,
+        "EOC": 0.6666666666666666,
+        "ECR": 1.0,
+        "EE": 0.5714285714285714,
+        "contract_valid": true,
+        "budget_valid": true
+      }
+    },
+    {
+      "arm": "prevention",
+      "state": "completed",
+      "calls": 3,
+      "tokens": 14514,
+      "conservative_usd": 0.018376200000000002,
+      "scores": {
+        "CA": 1.0,
+        "FA": 1.0,
+        "JRA": 1.0,
+        "MC": 1.0,
+        "EOC": 1.0,
+        "ECR": 1.0,
+        "EE": 0.5,
+        "contract_valid": true,
+        "budget_valid": true
+      }
+    },
+    {
+      "arm": "expiry-restart",
+      "state": "completed",
+      "calls": 3,
+      "tokens": 14567,
+      "conservative_usd": 0.018548449999999998,
+      "scores": {
+        "CA": 1.0,
+        "FA": 1.0,
+        "JRA": 1.0,
+        "MC": 1.0,
+        "EOC": 0.6666666666666666,
+        "ECR": 1.0,
+        "EE": 0.5,
+        "contract_valid": true,
+        "budget_valid": true
+      }
+    },
+    {
+      "arm": "expiry-selective",
+      "state": "completed",
+      "calls": 3,
+      "tokens": 14455,
+      "conservative_usd": 0.018371,
+      "scores": {
+        "CA": 1.0,
+        "FA": 1.0,
+        "JRA": 1.0,
+        "MC": 1.0,
+        "EOC": 0.6666666666666666,
+        "ECR": 1.0,
+        "EE": 0.625,
+        "contract_valid": true,
+        "budget_valid": true
+      }
+    }
+  ],
+  "total_calls": 17,
+  "tokens": 88908,
+  "settled_usd": 0.0711062,
+  "conservative_usd": "0.11253415",
+  "remaining_usd": 49.78196645,
+  "fault_adopted": false,
+  "formal_evaluation": false,
+  "evidence_audit": "triton-workflow-20261024-audit.txt",
+  "tests": {
+    "run": 200,
+    "skipped": 12,
+    "passed": 188
+  }
+}

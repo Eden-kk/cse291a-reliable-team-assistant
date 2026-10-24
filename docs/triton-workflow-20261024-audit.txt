@@ -1,0 +1,6 @@
+TritonAI full workflow source review — Oct24
+Development-seen boutique/runtime/1 only; review is not blind and not independent human ground truth.
+All seven diagnosis outputs cite observed HTTP liveness failures and/or HTTP/1.x-on-gRPC errors. YAML and pod descriptions support the protocol mismatch. Exact quotation contract passes in all seven. The corrupted containerPort9556 is not used in the final explanation, which retains source-supported9555 from readiness/PORT/description. Thus wrong-content adoption=0/1, not demonstrated semantic recovery.
+Selective exact-source comparison repairs one configuration observation; this is static archive equality, not semantic error detection. Independent prevention also repairs the injected observation. No-recovery remains invalid after the trusted event; obsolete publication is rejected. Successful local publication flags are explicitly provisional, not assertions of factual correctness.
+Expiry arms each recollect two specialists and diagnose once. Equality of call counts is established; do not assume byte-identical requests or latency equivalence.
+Native labels are loaded only after this evidence review. Formal heldouts remain unopened.

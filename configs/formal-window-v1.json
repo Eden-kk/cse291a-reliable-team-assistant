@@ -2,7 +2,7 @@
   "version": "formal-window-v1-20261024",
   "timezone": "America/Los_Angeles",
   "user_authorized_conditional_launch": true,
-  "authorization": "User: 按照目前的key调整窗口，在合适时机启动正式评估",
+  "authorization": "User: \u6309\u7167\u76ee\u524d\u7684key\u8c03\u6574\u7a97\u53e3\uff0c\u5728\u5408\u9002\u65f6\u673a\u542f\u52a8\u6b63\u5f0f\u8bc4\u4f30",
   "authorization_date": "2026-10-24",
   "formal_started": false,
   "heldout_opened": false,
@@ -24,7 +24,7 @@
     "Versioned output/reasoning/call/token budget and unknown-usage accounting",
     "Frozen code/prompt/config hashes and fair evidence/native scoring sequence",
     "Refreshed authorized model, charged prices, balance and access through bounded run",
-    "Course workload compatibility reviewed against authoritative requirements; distinguish explicit rule from inferred approval requirement"
+    "Official overview requires course-provided or approved local benchmarks; retain evidence of acceptance and AWS-default resource compatibility"
   ],
   "not_required": [
     "Perfect accuracy",
