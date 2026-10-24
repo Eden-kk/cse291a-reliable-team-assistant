@@ -1,0 +1,54 @@
+Formal v2 execution and scoring freeze — 2026-10-24
+
+This release does not launch inference and does not unlock stored splits.json.
+Three fixed final_locked case IDs, two repetitions each; 17 calls/unit maximum,
+102 total calls. No retries or case replacement. Repeat 1 executes restart before
+selective; repeat 2 reverses both wrong-content and expiry comparator orders.
+One global provider enforces $20, 102 calls and 6,746,688 reserved token ceiling.
+Input bound: 57,952 bytes including framing allowance; output 8,192 tokens;
+api-glm-5.3 alias, temperature 0, reasoning low, timeout 180 seconds.
+The hosted alias has no exposed immutable revision; all responses are retained.
+
+configs/formal-freeze-v2.json hashes runtime package, entrypoints, scoring,
+protocol, window, split registry and locked dependencies. Changes require a new
+freeze and fresh evidence review; do not edit hashes to bypass a discrepancy.
+The old v1 remains historical. A single approved execution host is required.
+The durable ~/.local/state/cse291a-team-assistant/formal-v2-launch.json marker
+prevents duplicate launches even from another repository copy on that host.
+Never delete the marker to retry an uncertain run. Cross-host execution is not
+permitted. Interrupted or rejected launches need reconciliation; no auto-resume.
+
+Launch only after independently verified evidence JSON supplies:
+  freeze_sha256: SHA256 of configs/formal-freeze-v2.json
+  checked_at: timezone-aware ISO timestamp, at most 24 hours old
+  benchmark_approval, resource_approval, model_access, workflow_validation:
+    accepted: true; evidence_path: real file; sha256: exact file checksum
+These fields attest a completed evidence review, not approval inferred by code.
+Benchmark approval remains unresolved. Compute can be course-authorized university
+resources; AWS is not hard-coded as mandatory. Record the actual approved host.
+A fresh account balance must reserve the complete $20 and expiry must exceed the
+online stop. Start window and per-request cutoff are enforced by executable code.
+
+Future command after gates resolve:
+  python scripts/run_formal_v2.py --vendor PATH --output NEW_DIRECTORY --approvals REVIEW_JSON
+No heldout opens occur before gates and durable marker. Local registry copy is
+unlocked only in memory. All remaining arms/units stay explicitly not_run on
+failure. Not-injected faults remain in results and are not replaced.
+
+Scoring is two steps, offline after inference:
+1. Independent reviewer reads outputs and observations, not labels; saves JSON
+   with reviewer identity, labels_seen=false, input_hashes from
+   score_formal_v2.inputs(run), and one rows entry per result directory.
+   Each row: supported=yes/no/uncertain; rationale with source references;
+   publication_current boolean; fault_adopted boolean. Check ledger validity and
+   whether changed numeric content was actually adopted, not just cited.
+   python scripts/score_formal_v2.py seal RUN --review REVIEW_JSON
+2. Only after the seal validates:
+   python scripts/score_formal_v2.py score RUN --vendor PATH
+The scorer imports native evaluation/labels only after review and input hashes
+match. Strict joint requires diagnosed, JRA=1, ECR=1, supported=yes, current
+publication, contract valid and budget valid. Semantic joint omits ECR only.
+Uncertain is never success. Assigned-unit statuses remain in the score output;
+not-run/failed/not-injected are reported explicitly and never silently dropped.
+The evidence-review seal proves immutable reviewed inputs; reviewer independence
+is an attestation, not something software can establish by itself.

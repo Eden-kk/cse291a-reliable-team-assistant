@@ -29,13 +29,15 @@ def account():
     with urllib.request.urlopen(req,timeout=20) as r:d=json.load(r)['info']
     return {k:d.get(k) for k in ('spend','max_budget','expires')}
 
-async def matrix(out,vendor,registry,commit,backend):
-    outcomes={};cap=17*66144
+async def matrix(out,vendor,registry,commit,backend, *, case=CASE, formal=False,
+                 order=('restart','selective'), freeze=None, artifact_root=None):
+    outcomes={name:{'state':'not_run','calls':[]} for name in ('collection','clean','corrupt','no-recovery','restart','selective','prevention','expiry-restart','expiry-selective')};cap=17*66144
+    call_start=len(backend.records)
     def build():
         memory=PolicyMemory();policy={'rules':[]}
         memory.promote('oncall','baseline',policy,{'accepted':True,'sha256':digest(policy)})
         return Investigation(Runtime(memory,Dispatcher(Budget(cap),concurrency=1)),backend,
-            Snapshot(vendor,CASE,registry,commit),reservation=66144,max_tools=24,diagnosis_rounds=1)
+            Snapshot(vendor,case,registry,commit,freeze,artifact_root),reservation=66144,max_tools=24,diagnosis_rounds=1)
     def clone(inv):
         other=fork(inv,backend);other.runtime.dispatcher=Dispatcher(Budget(cap),concurrency=1)
         other.runtime.dispatcher.budget.spent=inv.runtime.dispatcher.budget.spent
@@ -59,8 +61,8 @@ async def matrix(out,vendor,registry,commit,backend):
             outcomes[name]=outcome
             write(path/'state.json',{k:asdict(v) for k,v in inv.incident.store.results.items()})
             write(path/'ledger.json',inv.incident.store.ledger)
-            write(path/'manifest.json',{'case':CASE,'split':'development_seen','code_commit':commit,'dataset_commit':registry['dataset_commit']})
-            write(out/'summary.json',{'arms':outcomes,'provider_halted':backend.halted,'calls':len(backend.records),'formal_evaluation':False})
+            write(path/'manifest.json',{'case':case,'split':'final_locked' if formal else 'development_seen','code_commit':commit,'dataset_commit':registry['dataset_commit']})
+            write(out/'summary.json',{'arms':outcomes,'provider_halted':backend.halted,'calls':len(backend.records),'formal_evaluation':formal})
         return outcome['state']=='completed' and not backend.halted
     base=build()
     if not await run('collection',base,base.collect):return
@@ -78,7 +80,7 @@ async def matrix(out,vendor,registry,commit,backend):
         write(out/'notification.json',{'invalid':sorted(invalid),'stale_publication_rejected':rejected})
         outcomes['no-recovery']={'state':'invalid','calls':[],'invalid':sorted(invalid)}
         frozen=copy.deepcopy(contaminated.incident.store.__dict__)
-        for method in ('restart','selective'):
+        for method in order:
             inv=clone(contaminated)
             async def recover():
                 if method=='restart':
@@ -98,7 +100,7 @@ async def matrix(out,vendor,registry,commit,backend):
         return await inv.diagnose()
     if not await run('prevention',inv,prevention):return
     clean.incident.store.invalidate(['initial'])
-    for method in ('restart','selective'):
+    for method in order:
         inv=clone(clean)
         async def expired():
             if method=='restart':inv.runtime.restart(inv.identifier,{'reason':'all work expired'})
@@ -106,10 +108,10 @@ async def matrix(out,vendor,registry,commit,backend):
             inv.tool_budget_start=len(inv.snapshot.observations)+len(inv.tool_errors)
             await inv.collect(reuse=method=='selective');return await inv.diagnose()
         if not await run('expiry-'+method,inv,expired,supersedes=1):return
-    assert len(backend.records)<=17
+    assert len(backend.records)-call_start<=17
     assert len(outcomes['expiry-restart']['calls'])==len(outcomes['expiry-selective']['calls'])==3
     outcomes['checks']={'arm_isolation':True,'expiry_stage_counts_equal':True,'generic_fault':fault['injected']}
-    write(out/'summary.json',{'arms':outcomes,'calls':len(backend.records),'provider_halted':backend.halted,'formal_evaluation':False})
+    write(out/'summary.json',{'arms':outcomes,'calls':len(backend.records),'provider_halted':backend.halted,'formal_evaluation':formal})
 
 async def main(args):
     registry=json.loads((ROOT/'configs/splits.json').read_text())
