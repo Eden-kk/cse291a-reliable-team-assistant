@@ -106,7 +106,7 @@ if TRITON:
         if path.is_file(): copy(path,Path('docs')/path.name)
 copy(PDF,'phase1-report.pdf')
 copy(OUT/'phase1-report.txt','phase1-report.txt')
-copy(ROOT/'docs/phase1-oct24-readme.txt','RELEASE_README.txt')
+copy(ROOT/'docs'/('triton-calibration-release-readme.txt' if TRITON else 'phase1-oct24-readme.txt'),'RELEASE_README.txt')
 vendor = ROOT.parent/'preparation/291a-team-agent/vendor/Cloud-OpsBench'
 for rel in ('agents/cloudops_agent','LICENSE','process-label/boutique/runtime/1','process-label/boutique/service/1','process-label/boutique/performance/1'):
     copy(vendor/rel,Path('vendor_offline/Cloud-OpsBench')/rel)
