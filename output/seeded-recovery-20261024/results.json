@@ -1,0 +1,2127 @@
+{
+  "kind": "deterministic_synthetic_seeded_state_recovery",
+  "api_calls": 0,
+  "limitations": [
+    "Not natural LLM adoption or semantic recovery evidence.",
+    "Handwritten transformations and oracle, unit work counts only.",
+    "Observable provenance gaps trigger explicit controller fallback; silently omitted edges remain undetectable.",
+    "Source update is synthetic; no native benchmark cases or labels used."
+  ],
+  "fixtures": {
+    "derived_wrong_claim": {
+      "source_after": {
+        "version": 1,
+        "threshold": 3
+      },
+      "seeded_state": {
+        "configuration_raw": {
+          "name": "configuration_raw",
+          "version": 1,
+          "payload": {
+            "threshold": 3
+          },
+          "inputs": {},
+          "sources": {
+            "configuration": 1
+          },
+          "shared_reads": {},
+          "citations": [],
+          "complete": true
+        },
+        "telemetry_raw": {
+          "name": "telemetry_raw",
+          "version": 1,
+          "payload": {
+            "health": "degraded"
+          },
+          "inputs": {},
+          "sources": {},
+          "shared_reads": {},
+          "citations": [],
+          "complete": true
+        },
+        "claim": {
+          "name": "claim",
+          "version": 1,
+          "payload": {
+            "threshold_claim": 9
+          },
+          "inputs": {
+            "configuration_raw": 1
+          },
+          "sources": {},
+          "shared_reads": {},
+          "citations": [],
+          "complete": true
+        },
+        "recommendation": {
+          "name": "recommendation",
+          "version": 1,
+          "payload": {
+            "inspect_threshold": 9
+          },
+          "inputs": {
+            "claim": 1
+          },
+          "sources": {},
+          "shared_reads": {},
+          "citations": [],
+          "complete": true
+        },
+        "telemetry_summary": {
+          "name": "telemetry_summary",
+          "version": 1,
+          "payload": {
+            "health": "degraded"
+          },
+          "inputs": {
+            "telemetry_raw": 1
+          },
+          "sources": {},
+          "shared_reads": {},
+          "citations": [],
+          "complete": true
+        },
+        "brief": {
+          "name": "brief",
+          "version": 1,
+          "payload": {
+            "inspect_threshold": 9,
+            "health": "degraded"
+          },
+          "inputs": {
+            "recommendation": 1,
+            "telemetry_summary": 1
+          },
+          "sources": {},
+          "shared_reads": {},
+          "citations": [],
+          "complete": true
+        }
+      },
+      "assigned_expected_closure": [
+        "brief",
+        "claim",
+        "recommendation"
+      ],
+      "actual_closure": [
+        "brief",
+        "claim",
+        "recommendation"
+      ],
+      "arms": {
+        "no_recovery": {
+          "work_units": 0,
+          "executed_nodes": [],
+          "fallback_restart": false,
+          "observable_provenance_gaps": {},
+          "published": false,
+          "matches_toy_semantic_oracle": false,
+          "valid_unchanged_nodes": [
+            "configuration_raw",
+            "telemetry_raw",
+            "telemetry_summary"
+          ],
+          "invalid_after": [
+            "brief",
+            "claim",
+            "recommendation"
+          ],
+          "before_hashes": {
+            "configuration_raw": "dcd3ddaf6eaaccadff0d4472be9a34ab9448cb150bc674adc87f329fb7b4d2f7",
+            "telemetry_raw": "495f6d5ef05b029245b7f6f735aab5408154a796562552b1bd1fbb6a4474ddda",
+            "claim": "e45006787dc3e69b9572aeba51adac620502ce24d681c436bb4f990906a54a15",
+            "recommendation": "eefde8a1b912098e737fde950fd38f5f6132f9d73201713861d26b49006254c2",
+            "telemetry_summary": "6a59be6bf340982ad7728b07d128ad53de73b41034d51868292f056c7d28de95",
+            "brief": "01694d9a5e4c99bdc49fd0736f89ecff3c1848fe529ede3e56e0597bdfd0a096"
+          },
+          "after_hashes": {
+            "configuration_raw": "dcd3ddaf6eaaccadff0d4472be9a34ab9448cb150bc674adc87f329fb7b4d2f7",
+            "telemetry_raw": "495f6d5ef05b029245b7f6f735aab5408154a796562552b1bd1fbb6a4474ddda",
+            "claim": "e45006787dc3e69b9572aeba51adac620502ce24d681c436bb4f990906a54a15",
+            "recommendation": "eefde8a1b912098e737fde950fd38f5f6132f9d73201713861d26b49006254c2",
+            "telemetry_summary": "6a59be6bf340982ad7728b07d128ad53de73b41034d51868292f056c7d28de95",
+            "brief": "01694d9a5e4c99bdc49fd0736f89ecff3c1848fe529ede3e56e0597bdfd0a096"
+          },
+          "state": {
+            "configuration_raw": {
+              "name": "configuration_raw",
+              "version": 1,
+              "payload": {
+                "threshold": 3
+              },
+              "inputs": {},
+              "sources": {
+                "configuration": 1
+              },
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "telemetry_raw": {
+              "name": "telemetry_raw",
+              "version": 1,
+              "payload": {
+                "health": "degraded"
+              },
+              "inputs": {},
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "claim": {
+              "name": "claim",
+              "version": 1,
+              "payload": {
+                "threshold_claim": 9
+              },
+              "inputs": {
+                "configuration_raw": 1
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "recommendation": {
+              "name": "recommendation",
+              "version": 1,
+              "payload": {
+                "inspect_threshold": 9
+              },
+              "inputs": {
+                "claim": 1
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "telemetry_summary": {
+              "name": "telemetry_summary",
+              "version": 1,
+              "payload": {
+                "health": "degraded"
+              },
+              "inputs": {
+                "telemetry_raw": 1
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "brief": {
+              "name": "brief",
+              "version": 1,
+              "payload": {
+                "inspect_threshold": 9,
+                "health": "degraded"
+              },
+              "inputs": {
+                "recommendation": 1,
+                "telemetry_summary": 1
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            }
+          },
+          "ledger": [
+            {
+              "id": 1,
+              "result": "brief",
+              "version": 1,
+              "payload": {
+                "inspect_threshold": 9,
+                "health": "degraded"
+              },
+              "epoch": 0,
+              "supersedes": null
+            }
+          ]
+        },
+        "restart": {
+          "work_units": 6,
+          "executed_nodes": [
+            "configuration_raw",
+            "telemetry_raw",
+            "claim",
+            "recommendation",
+            "telemetry_summary",
+            "brief"
+          ],
+          "fallback_restart": false,
+          "observable_provenance_gaps": {},
+          "published": true,
+          "matches_toy_semantic_oracle": true,
+          "valid_unchanged_nodes": [],
+          "invalid_after": [],
+          "before_hashes": {
+            "configuration_raw": "dcd3ddaf6eaaccadff0d4472be9a34ab9448cb150bc674adc87f329fb7b4d2f7",
+            "telemetry_raw": "495f6d5ef05b029245b7f6f735aab5408154a796562552b1bd1fbb6a4474ddda",
+            "claim": "e45006787dc3e69b9572aeba51adac620502ce24d681c436bb4f990906a54a15",
+            "recommendation": "eefde8a1b912098e737fde950fd38f5f6132f9d73201713861d26b49006254c2",
+            "telemetry_summary": "6a59be6bf340982ad7728b07d128ad53de73b41034d51868292f056c7d28de95",
+            "brief": "01694d9a5e4c99bdc49fd0736f89ecff3c1848fe529ede3e56e0597bdfd0a096"
+          },
+          "after_hashes": {
+            "configuration_raw": "6a58042a5363fac8cd0e9ac577aba589c609468309ab999ccee73e0c0396c559",
+            "telemetry_raw": "bf2f9808eaa9053db1abfe4005cca34d105f05635ab5edcc965b1996903424cd",
+            "claim": "871f64de464aa3f6da642f93333f53fa86ace71f3680bdf6d448799ac140a999",
+            "recommendation": "667c21c33df23bcd21d0c19cc15a62ee737c793e6bf09ff58beac49a9516fe16",
+            "telemetry_summary": "7f03a2c71ad3ef2f65657a5abd39fd822534692e518a2c0897d44340ec2725c1",
+            "brief": "a142c32b9c0d9cf114d9a64f92e813ae812dad26551a5f12466fc693e2d4391a"
+          },
+          "state": {
+            "configuration_raw": {
+              "name": "configuration_raw",
+              "version": 2,
+              "payload": {
+                "threshold": 3
+              },
+              "inputs": {},
+              "sources": {
+                "configuration": 1
+              },
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "telemetry_raw": {
+              "name": "telemetry_raw",
+              "version": 2,
+              "payload": {
+                "health": "degraded"
+              },
+              "inputs": {},
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "claim": {
+              "name": "claim",
+              "version": 2,
+              "payload": {
+                "threshold_claim": 3
+              },
+              "inputs": {
+                "configuration_raw": 2
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "recommendation": {
+              "name": "recommendation",
+              "version": 2,
+              "payload": {
+                "inspect_threshold": 3
+              },
+              "inputs": {
+                "claim": 2
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "telemetry_summary": {
+              "name": "telemetry_summary",
+              "version": 2,
+              "payload": {
+                "health": "degraded"
+              },
+              "inputs": {
+                "telemetry_raw": 2
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "brief": {
+              "name": "brief",
+              "version": 2,
+              "payload": {
+                "inspect_threshold": 3,
+                "health": "degraded"
+              },
+              "inputs": {
+                "recommendation": 2,
+                "telemetry_summary": 2
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            }
+          },
+          "ledger": [
+            {
+              "id": 1,
+              "result": "brief",
+              "version": 1,
+              "payload": {
+                "inspect_threshold": 9,
+                "health": "degraded"
+              },
+              "epoch": 0,
+              "supersedes": null
+            },
+            {
+              "id": 2,
+              "result": "brief",
+              "version": 2,
+              "payload": {
+                "inspect_threshold": 3,
+                "health": "degraded"
+              },
+              "epoch": 2,
+              "supersedes": 1
+            }
+          ]
+        },
+        "selective": {
+          "work_units": 3,
+          "executed_nodes": [
+            "claim",
+            "recommendation",
+            "brief"
+          ],
+          "fallback_restart": false,
+          "observable_provenance_gaps": {},
+          "published": true,
+          "matches_toy_semantic_oracle": true,
+          "valid_unchanged_nodes": [
+            "configuration_raw",
+            "telemetry_raw",
+            "telemetry_summary"
+          ],
+          "invalid_after": [],
+          "before_hashes": {
+            "configuration_raw": "dcd3ddaf6eaaccadff0d4472be9a34ab9448cb150bc674adc87f329fb7b4d2f7",
+            "telemetry_raw": "495f6d5ef05b029245b7f6f735aab5408154a796562552b1bd1fbb6a4474ddda",
+            "claim": "e45006787dc3e69b9572aeba51adac620502ce24d681c436bb4f990906a54a15",
+            "recommendation": "eefde8a1b912098e737fde950fd38f5f6132f9d73201713861d26b49006254c2",
+            "telemetry_summary": "6a59be6bf340982ad7728b07d128ad53de73b41034d51868292f056c7d28de95",
+            "brief": "01694d9a5e4c99bdc49fd0736f89ecff3c1848fe529ede3e56e0597bdfd0a096"
+          },
+          "after_hashes": {
+            "configuration_raw": "dcd3ddaf6eaaccadff0d4472be9a34ab9448cb150bc674adc87f329fb7b4d2f7",
+            "telemetry_raw": "495f6d5ef05b029245b7f6f735aab5408154a796562552b1bd1fbb6a4474ddda",
+            "claim": "9afb5ba6f27f0c426cc6825789c12d91ccbe531cbb5dac47f5515002a3fbcd44",
+            "recommendation": "667c21c33df23bcd21d0c19cc15a62ee737c793e6bf09ff58beac49a9516fe16",
+            "telemetry_summary": "6a59be6bf340982ad7728b07d128ad53de73b41034d51868292f056c7d28de95",
+            "brief": "f538f88f993b38b69894724c4df296f32a7617796af5bfca7370e6cb265d02cd"
+          },
+          "state": {
+            "configuration_raw": {
+              "name": "configuration_raw",
+              "version": 1,
+              "payload": {
+                "threshold": 3
+              },
+              "inputs": {},
+              "sources": {
+                "configuration": 1
+              },
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "telemetry_raw": {
+              "name": "telemetry_raw",
+              "version": 1,
+              "payload": {
+                "health": "degraded"
+              },
+              "inputs": {},
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "claim": {
+              "name": "claim",
+              "version": 2,
+              "payload": {
+                "threshold_claim": 3
+              },
+              "inputs": {
+                "configuration_raw": 1
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "recommendation": {
+              "name": "recommendation",
+              "version": 2,
+              "payload": {
+                "inspect_threshold": 3
+              },
+              "inputs": {
+                "claim": 2
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "telemetry_summary": {
+              "name": "telemetry_summary",
+              "version": 1,
+              "payload": {
+                "health": "degraded"
+              },
+              "inputs": {
+                "telemetry_raw": 1
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "brief": {
+              "name": "brief",
+              "version": 2,
+              "payload": {
+                "inspect_threshold": 3,
+                "health": "degraded"
+              },
+              "inputs": {
+                "recommendation": 2,
+                "telemetry_summary": 1
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            }
+          },
+          "ledger": [
+            {
+              "id": 1,
+              "result": "brief",
+              "version": 1,
+              "payload": {
+                "inspect_threshold": 9,
+                "health": "degraded"
+              },
+              "epoch": 0,
+              "supersedes": null
+            },
+            {
+              "id": 2,
+              "result": "brief",
+              "version": 2,
+              "payload": {
+                "inspect_threshold": 3,
+                "health": "degraded"
+              },
+              "epoch": 1,
+              "supersedes": 1
+            }
+          ]
+        }
+      }
+    },
+    "source_version_update": {
+      "source_after": {
+        "version": 2,
+        "threshold": 4
+      },
+      "seeded_state": {
+        "configuration_raw": {
+          "name": "configuration_raw",
+          "version": 1,
+          "payload": {
+            "threshold": 3
+          },
+          "inputs": {},
+          "sources": {
+            "configuration": 1
+          },
+          "shared_reads": {},
+          "citations": [],
+          "complete": true
+        },
+        "telemetry_raw": {
+          "name": "telemetry_raw",
+          "version": 1,
+          "payload": {
+            "health": "degraded"
+          },
+          "inputs": {},
+          "sources": {},
+          "shared_reads": {},
+          "citations": [],
+          "complete": true
+        },
+        "claim": {
+          "name": "claim",
+          "version": 1,
+          "payload": {
+            "threshold_claim": 9
+          },
+          "inputs": {
+            "configuration_raw": 1
+          },
+          "sources": {},
+          "shared_reads": {},
+          "citations": [],
+          "complete": true
+        },
+        "recommendation": {
+          "name": "recommendation",
+          "version": 1,
+          "payload": {
+            "inspect_threshold": 9
+          },
+          "inputs": {
+            "claim": 1
+          },
+          "sources": {},
+          "shared_reads": {},
+          "citations": [],
+          "complete": true
+        },
+        "telemetry_summary": {
+          "name": "telemetry_summary",
+          "version": 1,
+          "payload": {
+            "health": "degraded"
+          },
+          "inputs": {
+            "telemetry_raw": 1
+          },
+          "sources": {},
+          "shared_reads": {},
+          "citations": [],
+          "complete": true
+        },
+        "brief": {
+          "name": "brief",
+          "version": 1,
+          "payload": {
+            "inspect_threshold": 9,
+            "health": "degraded"
+          },
+          "inputs": {
+            "recommendation": 1,
+            "telemetry_summary": 1
+          },
+          "sources": {},
+          "shared_reads": {},
+          "citations": [],
+          "complete": true
+        }
+      },
+      "assigned_expected_closure": [
+        "brief",
+        "claim",
+        "configuration_raw",
+        "recommendation"
+      ],
+      "actual_closure": [
+        "brief",
+        "claim",
+        "configuration_raw",
+        "recommendation"
+      ],
+      "arms": {
+        "no_recovery": {
+          "work_units": 0,
+          "executed_nodes": [],
+          "fallback_restart": false,
+          "observable_provenance_gaps": {},
+          "published": false,
+          "matches_toy_semantic_oracle": false,
+          "valid_unchanged_nodes": [
+            "telemetry_raw",
+            "telemetry_summary"
+          ],
+          "invalid_after": [
+            "brief",
+            "claim",
+            "configuration_raw",
+            "recommendation"
+          ],
+          "before_hashes": {
+            "configuration_raw": "dcd3ddaf6eaaccadff0d4472be9a34ab9448cb150bc674adc87f329fb7b4d2f7",
+            "telemetry_raw": "495f6d5ef05b029245b7f6f735aab5408154a796562552b1bd1fbb6a4474ddda",
+            "claim": "e45006787dc3e69b9572aeba51adac620502ce24d681c436bb4f990906a54a15",
+            "recommendation": "eefde8a1b912098e737fde950fd38f5f6132f9d73201713861d26b49006254c2",
+            "telemetry_summary": "6a59be6bf340982ad7728b07d128ad53de73b41034d51868292f056c7d28de95",
+            "brief": "01694d9a5e4c99bdc49fd0736f89ecff3c1848fe529ede3e56e0597bdfd0a096"
+          },
+          "after_hashes": {
+            "configuration_raw": "dcd3ddaf6eaaccadff0d4472be9a34ab9448cb150bc674adc87f329fb7b4d2f7",
+            "telemetry_raw": "495f6d5ef05b029245b7f6f735aab5408154a796562552b1bd1fbb6a4474ddda",
+            "claim": "e45006787dc3e69b9572aeba51adac620502ce24d681c436bb4f990906a54a15",
+            "recommendation": "eefde8a1b912098e737fde950fd38f5f6132f9d73201713861d26b49006254c2",
+            "telemetry_summary": "6a59be6bf340982ad7728b07d128ad53de73b41034d51868292f056c7d28de95",
+            "brief": "01694d9a5e4c99bdc49fd0736f89ecff3c1848fe529ede3e56e0597bdfd0a096"
+          },
+          "state": {
+            "configuration_raw": {
+              "name": "configuration_raw",
+              "version": 1,
+              "payload": {
+                "threshold": 3
+              },
+              "inputs": {},
+              "sources": {
+                "configuration": 1
+              },
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "telemetry_raw": {
+              "name": "telemetry_raw",
+              "version": 1,
+              "payload": {
+                "health": "degraded"
+              },
+              "inputs": {},
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "claim": {
+              "name": "claim",
+              "version": 1,
+              "payload": {
+                "threshold_claim": 9
+              },
+              "inputs": {
+                "configuration_raw": 1
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "recommendation": {
+              "name": "recommendation",
+              "version": 1,
+              "payload": {
+                "inspect_threshold": 9
+              },
+              "inputs": {
+                "claim": 1
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "telemetry_summary": {
+              "name": "telemetry_summary",
+              "version": 1,
+              "payload": {
+                "health": "degraded"
+              },
+              "inputs": {
+                "telemetry_raw": 1
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "brief": {
+              "name": "brief",
+              "version": 1,
+              "payload": {
+                "inspect_threshold": 9,
+                "health": "degraded"
+              },
+              "inputs": {
+                "recommendation": 1,
+                "telemetry_summary": 1
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            }
+          },
+          "ledger": [
+            {
+              "id": 1,
+              "result": "brief",
+              "version": 1,
+              "payload": {
+                "inspect_threshold": 9,
+                "health": "degraded"
+              },
+              "epoch": 0,
+              "supersedes": null
+            }
+          ]
+        },
+        "restart": {
+          "work_units": 6,
+          "executed_nodes": [
+            "configuration_raw",
+            "telemetry_raw",
+            "claim",
+            "recommendation",
+            "telemetry_summary",
+            "brief"
+          ],
+          "fallback_restart": false,
+          "observable_provenance_gaps": {},
+          "published": true,
+          "matches_toy_semantic_oracle": true,
+          "valid_unchanged_nodes": [],
+          "invalid_after": [],
+          "before_hashes": {
+            "configuration_raw": "dcd3ddaf6eaaccadff0d4472be9a34ab9448cb150bc674adc87f329fb7b4d2f7",
+            "telemetry_raw": "495f6d5ef05b029245b7f6f735aab5408154a796562552b1bd1fbb6a4474ddda",
+            "claim": "e45006787dc3e69b9572aeba51adac620502ce24d681c436bb4f990906a54a15",
+            "recommendation": "eefde8a1b912098e737fde950fd38f5f6132f9d73201713861d26b49006254c2",
+            "telemetry_summary": "6a59be6bf340982ad7728b07d128ad53de73b41034d51868292f056c7d28de95",
+            "brief": "01694d9a5e4c99bdc49fd0736f89ecff3c1848fe529ede3e56e0597bdfd0a096"
+          },
+          "after_hashes": {
+            "configuration_raw": "8af83e012b0774fe5a3d042807de9ae2984ece646f20a8cf743fc48178043ca0",
+            "telemetry_raw": "bf2f9808eaa9053db1abfe4005cca34d105f05635ab5edcc965b1996903424cd",
+            "claim": "6e1cea6a84bf7b83a82ff573c4043c064d9b54f35c2e8d6e21aedd4ccfe330f7",
+            "recommendation": "fc8b6b99afe3bb05bd88719d3fe2187827f862265f2cc87da6f03cf75e62d576",
+            "telemetry_summary": "7f03a2c71ad3ef2f65657a5abd39fd822534692e518a2c0897d44340ec2725c1",
+            "brief": "8f965294b23cb96d5af152b8b048c2462a5d182aeb4eee987dd84f680e1d4b2f"
+          },
+          "state": {
+            "configuration_raw": {
+              "name": "configuration_raw",
+              "version": 2,
+              "payload": {
+                "threshold": 4
+              },
+              "inputs": {},
+              "sources": {
+                "configuration": 2
+              },
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "telemetry_raw": {
+              "name": "telemetry_raw",
+              "version": 2,
+              "payload": {
+                "health": "degraded"
+              },
+              "inputs": {},
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "claim": {
+              "name": "claim",
+              "version": 2,
+              "payload": {
+                "threshold_claim": 4
+              },
+              "inputs": {
+                "configuration_raw": 2
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "recommendation": {
+              "name": "recommendation",
+              "version": 2,
+              "payload": {
+                "inspect_threshold": 4
+              },
+              "inputs": {
+                "claim": 2
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "telemetry_summary": {
+              "name": "telemetry_summary",
+              "version": 2,
+              "payload": {
+                "health": "degraded"
+              },
+              "inputs": {
+                "telemetry_raw": 2
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "brief": {
+              "name": "brief",
+              "version": 2,
+              "payload": {
+                "inspect_threshold": 4,
+                "health": "degraded"
+              },
+              "inputs": {
+                "recommendation": 2,
+                "telemetry_summary": 2
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            }
+          },
+          "ledger": [
+            {
+              "id": 1,
+              "result": "brief",
+              "version": 1,
+              "payload": {
+                "inspect_threshold": 9,
+                "health": "degraded"
+              },
+              "epoch": 0,
+              "supersedes": null
+            },
+            {
+              "id": 2,
+              "result": "brief",
+              "version": 2,
+              "payload": {
+                "inspect_threshold": 4,
+                "health": "degraded"
+              },
+              "epoch": 2,
+              "supersedes": 1
+            }
+          ]
+        },
+        "selective": {
+          "work_units": 4,
+          "executed_nodes": [
+            "configuration_raw",
+            "claim",
+            "recommendation",
+            "brief"
+          ],
+          "fallback_restart": false,
+          "observable_provenance_gaps": {},
+          "published": true,
+          "matches_toy_semantic_oracle": true,
+          "valid_unchanged_nodes": [
+            "telemetry_raw",
+            "telemetry_summary"
+          ],
+          "invalid_after": [],
+          "before_hashes": {
+            "configuration_raw": "dcd3ddaf6eaaccadff0d4472be9a34ab9448cb150bc674adc87f329fb7b4d2f7",
+            "telemetry_raw": "495f6d5ef05b029245b7f6f735aab5408154a796562552b1bd1fbb6a4474ddda",
+            "claim": "e45006787dc3e69b9572aeba51adac620502ce24d681c436bb4f990906a54a15",
+            "recommendation": "eefde8a1b912098e737fde950fd38f5f6132f9d73201713861d26b49006254c2",
+            "telemetry_summary": "6a59be6bf340982ad7728b07d128ad53de73b41034d51868292f056c7d28de95",
+            "brief": "01694d9a5e4c99bdc49fd0736f89ecff3c1848fe529ede3e56e0597bdfd0a096"
+          },
+          "after_hashes": {
+            "configuration_raw": "8af83e012b0774fe5a3d042807de9ae2984ece646f20a8cf743fc48178043ca0",
+            "telemetry_raw": "495f6d5ef05b029245b7f6f735aab5408154a796562552b1bd1fbb6a4474ddda",
+            "claim": "6e1cea6a84bf7b83a82ff573c4043c064d9b54f35c2e8d6e21aedd4ccfe330f7",
+            "recommendation": "fc8b6b99afe3bb05bd88719d3fe2187827f862265f2cc87da6f03cf75e62d576",
+            "telemetry_summary": "6a59be6bf340982ad7728b07d128ad53de73b41034d51868292f056c7d28de95",
+            "brief": "1da6bef1fcff32edffc0903527f5ec24962252fec40dc2949893edd4455c39ea"
+          },
+          "state": {
+            "configuration_raw": {
+              "name": "configuration_raw",
+              "version": 2,
+              "payload": {
+                "threshold": 4
+              },
+              "inputs": {},
+              "sources": {
+                "configuration": 2
+              },
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "telemetry_raw": {
+              "name": "telemetry_raw",
+              "version": 1,
+              "payload": {
+                "health": "degraded"
+              },
+              "inputs": {},
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "claim": {
+              "name": "claim",
+              "version": 2,
+              "payload": {
+                "threshold_claim": 4
+              },
+              "inputs": {
+                "configuration_raw": 2
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "recommendation": {
+              "name": "recommendation",
+              "version": 2,
+              "payload": {
+                "inspect_threshold": 4
+              },
+              "inputs": {
+                "claim": 2
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "telemetry_summary": {
+              "name": "telemetry_summary",
+              "version": 1,
+              "payload": {
+                "health": "degraded"
+              },
+              "inputs": {
+                "telemetry_raw": 1
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "brief": {
+              "name": "brief",
+              "version": 2,
+              "payload": {
+                "inspect_threshold": 4,
+                "health": "degraded"
+              },
+              "inputs": {
+                "recommendation": 2,
+                "telemetry_summary": 1
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            }
+          },
+          "ledger": [
+            {
+              "id": 1,
+              "result": "brief",
+              "version": 1,
+              "payload": {
+                "inspect_threshold": 9,
+                "health": "degraded"
+              },
+              "epoch": 0,
+              "supersedes": null
+            },
+            {
+              "id": 2,
+              "result": "brief",
+              "version": 2,
+              "payload": {
+                "inspect_threshold": 4,
+                "health": "degraded"
+              },
+              "epoch": 1,
+              "supersedes": 1
+            }
+          ]
+        }
+      }
+    },
+    "dense_dependency": {
+      "source_after": {
+        "version": 1,
+        "threshold": 3
+      },
+      "seeded_state": {
+        "configuration_raw": {
+          "name": "configuration_raw",
+          "version": 1,
+          "payload": {
+            "threshold": 3
+          },
+          "inputs": {},
+          "sources": {
+            "configuration": 1
+          },
+          "shared_reads": {},
+          "citations": [],
+          "complete": true
+        },
+        "telemetry_raw": {
+          "name": "telemetry_raw",
+          "version": 1,
+          "payload": {
+            "health": "degraded"
+          },
+          "inputs": {
+            "configuration_raw": 1
+          },
+          "sources": {},
+          "shared_reads": {},
+          "citations": [],
+          "complete": true
+        },
+        "claim": {
+          "name": "claim",
+          "version": 1,
+          "payload": {
+            "threshold_claim": 9
+          },
+          "inputs": {
+            "configuration_raw": 1
+          },
+          "sources": {},
+          "shared_reads": {},
+          "citations": [],
+          "complete": true
+        },
+        "recommendation": {
+          "name": "recommendation",
+          "version": 1,
+          "payload": {
+            "inspect_threshold": 9
+          },
+          "inputs": {
+            "claim": 1
+          },
+          "sources": {},
+          "shared_reads": {},
+          "citations": [],
+          "complete": true
+        },
+        "telemetry_summary": {
+          "name": "telemetry_summary",
+          "version": 1,
+          "payload": {
+            "health": "degraded"
+          },
+          "inputs": {
+            "telemetry_raw": 1
+          },
+          "sources": {},
+          "shared_reads": {},
+          "citations": [],
+          "complete": true
+        },
+        "brief": {
+          "name": "brief",
+          "version": 1,
+          "payload": {
+            "inspect_threshold": 9,
+            "health": "degraded"
+          },
+          "inputs": {
+            "recommendation": 1,
+            "telemetry_summary": 1
+          },
+          "sources": {},
+          "shared_reads": {},
+          "citations": [],
+          "complete": true
+        }
+      },
+      "assigned_expected_closure": [
+        "brief",
+        "claim",
+        "configuration_raw",
+        "recommendation",
+        "telemetry_raw",
+        "telemetry_summary"
+      ],
+      "actual_closure": [
+        "brief",
+        "claim",
+        "configuration_raw",
+        "recommendation",
+        "telemetry_raw",
+        "telemetry_summary"
+      ],
+      "arms": {
+        "no_recovery": {
+          "work_units": 0,
+          "executed_nodes": [],
+          "fallback_restart": false,
+          "observable_provenance_gaps": {},
+          "published": false,
+          "matches_toy_semantic_oracle": false,
+          "valid_unchanged_nodes": [],
+          "invalid_after": [
+            "brief",
+            "claim",
+            "configuration_raw",
+            "recommendation",
+            "telemetry_raw",
+            "telemetry_summary"
+          ],
+          "before_hashes": {
+            "configuration_raw": "dcd3ddaf6eaaccadff0d4472be9a34ab9448cb150bc674adc87f329fb7b4d2f7",
+            "telemetry_raw": "4cdea00d2d15333418b3228dc950f69328824b6dad3f29d29d833cf243318e7d",
+            "claim": "e45006787dc3e69b9572aeba51adac620502ce24d681c436bb4f990906a54a15",
+            "recommendation": "eefde8a1b912098e737fde950fd38f5f6132f9d73201713861d26b49006254c2",
+            "telemetry_summary": "6a59be6bf340982ad7728b07d128ad53de73b41034d51868292f056c7d28de95",
+            "brief": "01694d9a5e4c99bdc49fd0736f89ecff3c1848fe529ede3e56e0597bdfd0a096"
+          },
+          "after_hashes": {
+            "configuration_raw": "dcd3ddaf6eaaccadff0d4472be9a34ab9448cb150bc674adc87f329fb7b4d2f7",
+            "telemetry_raw": "4cdea00d2d15333418b3228dc950f69328824b6dad3f29d29d833cf243318e7d",
+            "claim": "e45006787dc3e69b9572aeba51adac620502ce24d681c436bb4f990906a54a15",
+            "recommendation": "eefde8a1b912098e737fde950fd38f5f6132f9d73201713861d26b49006254c2",
+            "telemetry_summary": "6a59be6bf340982ad7728b07d128ad53de73b41034d51868292f056c7d28de95",
+            "brief": "01694d9a5e4c99bdc49fd0736f89ecff3c1848fe529ede3e56e0597bdfd0a096"
+          },
+          "state": {
+            "configuration_raw": {
+              "name": "configuration_raw",
+              "version": 1,
+              "payload": {
+                "threshold": 3
+              },
+              "inputs": {},
+              "sources": {
+                "configuration": 1
+              },
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "telemetry_raw": {
+              "name": "telemetry_raw",
+              "version": 1,
+              "payload": {
+                "health": "degraded"
+              },
+              "inputs": {
+                "configuration_raw": 1
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "claim": {
+              "name": "claim",
+              "version": 1,
+              "payload": {
+                "threshold_claim": 9
+              },
+              "inputs": {
+                "configuration_raw": 1
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "recommendation": {
+              "name": "recommendation",
+              "version": 1,
+              "payload": {
+                "inspect_threshold": 9
+              },
+              "inputs": {
+                "claim": 1
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "telemetry_summary": {
+              "name": "telemetry_summary",
+              "version": 1,
+              "payload": {
+                "health": "degraded"
+              },
+              "inputs": {
+                "telemetry_raw": 1
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "brief": {
+              "name": "brief",
+              "version": 1,
+              "payload": {
+                "inspect_threshold": 9,
+                "health": "degraded"
+              },
+              "inputs": {
+                "recommendation": 1,
+                "telemetry_summary": 1
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            }
+          },
+          "ledger": [
+            {
+              "id": 1,
+              "result": "brief",
+              "version": 1,
+              "payload": {
+                "inspect_threshold": 9,
+                "health": "degraded"
+              },
+              "epoch": 0,
+              "supersedes": null
+            }
+          ]
+        },
+        "restart": {
+          "work_units": 6,
+          "executed_nodes": [
+            "configuration_raw",
+            "telemetry_raw",
+            "claim",
+            "recommendation",
+            "telemetry_summary",
+            "brief"
+          ],
+          "fallback_restart": false,
+          "observable_provenance_gaps": {},
+          "published": true,
+          "matches_toy_semantic_oracle": true,
+          "valid_unchanged_nodes": [],
+          "invalid_after": [],
+          "before_hashes": {
+            "configuration_raw": "dcd3ddaf6eaaccadff0d4472be9a34ab9448cb150bc674adc87f329fb7b4d2f7",
+            "telemetry_raw": "4cdea00d2d15333418b3228dc950f69328824b6dad3f29d29d833cf243318e7d",
+            "claim": "e45006787dc3e69b9572aeba51adac620502ce24d681c436bb4f990906a54a15",
+            "recommendation": "eefde8a1b912098e737fde950fd38f5f6132f9d73201713861d26b49006254c2",
+            "telemetry_summary": "6a59be6bf340982ad7728b07d128ad53de73b41034d51868292f056c7d28de95",
+            "brief": "01694d9a5e4c99bdc49fd0736f89ecff3c1848fe529ede3e56e0597bdfd0a096"
+          },
+          "after_hashes": {
+            "configuration_raw": "6a58042a5363fac8cd0e9ac577aba589c609468309ab999ccee73e0c0396c559",
+            "telemetry_raw": "8dde6cf25390dd6919104e8f0512416cce12dbfa09c16a3774ca31cb0cb2e8e8",
+            "claim": "871f64de464aa3f6da642f93333f53fa86ace71f3680bdf6d448799ac140a999",
+            "recommendation": "667c21c33df23bcd21d0c19cc15a62ee737c793e6bf09ff58beac49a9516fe16",
+            "telemetry_summary": "7f03a2c71ad3ef2f65657a5abd39fd822534692e518a2c0897d44340ec2725c1",
+            "brief": "a142c32b9c0d9cf114d9a64f92e813ae812dad26551a5f12466fc693e2d4391a"
+          },
+          "state": {
+            "configuration_raw": {
+              "name": "configuration_raw",
+              "version": 2,
+              "payload": {
+                "threshold": 3
+              },
+              "inputs": {},
+              "sources": {
+                "configuration": 1
+              },
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "telemetry_raw": {
+              "name": "telemetry_raw",
+              "version": 2,
+              "payload": {
+                "health": "degraded"
+              },
+              "inputs": {
+                "configuration_raw": 2
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "claim": {
+              "name": "claim",
+              "version": 2,
+              "payload": {
+                "threshold_claim": 3
+              },
+              "inputs": {
+                "configuration_raw": 2
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "recommendation": {
+              "name": "recommendation",
+              "version": 2,
+              "payload": {
+                "inspect_threshold": 3
+              },
+              "inputs": {
+                "claim": 2
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "telemetry_summary": {
+              "name": "telemetry_summary",
+              "version": 2,
+              "payload": {
+                "health": "degraded"
+              },
+              "inputs": {
+                "telemetry_raw": 2
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "brief": {
+              "name": "brief",
+              "version": 2,
+              "payload": {
+                "inspect_threshold": 3,
+                "health": "degraded"
+              },
+              "inputs": {
+                "recommendation": 2,
+                "telemetry_summary": 2
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            }
+          },
+          "ledger": [
+            {
+              "id": 1,
+              "result": "brief",
+              "version": 1,
+              "payload": {
+                "inspect_threshold": 9,
+                "health": "degraded"
+              },
+              "epoch": 0,
+              "supersedes": null
+            },
+            {
+              "id": 2,
+              "result": "brief",
+              "version": 2,
+              "payload": {
+                "inspect_threshold": 3,
+                "health": "degraded"
+              },
+              "epoch": 2,
+              "supersedes": 1
+            }
+          ]
+        },
+        "selective": {
+          "work_units": 6,
+          "executed_nodes": [
+            "configuration_raw",
+            "telemetry_raw",
+            "claim",
+            "recommendation",
+            "telemetry_summary",
+            "brief"
+          ],
+          "fallback_restart": false,
+          "observable_provenance_gaps": {},
+          "published": true,
+          "matches_toy_semantic_oracle": true,
+          "valid_unchanged_nodes": [],
+          "invalid_after": [],
+          "before_hashes": {
+            "configuration_raw": "dcd3ddaf6eaaccadff0d4472be9a34ab9448cb150bc674adc87f329fb7b4d2f7",
+            "telemetry_raw": "4cdea00d2d15333418b3228dc950f69328824b6dad3f29d29d833cf243318e7d",
+            "claim": "e45006787dc3e69b9572aeba51adac620502ce24d681c436bb4f990906a54a15",
+            "recommendation": "eefde8a1b912098e737fde950fd38f5f6132f9d73201713861d26b49006254c2",
+            "telemetry_summary": "6a59be6bf340982ad7728b07d128ad53de73b41034d51868292f056c7d28de95",
+            "brief": "01694d9a5e4c99bdc49fd0736f89ecff3c1848fe529ede3e56e0597bdfd0a096"
+          },
+          "after_hashes": {
+            "configuration_raw": "6a58042a5363fac8cd0e9ac577aba589c609468309ab999ccee73e0c0396c559",
+            "telemetry_raw": "8dde6cf25390dd6919104e8f0512416cce12dbfa09c16a3774ca31cb0cb2e8e8",
+            "claim": "871f64de464aa3f6da642f93333f53fa86ace71f3680bdf6d448799ac140a999",
+            "recommendation": "667c21c33df23bcd21d0c19cc15a62ee737c793e6bf09ff58beac49a9516fe16",
+            "telemetry_summary": "7f03a2c71ad3ef2f65657a5abd39fd822534692e518a2c0897d44340ec2725c1",
+            "brief": "a142c32b9c0d9cf114d9a64f92e813ae812dad26551a5f12466fc693e2d4391a"
+          },
+          "state": {
+            "configuration_raw": {
+              "name": "configuration_raw",
+              "version": 2,
+              "payload": {
+                "threshold": 3
+              },
+              "inputs": {},
+              "sources": {
+                "configuration": 1
+              },
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "telemetry_raw": {
+              "name": "telemetry_raw",
+              "version": 2,
+              "payload": {
+                "health": "degraded"
+              },
+              "inputs": {
+                "configuration_raw": 2
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "claim": {
+              "name": "claim",
+              "version": 2,
+              "payload": {
+                "threshold_claim": 3
+              },
+              "inputs": {
+                "configuration_raw": 2
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "recommendation": {
+              "name": "recommendation",
+              "version": 2,
+              "payload": {
+                "inspect_threshold": 3
+              },
+              "inputs": {
+                "claim": 2
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "telemetry_summary": {
+              "name": "telemetry_summary",
+              "version": 2,
+              "payload": {
+                "health": "degraded"
+              },
+              "inputs": {
+                "telemetry_raw": 2
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "brief": {
+              "name": "brief",
+              "version": 2,
+              "payload": {
+                "inspect_threshold": 3,
+                "health": "degraded"
+              },
+              "inputs": {
+                "recommendation": 2,
+                "telemetry_summary": 2
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            }
+          },
+          "ledger": [
+            {
+              "id": 1,
+              "result": "brief",
+              "version": 1,
+              "payload": {
+                "inspect_threshold": 9,
+                "health": "degraded"
+              },
+              "epoch": 0,
+              "supersedes": null
+            },
+            {
+              "id": 2,
+              "result": "brief",
+              "version": 2,
+              "payload": {
+                "inspect_threshold": 3,
+                "health": "degraded"
+              },
+              "epoch": 1,
+              "supersedes": 1
+            }
+          ]
+        }
+      }
+    },
+    "missing_provenance": {
+      "source_after": {
+        "version": 1,
+        "threshold": 3
+      },
+      "seeded_state": {
+        "configuration_raw": {
+          "name": "configuration_raw",
+          "version": 1,
+          "payload": {
+            "threshold": 3
+          },
+          "inputs": {},
+          "sources": {
+            "configuration": 1
+          },
+          "shared_reads": {},
+          "citations": [],
+          "complete": true
+        },
+        "telemetry_raw": {
+          "name": "telemetry_raw",
+          "version": 1,
+          "payload": {
+            "health": "degraded"
+          },
+          "inputs": {},
+          "sources": {},
+          "shared_reads": {},
+          "citations": [],
+          "complete": true
+        },
+        "claim": {
+          "name": "claim",
+          "version": 1,
+          "payload": {
+            "threshold_claim": 9
+          },
+          "inputs": {
+            "configuration_raw": 1
+          },
+          "sources": {},
+          "shared_reads": {},
+          "citations": [],
+          "complete": true
+        },
+        "recommendation": {
+          "name": "recommendation",
+          "version": 1,
+          "payload": {
+            "inspect_threshold": 9
+          },
+          "inputs": {
+            "claim": 1
+          },
+          "sources": {},
+          "shared_reads": {},
+          "citations": [],
+          "complete": true
+        },
+        "telemetry_summary": {
+          "name": "telemetry_summary",
+          "version": 1,
+          "payload": {
+            "health": "degraded"
+          },
+          "inputs": {
+            "telemetry_raw": 1
+          },
+          "sources": {},
+          "shared_reads": {},
+          "citations": [],
+          "complete": true
+        },
+        "brief": {
+          "name": "brief",
+          "version": 1,
+          "payload": {
+            "inspect_threshold": 9,
+            "health": "degraded"
+          },
+          "inputs": {
+            "recommendation": 1,
+            "telemetry_summary": 1
+          },
+          "sources": {},
+          "shared_reads": {},
+          "citations": [],
+          "complete": true
+        }
+      },
+      "assigned_expected_closure": [
+        "brief",
+        "claim",
+        "recommendation"
+      ],
+      "actual_closure": [
+        "brief",
+        "claim",
+        "recommendation"
+      ],
+      "arms": {
+        "no_recovery": {
+          "work_units": 0,
+          "executed_nodes": [],
+          "fallback_restart": false,
+          "observable_provenance_gaps": {
+            "claim": "incomplete"
+          },
+          "published": false,
+          "matches_toy_semantic_oracle": false,
+          "valid_unchanged_nodes": [
+            "configuration_raw",
+            "telemetry_raw",
+            "telemetry_summary"
+          ],
+          "invalid_after": [
+            "brief",
+            "claim",
+            "recommendation"
+          ],
+          "before_hashes": {
+            "configuration_raw": "dcd3ddaf6eaaccadff0d4472be9a34ab9448cb150bc674adc87f329fb7b4d2f7",
+            "telemetry_raw": "495f6d5ef05b029245b7f6f735aab5408154a796562552b1bd1fbb6a4474ddda",
+            "claim": "12dc242ab27aaab6f281f95befe43e9534263e7b1cbf64824ec8913cce9f75ef",
+            "recommendation": "eefde8a1b912098e737fde950fd38f5f6132f9d73201713861d26b49006254c2",
+            "telemetry_summary": "6a59be6bf340982ad7728b07d128ad53de73b41034d51868292f056c7d28de95",
+            "brief": "01694d9a5e4c99bdc49fd0736f89ecff3c1848fe529ede3e56e0597bdfd0a096"
+          },
+          "after_hashes": {
+            "configuration_raw": "dcd3ddaf6eaaccadff0d4472be9a34ab9448cb150bc674adc87f329fb7b4d2f7",
+            "telemetry_raw": "495f6d5ef05b029245b7f6f735aab5408154a796562552b1bd1fbb6a4474ddda",
+            "claim": "12dc242ab27aaab6f281f95befe43e9534263e7b1cbf64824ec8913cce9f75ef",
+            "recommendation": "eefde8a1b912098e737fde950fd38f5f6132f9d73201713861d26b49006254c2",
+            "telemetry_summary": "6a59be6bf340982ad7728b07d128ad53de73b41034d51868292f056c7d28de95",
+            "brief": "01694d9a5e4c99bdc49fd0736f89ecff3c1848fe529ede3e56e0597bdfd0a096"
+          },
+          "state": {
+            "configuration_raw": {
+              "name": "configuration_raw",
+              "version": 1,
+              "payload": {
+                "threshold": 3
+              },
+              "inputs": {},
+              "sources": {
+                "configuration": 1
+              },
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "telemetry_raw": {
+              "name": "telemetry_raw",
+              "version": 1,
+              "payload": {
+                "health": "degraded"
+              },
+              "inputs": {},
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "claim": {
+              "name": "claim",
+              "version": 1,
+              "payload": {
+                "threshold_claim": 9
+              },
+              "inputs": {
+                "configuration_raw": 1
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": false
+            },
+            "recommendation": {
+              "name": "recommendation",
+              "version": 1,
+              "payload": {
+                "inspect_threshold": 9
+              },
+              "inputs": {
+                "claim": 1
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "telemetry_summary": {
+              "name": "telemetry_summary",
+              "version": 1,
+              "payload": {
+                "health": "degraded"
+              },
+              "inputs": {
+                "telemetry_raw": 1
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "brief": {
+              "name": "brief",
+              "version": 1,
+              "payload": {
+                "inspect_threshold": 9,
+                "health": "degraded"
+              },
+              "inputs": {
+                "recommendation": 1,
+                "telemetry_summary": 1
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            }
+          },
+          "ledger": [
+            {
+              "id": 1,
+              "result": "brief",
+              "version": 1,
+              "payload": {
+                "inspect_threshold": 9,
+                "health": "degraded"
+              },
+              "epoch": 0,
+              "supersedes": null
+            }
+          ]
+        },
+        "restart": {
+          "work_units": 6,
+          "executed_nodes": [
+            "configuration_raw",
+            "telemetry_raw",
+            "claim",
+            "recommendation",
+            "telemetry_summary",
+            "brief"
+          ],
+          "fallback_restart": false,
+          "observable_provenance_gaps": {
+            "claim": "incomplete"
+          },
+          "published": true,
+          "matches_toy_semantic_oracle": true,
+          "valid_unchanged_nodes": [],
+          "invalid_after": [],
+          "before_hashes": {
+            "configuration_raw": "dcd3ddaf6eaaccadff0d4472be9a34ab9448cb150bc674adc87f329fb7b4d2f7",
+            "telemetry_raw": "495f6d5ef05b029245b7f6f735aab5408154a796562552b1bd1fbb6a4474ddda",
+            "claim": "12dc242ab27aaab6f281f95befe43e9534263e7b1cbf64824ec8913cce9f75ef",
+            "recommendation": "eefde8a1b912098e737fde950fd38f5f6132f9d73201713861d26b49006254c2",
+            "telemetry_summary": "6a59be6bf340982ad7728b07d128ad53de73b41034d51868292f056c7d28de95",
+            "brief": "01694d9a5e4c99bdc49fd0736f89ecff3c1848fe529ede3e56e0597bdfd0a096"
+          },
+          "after_hashes": {
+            "configuration_raw": "6a58042a5363fac8cd0e9ac577aba589c609468309ab999ccee73e0c0396c559",
+            "telemetry_raw": "bf2f9808eaa9053db1abfe4005cca34d105f05635ab5edcc965b1996903424cd",
+            "claim": "871f64de464aa3f6da642f93333f53fa86ace71f3680bdf6d448799ac140a999",
+            "recommendation": "667c21c33df23bcd21d0c19cc15a62ee737c793e6bf09ff58beac49a9516fe16",
+            "telemetry_summary": "7f03a2c71ad3ef2f65657a5abd39fd822534692e518a2c0897d44340ec2725c1",
+            "brief": "a142c32b9c0d9cf114d9a64f92e813ae812dad26551a5f12466fc693e2d4391a"
+          },
+          "state": {
+            "configuration_raw": {
+              "name": "configuration_raw",
+              "version": 2,
+              "payload": {
+                "threshold": 3
+              },
+              "inputs": {},
+              "sources": {
+                "configuration": 1
+              },
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "telemetry_raw": {
+              "name": "telemetry_raw",
+              "version": 2,
+              "payload": {
+                "health": "degraded"
+              },
+              "inputs": {},
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "claim": {
+              "name": "claim",
+              "version": 2,
+              "payload": {
+                "threshold_claim": 3
+              },
+              "inputs": {
+                "configuration_raw": 2
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "recommendation": {
+              "name": "recommendation",
+              "version": 2,
+              "payload": {
+                "inspect_threshold": 3
+              },
+              "inputs": {
+                "claim": 2
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "telemetry_summary": {
+              "name": "telemetry_summary",
+              "version": 2,
+              "payload": {
+                "health": "degraded"
+              },
+              "inputs": {
+                "telemetry_raw": 2
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "brief": {
+              "name": "brief",
+              "version": 2,
+              "payload": {
+                "inspect_threshold": 3,
+                "health": "degraded"
+              },
+              "inputs": {
+                "recommendation": 2,
+                "telemetry_summary": 2
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            }
+          },
+          "ledger": [
+            {
+              "id": 1,
+              "result": "brief",
+              "version": 1,
+              "payload": {
+                "inspect_threshold": 9,
+                "health": "degraded"
+              },
+              "epoch": 0,
+              "supersedes": null
+            },
+            {
+              "id": 2,
+              "result": "brief",
+              "version": 2,
+              "payload": {
+                "inspect_threshold": 3,
+                "health": "degraded"
+              },
+              "epoch": 2,
+              "supersedes": 1
+            }
+          ]
+        },
+        "selective": {
+          "work_units": 6,
+          "executed_nodes": [
+            "configuration_raw",
+            "telemetry_raw",
+            "claim",
+            "recommendation",
+            "telemetry_summary",
+            "brief"
+          ],
+          "fallback_restart": true,
+          "observable_provenance_gaps": {
+            "claim": "incomplete"
+          },
+          "published": true,
+          "matches_toy_semantic_oracle": true,
+          "valid_unchanged_nodes": [],
+          "invalid_after": [],
+          "before_hashes": {
+            "configuration_raw": "dcd3ddaf6eaaccadff0d4472be9a34ab9448cb150bc674adc87f329fb7b4d2f7",
+            "telemetry_raw": "495f6d5ef05b029245b7f6f735aab5408154a796562552b1bd1fbb6a4474ddda",
+            "claim": "12dc242ab27aaab6f281f95befe43e9534263e7b1cbf64824ec8913cce9f75ef",
+            "recommendation": "eefde8a1b912098e737fde950fd38f5f6132f9d73201713861d26b49006254c2",
+            "telemetry_summary": "6a59be6bf340982ad7728b07d128ad53de73b41034d51868292f056c7d28de95",
+            "brief": "01694d9a5e4c99bdc49fd0736f89ecff3c1848fe529ede3e56e0597bdfd0a096"
+          },
+          "after_hashes": {
+            "configuration_raw": "6a58042a5363fac8cd0e9ac577aba589c609468309ab999ccee73e0c0396c559",
+            "telemetry_raw": "bf2f9808eaa9053db1abfe4005cca34d105f05635ab5edcc965b1996903424cd",
+            "claim": "871f64de464aa3f6da642f93333f53fa86ace71f3680bdf6d448799ac140a999",
+            "recommendation": "667c21c33df23bcd21d0c19cc15a62ee737c793e6bf09ff58beac49a9516fe16",
+            "telemetry_summary": "7f03a2c71ad3ef2f65657a5abd39fd822534692e518a2c0897d44340ec2725c1",
+            "brief": "a142c32b9c0d9cf114d9a64f92e813ae812dad26551a5f12466fc693e2d4391a"
+          },
+          "state": {
+            "configuration_raw": {
+              "name": "configuration_raw",
+              "version": 2,
+              "payload": {
+                "threshold": 3
+              },
+              "inputs": {},
+              "sources": {
+                "configuration": 1
+              },
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "telemetry_raw": {
+              "name": "telemetry_raw",
+              "version": 2,
+              "payload": {
+                "health": "degraded"
+              },
+              "inputs": {},
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "claim": {
+              "name": "claim",
+              "version": 2,
+              "payload": {
+                "threshold_claim": 3
+              },
+              "inputs": {
+                "configuration_raw": 2
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "recommendation": {
+              "name": "recommendation",
+              "version": 2,
+              "payload": {
+                "inspect_threshold": 3
+              },
+              "inputs": {
+                "claim": 2
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "telemetry_summary": {
+              "name": "telemetry_summary",
+              "version": 2,
+              "payload": {
+                "health": "degraded"
+              },
+              "inputs": {
+                "telemetry_raw": 2
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            },
+            "brief": {
+              "name": "brief",
+              "version": 2,
+              "payload": {
+                "inspect_threshold": 3,
+                "health": "degraded"
+              },
+              "inputs": {
+                "recommendation": 2,
+                "telemetry_summary": 2
+              },
+              "sources": {},
+              "shared_reads": {},
+              "citations": [],
+              "complete": true
+            }
+          },
+          "ledger": [
+            {
+              "id": 1,
+              "result": "brief",
+              "version": 1,
+              "payload": {
+                "inspect_threshold": 9,
+                "health": "degraded"
+              },
+              "epoch": 0,
+              "supersedes": null
+            },
+            {
+              "id": 2,
+              "result": "brief",
+              "version": 2,
+              "payload": {
+                "inspect_threshold": 3,
+                "health": "degraded"
+              },
+              "epoch": 2,
+              "supersedes": 1
+            }
+          ]
+        }
+      }
+    }
+  }
+}
