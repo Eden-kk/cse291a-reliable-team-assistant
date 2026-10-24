@@ -1,0 +1,58 @@
+Repeated role-handoff development protocol — frozen before inference
+
+Scope: boutique/runtime/1 only, already development_seen. No formal case, label,
+new benchmark, or post-outcome fault selection. This tests a constructed specialist
+summary error, not the natural frequency of LLM mistakes or generalization.
+
+Three fresh collection prefixes, same model api-glm-5.3 / temperature 0. Original
+two specialist query planners collect raw records; two model-generated summaries
+hand off configuration and telemetry, with source IDs. A deterministic catalog
+lists original source IDs. The coordinator receives both summaries and catalog,
+not raw by default, and can retrieve 1–3 original observations in one round.
+Retrieved bytes are the unchanged raw observations. The final call must return
+an answer or uncertainty. A repeated raw-visible corrupted-summary baseline
+receives all raw at once, uses the same coordinator instruction except final-now,
+and has one call. It differs in information exposure and call budget; do not
+attribute all differences solely to caching/recovery.
+
+Fixed eligibility: adservice YAML raw livenessProbe is httpGet and the clean
+configuration summary extracts httpGet. Inject only that summary field to grpc
+and its explanatory sentence, preserving source references and raw bytes. An
+ineligible repeat is retained as not_injected, not replaced. No retry for a
+nonpropagating or incorrect outcome. All three repeats use the same seen case;
+repeat variation is model/runtime variation, not independent case sampling.
+
+Each repeat: clean handoff; raw-visible corrupted baseline; corrupted handoff;
+trusted producer notification invalidating configuration_summary; no-recovery
+stale-publication rejection; paired full restart and selective recovery cloned
+from the identical settled corrupted state. Notification contains no correct
+field or diagnosis. Orders R/S, S/R, R/S are fixed. Full restart reruns planners,
+raw collection and both summaries; selective regenerates configuration summary
+from its retained valid raw source. Both then use identical coordinator retrieval.
+Dependencies track summaries consumed, coordinator decision, retrieved source
+owners, and final answer. Every clone carries cumulative logical token spending.
+Source catalog lists availability; source IDs alone are not evidence of entailment.
+
+Call bound per repeat: prefix 4 + clean <=2 + raw-visible corrupt 1 + corrupt <=2
++ restart <=6 + selective <=3 = 18; three repeats <=54. Global hard cap 60,
+$4.50; UTF-8 input bound 40000 including 512 framing reserve, output <=8192,
+48192 token reservation/call. Conservative 60-call reservation $4.47744. This
+allocation stays inside the existing $5 development envelope with prior spend
+$0.265675. Real prompts exceeding input bound fail closed, never auto-truncate.
+Mock input checks are plumbing coverage; generated real planner payloads may
+still hit the bound. Failed calls/arms retained, not silently retried.
+
+Record full provider request/response/cost headers, arm wall and CPU timers,
+source snapshots, artifact versions/input edges, invalidation closure, stale
+publication fence, before/after hashes and valid unchanged artifacts. Whole-arm
+latency includes model and controller work; compare paired recovery work separately
+from shared-prefix cost. Global header cost is actual usage when available;
+conservative provider charged_usd may be larger. No statistical significance or
+p95 claims from three runs; report individual values and mean/range/paired deltas.
+
+Independent review must read source bytes and the final claim, blinded to method
+where feasible. Separately score: false protocol adoption; whether that claim
+changes causal diagnosis; correct final diagnosis/uncertainty; recovery correction;
+unsupported retained claims. Source equality and publication validity are distinct
+from semantic correctness. Never relabel nonpropagation as successful semantic
+recovery. Keep formal evidence frozen; this is a development addendum only.

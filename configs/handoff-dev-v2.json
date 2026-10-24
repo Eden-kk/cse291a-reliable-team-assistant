@@ -1,0 +1,17 @@
+{
+  "case": "boutique/runtime/1",
+  "formal_evaluation": false,
+  "repeats": 3,
+  "max_calls": 60,
+  "analytical_max_calls": 54,
+  "maximum_usd": "4.50",
+  "input_byte_cap": 40000,
+  "reservation_tokens": 48192,
+  "worst_case_usd": "4.47744",
+  "model": "api-glm-5.3",
+  "temperature": 0,
+  "recovery_orders": [["restart", "selective"], ["selective", "restart"], ["restart", "selective"]],
+  "fault": "fixed configuration_summary liveness_protocol httpGet->grpc; raw unchanged",
+  "retrieval": "one request for 1-3 listed original observation IDs; same rules in clean, corrupt, restart, selective",
+  "no_retuning": true
+}
