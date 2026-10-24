@@ -43,6 +43,8 @@ def build(vendor, registry, commit, backend):
 def clone(inv, backend):
     result = fork(inv, backend)
     result.runtime.dispatcher = Dispatcher(Budget(12 * 66144), concurrency=1)
+    result.runtime.dispatcher.budget.spent = inv.runtime.dispatcher.budget.spent
+    result.runtime.dispatcher.budget.halted = inv.runtime.dispatcher.budget.halted
     return result
 
 

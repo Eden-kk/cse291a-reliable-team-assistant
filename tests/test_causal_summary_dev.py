@@ -36,6 +36,17 @@ class CausalTest(unittest.TestCase):
             out = Path(tmp)
             asyncio.run(runner.experiment(out, VENDOR, json.loads((ROOT/'configs/splits.json').read_text()), 'mock', provider))
             return {str(p.relative_to(out)): json.loads(p.read_text()) for p in out.rglob('*.json')}
+    def test_clone_preserves_cumulative_budget_without_sharing(self):
+        provider = MockProvider()
+        original = runner.build(VENDOR, json.loads((ROOT/'configs/splits.json').read_text()), 'mock', provider)
+        original.runtime.dispatcher.budget.spent = 12345
+        original.runtime.dispatcher.budget.halted = True
+        copied = runner.clone(original, provider)
+        self.assertEqual(copied.runtime.dispatcher.budget.spent, 12345)
+        self.assertTrue(copied.runtime.dispatcher.budget.halted)
+        copied.runtime.dispatcher.budget.spent += 10
+        self.assertEqual(original.runtime.dispatcher.budget.spent, 12345)
+
     def test_paired_recovery_isolation_and_reuse(self):
         files = self.execute(MockProvider())
         summary = files['summary.json']; arms = summary['arms']
