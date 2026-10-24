@@ -1,0 +1,286 @@
+{
+  "calls": 92,
+  "tokens": 519696,
+  "api_errors": 0,
+  "charged_account_delta": "0.3971660000000002",
+  "header_cost_sum": "0.4022509499999999903",
+  "conservative_cost": "0.66398535",
+  "remaining_balance": 49.37330835,
+  "units": 6,
+  "injected_units": 4,
+  "not_injected_units": 2,
+  "fault_adopted": 0,
+  "arm_scores": {
+    "clean": {
+      "assigned": 6,
+      "strict_pass": 4,
+      "states": {
+        "produced_answer": 6
+      }
+    },
+    "corrupt": {
+      "assigned": 6,
+      "strict_pass": 0,
+      "states": {
+        "produced_answer": 4,
+        "not_injected": 2
+      }
+    },
+    "expiry-restart": {
+      "assigned": 6,
+      "strict_pass": 2,
+      "states": {
+        "produced_answer": 6
+      }
+    },
+    "expiry-selective": {
+      "assigned": 6,
+      "strict_pass": 2,
+      "states": {
+        "produced_answer": 6
+      }
+    },
+    "prevention": {
+      "assigned": 6,
+      "strict_pass": 3,
+      "states": {
+        "produced_answer": 6
+      }
+    },
+    "restart": {
+      "assigned": 6,
+      "strict_pass": 3,
+      "states": {
+        "produced_answer": 4,
+        "not_injected": 2
+      }
+    },
+    "selective": {
+      "assigned": 6,
+      "strict_pass": 3,
+      "states": {
+        "produced_answer": 4,
+        "not_injected": 2
+      }
+    },
+    "collection": {
+      "assigned": 6,
+      "strict_pass": 0,
+      "states": {
+        "completed": 6
+      }
+    },
+    "no-recovery": {
+      "assigned": 6,
+      "strict_pass": 0,
+      "states": {
+        "invalid": 4,
+        "not_injected": 2
+      }
+    }
+  },
+  "recovery_costs": [
+    {
+      "unit": "boutique-runtime-32-r1",
+      "arm": "restart",
+      "state": "completed",
+      "calls": 3,
+      "tokens": 12647,
+      "seconds": 7.724172826856375
+    },
+    {
+      "unit": "boutique-runtime-32-r1",
+      "arm": "selective",
+      "state": "completed",
+      "calls": 1,
+      "tokens": 6167,
+      "seconds": 3.4654612271115184
+    },
+    {
+      "unit": "boutique-runtime-32-r1",
+      "arm": "expiry-restart",
+      "state": "completed",
+      "calls": 3,
+      "tokens": 12643,
+      "seconds": 8.476045383140445
+    },
+    {
+      "unit": "boutique-runtime-32-r1",
+      "arm": "expiry-selective",
+      "state": "completed",
+      "calls": 3,
+      "tokens": 12650,
+      "seconds": 12.55835864879191
+    },
+    {
+      "unit": "boutique-runtime-32-r2",
+      "arm": "restart",
+      "state": "completed",
+      "calls": 3,
+      "tokens": 13599,
+      "seconds": 7.529694568365812
+    },
+    {
+      "unit": "boutique-runtime-32-r2",
+      "arm": "selective",
+      "state": "completed",
+      "calls": 1,
+      "tokens": 6162,
+      "seconds": 3.3999073691666126
+    },
+    {
+      "unit": "boutique-runtime-32-r2",
+      "arm": "expiry-restart",
+      "state": "completed",
+      "calls": 3,
+      "tokens": 12657,
+      "seconds": 7.131411926820874
+    },
+    {
+      "unit": "boutique-runtime-32-r2",
+      "arm": "expiry-selective",
+      "state": "completed",
+      "calls": 3,
+      "tokens": 12650,
+      "seconds": 7.782477620989084
+    },
+    {
+      "unit": "boutique-service-12-r1",
+      "arm": "restart",
+      "state": "not_injected",
+      "calls": 0,
+      "tokens": 0,
+      "seconds": 0
+    },
+    {
+      "unit": "boutique-service-12-r1",
+      "arm": "selective",
+      "state": "not_injected",
+      "calls": 0,
+      "tokens": 0,
+      "seconds": 0
+    },
+    {
+      "unit": "boutique-service-12-r1",
+      "arm": "expiry-restart",
+      "state": "completed",
+      "calls": 3,
+      "tokens": 18388,
+      "seconds": 11.86217226460576
+    },
+    {
+      "unit": "boutique-service-12-r1",
+      "arm": "expiry-selective",
+      "state": "completed",
+      "calls": 3,
+      "tokens": 17909,
+      "seconds": 11.9119111597538
+    },
+    {
+      "unit": "boutique-service-12-r2",
+      "arm": "restart",
+      "state": "not_injected",
+      "calls": 0,
+      "tokens": 0,
+      "seconds": 0
+    },
+    {
+      "unit": "boutique-service-12-r2",
+      "arm": "selective",
+      "state": "not_injected",
+      "calls": 0,
+      "tokens": 0,
+      "seconds": 0
+    },
+    {
+      "unit": "boutique-service-12-r2",
+      "arm": "expiry-restart",
+      "state": "completed",
+      "calls": 3,
+      "tokens": 17858,
+      "seconds": 10.977993401698768
+    },
+    {
+      "unit": "boutique-service-12-r2",
+      "arm": "expiry-selective",
+      "state": "completed",
+      "calls": 3,
+      "tokens": 18633,
+      "seconds": 10.94722481817007
+    },
+    {
+      "unit": "boutique-performance-5-r1",
+      "arm": "restart",
+      "state": "completed",
+      "calls": 3,
+      "tokens": 19566,
+      "seconds": 9.967105589807034
+    },
+    {
+      "unit": "boutique-performance-5-r1",
+      "arm": "selective",
+      "state": "completed",
+      "calls": 1,
+      "tokens": 11858,
+      "seconds": 3.5953017016872764
+    },
+    {
+      "unit": "boutique-performance-5-r1",
+      "arm": "expiry-restart",
+      "state": "completed",
+      "calls": 3,
+      "tokens": 19136,
+      "seconds": 10.012821558862925
+    },
+    {
+      "unit": "boutique-performance-5-r1",
+      "arm": "expiry-selective",
+      "state": "completed",
+      "calls": 3,
+      "tokens": 16915,
+      "seconds": 10.388925668783486
+    },
+    {
+      "unit": "boutique-performance-5-r2",
+      "arm": "restart",
+      "state": "completed",
+      "calls": 3,
+      "tokens": 19090,
+      "seconds": 8.10927018802613
+    },
+    {
+      "unit": "boutique-performance-5-r2",
+      "arm": "selective",
+      "state": "completed",
+      "calls": 1,
+      "tokens": 9073,
+      "seconds": 3.3444653525948524
+    },
+    {
+      "unit": "boutique-performance-5-r2",
+      "arm": "expiry-restart",
+      "state": "completed",
+      "calls": 3,
+      "tokens": 16769,
+      "seconds": 9.34147203154862
+    },
+    {
+      "unit": "boutique-performance-5-r2",
+      "arm": "expiry-selective",
+      "state": "completed",
+      "calls": 3,
+      "tokens": 16655,
+      "seconds": 8.668028640560806
+    }
+  ],
+  "limitations": [
+    "Three independent cases; repetitions are not additional cases.",
+    "No adopted false-port diagnosis; no demonstrated correction of an induced semantic error.",
+    "Input-only review by Codex, not independent human validation.",
+    "All not-injected and uncertain arms retained; no reruns or retargeting.",
+    "Course acceptance of user-selected benchmark unverified."
+  ],
+  "final_account_spend": 0.62669165,
+  "final_charged_account_delta": "0.40225095",
+  "billing_note": "Immediate account-after lagged0.00508495; subsequent key/info refresh matches response header costs. Provider charged_usd is conservative modeled cost, not actual billing."
+}
