@@ -1,0 +1,28 @@
+{
+  "case": "boutique/service/2",
+  "formal_evaluation": false,
+  "repeats": 2,
+  "max_calls": 36,
+  "analytical_max_calls": 36,
+  "maximum_usd": "2.70",
+  "input_byte_cap": 40000,
+  "reservation_tokens": 48192,
+  "worst_case_usd": "2.686464",
+  "model": "api-glm-5.3",
+  "temperature": 0,
+  "recovery_orders": [
+    [
+      "restart",
+      "selective"
+    ],
+    [
+      "selective",
+      "restart"
+    ]
+  ],
+  "fault": "fixed adservice liveness_protocol categorical: grpc->httpGet or httpGet->grpc; eligibility frozen from raw schema before inference",
+  "retrieval": "one request for 1-3 listed original observation IDs; same rules in clean, corrupt, restart, selective",
+  "no_retuning": true,
+  "seeded_state_calls": 0,
+  "repair_calls": 0
+}
