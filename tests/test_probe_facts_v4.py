@@ -95,3 +95,46 @@ class TestProbeFacts(unittest.TestCase):
         # Constructed bad extraction may be invalid configuration; untouched fields stay untouched.
     def test_positive_period_required(self):
         with self.assertRaises(Ineligible): parse_probe_source(source(YAML.replace('periodSeconds: 5','periodSeconds: 0')),'v1')
+
+class TestStrictProbeSubset(unittest.TestCase):
+    def test_unsupported_keys_mappings_and_handlers_fail_closed(self):
+        variants = [
+            YAML.replace('periodSeconds: 5','"periodSeconds": 5'),
+            YAML.replace('periodSeconds: 5',"'periodSeconds': 5"),
+            YAML.replace('periodSeconds: 5','periodSeconds:\n            nested: 5'),
+            YAML.replace('port: 9555','port:\n              nested: 9555'),
+            YAML.replace('          grpc:', '          exec:\n            command:\n            - foo\n          grpc:',1),
+            YAML.replace('          grpc:', '          "exec":\n            command:\n            - foo\n          grpc:',1),
+        ]
+        for text in variants:
+            with self.subTest(text=text),self.assertRaises(Ineligible):
+                parse_probe_source(source(text),'v1')
+    def test_boolean_and_mismatched_quoted_port_fail_closed(self):
+        http=YAML.replace('grpc:','httpGet:')
+        for value in ('true','false','True','FALSE','yes','no','on','off',"'web\"",'"web\''):
+            with self.subTest(value=value),self.assertRaises(Ineligible):
+                parse_probe_source(source(http.replace('port: 9555','port: '+value)),'v1')
+        for value in ('true','false'):
+            with self.assertRaises(Ineligible):
+                parse_probe_source(source(YAML.replace('periodSeconds: 5','periodSeconds: '+value)),'v1')
+        # Explicit quotes are an ordinary named-port string, not a YAML boolean.
+        c=parse_probe_source(source(http.replace('port: 9555','port: "true"')),'v1')
+        self.assertEqual(c['facts']['adservice']['liveness']['port'],'true')
+    def test_source_version_conflict_rejected_and_match_preserved(self):
+        record=source();record['source_version']='v1'
+        with self.assertRaisesRegex(Ineligible,'Conflicting source version'):
+            parse_probe_source(record,'v2')
+        facts=parse_probe_source(record,'v1')['facts']['adservice']
+        self.assertTrue(all(slot['source_version']=='v1' for slot in facts.values()))
+    def test_fixed_saved_service_source_remains_eligible(self):
+        import json
+        saved=Path('/Users/yvette/26fall/cse291a-team-assistant/runs/handoff-v3-20261024/handoff-v3-dataready-results/repeat-1/prefix/state.json')
+        if not saved.exists():self.skipTest('saved fixed-case source not available')
+        artifact=json.loads(saved.read_text())['summary_source']
+        record=artifact['payload']['observations'][0]
+        version=record.get('source_version') or next(iter(artifact['sources'].values()))
+        canonical=parse_probe_source(record,version)
+        self.assertEqual(canonical['facts']['adservice']['liveness']['protocol'],'grpc')
+        self.assertEqual(canonical['facts']['adservice']['readiness']['protocol'],'grpc')
+        changed,_=inject_liveness_protocol(canonical)
+        self.assertEqual(changed['facts']['adservice']['readiness'],canonical['facts']['adservice']['readiness'])

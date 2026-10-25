@@ -21,6 +21,9 @@ def _indent(line): return len(line)-len(line.lstrip(' '))
 
 
 def _field(lines,key,indent,required=False):
+    quoted=re.compile(r'''["']'''+re.escape(key)+r'''["']\s*:''')
+    if any(_indent(line)==indent and quoted.match(line.lstrip()) for line in lines):
+        raise Ineligible('Unsupported quoted key: '+key)
     hits=[i for i,line in enumerate(lines) if _indent(line)==indent and re.match(re.escape(key)+r':(?:\s|$)',line.lstrip())]
     if len(hits)>1: raise Ineligible('Duplicate field: '+key)
     if not hits:
@@ -42,13 +45,22 @@ def _scalar(value,kind):
     if value is None: return None
     value=value.split(' #',1)[0].strip()
     if value in ('null','~',''): return None
-    if kind=='port' and re.fullmatch(r'[\'"][A-Za-z0-9_-]+[\'"]',value): return value[1:-1]
+    if kind=='port' and re.fullmatch(r'''(['"])[A-Za-z0-9_-]+\1''',value): return value[1:-1]
+    if value.lower() in ('true','false','yes','no','on','off'):
+        raise Ineligible('Boolean scalar unsupported for '+kind)
     if re.fullmatch(r'\d+',value):
         result=int(value)
         if kind=='port' and not 1<=result<=65535: raise Ineligible('Port outside range')
         return result
     if kind=='port' and re.fullmatch(r'[A-Za-z][A-Za-z0-9_-]*',value): return value
     raise Ineligible('Unsupported scalar for '+kind)
+
+
+def _scalar_field(lines,key,indent,kind):
+    value,body=_field(lines,key,indent)
+    if any(line.strip() and not line.lstrip().startswith('#') for line in body):
+        raise Ineligible('Expected scalar: '+key)
+    return _scalar(value,kind)
 
 
 def _container(template_spec):
@@ -76,8 +88,10 @@ def parse_probe_source(observation,source_version,case='boutique/service/2'):
     if observation.get('tool')!='GetAppYAML' or observation.get('arguments',{}).get('app_name')!='adservice':
         raise Ineligible('Expected fixed adservice YAML')
     text=observation.get('text'); source_id=observation.get('id')
-    if not isinstance(text,str) or not source_id or not isinstance(source_version,str) or not source_version:
+    if not isinstance(text,str) or not isinstance(source_id,str) or not source_id or not isinstance(source_version,str) or not source_version:
         raise Ineligible('Missing source identity/version')
+    if 'source_version' in observation and observation['source_version']!=source_version:
+        raise Ineligible('Conflicting source version')
     if observation.get('truncated') or '\t' in text: raise Ineligible('Partial source or unsupported indentation')
     source_hash=hashlib.sha256(text.encode()).hexdigest()
     if observation.get('sha256')!=source_hash: raise Ineligible('Source hash mismatch')
@@ -97,13 +111,14 @@ def parse_probe_source(observation,source_version,case='boutique/service/2'):
     facts={}
     for probe in PROBES:
         key=probe+'Probe';probe_body=_block(body,key,indent)
+        if _field(probe_body,'exec',indent+2)[0] is not None:
+            raise Ineligible('Unsupported exec handler')
         found=[protocol for protocol in PROTOCOLS if _field(probe_body,protocol,indent+2)[0] is not None]
         if len(found)!=1: raise Ineligible('Missing/ambiguous '+key+' protocol')
         protocol=found[0];protocol_body=_block(probe_body,protocol,indent+2)
-        port_value,_=_field(protocol_body,'port',indent+4)
         prefix=f'documents[{n}].spec.template.spec.containers[0].{key}'
-        slot={'protocol':protocol,'port':_scalar(port_value,'port')}
-        for field in FIELDS[2:]: slot[field]=_scalar(_field(probe_body,field,indent+2)[0],field)
+        slot={'protocol':protocol,'port':_scalar_field(protocol_body,'port',indent+4,'port')}
+        for field in FIELDS[2:]: slot[field]=_scalar_field(probe_body,field,indent+2,field)
         if any(slot[f] is not None and slot[f]<1 for f in ('periodSeconds','failureThreshold')):
             raise Ineligible('Nonpositive period/threshold')
         if protocol=='grpc' and isinstance(slot['port'],str): raise Ineligible('Named gRPC port unsupported')
