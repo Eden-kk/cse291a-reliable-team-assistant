@@ -1,3 +1,10 @@
+最新进展：2026-10-25 Phase1冻结、v4预检回收并进入Phase2
+Phase1自主版干净解压复核通过：1468 hashes、36答案、54槽位，257tests通过/32个缺少完整vendor快照的明确skip；当前工作区288tests通过/12skip。Canvas尚无Phase1上传项，Piazza确认截止延至11/4，公开课程页仍显示旧10/28。冻结包保持不变、尚未提交。
+DataHub既有v4预检已回收且未重跑：3calls/20791tokens，实际账户差额$0.02608510，保守runner成本$0.02838910。grpc→httpGet错误字段被回答采纳，但checkoutservice DNS根因和两条证据未改变，因此是中间事实传播、尚无诊断伤害。Phase2两重复恢复矩阵已冻结，36calls/$2.70硬上限，最坏累计开发$3.39183360<$5。详见handoff-v4-preflight-results-20261025.txt和handoff-v4-matrix-allocation-20261025.json。
+
+最新进展：2026-10-22 Phase1新版交付包
+output/phase1-2026-10-22/phase1-report.pdf（2页正文+1页附录）及phase1-submission.zip供审阅提交；未上传。563文件hash、旧矩阵13评分、新恢复4评分与成本账本离线复现通过；临时解压174tests，22个snapshot依赖测试明确skip，完整工作区测试exit0。旧10/8包保留。最新同前缀恢复/保守fallback/开销与失败已纳入，final8未读，0真实调用。详见同目录verification.json与release-checks.json。
+
 最新进展：2026-10-21 同前缀真实恢复与授权重试
 新原批13调用：restart/selective/fallback均JRA/ECR1、当前来源完整；no-recovery虽native满分但保留2旧来源和9556事实，质量门槛失败。selective增量19791 vs restart51429 tokens（少61.52%，含prefix少30.66%）。独立verification最后call180s超时，保留失败；用户授权后仅重放该诊断request一次，19754tokens成功、JRA/ECR1及7条current来源。总14calls，226373已知tokens+60000未知预留计账；不称端到端验证重跑成功。174tests通过，无后台任务、final未读。详见semantic-recovery-20261021.txt。
 

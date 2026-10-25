@@ -1,0 +1,58 @@
+{
+  "batch": "handoff-v4-matrix-20261025",
+  "batch_id": "handoff-v4-matrix-20261025",
+  "status": "allocated_before_inference",
+  "scope": "development_seen boutique/service/2; two fixed repetitions of the v4 recovery matrix",
+  "case": "boutique/service/2",
+  "mode": "matrix",
+  "maximum_calls": 36,
+  "max_calls": 36,
+  "maximum_usd": "2.70",
+  "development_ceiling_usd": "5.00",
+  "previous_development_conservative_usd": "0.69183360",
+  "maximum_cumulative_development_usd": "3.39183360",
+  "formal_actual_usd_separate": "0.40225095",
+  "model": "api-glm-5.3",
+  "fresh_price_verification": {
+    "source": "Course TritonAI response receipts and the October 24 authenticated model check",
+    "input_usd_per_token": "0.0000012",
+    "output_usd_per_token": "0.00000325",
+    "model_max_tokens": 320000
+  },
+  "fresh_account_verification": {
+    "source": "Authenticated course TritonAI /key/info queried inside DataHub on October 25; credential not exported",
+    "spend_usd": "1.0981877",
+    "max_budget_usd": "50.0",
+    "remaining_usd": "48.9018123",
+    "expires": "2026-11-07T18:28:12.453000+00:00"
+  },
+  "preflight": {
+    "protocol": "handoff-v4-preflight",
+    "engineering_gate": true,
+    "summary_sha256": "5ada79c26b1125decc97cd15f905c7fb7038b0d29f49d4469f37b0cba26412d8",
+    "usage_sha256": "f0e4944aa35b8698f9cde835ca81b0a19748816be58f47dad553ca2f812f5f0a",
+    "calls": 3,
+    "tokens": 20791,
+    "actual_account_delta_usd": "0.02608510",
+    "conservative_runner_cost_usd": "0.02838910",
+    "wrong_field_adopted": true,
+    "primary_diagnostic_harm_established": false
+  },
+  "input_byte_cap_including_framing": 40000,
+  "framing_reserve": 512,
+  "output_token_cap": 8192,
+  "runner_parent_commit": "80bcbce",
+  "approved": true,
+  "prices_verified": true,
+  "standing_ceiling_reconciled": true,
+  "controls": [
+    "No retries, regeneration, replacement case or native labels",
+    "Two fixed repetitions with counterbalanced recovery order",
+    "Identical structured handoff and evidence admission across paired arms",
+    "One-field liveness protocol intervention with raw source unchanged",
+    "Independent semantic review before method and cost mapping",
+    "Preserve failed, ineligible, no-recovery and ancillary-error outcomes",
+    "Do not claim independent incidents, statistical significance or production readiness",
+    "No assignment submission or email from the experiment runner"
+  ]
+}

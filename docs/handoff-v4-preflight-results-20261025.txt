@@ -1,0 +1,15 @@
+Handoff v4 three-call preflight — recovered October 25, 2026
+
+The completed preflight was recovered from the persistent DataHub course-group home directory without relaunching any request. Local copies are under runs/handoff-v4-preflight-20261024. The summary and usage hashes are 5ada79c26b1125decc97cd15f905c7fb7038b0d29f49d4469f37b0cba26412d8 and f0e4944aa35b8698f9cde835ca81b0a19748816be58f47dad553ca2f812f5f0a.
+
+All three planned calls completed. They used 20,791 tokens. The provider account increased from $1.0721026 before the batch to $1.0981877 after settlement, a $0.0260851 actual delta. Per-call conservative accounting inside the runner totals $0.02838910; use the larger value for the project development ceiling. The course key still reports a $50 maximum and expires November 7, 2026 at 18:28:12 UTC.
+
+The structured extraction matched the raw source: the adservice liveness and readiness probes both used grpc on port 9555. The intervention changed only liveness.protocol from grpc to httpGet. The corrupt coordinator answer adopted this field and explicitly repeated that adservice used httpGet, while the clean answer reported grpc. Both answers still identified app/checkoutservice and service_dns_resolution_failure, cited the same two source records, and gave source-supported primary reasoning. Thus the preflight establishes controlled exposure and adoption of one wrong intermediate fact, but it does not establish diagnostic harm or recovery benefit.
+
+The engineering gate passed: the clean and corrupt requests used the same admitted source packet, request bodies stayed below the 40,000-byte limit, all logical attempts and physical calls have receipts, and no omitted source was cited. The result supports a separately budgeted paired recovery matrix. It does not turn the seen service/2 case into an unseen evaluation case, and it does not change the frozen Phase 1 conclusions.
+
+Phase 2 matrix decision
+
+Run two repetitions on the same development_seen service/2 case. Each repetition keeps prefix, clean, raw-visible-corrupt, corrupt, no-recovery, restart and selective arms. Counterbalance restart/selective order across repetitions. Use the same structured handoff, one-field intervention, whole-source admission policy, semantic and temporal contracts, and trusted invalidation. Preserve every failure, ineligible slot and ancillary error. Compare corrected field, source-supported diagnosis/action, valid superseding publication, retained artifact hashes, calls, tokens, model cost and instrumented workflow time. Do not interpret two repeats as independent incidents or as statistical generalization.
+
+The matrix has a maximum of 36 calls and a $2.70 hard cap. Development spending before this matrix is $0.69183360 under conservative accounting ($0.66344450 previously reconciled plus $0.02838910 for this preflight). The maximum cumulative development spend after the matrix is therefore $3.39183360, below the standing $5 ceiling. Formal-v2 cost remains separate at $0.40225095.
