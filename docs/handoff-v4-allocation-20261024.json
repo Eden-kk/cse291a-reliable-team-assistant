@@ -1,0 +1,38 @@
+{
+  "batch": "handoff-v4-preflight-20261024",
+  "status": "allocated_before_inference",
+  "scope": "development_seen boutique/service/2; three-call saved-context preflight only",
+  "maximum_calls": 3,
+  "maximum_usd": "0.25",
+  "development_ceiling_usd": "5.00",
+  "previous_development_actual_usd": "0.66344450",
+  "formal_actual_usd_separate": "0.40225095",
+  "model": "api-glm-5.3",
+  "fresh_price_verification": {
+    "source": "Authenticated course TritonAI /model/info, read through DataHub terminal",
+    "input_usd_per_token": "0.0000012",
+    "output_usd_per_token": "0.00000325",
+    "model_max_tokens": 320000
+  },
+  "fresh_account_verification": {
+    "source": "Authenticated course TritonAI /key/info, read through DataHub terminal",
+    "spend_usd": "1.0721026",
+    "max_budget_usd": "50.0",
+    "expires": "2026-11-07T18:28:12.453000+00:00"
+  },
+  "input_byte_cap_including_framing": 40000,
+  "framing_reserve": 512,
+  "output_token_cap": 8192,
+  "per_call_worst_reservation_usd": "0.074624",
+  "total_worst_reservation_usd": "0.223872",
+  "controls": [
+    "No retries, regeneration, replacement case, or native labels",
+    "Offline gate and independent code review before launch",
+    "Clean extraction must match original raw source",
+    "One logical field intervention; identical admitted raw packet across clean and corrupt",
+    "Engineering success does not depend on false-claim adoption",
+    "No restart/selective inference within this three-call allocation",
+    "Later matrix requires a separate frozen allocation and protocol",
+    "No submissions or emails"
+  ]
+}
