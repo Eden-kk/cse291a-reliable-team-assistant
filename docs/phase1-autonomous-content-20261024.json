@@ -1,0 +1,88 @@
+{
+  "body": [
+    {
+      "title": "Reliable Team Assistant: Phase 1",
+      "sections": [
+        {
+          "text": "Yiting Dai | Solo | CSE 291 A Systems, Option 5 | October 24, 2026"
+        },
+        {
+          "heading": "Question and implemented scope",
+          "text": "Can dependency-aware recovery preserve evidence-backed diagnosis quality with less recomputation after a trusted invalidation event? Configuration and telemetry roles collect read-only snapshots; a coordinator diagnoses. The runtime records consumed versions, invalidates dependent work, retains independent artifacts, rejects obsolete publications and links corrections. Missing recorded provenance triggers restart in development controls; this fallback was not exercised in the formal batch. Arbitrary error discovery, operational writes and invisible dependencies are outside the implemented guarantee."
+        },
+        {
+          "heading": "Workload and frozen protocol",
+          "text": "Cloud-OpsBench is pinned to ea05dafbc87b5985df8721622d63d4229c2b4224. Formal cases boutique/runtime/32, service/12 and performance/5 each run twice, reversing restart/selective order on repeat 2. These are three independent cases, not six. TritonAI api-glm-5.3 uses low reasoning, temperature 0 and 8192 output tokens. Course DataHub CPU 2/8 GB runs isolated Python 3.11.9 with exact dependency pins. Source 1380c6b identifies execution; the complete freeze is archived."
+        },
+        {
+          "text": "The user advanced launch to October 24 before formal observations were inspected. Cases, order, model, budgets and scoring were unchanged. Course acceptance of the explicitly user-selected benchmark remains unverified. Earlier development experiments and the 17-call TritonAI seen-case workflow remain separate feasibility evidence. No email or assignment submission was sent."
+        },
+        {
+          "heading": "Formal quality results",
+          "text": "All 6 units completed. Strict pass counts over all 6 assigned units: clean 4/6; restart 3/6; selective 3/6; prevention 3/6; expiry-restart 2/6; expiry-selective 2/6; no-recovery 0/6. For numeric-port recovery, only 4 units were eligible: restart and selective each passed 3/4, with different failed units. The other 2 units remain not-injected, not quietly excluded. Collection is not a diagnosis endpoint. No-recovery fails the current-publication criterion by construction; 0/6 does not imply six incorrect diagnoses. Prevention checks source integrity, not arbitrary semantic truth."
+        },
+        {
+          "text": "Strict success requires diagnosed status, native joint root/target accuracy and evidence closure, input-supported reasoning, current publication, valid output contract and budget. Input-only judgments on all 36 produced answers were hash-sealed before native labels were accessed. Codex performed the review; it is not independent human validation. All 54 assigned arm slots remain in scoring. Provisional publication does not mean operational approval."
+        }
+      ]
+    },
+    {
+      "title": "Development, costs and remaining evidence",
+      "sections": [
+        {
+          "heading": "Formal measurement boundary",
+          "text": "Four eligible formal units: selective used 1 versus 3 restart calls and 33,260 versus 64,902 incremental tokens (48.8% fewer). Both passed 3/4 with different failures; quality equivalence is not established. None of four corrupted ports propagated. Both used 3 calls on all six all-expired units. Formal timing sums API latency; full workflow latency and tracking overhead were not recorded."
+        },
+        {
+          "heading": "Repeated handoff: separate seen-case development",
+          "text": "Three fresh prefixes on boutique/runtime/1 used R/S, S/R, R/S order; 54 calls and all 21 assigned arm slots were retained. The coordinator sees specialist summaries and source IDs, then can retrieve unchanged raw records. A fixed httpGet-to-grpc summary mutation was adopted 0/3 in corrupted handoffs and 0/3 in raw-visible comparisons. Both methods repaired the intermediate summary in 3/3; diagnoses were already correct, so this is not wrong-final-diagnosis repair."
+        },
+        {
+          "text": "Restart/selective required 6/3 calls per repeat and 24,553/12,163, 25,825/12,176 and 25,660/12,020 tokens (50.5%-53.2% fewer). Selective retained eight valid byte-identical artifacts each time. Independent AI review found supported core diagnoses in all 15 answers but timing errors in one clean and two selective answers. Equal core diagnoses therefore do not establish equal whole-answer quality. The reviewer was method-blinded, not case-naive or human."
+        },
+        {
+          "heading": "Live generation development: six plus three plus three calls",
+          "text": "Three known-error final-call inputs were frozen. v3 compared original and typed timing instructions in counterbalanced order: 6 calls, $0.02961040; 5 valid JSON outputs and 1 malformed revised output remain recorded. v4 added JSON-object transport without changing instructions: 3 calls, $0.01176550, 3 valid outputs, but ancillary event-count/exclusivity/correctness claims remained problematic. v5 added generic material-claim constraints: 3 calls, $0.02158830. All three retained supported diagnoses and proposed repairs; targeted event/completion, sole-cause and timing-correct errors were absent in this small batch."
+        },
+        {
+          "text": "v5 is still not all-claims correct: one answer overstates application health, protocol interpretations remain overprecise, and typed temporal coverage is incomplete. JSON validity is not semantic validity. These adaptively developed, reused inputs support feasibility only, not held-out improvement. Every failed response remains; no automatic retry or silent repair occurred."
+        },
+        {
+          "heading": "Further recovery evidence: PENDING",
+          "text": "Stage 2 organic handoff and Stage 3 seeded conditional recovery are pending at this content checkpoint; no results are claimed. The seeded track must remain distinct from organic adoption. Report all assigned, ineligible, failed and nonpropagating outcomes; judge ancillary correctness and source freshness before cost savings."
+        },
+        {
+          "heading": "Separate accounting and limits",
+          "text": "Frozen formal: 92 calls, 519,696 tokens, $0.40225095. Earlier repeated handoff: 54 calls, 241,475 tokens, $0.21365440. The three new calibration stages total 12 calls and $0.06296420 in provider receipts; known development receipts total $0.54229335, with formal spend separate. Latest settled balance and final stage costs remain to reconcile. Prior offline guard and synthetic closure controls are mechanism/development evidence, not live semantic-recovery success."
+        }
+      ]
+    }
+  ],
+  "appendix": [
+    {
+      "title": "Reproduction and timeline appendix",
+      "sections": [
+        {
+          "heading": "Immutable evidence and new development records",
+          "text": "Preserve the original formal archive, hash seal, 36 scored answers and 54 assigned slots. Add handoff traces/review and the three calibration batches with complete requests/responses, source hashes, every assignment, costs and review seals. Previous malformed outputs remain unchanged. This content checkpoint is not a finished release: packaging and clean-extraction verification are pending."
+        },
+        {
+          "heading": "Offline verification checklist",
+          "text": "Use Python >=3.11 and requirements.lock. Verify the original formal release, summarize saved handoff evidence, and replay prior timing/synthetic controls. For each new batch, validate input/config/contract hashes, slot counts, request pairing, unchanged model settings, JSON-format option and instruction changes; sum receipt costs separately from conservative budget charges. Check independent-review seals and retain failed outputs. Exact inputs and acceptance checks are listed in docs/phase1-autonomous-reproduction-checklist-20261024.txt. Saved-output validation does not regenerate answers or independently prove semantics."
+        },
+        {
+          "heading": "Completed October 24",
+          "text": "Formal evaluation and three-repeat seen-case handoff, offline controls, then three versioned live calibration stages. Prompt refinements used observed development errors. Independent AI review found useful targeted improvement with unresolved ancillary claims. AI assistance includes implementation, experiments, analysis and report drafting; neither AI review nor student review should be called independent human adjudication."
+        },
+        {
+          "heading": "Pending before Phase 1 packaging",
+          "text": "Stage 2 and Stage 3 results and independent semantic review; aggregate budget and settled balance reconciliation; updated plan and evidence manifest; clean extraction, offline reproduction and PDF layout checks. No fabricated placeholder result may enter the final report. Confirm student review, course benchmark acceptance and exact live deadline/upload slot. Saved overview lists November 4 for Phase 1; acceptance and deadline hour remain unverified."
+        },
+        {
+          "heading": "Remaining term",
+          "text": "Preserve source verification even when it prevents organic propagation. Conditional seeded recovery measures correction given a wrong state, not natural error frequency. Broader evaluation requires a genuinely unexposed set, leakage audit and new frozen protocol. Multi-group scheduling and gated learning follow core recovery evidence. Prepare final report/presentation after checking official dates. Static snapshots, trusted invalidation, mutable model aliases and small development samples limit claims. No email or assignment submission has been sent."
+        }
+      ]
+    }
+  ]
+}
