@@ -34,6 +34,19 @@ Team assistants reuse evidence and intermediate work across an incident. When a 
 
 The system records artifact versions and actual consumed-input dependencies, invalidates transitive dependents, rejects obsolete writes, and publishes a correction linked to the prior answer. Reuse is allowed only for artifacts whose sources and dependencies remain valid. Missing provenance or complete expiry triggers conservative restart. Tools are read-only and publication is locally simulated.
 
+```mermaid
+flowchart LR
+    S[Versioned read-only sources] --> P[Specialist artifacts]
+    P --> C[Coordinator answer]
+    C --> U[Versioned publication]
+    N[Trusted invalidation] --> D[Dependency closure]
+    D -->|Independent valid work remains| R[Selective recomputation]
+    D -->|All work invalid or provenance incomplete| F[Full restart]
+    R --> V[Evidence and publication validation]
+    F --> V
+    V --> U2[Linked corrective publication]
+```
+
 ## 3. Evaluation protocol
 
 The frozen formal evaluation contains {formal['design']['independent_cases']} Cloud-OpsBench cases, two repeats each, and {formal['design']['assigned_units']} assigned units. Partial invalidation was successfully injected in {formal['design']['partial_invalidation_eligible_units']} units; the other {formal['design']['not_injected_units_retained']} remain in the denominator and are not retargeted. The comparison reports correctness before savings and retains failures, uncertainty, and ineligible conditions.
@@ -62,7 +75,7 @@ The seeded conditional handoff supplies a mechanism check rather than a formal p
 - Observed request time is descriptive and does not establish a production latency guarantee.
 - Course acceptance of Cloud-OpsBench still requires explicit confirmation or preserved approval evidence.
 
-Before final submission, add the final course-required format, one architecture figure, one quality/cost figure generated from `results.csv`, references, and any later instructor-approved evaluation. Do not rerun or overwrite the frozen formal evidence.
+Before final submission, render the architecture diagram, add one quality/cost figure generated from `results.csv`, apply the course-required format, and add references plus any later instructor-approved evaluation. Do not rerun or overwrite the frozen formal evidence.
 """
 
 
