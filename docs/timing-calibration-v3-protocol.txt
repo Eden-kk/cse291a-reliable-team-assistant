@@ -1,0 +1,35 @@
+Timing-generation calibration v3 (development, six calls)
+
+Freeze three previously erroneous final-call inputs: handoff review items 08, 10, 11,
+original calls 54, 6, 18. Their requests and original instructions are committed in
+configs/timing-calibration-inputs with exact SHA256 in configs/timing-calibration-v3.json.
+No historical final answer or reviewer verdict is supplied to the model. These known-error
+inputs are selected development fixtures, not unseen or representative cases.
+
+Replay the exact saved final-call request twice: original instruction versus the same
+instruction plus a typed temporal-evidence contract. Order O/R, R/O, O/R is frozen.
+The revision requires configuration/event/inference distinctions, explicit field units,
+scope and assumptions, and omission of unsupported optional temporal detail. It supplies
+no field values or correct diagnosis. Request inputs, prior handoff/retrieval decisions,
+model api-glm-5.3, temperature0, low reasoning, output8192 remain identical within pairs.
+Only final-answer generation changes; this cannot estimate whole-workflow improvement.
+No post-generation repair, rejection sampling, retry, replacement or guard-guided edit.
+An uncertain answer or missing required evidence is retained, not promoted to success.
+
+At most6 calls,40000 input-byte cap including512 framing reserve,48192 reserved tokens
+per call; pessimistic total$0.447744 at existing provider prices; hard cap$0.50.
+Fresh course account expiry/balance checked before inference. Provider records complete
+request/response, tokens, header cost, modeled conservative charge and wall time.
+Initialize all6 assignments; first failure halts remaining slots, retained as not_run.
+Input mutation aborts before network. Output directory must be new.
+
+Independent semantic review must seal output-level judgments before variant/cost reveal.
+Provide actual inspected evidence and new answers without historical correctness labels.
+Score every temporal claim, primary diagnosis, material ancillary claims, required evidence
+coverage and supported uncertainty. Extra typed output reveals the likely arm, so blinding
+is partial and must be disclosed. Lexical guard is supplemental, not semantic ground truth.
+Report paired old/revised errors, omissions and uncertainty; three pairs are descriptive,
+with no significance, p95, generalization or proven self-correction claim.
+
+Run: python scripts/run_timing_calibration.py --output NEW_DIRECTORY --commit COMMIT
+Offline test: PYTHONPATH=src python -m unittest discover -s tests -p test_timing_calibration.py

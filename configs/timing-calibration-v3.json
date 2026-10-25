@@ -1,0 +1,47 @@
+{
+  "version": "timing-calibration-v3",
+  "formal_evaluation": false,
+  "selection": "Three known-error development inputs; selected before new output access, not held-out or representative",
+  "source_usage_sha256": "e7b0871b83268d1de2e0a6e52f6b5667bcba2e428b391d2d9f4df40f3ee7aeea",
+  "model": "api-glm-5.3",
+  "temperature": 0,
+  "reasoning_effort": "low",
+  "max_tokens": 8192,
+  "max_calls": 6,
+  "maximum_usd": "0.50",
+  "input_byte_cap": 40000,
+  "reserved_tokens_per_call": 48192,
+  "max_reserved_usd": "0.447744",
+  "items": [
+    {
+      "id": "item-08",
+      "source_call": 54,
+      "path": "configs/timing-calibration-inputs/item-08.json",
+      "sha256": "cb07eee34122a05c75783a223a68d25955921f23c36baa234b0bec35e10f91ad",
+      "order": [
+        "original",
+        "revised"
+      ]
+    },
+    {
+      "id": "item-10",
+      "source_call": 6,
+      "path": "configs/timing-calibration-inputs/item-10.json",
+      "sha256": "11877598c033ea11a6b4e0f51131aceb0830882def70b93c6739851a71d6eb3f",
+      "order": [
+        "revised",
+        "original"
+      ]
+    },
+    {
+      "id": "item-11",
+      "source_call": 18,
+      "path": "configs/timing-calibration-inputs/item-11.json",
+      "sha256": "f923703e5483120aa1c2158c6cdea3e8088e89e20a046d2e4f6b3a59287157f6",
+      "order": [
+        "original",
+        "revised"
+      ]
+    }
+  ]
+}

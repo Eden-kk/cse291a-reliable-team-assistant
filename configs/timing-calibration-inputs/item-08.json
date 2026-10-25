@@ -1,0 +1,456 @@
+{
+  "instruction": "You are an incident coordinator receiving specialist handoffs.\nUse supplied summaries and available sources to investigate; specialist claims are not proof.\nIf raw evidence is needed, return {\"retrieve_source_ids\":[\"ID\", ...]} (at most three IDs).\nOnly one retrieval round is available. Otherwise return a final JSON object with\n\"status\":\"diagnosed\" or \"uncertain\", \"fault_object\":\"app/NAME or node/NAME or namespace/NAME\",\n\"root_cause\":\"exact allowed label\", \"evidence\":[{\"observation_id\":\"ID\",\"quote\":\"literal raw substring\"}],\n\"reasoning\":\"causal explanation\", \"adservice_liveness_protocol\":\"httpGet|grpc|tcpSocket|unknown\".\nDo not invent raw quotations from summaries. If evidence is insufficient, return uncertain.\nThe source catalog lists retrievable original observations. Cite only raw records actually inspected.\nRetrieval exhausted. Return final diagnosis or uncertain; do not request more.",
+  "request": {
+    "question": "Service abnormal restart.",
+    "tools": {
+      "GetResources": {
+        "description": "Simulates `kubectl get` to retrieve resource lists or current status details. IMPORTANT: `show_labels` and `output_wide` are mutually exclusive. `label_selector` may be combined with either of them. `show_labels` and `output_wide` are mutually exclusive.",
+        "parameters": {
+          "properties": {
+            "resource_type": {
+              "description": "**REQUIRED**. The type of resource to list. (e.g., 'pods', 'services', 'deployments', 'nodes').",
+              "title": "Resource Type",
+              "type": "string"
+            },
+            "namespace": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "The Kubernetes namespace to query. **CRITICAL**: If the `resource_type` is a namespaced resource (e.g., 'pods', 'deployments', 'services'), you MUST provide the namespace (default is 'boutique'). However, if the `resource_type` is a cluster-scoped resource (e.g., 'nodes', 'persistentvolumes'), you may omit the `namespace` parameter; the tool will automatically handle historical cache formats.",
+              "title": "Namespace"
+            },
+            "name": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Optional. The specific name of the resource to retrieve a single item. If omitted, returns a list.",
+              "title": "Name"
+            },
+            "show_labels": {
+              "default": false,
+              "description": "If True, adds `--show-labels`. MUTUALLY EXCLUSIVE with `output_wide`.",
+              "title": "Show Labels",
+              "type": "boolean"
+            },
+            "output_wide": {
+              "default": false,
+              "description": "If True, adds `-o wide`. MUTUALLY EXCLUSIVE with `show_labels`.",
+              "title": "Output Wide",
+              "type": "boolean"
+            },
+            "label_selector": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Filter by label (e.g., 'app=frontend'). Can be combined with `show_labels` or `output_wide`. Only simple selectors in the form `key=value` are supported. SUPPORTED ONLY FOR: pods, services, deployments, PVCs.",
+              "title": "Label Selector"
+            }
+          },
+          "required": [
+            "resource_type"
+          ],
+          "title": "GetResourcesInput",
+          "type": "object"
+        }
+      },
+      "DescribeResource": {
+        "description": "Simulates `kubectl describe`. Retrieves detailed state, events, and conditions for a specific Kubernetes resource.",
+        "parameters": {
+          "properties": {
+            "resource_type": {
+              "description": "**REQUIRED**. The type of resource to describe (e.g., 'pod', 'node', 'service', 'pvc').",
+              "title": "Resource Type",
+              "type": "string"
+            },
+            "name": {
+              "description": "**REQUIRED**. The EXACT name of the specific resource to inspect.",
+              "title": "Name",
+              "type": "string"
+            },
+            "namespace": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "The Kubernetes namespace to query. If resource is namespaced, provide namespace. If cluster-scoped, you may omit namespace; the tool will automatically handle historical cache formats.",
+              "title": "Namespace"
+            }
+          },
+          "required": [
+            "resource_type",
+            "name"
+          ],
+          "title": "DescribeResourceInput",
+          "type": "object"
+        }
+      },
+      "GetAppYAML": {
+        "description": "Retrieves the raw YAML configuration file for a specific service. Returns static configuration details including resource limits, probes, env vars, and image tags.",
+        "parameters": {
+          "properties": {
+            "app_name": {
+              "description": "**REQUIRED**. The name of the microservice to inspect. Allowed for boutique: adservice, cartservice, checkoutservice, currencyservice, emailservice, frontend, paymentservice, productcatalogservice, recommendationservice, redis-cart, shippingservice.",
+              "title": "App Name",
+              "type": "string"
+            }
+          },
+          "required": [
+            "app_name"
+          ],
+          "title": "GetAppYAMLInput",
+          "type": "object"
+        }
+      },
+      "GetRecentLogs": {
+        "description": "Retrieves raw recent container logs for a specified Kubernetes service.",
+        "parameters": {
+          "properties": {
+            "namespace": {
+              "description": "**REQUIRED**. The Kubernetes namespace.",
+              "title": "Namespace",
+              "type": "string"
+            },
+            "service_name": {
+              "description": "**REQUIRED**. The microservice name, not the full pod name. Allowed for boutique: adservice, cartservice, checkoutservice, currencyservice, emailservice, frontend, paymentservice, productcatalogservice, recommendationservice, redis-cart, shippingservice.",
+              "title": "Service Name",
+              "type": "string"
+            }
+          },
+          "required": [
+            "namespace",
+            "service_name"
+          ],
+          "title": "GetRecentLogsInput",
+          "type": "object"
+        }
+      },
+      "GetErrorLogs": {
+        "description": "Retrieves a statistical summary of application error logs grouped by error patterns for a specified Kubernetes service.",
+        "parameters": {
+          "properties": {
+            "namespace": {
+              "description": "**REQUIRED**. The Kubernetes namespace.",
+              "title": "Namespace",
+              "type": "string"
+            },
+            "service_name": {
+              "description": "**REQUIRED**. The microservice name. Allowed for boutique: adservice, cartservice, checkoutservice, currencyservice, emailservice, frontend, paymentservice, productcatalogservice, recommendationservice, redis-cart, shippingservice.",
+              "title": "Service Name",
+              "type": "string"
+            }
+          },
+          "required": [
+            "namespace",
+            "service_name"
+          ],
+          "title": "GetErrorLogsInput",
+          "type": "object"
+        }
+      },
+      "CheckServiceConnectivity": {
+        "description": "Performs an active TCP connectivity check to the target service port from within the cluster. This tool can ONLY check internal cluster connectivity between the predefined microservices. It CANNOT check external DNS or external image registry connectivity.",
+        "parameters": {
+          "properties": {
+            "service_name": {
+              "description": "**REQUIRED**. The target Service DNS name. Allowed for boutique: adservice, cartservice, checkoutservice, currencyservice, emailservice, frontend, paymentservice, productcatalogservice, recommendationservice, redis-cart, shippingservice.",
+              "title": "Service Name",
+              "type": "string"
+            },
+            "port": {
+              "description": "**REQUIRED**. The target TCP port number.",
+              "title": "Port",
+              "type": "integer"
+            },
+            "namespace": {
+              "description": "**REQUIRED**. The Kubernetes namespace.",
+              "title": "Namespace",
+              "type": "string"
+            }
+          },
+          "required": [
+            "service_name",
+            "port",
+            "namespace"
+          ],
+          "title": "CheckServiceConnectivityInput",
+          "type": "object"
+        }
+      },
+      "GetServiceDependencies": {
+        "description": "Retrieves the service network topology, showing upstream and downstream communication relationships for a given service.",
+        "parameters": {
+          "properties": {
+            "service_name": {
+              "description": "**REQUIRED**. The name of the service. Allowed for boutique: adservice, cartservice, checkoutservice, currencyservice, emailservice, frontend, paymentservice, productcatalogservice, recommendationservice, redis-cart, shippingservice.",
+              "title": "Service Name",
+              "type": "string"
+            }
+          },
+          "required": [
+            "service_name"
+          ],
+          "title": "GetServiceDependenciesInput",
+          "type": "object"
+        }
+      },
+      "GetClusterConfiguration": {
+        "description": "Retrieves a holistic health and configuration summary of all nodes in the cluster, including taints, conditions, allocatable resources, and labels.",
+        "parameters": {
+          "type": "object",
+          "properties": {}
+        }
+      },
+      "GetAlerts": {
+        "description": "Retrieves active system alerts triggered by metric anomalies such as high latency, error rate spikes, or CPU/Memory saturation.",
+        "parameters": {
+          "type": "object",
+          "properties": {}
+        }
+      },
+      "CheckNodeServiceStatus": {
+        "description": "Checks the operating status of critical Kubernetes infrastructure components on a specific node, such as kubelet, kube-proxy, and containerd.",
+        "parameters": {
+          "properties": {
+            "node_name": {
+              "description": "**REQUIRED**. The target Node Name.",
+              "enum": [
+                "master",
+                "worker-01",
+                "worker-02",
+                "worker-03"
+              ],
+              "title": "Node Name",
+              "type": "string"
+            },
+            "service_name": {
+              "description": "**REQUIRED**. The system component name to inspect.",
+              "enum": [
+                "kube-scheduler",
+                "kubelet",
+                "kube-proxy",
+                "containerd"
+              ],
+              "title": "Service Name",
+              "type": "string"
+            }
+          },
+          "required": [
+            "node_name",
+            "service_name"
+          ],
+          "title": "CheckNodeServiceStatusInput",
+          "type": "object"
+        }
+      }
+    },
+    "namespace": "boutique",
+    "allowed_causes": {
+      "namespace_cpu_quota_exceeded": "namespace",
+      "namespace_memory_quota_exceeded": "namespace",
+      "namespace_pod_quota_exceeded": "namespace",
+      "namespace_service_quota_exceeded": "namespace",
+      "namespace_storage_quota_exceeded": "namespace",
+      "missing_service_account": "app",
+      "node_cordon_mismatch": "app",
+      "node_affinity_mismatch": "app",
+      "node_selector_mismatch": "app",
+      "pod_anti_affinity_conflict": "app",
+      "taint_toleration_mismatch": "app",
+      "cpu_capacity_mismatch": "app",
+      "memory_capacity_mismatch": "app",
+      "node_network_delay": "node",
+      "node_network_packet_loss": "node",
+      "containerd_unavailable": "node",
+      "kubelet_unavailable": "node",
+      "kube_proxy_unavailable": "node",
+      "kube_scheduler_unavailable": "node",
+      "image_registry_dns_failure": "app",
+      "incorrect_image_reference": "app",
+      "missing_image_pull_secret": "app",
+      "pvc_selector_mismatch": "app",
+      "pvc_storage_class_mismatch": "app",
+      "pvc_access_mode_mismatch": "app",
+      "pvc_capacity_mismatch": "app",
+      "pv_binding_occupied": "app",
+      "volume_mount_permission_denied": "app",
+      "container_memory_limit_too_low": "app",
+      "liveness_probe_incorrect_protocol": "app",
+      "liveness_probe_incorrect_port": "app",
+      "liveness_probe_incorrect_timing": "app",
+      "readiness_probe_incorrect_protocol": "app",
+      "readiness_probe_incorrect_port": "app",
+      "service_selector_mismatch": "app",
+      "service_port_mapping_mismatch": "app",
+      "service_protocol_mismatch": "app",
+      "service_env_var_address_mismatch": "app",
+      "pod_cpu_overload": "app",
+      "pod_network_delay": "app",
+      "service_sidecar_port_conflict": "app",
+      "service_dns_resolution_failure": "app",
+      "mysql_invalid_credentials": "app",
+      "mysql_invalid_port": "app",
+      "missing_secret_binding": "app",
+      "db_connection_exhaustion": "app",
+      "db_readonly_mode": "app",
+      "gateway_misrouted": "app",
+      "deployment_zero_replicas": "app",
+      "code_busy_loop": "app",
+      "code_memory_leak": "app",
+      "code_artificial_delay": "app",
+      "code_excessive_file_reads": "app",
+      "code_excessive_file_writes": "app",
+      "code_wrong_return": "app",
+      "code_missing_parameter": "app",
+      "code_wrong_argument_order": "app"
+    },
+    "incident": "incident-1",
+    "step": "incident_brief",
+    "inputs": {
+      "configuration_summary": {
+        "service": "adservice",
+        "liveness_protocol": "httpGet",
+        "readiness_protocol": "grpc",
+        "summary": "adservice Deployment (boutique) exposes gRPC on container port 9555. The readinessProbe uses grpc on port 9555 (initialDelaySeconds 5), which matches the gRPC service. The livenessProbe uses httpGet on path / port 9555 (initialDelaySeconds 5), which is an HTTP probe against a gRPC-only server \u2014 a protocol mismatch that can cause liveness failures and abnormal restarts. Resources: requests 200m CPU/180Mi, limits 300m/300Mi.",
+        "source_ids": [
+          "observation-8"
+        ]
+      },
+      "telemetry_summary": {
+        "summary": "Observed: adservice pod adservice-d6c9fcc6b-d4nlb has restarted 2 times within ~90s of creation; all other boutique pods are stable with 0 restarts. Pod describe shows liveness probe (http-get on port 9555, path /) failing repeatedly (9 failures over 81s), causing kubelet to kill and restart the container (exit code 143, Terminated/Error). The liveness probe error indicates the server responds with a non-HTTP/1.x (binary/HTTP2) payload to the HTTP probe; adservice logs show matching Netty Http2Exception 'Unexpected HTTP/1.x request: GET /' errors (8 errors in 116 log lines, ~6.9% error ratio), confirming the adservice gRPC server rejects HTTP/1.x requests. Readiness probe uses grpc on 9555 and passes (pod Ready). No active metric alerts. Hypothesis (not yet confirmed): the liveness probe is misconfigured (wrong protocol for a gRPC server), i.e., liveness_probe_incorrect_protocol, causing the abnormal restart loop; the app itself appears healthy per gRPC readiness. Uncertainty: whether the probe config was recently changed or is default; no deployment YAML or alert history inspected yet.",
+        "source_ids": [
+          "observation-1",
+          "observation-2",
+          "observation-5",
+          "observation-6",
+          "observation-7"
+        ]
+      },
+      "source_catalog": {
+        "sources": [
+          {
+            "id": "observation-1",
+            "tool": "GetResources",
+            "arguments": {
+              "resource_type": "pods",
+              "namespace": "boutique",
+              "name": null,
+              "show_labels": false,
+              "output_wide": false,
+              "label_selector": null
+            }
+          },
+          {
+            "id": "observation-2",
+            "tool": "GetAlerts",
+            "arguments": {}
+          },
+          {
+            "id": "observation-3",
+            "tool": "GetAppYAML",
+            "arguments": {
+              "app_name": "adservice"
+            }
+          },
+          {
+            "id": "observation-4",
+            "tool": "DescribeResource",
+            "arguments": {
+              "resource_type": "pod",
+              "name": "adservice-d6c9fcc6b-d4nlb",
+              "namespace": "boutique"
+            }
+          },
+          {
+            "id": "observation-5",
+            "tool": "GetRecentLogs",
+            "arguments": {
+              "namespace": "boutique",
+              "service_name": "adservice"
+            }
+          },
+          {
+            "id": "observation-6",
+            "tool": "GetErrorLogs",
+            "arguments": {
+              "namespace": "boutique",
+              "service_name": "adservice"
+            }
+          },
+          {
+            "id": "observation-7",
+            "tool": "DescribeResource",
+            "arguments": {
+              "resource_type": "pod",
+              "name": "adservice-d6c9fcc6b-d4nlb",
+              "namespace": "boutique"
+            }
+          },
+          {
+            "id": "observation-8",
+            "tool": "GetAppYAML",
+            "arguments": {
+              "app_name": "adservice"
+            }
+          }
+        ]
+      },
+      "coordinator_decision": {
+        "retrieve_source_ids": [
+          "observation-8",
+          "observation-7"
+        ]
+      },
+      "retrieved_sources": {
+        "observations": [
+          {
+            "id": "observation-8",
+            "tool": "GetAppYAML",
+            "arguments": {
+              "app_name": "adservice"
+            },
+            "availability": "returned",
+            "text": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: adservice\n  namespace: boutique \n  labels:\n    app: adservice\nspec:\n  selector:\n    matchLabels:\n      app: adservice\n  template:\n    metadata:\n      labels:\n        app: adservice\n    spec:\n      serviceAccountName: adservice\n      terminationGracePeriodSeconds: 5\n      securityContext:\n        fsGroup: 1000\n        runAsGroup: 1000\n        runAsNonRoot: true\n        runAsUser: 1000\n      containers:\n      - name: server\n        securityContext:\n          allowPrivilegeEscalation: false\n          capabilities:\n            drop:\n              - ALL\n          privileged: false\n          readOnlyRootFilesystem: true\n        image: us-central1-docker.pkg.dev/google-samples/microservices-demo/adservice:v0.10.3\n        ports:\n        - containerPort: 9555\n        env:\n        - name: PORT\n          value: \"9555\"\n        resources:\n          requests:\n            cpu: 200m\n            memory: 180Mi\n          limits:\n            cpu: 300m\n            memory: 300Mi\n        readinessProbe:\n          initialDelaySeconds: 5\n          grpc:\n            port: 9555\n        livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555\n---\napiVersion: v1\nkind: Service\nmetadata:\n  name: adservice\n  namespace: boutique\n  labels:\n    app: adservice\nspec:\n  type: ClusterIP\n  selector:\n    app: adservice\n  ports:\n  - name: grpc\n    port: 9555\n    targetPort: 9555\n\n---\napiVersion: v1\nkind: ServiceAccount\nmetadata:\n  name: adservice\n  namespace: boutique",
+            "truncated": false,
+            "sha256": "f381b00ac5585a8b0536c33467e3962ef3fb72ce6ed562f1fe021958942d580e"
+          },
+          {
+            "id": "observation-7",
+            "tool": "DescribeResource",
+            "arguments": {
+              "resource_type": "pod",
+              "name": "adservice-d6c9fcc6b-d4nlb",
+              "namespace": "boutique"
+            },
+            "availability": "returned",
+            "text": "Name:             adservice-d6c9fcc6b-d4nlb\nNamespace:        boutique\nPriority:         0\nService Account:  adservice\nNode:             worker-02/192.168.0.53\nStart Time:       Fri, 21 Nov 2025 19:49:19 +0800\nLabels:           app=adservice\n                  pod-template-hash=d6c9fcc6b\nAnnotations:      <none>\nStatus:           Running\nIP:               172.20.2.163\nIPs:\n  IP:           172.20.2.163\nControlled By:  ReplicaSet/adservice-d6c9fcc6b\nContainers:\n  server:\n    Container ID:   containerd://ba3c8e4a77bc83a544e2c83c231d548d3d19f10e73fa1bfbe9c507dc660ef004\n    Image:          us-central1-docker.pkg.dev/google-samples/microservices-demo/adservice:v0.10.3\n    Image ID:       us-central1-docker.pkg.dev/google-samples/microservices-demo/adservice@sha256:ff1a059bb8f1226b77b42a9102344cfc4b669a04696eb44aeed3db8ae2b04e9e\n    Port:           9555/TCP\n    Host Port:      0/TCP\n    State:          Running\n      Started:      Fri, 21 Nov 2025 19:50:19 +0800\n    Last State:     Terminated\n      Reason:       Error\n      Exit Code:    143\n      Started:      Fri, 21 Nov 2025 19:49:49 +0800\n      Finished:     Fri, 21 Nov 2025 19:50:19 +0800\n    Ready:          True\n    Restart Count:  2\n    Limits:\n      cpu:     300m\n      memory:  300Mi\n    Requests:\n      cpu:      200m\n      memory:   180Mi\n    Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3\n    Readiness:  grpc <pod>:9555  delay=5s timeout=1s period=10s #success=1 #failure=3\n    Environment:\n      PORT:  9555\n    Mounts:\n      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-rbzfn (ro)\nConditions:\n  Type                        Status\n  PodReadyToStartContainers   True \n  Initialized                 True \n  Ready                       True \n  ContainersReady             True \n  PodScheduled                True \nVolumes:\n  kube-api-access-rbzfn:\n    Type:                    Projected (a volume that contains injected data from multiple sources)\n    TokenExpirationSeconds:  3607\n    ConfigMapName:           kube-root-ca.crt\n    ConfigMapOptional:       <nil>\n    DownwardAPI:             true\nQoS Class:                   Burstable\nNode-Selectors:              <none>\nTolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s\n                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s\nEvents:\n  Type     Reason     Age               From               Message\n  ----     ------     ----              ----               -------\n  Normal   Scheduled  91s               default-scheduler  Successfully assigned boutique/adservice-d6c9fcc6b-d4nlb to worker-02\n  Normal   Pulled     1s (x4 over 91s)  kubelet            Container image \"us-central1-docker.pkg.dev/google-samples/microservices-demo/adservice:v0.10.3\" already present on machine\n  Normal   Created    1s (x4 over 91s)  kubelet            Created container server\n  Normal   Started    1s (x4 over 91s)  kubelet            Started container server\n  Warning  Unhealthy  1s (x9 over 81s)  kubelet            Liveness probe failed: Get \"http://172.20.2.163:9555/\": net/http: HTTP/1.x transport connection broken: malformed HTTP status code \"\\x00\\x00\\x00\\x04\\b\\x00\\x00\\x00\\x00\\x00\\x00\\x0f\\x00\\x01\\x00\\x00+\\a\\x00\\x00\\x00\\x00\\x00\\x7f\\xff\\xff\\xff\\x00\\x00\\x00\\x01Unexpected\"\n  Normal   Killing    1s (x3 over 61s)  kubelet            Container server failed liveness probe, will be restarted\n",
+            "truncated": false,
+            "sha256": "ba6935b3c9db5c6135aafabcf8db424d496f24c4f99e54eb44f5e83677674a66"
+          }
+        ]
+      }
+    }
+  }
+}
