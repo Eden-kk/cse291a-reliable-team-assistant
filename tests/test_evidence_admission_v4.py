@@ -65,6 +65,24 @@ class AdmissionTests(unittest.TestCase):
         self.assertEqual(citation_errors({'evidence':[{'observation_id':'too-large','quote':'b'}]},result['request']),['unavailable source: too-large'])
         self.assertEqual(citation_errors({'evidence':[{'observation_id':'last','quote':'tail'}]},result['request']),[])
 
+    def test_malformed_json_valid_citations_return_errors(self):
+        admitted=admit_sources('x',request([observation('a','raw text')]))['request']
+        for evidence in (None, {}, 'a', ['bad'], [None], [{'observation_id':['a'],'quote':'raw'}],
+                         [{'observation_id':'a','quote':None}]):
+            self.assertTrue(citation_errors({'evidence':evidence},admitted),repr(evidence))
+        self.assertEqual(citation_errors(None,admitted),['answer must be an object'])
+        self.assertEqual(citation_errors({'evidence':[],'temporal_claims':[]},admitted),[])
+
+    def test_temporal_sources_checked_even_when_uncertain(self):
+        admitted=admit_sources('x',request([observation('a','raw text')]))['request']
+        self.assertEqual(citation_errors({'status':'uncertain','temporal_claims':[
+            {'source_id':'omitted','source_field':'periodSeconds'}]},admitted),['unavailable temporal source: omitted'])
+        self.assertEqual(citation_errors({'temporal_claims':[
+            {'source_id':'a','source_field':'periodSeconds'}]},admitted),[])
+        for claims in (None,{},[None],[{'source_id':['a'],'source_field':'x'}],
+                       [{'source_id':'a','source_field':None}]):
+            self.assertTrue(citation_errors({'temporal_claims':claims},admitted),repr(claims))
+
     def test_partial_unknown_size_and_full_archive(self):
         full='日本語'*5000;prefix=full[:10000]
         partial=observation('partial',full);partial.update(text=prefix,truncated=True)

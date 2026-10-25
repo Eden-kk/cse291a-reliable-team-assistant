@@ -131,13 +131,44 @@ def admit_sources(instruction, request, *, json_object=True, cap=CAP, inherited_
 
 
 def citation_errors(answer, admitted_request):
-    """Only supplied raw substrings can be cited; omitted sources remain unavailable."""
+    """Validate citation shapes and supplied-source membership, not semantic support.
+
+    Temporal source_field paths and prose entailment still need independent review.
+    Missing optional citation arrays mean none declared, not proof none were needed.
+    """
     records = {r['id']: r['text'] for r in admitted_request['inputs']['retrieved_sources']['observations']}
+    if not isinstance(answer, dict):
+        return ['answer must be an object']
     errors = []
-    for citation in answer.get('evidence', []):
+    evidence = answer.get('evidence', [])
+    if not isinstance(evidence, list):
+        errors.append('evidence must be a list')
+        evidence = []
+    for citation in evidence:
+        if not isinstance(citation, dict):
+            errors.append('malformed evidence claim')
+            continue
         identity, quote = citation.get('observation_id'), citation.get('quote')
+        if not isinstance(identity, str) or not identity:
+            errors.append('evidence observation_id must be a nonempty string')
+            continue
         if identity not in records:
-            errors.append('unavailable source: ' + str(identity))
+            errors.append('unavailable source: ' + identity)
         elif not isinstance(quote, str) or not quote or quote not in records[identity]:
-            errors.append('unsupported quote: ' + str(identity))
+            errors.append('unsupported quote: ' + identity)
+    temporal = answer.get('temporal_claims', [])
+    if not isinstance(temporal, list):
+        errors.append('temporal_claims must be a list')
+        temporal = []
+    for claim in temporal:
+        if not isinstance(claim, dict):
+            errors.append('malformed temporal claim')
+            continue
+        identity = claim.get('source_id')
+        if not isinstance(identity, str) or not identity:
+            errors.append('temporal source_id must be a nonempty string')
+        elif identity not in records:
+            errors.append('unavailable temporal source: ' + identity)
+        if not isinstance(claim.get('source_field'), str) or not claim['source_field']:
+            errors.append('temporal source_field must be a nonempty string')
     return errors
