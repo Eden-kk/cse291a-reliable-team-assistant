@@ -16,3 +16,24 @@ Omit optional assertions that lack evidence. Retain the supported main diagnosis
 quotes, and useful conclusions; do not hide missing support behind blanket uncertainty.
 Apply these rules to every narrative sentence, structured claim, and action recommendation.
 These generic rules supply no incident-specific values or correct diagnosis.'''
+
+
+def semantic_receipt(enabled):
+    import hashlib
+    return {'semantic_v5': enabled,
+            'semantic_contract_sha256': hashlib.sha256(SEMANTIC_CLAIM_CONTRACT.encode()).hexdigest() if enabled else None}
+
+
+class SemanticProvider:
+    """Explicitly opt in all calls while preserving the underlying global budget gate."""
+    def __init__(self, backend): self.backend = backend
+    @property
+    def records(self): return self.backend.records
+    @property
+    def halted(self): return self.backend.halted
+    async def complete(self, instruction, request):
+        return await self.backend.complete(instruction + SEMANTIC_CLAIM_CONTRACT, request)
+
+
+def with_semantic_contract(backend, enabled=False):
+    return SemanticProvider(backend) if enabled else backend

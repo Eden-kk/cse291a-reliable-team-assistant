@@ -16,6 +16,7 @@ from handoff_v3_contract import TIMING_CONTRACT
 from run_triton_workflow import account, write
 from team_assistant.state import Result
 from team_assistant.triton_provider import TritonProvider
+from semantic_claim_contract import with_semantic_contract, semantic_receipt
 
 
 class RevisedProvider:
@@ -149,12 +150,12 @@ async def main(args):
     spec=json.loads((ROOT/'configs/seeded-handoff-v3.json').read_text())
     assert spec['max_calls']==9 and spec['maximum_usd']=='0.70'
     args.output.mkdir(parents=True,exist_ok=False)
-    write(args.output/'protocol.json',spec); write(args.output/'execution.json',{'code_commit':args.commit,'json_object':args.json_object})
+    write(args.output/'protocol.json',spec); write(args.output/'execution.json',{**semantic_receipt(args.semantic_v5),'code_commit':args.commit,'json_object':args.json_object})
     before=account();write(args.output/'account-before.json',before)
     assert before['max_budget']-before['spend']>=0.70
     assert datetime.fromisoformat(before['expires'])>datetime.now(timezone.utc)
     backend=TritonProvider(args.output/'calls',max_calls=9,maximum_usd='0.70',input_byte_cap=40000,json_object=args.json_object)
-    try: await experiment(args.output,args.vendor,json.loads((ROOT/'configs/splits.json').read_text()),args.commit,backend,args.saved,spec)
+    try: await experiment(args.output,args.vendor,json.loads((ROOT/'configs/splits.json').read_text()),args.commit,with_semantic_contract(backend,args.semantic_v5),args.saved,spec)
     finally:
         write(args.output/'usage.json',{'calls':backend.records,'halted':backend.halted,'conservative_spend_usd':str(backend.spent_usd)})
         try: write(args.output/'account-after.json',account())
@@ -165,4 +166,5 @@ if __name__=='__main__':
     for field in ('vendor','output','saved'): p.add_argument('--'+field,type=Path,required=True)
     p.add_argument('--commit',required=True)
     p.add_argument('--json-object',action='store_true')
+    p.add_argument('--semantic-v5',action='store_true')
     asyncio.run(main(p.parse_args()))
