@@ -23,7 +23,7 @@ from probe_facts_v4 import (parse_probe_source, expected_extraction, canonical_f
                             render_probe_facts, inject_liveness_protocol, Ineligible)
 from team_assistant.investigation import PLAN
 from team_assistant.contracts import check_diagnosis
-from team_assistant.dispatch import Outcome
+from team_assistant.dispatch import Outcome, BudgetExhausted
 from team_assistant.memory import digest
 from team_assistant.triton_provider import TritonProvider
 
@@ -60,10 +60,21 @@ class AuditedProvider:
     @property
     def halted(self): return self.backend.halted
 
+    def reject(self, receipt, gate):
+        receipt = copy.deepcopy(receipt)
+        receipt.update(gate=gate, allowed=False, zero_network=True, physical_calls=0,
+                       logical_attempt=len(self.attempts) + 1,
+                       provider_calls_before=len(self.records),
+                       provider_spend_before=str(self.backend.spent_usd))
+        self.attempts.append(receipt)
+        write(self.output / f'{len(self.attempts):03d}.json', receipt)
+
     async def complete(self, text, request):
         receipt = request_check(text, request, inherited_budget=request.get('budget_lineage'))
         packet = request.get('inputs', {}).get('retrieved_sources', {}).get('admission', {})
         receipt.update(copy.deepcopy(packet))
+        receipt['admitted_sources'] = [copy.deepcopy(r.get('evidence_completeness', {}))
+            for r in request.get('inputs', {}).get('retrieved_sources', {}).get('observations', [])]
         receipt.update(step=request.get('step'), logical_attempt=len(self.attempts) + 1,
                        provider_calls_before=len(self.records),
                        provider_spend_before=str(self.backend.spent_usd))
@@ -110,8 +121,12 @@ async def fixed_step(inv, name, text, request, dependencies):
         if inv.snapshot.fingerprint() != inv.snapshot.source_version:
             raise ValueError('Source freshness changed')
         return await inv.provider.complete(text, copy.deepcopy(request))
-    return await inv.runtime.step(inv.identifier, name, backend, dependencies, False,
-                                  reservation=48192)
+    try:
+        return await inv.runtime.step(inv.identifier, name, backend, dependencies, False,
+                                      reservation=48192)
+    except BudgetExhausted:
+        inv.provider.reject(request_check(text, request, inherited_budget=lineage(inv)), 'logical_budget')
+        raise
 
 
 def config_payload(canonical):
@@ -168,9 +183,8 @@ def admit(inv, text, request, identities):
     request['inputs']['retrieved_sources'] = {'observations': sources_for(inv, identities)}
     packet = admit_sources(text, request, inherited_budget=lineage(inv))
     if packet['request'] is None:
-        # Keep the complete oversized candidate so the logical provider boundary records
-        # rejection, without constructing a smaller replacement or losing the assignment.
-        return request, packet
+        inv.provider.reject(packet['receipt'], packet['receipt']['gate'])
+        raise ValueError('Admission base and omission metadata exceed cap')
     return packet['request'], packet
 
 
@@ -283,9 +297,6 @@ async def preflight_experiment(out, inv, saved):
                 # Admit against the larger complete body, then reuse its exact packet for both arms.
                 larger = max((clean_request, corrupt_request), key=lambda r: len(encoded_body(text, r)))
                 admitted, packet = admit(inv, text, larger, saved['requested_source_ids'])
-                if packet['request'] is None:
-                    await inv.provider.complete(text, admitted)
-                    raise ValueError('Frozen packet cannot fit')
                 for request in (clean_request, corrupt_request):
                     request['inputs']['retrieved_sources'] = copy.deepcopy(admitted['inputs']['retrieved_sources'])
                     if not request_check(text, request)['allowed']:
@@ -324,9 +335,13 @@ async def preflight_experiment(out, inv, saved):
     return summary
 
 
-def saved_from_prefix(inv, state_path, requested_ids):
+def saved_from_prefix(inv, state_path, decision_path):
     """Reopen only original tool calls recorded by a saved prefix; never read labels."""
     state = json.loads(Path(state_path).read_text())
+    decision = json.loads(Path(decision_path).read_text())
+    requested_ids = decision['coordinator_decision']['payload']['retrieve_source_ids']
+    if not isinstance(requested_ids, list) or not 1 <= len(requested_ids) <= 3:
+        raise ValueError('Saved decision retrieval contract invalid')
     seen = {}
     for name in RAW_NAMES:
         for source in state[name]['payload'].get('observations', []):
@@ -348,6 +363,8 @@ def saved_from_prefix(inv, state_path, requested_ids):
             'age_basis': 'saved state filesystem modification time; original experiment manifest remains authoritative',
             'prior_exposure': 'development_seen; reused v3 prefix, not fresh end-to-end workflow',
             'prefix_file_sha256': hashlib.sha256(Path(state_path).read_bytes()).hexdigest(),
+            'decision_file_sha256': hashlib.sha256(Path(decision_path).read_bytes()).hexdigest(),
+            'requested_ids_basis': 'unchanged original v3 clean coordinator decision order',
             'telemetry_summary': state['telemetry_summary']['payload'],
             'source_catalog': state['source_catalog']['payload'], 'observations': archive,
             'requested_source_ids': requested_ids}
@@ -484,7 +501,7 @@ async def main(args):
     try:
         if args.mode == 'preflight':
             inv = build(args.vendor, registry, args.commit, backend)
-            saved = saved_from_prefix(inv, args.saved_prefix, args.requested_source_ids)
+            saved = saved_from_prefix(inv, args.saved_prefix, args.saved_decision)
             await preflight_experiment(args.output, inv, saved)
         else:
             await matrix_experiment(args.output, args.vendor, registry, args.commit, backend)
@@ -503,6 +520,6 @@ if __name__ == '__main__':
     parser.add_argument('--commit', required=True)
     parser.add_argument('--allocation', type=Path, required=True)
     parser.add_argument('--saved-prefix', type=Path)
-    parser.add_argument('--requested-source-ids', nargs='*', default=[])
+    parser.add_argument('--saved-decision', type=Path)
     parser.add_argument('--preflight-result', type=Path)
     asyncio.run(main(parser.parse_args()))
