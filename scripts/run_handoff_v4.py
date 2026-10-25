@@ -173,8 +173,20 @@ async def collect_handoffs(inv):
 
 def sources_for(inv, identities):
     archive = {r['id']: r for r in inv.snapshot.observations}
-    if len(identities) != len(set(identities)) or any(i not in archive for i in identities):
-        raise ValueError('Unknown or duplicate requested source')
+    store = inv.incident.store
+    if 'source_catalog' not in store.results or 'source_catalog' in store.invalid():
+        raise ValueError('Active source catalog required')
+    catalog = store.results['source_catalog'].payload['sources']
+    declared = {record['id']: record for record in catalog}
+    if len(declared) != len(catalog):
+        raise ValueError('Duplicate catalog source identity')
+    if (len(identities) != len(set(identities))
+        or any(i not in archive or i not in declared for i in identities)):
+        raise ValueError('Unknown, inactive or duplicate requested source')
+    for identity in identities:
+        for field in ('tool', 'arguments', 'sha256'):
+            if field in declared[identity] and declared[identity][field] != archive[identity].get(field):
+                raise ValueError('Catalog source mapping mismatch: ' + field)
     return [copy.deepcopy(archive[i]) for i in identities]
 
 

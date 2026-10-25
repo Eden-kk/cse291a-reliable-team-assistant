@@ -91,7 +91,7 @@ class TestRunner(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             audit = runner.AuditedProvider(provider, tmp)
             inv = self.inv(audit)
-            self.saved(inv)
+            runner.load_saved(inv, self.saved(inv))
             rejected = runner.request_check('x', {'inputs': {'large': 'x' * 50000}})
             rejected.update(gate='base_with_omission_metadata_exceeds_cap', requested_ids=['observation-1'], admitted_ids=[])
             with patch.object(runner, 'admit_sources', return_value={'request': None, 'receipt': rejected, 'attempts': []}):
@@ -100,6 +100,26 @@ class TestRunner(unittest.TestCase):
             self.assertEqual(provider.records, [])
             self.assertEqual(audit.attempts[0]['gate'], 'base_with_omission_metadata_exceeds_cap')
             self.assertTrue(audit.attempts[0]['zero_network'])
+
+    def test_old_archive_source_outside_active_catalog_is_rejected(self):
+        inv = self.inv(Provider())
+        runner.load_saved(inv, self.saved(inv))
+        inv.execute_queries([{'tool': 'GetAppYAML', 'arguments': {'app_name': 'adservice'}}])
+        fresh = inv.snapshot.observations[-1]
+        inv.artifact('source_catalog', {'sources': [fresh]})
+        with self.assertRaisesRegex(ValueError, 'inactive'):
+            runner.sources_for(inv, ['observation-1'])
+        self.assertEqual(runner.sources_for(inv, [fresh['id']]), [fresh])
+
+    def test_catalog_mapping_mismatch_is_rejected(self):
+        inv = self.inv(Provider())
+        runner.load_saved(inv, self.saved(inv))
+        source = inv.snapshot.observations[0]
+        for field, wrong in [('tool', 'GetAppYAML'), ('arguments', {'app_name': 'adservice'}),
+                             ('sha256', '0' * 64)]:
+            inv.artifact('source_catalog', {'sources': [{**source, field: wrong}]})
+            with self.assertRaisesRegex(ValueError, 'mapping mismatch'):
+                runner.sources_for(inv, [source['id']])
 
     def test_direct_uncertain_answer_cannot_cite_unread_sources(self):
         inv = self.inv(Provider())
