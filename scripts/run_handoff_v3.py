@@ -214,11 +214,11 @@ async def main(args):
         raise ValueError('Seeded conditional recovery needs a separate budget and protocol; zero extra calls allowed')
     args.output.mkdir(parents=True, exist_ok=False)
     write(args.output/'protocol.json', spec)
-    write(args.output/'execution.json', {'code_commit': args.commit, 'config_sha256': digest(spec)})
+    write(args.output/'execution.json', {'json_object': args.json_object, 'code_commit': args.commit, 'config_sha256': digest(spec)})
     before = account(); write(args.output/'account-before.json', before)
     assert before['max_budget'] - before['spend'] >= 2.70
     assert datetime.fromisoformat(before['expires']) > datetime.now(timezone.utc)
-    backend = TritonProvider(args.output/'calls', max_calls=36, maximum_usd='2.70', input_byte_cap=40000)
+    backend = TritonProvider(args.output/'calls', max_calls=36, maximum_usd='2.70', input_byte_cap=40000,json_object=args.json_object)
     try:
         await experiment(args.output, args.vendor, json.loads((ROOT/'configs/splits.json').read_text()), args.commit, backend)
     finally:
@@ -231,5 +231,6 @@ if __name__ == '__main__':
     p = argparse.ArgumentParser()
     p.add_argument('--vendor', type=Path, required=True); p.add_argument('--output', type=Path, required=True)
     p.add_argument('--commit', required=True)
+    p.add_argument('--json-object', action='store_true')
     p.add_argument('--seeded-state', action='store_true', help='Unallocated; fails closed before account or inference')
     asyncio.run(main(p.parse_args()))

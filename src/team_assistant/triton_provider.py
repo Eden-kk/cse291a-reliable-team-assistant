@@ -46,7 +46,7 @@ def _money(value):
 
 
 class TritonProvider:
-    def __init__(self, output, *, max_calls, maximum_usd, input_byte_cap=57952, timeout=180):
+    def __init__(self, output, *, max_calls, maximum_usd, input_byte_cap=57952, timeout=180, json_object=False):
         if os.environ.get('OPENAI_BASE_URL') != BASE_URL:
             raise ValueError('Expected the exact UCSD TritonAI endpoint')
         self._key = os.environ.get('OPENAI_API_KEY', '')
@@ -58,6 +58,9 @@ class TritonProvider:
             raise ValueError('input_byte_cap must be an integer between 513 and 57952')
         if type(timeout) not in (int, float) or not 0 < timeout <= 180:
             raise ValueError('timeout must be positive and at most 180 seconds')
+        if type(json_object) is not bool:
+            raise ValueError('json_object must be boolean')
+        self.json_object = json_object
         self.maximum_usd = _money(maximum_usd)
         self.max_calls = max_calls
         self.input_byte_cap = input_byte_cap
@@ -98,6 +101,8 @@ class TritonProvider:
                 {'role': 'system', 'content': 'No tools or files. Use supplied evidence only. Return one JSON object.\n' + instruction},
                 {'role': 'user', 'content': json.dumps(request, allow_nan=False)}],
                 'max_tokens': MAX_TOKENS, 'temperature': 0, 'reasoning_effort': 'low', 'stream': False}
+            if self.json_object:
+                body['response_format'] = {'type': 'json_object'}
             encoded = json.dumps(body, separators=(',', ':'), allow_nan=False).encode()
         except (ValueError, TypeError):
             return Outcome({}, 0, 'Invalid request')

@@ -1,0 +1,25 @@
+Transport-only temporal generation followup v4
+
+The previous six-call v3 batch remains immutable, including its reported malformed-JSON
+failure. This is a newly allocated development stage, not a retry within or retroactive
+repair of v3. No prior output is parsed, patched, fed back or used to tune instructions.
+
+Exactly three revised calls replay the frozen inputs item08,item10,item11 in that order.
+Same original request, exact TIMING_RULES, model, temperature0, low reasoning and8192
+output cap. The only transport change is response_format={"type":"json_object"}.
+This requests syntactic JSON; it does not guarantee schema adherence, evidence quality
+or semantic correctness. Score all three assignments, retaining errors and missing slots.
+
+Hard3calls/$0.25,40000byte input cap,48192token reservation per call; pessimistic
+reservation$0.223872 at current configured provider prices. Account balance and expiry
+checked before launch. No fallback to text mode, no retries or response repair. Any
+HTTP rejection including unsupported response_format halts all remaining slots.
+Save complete provider request/response, actualusage/cost headers, local result and hashes.
+Independent review of material claims remains mandatory; do not substitute JSON validity
+or a lexical timing guard for correctness. This followup alone cannot estimate variance
+or isolate semantics from another run's stochasticity.
+
+The provider flag defaultsFalse, preserving old request bodies. Future not-yet-run
+handoff-v3 and seeded-handoff-v3 may opt in using --json-object; execution receipts
+record the flag and actual request bodies prove it. Those runs require their own frozen
+allocation/amendment before launch; this stage does not enlarge their budgets.

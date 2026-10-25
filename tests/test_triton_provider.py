@@ -40,6 +40,12 @@ class TritonTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(payload['max_tokens'], 8192)
             self.assertEqual(payload['reasoning_effort'], 'low')
             self.assertNotIn('tools', payload)
+            self.assertNotIn('response_format', payload)
+            self.assertEqual(payload, {
+                'model': 'api-glm-5.3', 'messages': [
+                    {'role': 'system', 'content': 'No tools or files. Use supplied evidence only. Return one JSON object.\n' + 'instruction'},
+                    {'role': 'user', 'content': json.dumps({'evidence': 'x'})}],
+                'max_tokens': 8192, 'temperature': 0, 'reasoning_effort': 'low', 'stream': False})
             self.assertEqual(timeout, 180)
             return response()
         with patch('team_assistant.triton_provider._post', side_effect=send) as transport:
@@ -52,6 +58,18 @@ class TritonTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(provider.records[0]['finish_reason'], 'stop')
         self.assertEqual(provider.records[0]['usage']['prompt_tokens_details']['cached_tokens'], 5)
         self.assertTrue((self.output / '001.response.json').exists())
+
+    async def test_json_object_opt_in_and_rejection_halt(self):
+        provider = self.provider(json_object=True)
+        def unsupported(body, key, timeout):
+            self.assertEqual(json.loads(body)['response_format'], {'type': 'json_object'})
+            return 400, {}, b'{"error":"unsupported response_format"}'
+        with patch('team_assistant.triton_provider._post', side_effect=unsupported) as send:
+            result = await provider.complete('x', {})
+            await provider.complete('x', {})
+        self.assertEqual(send.call_count, 1)
+        self.assertTrue(provider.halted)
+        self.assertIsNotNone(result.error)
 
     async def test_preflight_no_send(self):
         provider = self.provider(input_byte_cap=1000)
@@ -125,7 +143,7 @@ class TritonTests(unittest.IsolatedAsyncioTestCase):
         with self.assertRaises(FileExistsError):
             self.provider()
         for kwargs in ({'input_byte_cap': True}, {'input_byte_cap': 60000}, {'max_calls': 0},
-                       {'maximum_usd': 'NaN'}, {'maximum_usd': -1}, {'timeout': 181}):
+                       {'maximum_usd': 'NaN'}, {'maximum_usd': -1}, {'timeout': 181}, {'json_object': 'yes'}):
             with self.assertRaises(ValueError):
                 self.provider(**kwargs)
         with patch.dict(os.environ, {'OPENAI_BASE_URL': BASE_URL + '/'}):
