@@ -1,0 +1,11 @@
+Handoff v4 final-only matrix — preserved clean-baseline failure
+
+This was a separate versioned development batch after the raw-visible prompt conflict was fixed. It did not retry or replace any predecessor slot. Repeat 1 prefix completed. The clean coordinator requested observation-7 and observation-8. Whole-source admission included observation-7 and omitted observation-8 because the latter's 15,888 bytes, plus request metadata and the already admitted source, exceeded the 40,000-byte total request cap.
+
+The final clean answer diagnosed checkoutservice service_dns_resolution_failure and cited only observation-7. It also mentioned a success claim attributed to the unadmitted observation-8 while acknowledging that the source was not inspected. The structural quality gate rejected the answer because a diagnosed result requires at least two distinct supporting tool observations. The raw-visible, corrupt, no-recovery, restart and selective arms were not run; repeat 2 was not run. Consequently this batch provides no recovery comparison.
+
+The batch made 6 calls. The immediate account receipt moved from $1.15450885 to $1.18218410; a later read showed $1.19063545 while settlement was still incomplete. The conservative runner ledger records $0.04902900 and is used for cumulative development accounting. Cumulative conservative development is therefore $0.79718375 of the $5 ceiling.
+
+Offline corrective direction: expose exact source_text_bytes in the active source catalog; tell the coordinator that whole-source retrieval must fit the total request cap including prompt, metadata and framing; require uncertain when admitted evidence cannot meet the two-source diagnosis contract. This is retrieval planning and safe degradation, not evidence that selective recovery works. Do not launch another same-case live batch until a new protocol and stopping rule are frozen; repeated generation until a clean success would bias the evidence.
+
+Evidence: runs/handoff-v4-matrix-final-only-20261025. Original remote output remains /home/yid042/private/handoff-v4-matrix-final-only-results.

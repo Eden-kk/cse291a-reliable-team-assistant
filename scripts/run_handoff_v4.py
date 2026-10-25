@@ -34,7 +34,11 @@ EXTRACTION = '''Extract both adservice probe slots from the original raw source.
 Replace null only with explicitly observed values. Do not infer defaults. Do not combine slots.'''
 FINAL = COORDINATE + '''\nWhole-source admission metadata identifies unavailable evidence.
 Never claim to have inspected omitted content. Partial source absence proves no event absence.
-Configuration facts and their deterministic rendering are fallible extraction, not raw truth.'''
+Configuration facts and their deterministic rendering are fallible extraction, not raw truth.
+The source catalog includes source_text_bytes. Retrieval must respect the 40000-byte total request
+cap, which also includes instructions, schemas, handoffs, metadata and framing. Prefer a compact
+set of distinct supporting tool observations. If the admitted sources cannot support the required
+two distinct observations, return uncertain rather than a diagnosed answer.'''
 RAW_VISIBLE_FINAL = '''You are an incident coordinator receiving specialist handoffs.
 All raw sources available for this arm are already present in retrieved_sources with admission
 receipts. Return final now as a JSON object with "status":"diagnosed" or "uncertain",
@@ -180,7 +184,9 @@ async def collect_handoffs(inv):
                      ('initial', 'telemetry_evidence'))
     sources = inv.active_observations(RAW_NAMES)
     inv.artifact('source_catalog', {'sources': [{'id': o['id'], 'tool': o.get('tool'),
-                 'arguments': o.get('arguments'), 'sha256': o['sha256']} for o in sources]}, RAW_NAMES)
+                 'arguments': o.get('arguments'), 'sha256': o['sha256'],
+                 'source_text_bytes': len(o.get('raw_text', o['text']).encode())}
+                for o in sources]}, RAW_NAMES)
 
 
 def sources_for(inv, identities):

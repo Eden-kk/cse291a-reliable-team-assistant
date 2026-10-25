@@ -71,6 +71,21 @@ class TestRunner(unittest.TestCase):
         self.assertEqual(result['saved_context_sha256'], runner.hashlib.sha256(json.dumps(files['saved-context.json'],sort_keys=True,ensure_ascii=False,allow_nan=False,indent=2).encode()).hexdigest())
         self.assertEqual(len(files['clean/ledger.json']), 1)
 
+    def test_source_catalog_exposes_exact_source_text_bytes(self):
+        inv = self.inv(Provider())
+        asyncio.run(runner.collect_handoffs(inv))
+        catalog = inv.incident.store.results['source_catalog'].payload['sources']
+        archive = {source['id']: source for source in inv.snapshot.observations}
+        self.assertGreaterEqual(len(catalog), 3)
+        for source in catalog:
+            raw = archive[source['id']].get('raw_text', archive[source['id']]['text'])
+            self.assertEqual(source['source_text_bytes'], len(raw.encode()))
+
+    def test_coordinator_instruction_states_retrieval_budget_and_uncertain_fallback(self):
+        self.assertIn('source_text_bytes', runner.FINAL)
+        self.assertIn('40000-byte total request\ncap', runner.FINAL)
+        self.assertIn('return uncertain', runner.FINAL)
+
     def test_invalid_extraction_retains_unattempted_denominators(self):
         provider = Provider(invalid=True)
         result, _ = self.preflight(provider)
