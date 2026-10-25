@@ -2,7 +2,7 @@
 final-only修复批在repeat1 clean停止：请求obs7/obs8，但40KB整包限制只纳入obs7；diagnosed答案仅含一条独立工具证据，被结构门拒绝。6calls，保守账本$0.04902900；累计保守开发$0.79718375/$5。其余恢复臂和repeat2未运行，不存在恢复对照。证据已回收至runs/handoff-v4-matrix-final-only-20261025。离线改进为catalog加入source_text_bytes并明确字节预算与uncertain降级；不得继续同案生成直到成功。详见docs/handoff-v4-final-only-results-20261025.txt。
 
 此前进展：2026-10-25 Phase2 v4首批保守失败与修复
-矩阵首批在repeat1 raw-visible分支因冲突提示返回禁止的二次检索而停止：7calls，实际账户差$0.03012920，保守账本$0.05632115；后续槽和repeat2均未运行、未重试。原始证据已回收至runs/handoff-v4-matrix-20261025。已改为无检索选项的final-only提示，新增回归测试；全工作区289tests通过/12skip。新批独立冻结为docs/handoff-v4-matrix-final-only-allocation-20261025.json，36calls/$2.70上限，最坏累计开发$3.44815475<$5。失败不被覆盖，详见docs/handoff-v4-matrix-attempt-20261025.txt。
+矩阵首批在repeat1 raw-visible分支因冲突提示返回禁止的二次检索而停止：7calls，最终结算与保守账本均为$0.05632115（即时account-after曾因结算延迟只显示$0.03012920）；后续槽和repeat2均未运行、未重试。原始证据已回收至runs/handoff-v4-matrix-20261025。已改为无检索选项的final-only提示，新增回归测试；全工作区289tests通过/12skip。新批独立冻结为docs/handoff-v4-matrix-final-only-allocation-20261025.json，36calls/$2.70上限，最坏累计开发$3.44815475<$5。失败不被覆盖，详见docs/handoff-v4-matrix-attempt-20261025.txt。
 
 此前进展：2026-10-25 Phase1冻结、v4预检回收并进入Phase2
 Phase1自主版干净解压复核通过：1468 hashes、36答案、54槽位，257tests通过/32个缺少完整vendor快照的明确skip；当前工作区288tests通过/12skip。Canvas尚无Phase1上传项，Piazza确认截止延至11/4，公开课程页仍显示旧10/28。冻结包保持不变、尚未提交。
