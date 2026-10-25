@@ -33,7 +33,7 @@ class Provider:
         else:
             value = {'status': 'uncertain', 'reasoning': 'Fixture uncertainty',
                      'adservice_liveness_protocol': 'unknown'}
-        self.records.append({'request': request, 'response': value})
+        self.records.append({'instruction': instruction, 'request': request, 'response': value})
         if self.fail_clean and step == 'incident_brief': return Outcome({}, 0, 'fixture')
         return Outcome(value, 10)
 
@@ -155,6 +155,20 @@ class TestRunner(unittest.TestCase):
                 self.assertEqual(restart['inherited_budget'], selective['inherited_budget'])
                 self.assertIn('telemetry_summary', selective['valid_unchanged_artifacts'])
                 self.assertEqual(json.loads((root/'selective/ledger.json').read_text())[-1]['supersedes'], 1)
+
+    def test_raw_visible_arm_has_final_only_instruction(self):
+        provider = Provider()
+        with tempfile.TemporaryDirectory() as tmp:
+            backend = runner.AuditedProvider(provider, Path(tmp)/'attempts')
+            asyncio.run(runner.matrix_experiment(Path(tmp), VENDOR,
+                json.loads((ROOT/'configs/splits.json').read_text()), 'mock', backend))
+            raw_calls = [record for record in provider.records
+                if record['request']['step'] == 'coordinator_decision'
+                and 'retrieved_sources' in record['request']['inputs']]
+            self.assertEqual(len(raw_calls), 2)
+            for record in raw_calls:
+                self.assertNotIn('If raw evidence is needed', record['instruction'])
+                self.assertIn('Do not return retrieve_source_ids', record['instruction'])
 
 
 class TestAudits(unittest.TestCase):

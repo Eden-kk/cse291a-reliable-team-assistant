@@ -1,0 +1,11 @@
+Handoff v4 matrix attempt — preserved development failure
+
+The preregistered development_seen service/2 matrix started after the v4 engineering preflight. It stopped conservatively during repeat 1, raw-visible-corrupt. The arm returned a second retrieval request even though all raw sources had already been admitted and the arm allowed no retrieval round. The runner rejected the response with ValueError("Invalid retrieval request") and preserved all remaining arms as not_run. No retry or replacement case was used.
+
+Observed states: repeat 1 prefix completed, clean completed, raw-visible-corrupt failed; corrupt, no-recovery, restart and selective were not run. Repeat 2 was not run. The run made 7 physical calls. The course account moved from $1.09818770 to $1.12831690, an actual settled delta of $0.03012920. The runner's conservative reservation ledger recorded $0.05632115. The latter is used for the cumulative development ceiling.
+
+The clean answer supported checkoutservice DNS resolution failure with three raw references and did not claim exclusivity, but quality_approved remained false pending independent review. This partial attempt cannot estimate recovery quality or cost.
+
+Root cause: the raw-visible prompt appended a final-answer instruction to a base coordinator prompt that still offered retrieve_source_ids. The output was valid under that conflicting natural-language prompt but invalid under the execution protocol. The correction uses a distinct final-only prompt with no retrieval option. Offline regression tests assert that raw-visible calls contain the final-only instruction and exclude the retrieval invitation. The failed evidence is immutable and the corrected execution is a new versioned development batch.
+
+Evidence: runs/handoff-v4-matrix-20261025. Original remote output remains /home/yid042/private/handoff-v4-matrix-results.

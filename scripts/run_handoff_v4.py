@@ -35,6 +35,18 @@ Replace null only with explicitly observed values. Do not infer defaults. Do not
 FINAL = COORDINATE + '''\nWhole-source admission metadata identifies unavailable evidence.
 Never claim to have inspected omitted content. Partial source absence proves no event absence.
 Configuration facts and their deterministic rendering are fallible extraction, not raw truth.'''
+RAW_VISIBLE_FINAL = '''You are an incident coordinator receiving specialist handoffs.
+All raw sources available for this arm are already present in retrieved_sources with admission
+receipts. Return final now as a JSON object with "status":"diagnosed" or "uncertain",
+"fault_object":"app/NAME or node/NAME or namespace/NAME",
+"root_cause":"exact allowed label", "evidence":[{"observation_id":"ID",
+"quote":"literal raw substring"}], "reasoning":"causal explanation", and
+"adservice_liveness_protocol":"httpGet|grpc|tcpSocket|unknown".
+Do not return retrieve_source_ids. Do not invent raw quotations. Cite only admitted raw records
+actually inspected. If evidence is insufficient, return uncertain.
+Whole-source admission metadata identifies unavailable evidence. Never claim to have inspected
+omitted content. Partial source absence proves no event absence. Configuration facts and their
+deterministic rendering are fallible extraction, not raw truth.'''
 
 
 def instruction(text):
@@ -223,10 +235,9 @@ def finish(inv, answer, request, raw_visible=False):
 
 async def coordinate(inv, raw_visible=False):
     deps = list(HANDOFF_NAMES)
-    text = instruction(FINAL)
+    text = instruction(RAW_VISIBLE_FINAL if raw_visible else FINAL)
     request = request_for(inv, 'coordinator_decision', deps)
     if raw_visible:
-        text += '\nAll requested raw sources have admission receipts. Return final now.'
         ids = [s['id'] for s in inv.active_observations(RAW_NAMES)]
         request, packet = admit(inv, text, request, ids)
         deps += list(RAW_NAMES)

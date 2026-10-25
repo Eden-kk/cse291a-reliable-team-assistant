@@ -1,0 +1,62 @@
+{
+  "batch": "handoff-v4-matrix-final-only-20261025",
+  "batch_id": "handoff-v4-matrix-final-only-20261025",
+  "status": "allocated_before_inference",
+  "scope": "development_seen boutique/service/2; corrected final-only raw-visible prompt; two fixed repetitions",
+  "case": "boutique/service/2",
+  "mode": "matrix",
+  "maximum_calls": 36,
+  "max_calls": 36,
+  "maximum_usd": "2.70",
+  "development_ceiling_usd": "5.00",
+  "previous_development_conservative_usd": "0.74815475",
+  "maximum_cumulative_development_usd": "3.44815475",
+  "formal_actual_usd_separate": "0.40225095",
+  "model": "api-glm-5.3",
+  "fresh_price_verification": {
+    "source": "Course TritonAI response receipts and authenticated October 25 account checks",
+    "input_usd_per_token": "0.0000012",
+    "output_usd_per_token": "0.00000325",
+    "model_max_tokens": 320000
+  },
+  "fresh_account_verification": {
+    "source": "Authenticated course TritonAI account-after receipt from the failed matrix batch",
+    "spend_usd": "1.1283169",
+    "max_budget_usd": "50.0",
+    "remaining_usd": "48.8716831",
+    "expires": "2026-11-07T18:28:12.453000+00:00"
+  },
+  "preflight": {
+    "protocol": "handoff-v4-preflight",
+    "engineering_gate": true,
+    "summary_sha256": "5ada79c26b1125decc97cd15f905c7fb7038b0d29f49d4469f37b0cba26412d8",
+    "usage_sha256": "f0e4944aa35b8698f9cde835ca81b0a19748816be58f47dad553ca2f812f5f0a",
+    "calls": 3
+  },
+  "failed_predecessor": {
+    "batch_id": "handoff-v4-matrix-20261025",
+    "calls": 7,
+    "actual_account_delta_usd": "0.03012920",
+    "conservative_runner_cost_usd": "0.05632115",
+    "failure": "raw-visible prompt conflict produced a prohibited retrieval request",
+    "preserved": true,
+    "retried_slots": false
+  },
+  "input_byte_cap_including_framing": 40000,
+  "framing_reserve": 512,
+  "output_token_cap": 8192,
+  "approved": true,
+  "prices_verified": true,
+  "standing_ceiling_reconciled": true,
+  "controls": [
+    "New versioned batch after an offline prompt-contract correction; predecessor remains a failure",
+    "No retries, regeneration, replacement case or native labels",
+    "Two fixed repetitions with counterbalanced recovery order",
+    "Identical structured handoff and evidence admission across paired arms",
+    "One-field liveness protocol intervention with raw source unchanged",
+    "Independent semantic review before method and cost mapping",
+    "Preserve failed, ineligible, no-recovery and ancillary-error outcomes",
+    "Do not claim independent incidents, statistical significance or production readiness",
+    "No assignment submission or email from the experiment runner"
+  ]
+}
