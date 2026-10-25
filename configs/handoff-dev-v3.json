@@ -24,5 +24,7 @@
   "retrieval": "one request for 1-3 listed original observation IDs; same rules in clean, corrupt, restart, selective",
   "no_retuning": true,
   "seeded_state_calls": 0,
-  "repair_calls": 0
+  "repair_calls": 0,
+  "mutation_version": "unique-protocol-span-v1",
+  "summary_mutation": "Only protocol token in one explicit affirmative liveness relation; absent/ambiguous/rejected prose is ineligible; no whole-summary replacement"
 }
