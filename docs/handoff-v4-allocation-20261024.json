@@ -34,5 +34,12 @@
     "No restart/selective inference within this three-call allocation",
     "Later matrix requires a separate frozen allocation and protocol",
     "No submissions or emails"
-  ]
+  ],
+  "case": "boutique/service/2",
+  "mode": "preflight",
+  "max_calls": 3,
+  "batch_id": "handoff-v4-preflight-20261024",
+  "approved": true,
+  "prices_verified": true,
+  "standing_ceiling_reconciled": true
 }
