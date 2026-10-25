@@ -1,0 +1,23 @@
+{
+  "case": "boutique/runtime/1",
+  "track": "seeded downstream conditional recovery",
+  "formal_evaluation": false,
+  "max_calls": 9,
+  "maximum_usd": "0.70",
+  "worst_case_usd": "0.671616",
+  "input_byte_cap": 40000,
+  "reservation_tokens": 48192,
+  "model": "api-glm-5.3",
+  "recovery_order": [
+    "restart",
+    "selective"
+  ],
+  "organic_adoption": false,
+  "repair_calls": 0,
+  "seed_calls": 0,
+  "saved_hashes": {
+    "state.json": "e0e13da35c47480353f07ad900b8389315d9bbc472d31bc550a06c9fbd34fb3b",
+    "ledger.json": "8ed68060685aaf831d63e46638dede823a3131be845c5c3b0bd26256aa04fa06",
+    "result.json": "53298ba77b944269e20cd29b109d9594592582aadd6787a423649ab675727141"
+  }
+}
