@@ -1,0 +1,31 @@
+Semantic-claim development calibration v5
+
+This is a new semantic prompt intervention informed by observed development errors in
+v4, not a transport-only change, unseen validation, or retroactive repair. Previous v3/v4
+results including failures remain immutable. No original model answer is fed to the model.
+
+Three fixed seen requests item08,item10,item11 reuse all v4 evidence and source hashes.
+The prompt order is original instruction, new generic SEMANTIC_CLAIM_CONTRACT, unchanged
+TIMING_RULES. The generic additions distinguish events versus completed actions, readiness
+versus global health, supported cause versus sole cause, observed faulty field versus other
+fields' unproven correctness, and relative ages/windows versus exact coverage endpoints.
+No incident-specific values or diagnosis are included. Optional unsupported claims should
+be omitted while supported main diagnosis and evidence are preserved.
+
+Same JSON-object transport, model, temperature0, low reasoning, output8192. Hard3calls/$0.25;
+40000byte cap,48192token/call reservation, maximum pessimistic$0.223872. No retries, output
+repair, replacement, selection on results, fallback or new inputs. Provider failure halts
+all remaining assignments and retains their not_run status. The prospective total allocation
+across stages is$4.40 within the declared$4.52067085 development envelope; this document
+cannot replace fresh account expiry/balance and cumulative spend checks at execution.
+
+Score all material statements and structured claims, main-diagnosis support, required
+coverage, action recommendations and uncertainty through independent semantic review.
+A syntactically valid response or no lexical-guard finding is not semantic success.
+Report v5 separately from v4 with error counts and missing required content. Three reused,
+error-selected inputs cannot establish generalization or statistical significance.
+
+scripts/semantic_claim_contract.py exposes SEMANTIC_CLAIM_CONTRACT for an explicitly
+amended future stage2/3 prompt. It is not auto-applied to existing runners; unchanged frozen
+contracts remain intact. Any future adoption must record its prompt hash and scope, use the
+same contract on all compared methods, and preserve allocated call/spend bounds.

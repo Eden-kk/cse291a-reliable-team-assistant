@@ -1,0 +1,54 @@
+{
+  "version": "semantic-calibration-v5",
+  "formal_evaluation": false,
+  "selection": "Three known-error development inputs; selected before new output access, not held-out or representative",
+  "source_usage_sha256": "e7b0871b83268d1de2e0a6e52f6b5667bcba2e428b391d2d9f4df40f3ee7aeea",
+  "model": "api-glm-5.3",
+  "temperature": 0,
+  "reasoning_effort": "low",
+  "max_tokens": 8192,
+  "max_calls": 3,
+  "maximum_usd": "0.25",
+  "input_byte_cap": 40000,
+  "reserved_tokens_per_call": 48192,
+  "max_reserved_usd": "0.223872",
+  "items": [
+    {
+      "id": "item-08",
+      "source_call": 54,
+      "path": "configs/timing-calibration-inputs/item-08.json",
+      "sha256": "cb07eee34122a05c75783a223a68d25955921f23c36baa234b0bec35e10f91ad",
+      "order": [
+        "revised"
+      ]
+    },
+    {
+      "id": "item-10",
+      "source_call": 6,
+      "path": "configs/timing-calibration-inputs/item-10.json",
+      "sha256": "11877598c033ea11a6b4e0f51131aceb0830882def70b93c6739851a71d6eb3f",
+      "order": [
+        "revised"
+      ]
+    },
+    {
+      "id": "item-11",
+      "source_call": 18,
+      "path": "configs/timing-calibration-inputs/item-11.json",
+      "sha256": "f923703e5483120aa1c2158c6cdea3e8088e89e20a046d2e4f6b3a59287157f6",
+      "order": [
+        "revised"
+      ]
+    }
+  ],
+  "json_object": true,
+  "source_protocol_sha256": "dfd8b5bb46d5193ea6fed09df060b563909779af1fa1d148452e435b6f61394a",
+  "timing_rules_sha256": "63bb5e71a6d8da7682a64ceb3f5fd6d91ef3c57bcd04988fa951b55c0e27fea9",
+  "transport_only_followup": false,
+  "retroactive_v3_repair": false,
+  "source_v4_protocol_sha256": "aca797fb10c261a483e037cb652e5b62345606d761cb2206e06fdf7ecff0037c",
+  "semantic_contract_sha256": "7990cf2a475f3dcf6e390488f841e86ef16bdbbfed1c02c5101bcaec916b4869",
+  "based_on_seen_development_errors": true,
+  "prospective_total_allocation_cap_usd": "4.40",
+  "remaining_envelope_before_stages_usd": "4.52067085"
+}
