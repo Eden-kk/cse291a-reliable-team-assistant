@@ -101,6 +101,14 @@ class TestRunner(unittest.TestCase):
             self.assertEqual(audit.attempts[0]['gate'], 'base_with_omission_metadata_exceeds_cap')
             self.assertTrue(audit.attempts[0]['zero_network'])
 
+    def test_direct_uncertain_answer_cannot_cite_unread_sources(self):
+        inv = self.inv(Provider())
+        for extra in ({'evidence': [{'observation_id': 'observation-1', 'quote': 'unread'}]},
+                      {'temporal_claims': [{'source_id': 'observation-1', 'source_field': 'text'}]}):
+            answer = {'status': 'uncertain', 'reasoning': 'fixture', **extra}
+            with self.assertRaisesRegex(ValueError, 'Unavailable or unsupported citation'):
+                runner.finish(inv, answer, {'inputs': {}})
+
     def test_dispatch_budget_rejection_is_logical_attempt(self):
         provider = Provider()
         with tempfile.TemporaryDirectory() as tmp:

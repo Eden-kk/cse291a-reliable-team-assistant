@@ -191,13 +191,15 @@ def admit(inv, text, request, identities):
 def finish(inv, answer, request, raw_visible=False):
     inspected = request.get('inputs', {}).get('retrieved_sources', {}).get('observations', [])
     errors = check_diagnosis(answer, inspected, inv.targets, inv.objects)
-    if 'retrieved_sources' in request['inputs']:
-        errors += citation_errors(answer, request)
+    citation_request = request if 'retrieved_sources' in request['inputs'] else {
+        'inputs': {'retrieved_sources': {'observations': []}}}
+    citation_failures = citation_errors(answer, citation_request)
+    errors += citation_failures
     if 'retrieve_source_ids' in answer:
         raise ValueError('Retrieval round limit exceeded')
     if errors and answer.get('status') != 'uncertain':
         raise ValueError('Final diagnosis structural validation failed: ' + '; '.join(errors))
-    if 'retrieved_sources' in request['inputs'] and citation_errors(answer, request):
+    if citation_failures:
         raise ValueError('Unavailable or unsupported citation')
     if answer.get('status') not in ('diagnosed', 'uncertain'):
         raise ValueError('Final status missing')
