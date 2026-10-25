@@ -6,6 +6,7 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT/'scripts'))
@@ -84,6 +85,32 @@ class TestRunner(unittest.TestCase):
         self.assertEqual(len(provider.records), 2)
         self.assertEqual(result['arms']['clean']['state'], 'failed')
         self.assertEqual(result['arms']['corrupt']['state'], 'not_run')
+
+    def test_admission_base_rejection_never_sends_original_candidate(self):
+        provider = Provider()
+        with tempfile.TemporaryDirectory() as tmp:
+            audit = runner.AuditedProvider(provider, tmp)
+            inv = self.inv(audit)
+            self.saved(inv)
+            rejected = runner.request_check('x', {'inputs': {'large': 'x' * 50000}})
+            rejected.update(gate='base_with_omission_metadata_exceeds_cap', requested_ids=['observation-1'], admitted_ids=[])
+            with patch.object(runner, 'admit_sources', return_value={'request': None, 'receipt': rejected, 'attempts': []}):
+                with self.assertRaises(ValueError):
+                    runner.admit(inv, 'x', {'inputs': {}}, ['observation-1'])
+            self.assertEqual(provider.records, [])
+            self.assertEqual(audit.attempts[0]['gate'], 'base_with_omission_metadata_exceeds_cap')
+            self.assertTrue(audit.attempts[0]['zero_network'])
+
+    def test_dispatch_budget_rejection_is_logical_attempt(self):
+        provider = Provider()
+        with tempfile.TemporaryDirectory() as tmp:
+            audit = runner.AuditedProvider(provider, tmp)
+            inv = self.inv(audit)
+            inv.runtime.dispatcher.budget.spent = inv.runtime.dispatcher.budget.limit
+            with self.assertRaises(runner.BudgetExhausted):
+                asyncio.run(runner.fixed_step(inv, 'fixture', 'x', {'inputs': {}}, ()))
+            self.assertEqual(provider.records, [])
+            self.assertEqual(audit.attempts[0]['gate'], 'logical_budget')
 
     def test_fixed_two_prefix_matrix_same_budget_and_superseding_publication(self):
         provider = Provider()
