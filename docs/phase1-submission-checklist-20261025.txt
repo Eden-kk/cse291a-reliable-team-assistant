@@ -1,0 +1,23 @@
+Phase 1 submission checklist — frozen 2026-10-25
+
+Canonical upload files
+1. output/phase1-2026-10-24-autonomous/Phase1-Report.pdf
+   SHA-256 b53e451038e120ae1a0bb202f2f34af7de8c0872be2973652de064f13b3c7cfd
+2. output/phase1-2026-10-24-autonomous/Phase1-Evidence.zip
+   SHA-256 6580af4ee063d077a73d718f1b1a7138552aef12708fa467457a0f0b94c2e8a6
+
+Verified contents
+- 2 report pages plus 1 timeline appendix page; visual review found no clipping.
+- 1,468 hashes verified; 517 formal files byte-identical.
+- 36 saved answers rescored; all 54 assigned slots retained.
+- 257 project tests and 257 portable tests passed with zero failures.
+- 92 saved formal calls, 519,696 tokens, and $0.40225095 billed cost reconciled.
+- Verification is offline and makes zero model calls.
+
+Submission gate
+- Technical package: ready. Do not rebuild or replace these frozen files.
+- Deadline: course evidence says 2026-11-04; exact time is not yet verified.
+- Upload location and whether PDF/ZIP use separate slots: not yet published or verified.
+- Cloud-OpsBench acceptance: still needs explicit course approval or preserved evidence that the accepted survey counts as approval.
+
+The last three items are external course-administration checks. They do not require more experiments.

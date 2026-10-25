@@ -15,6 +15,11 @@ Offline verification:
   .venv/bin/python -m unittest discover -s tests -v
   PYTHONPATH=src .venv/bin/python -m team_assistant.demo --output runs/my-demo
 
+Frozen project main path (offline; no model calls):
+  PYTHONPATH=src .venv/bin/python scripts/build_project_mainpath.py --output output/project-mainpath
+This produces the formal comparison, bounded conclusion, final-report skeleton and a compact ZIP.
+It does not rerun or modify the frozen formal evidence.
+
 Local benchmark checkout expected at ../preparation/291a-team-agent/vendor/Cloud-OpsBench,
 commit ea05dafbc87b5985df8721622d63d4229c2b4224 (MIT).
 Core tests do not need a model; snapshot tests use the existing local benchmark and are skipped if absent.
