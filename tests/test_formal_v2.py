@@ -1,5 +1,6 @@
 """Offline fail-closed checks; never open heldout data or invoke inference."""
 import asyncio
+import hashlib
 from datetime import datetime, timezone, timedelta
 import json
 import os
@@ -13,12 +14,34 @@ sys.path.insert(0,str(ROOT/'scripts'))
 from run_formal_v2 import verify, DeadlineProvider
 from score_formal_v2 import inputs, seal
 class FormalTests(unittest.TestCase):
-    def test_frozen_files_valid_then_launch_blocked_by_approval(self):
-        with self.assertRaisesRegex(ValueError,'Approval'):
-            verify(ROOT,{},datetime(2026,10,29,tzinfo=timezone.utc))
+    def gate_fixture(self, root):
+        # Gate behavior is independent of later development edits to the historical tree.
+        # This is a new synthetic freeze, never a rewritten historical manifest.
+        (root/'configs').mkdir()
+        for name in ('formal-evaluation-v2.json', 'formal-window-v1.json'):
+            (root/'configs'/name).write_bytes((ROOT/'configs'/name).read_bytes())
+        source = root/'fixture.py'
+        source.write_text('frozen fixture, never executed\n')
+        manifest = {'files': {'fixture.py': hashlib.sha256(source.read_bytes()).hexdigest()}}
+        (root/'configs/formal-freeze-v2.json').write_text(json.dumps(manifest))
+        return root
+
+    def test_frozen_fixture_valid_then_launch_blocked_by_approval(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self.gate_fixture(Path(tmp))
+            with self.assertRaisesRegex(ValueError,'Approval'):
+                verify(root,{},datetime(2026,10,29,tzinfo=timezone.utc))
     def test_early_launch_rejected(self):
-        with self.assertRaisesRegex(ValueError,'Outside launch'):
-            verify(ROOT,{},datetime(2026,10,24,tzinfo=timezone.utc))
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self.gate_fixture(Path(tmp))
+            with self.assertRaisesRegex(ValueError,'Outside launch'):
+                verify(root,{},datetime(2026,10,24,tzinfo=timezone.utc))
+    def test_tampered_frozen_fixture_rejected_before_other_gates(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self.gate_fixture(Path(tmp))
+            (root/'fixture.py').write_text('modified after freeze\n')
+            with self.assertRaisesRegex(ValueError,'Frozen file mismatch: fixture.py'):
+                verify(root,{},datetime(2026,10,24,tzinfo=timezone.utc))
     def test_no_request_near_cutoff(self):
         with tempfile.TemporaryDirectory() as d, patch.dict(os.environ,{'OPENAI_BASE_URL':'https://tritonai-api.ucsd.edu/v1','OPENAI_API_KEY':'test-not-real'}):
             provider=DeadlineProvider(Path(d)/'calls',max_calls=102,maximum_usd='20',stop=datetime.now(timezone.utc)+timedelta(seconds=20))
