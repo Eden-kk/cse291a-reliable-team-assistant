@@ -1,0 +1,18 @@
+{
+  "sealed_at_utc": "2026-10-25T00:30:06.765943+00:00",
+  "mapping_disclosed": false,
+  "partial_blind": true,
+  "files_sha256": {
+    "packets/MANIFEST.json": "3fdb3778b6840f1800e828f99ce64faa3eedba890c3886e7ddb58c6308fd2d10",
+    "packets/item-01.json": "f7da812178ed7b71a5ee3be81b110c059b559b70fa4d1caac9d968dc7c7cf40b",
+    "packets/item-02.json": "b8c5499d7c214b687feb552b2be0e0f65a0e47101ad2b224c96321d0efe58e6d",
+    "packets/item-03.json": "ad206f4fc4e28b39e2381a030b2b9845ebc356410aa3bfc0c4632cc112f3e58e",
+    "packets/item-04.json": "139f98d9afafc2ca77b59cb53d05e966fb984c271ac505e55ebd00f7aa3a16e9",
+    "packets/item-05.json": "f0b09291e984b85c2e679333e05212c8b0c663d5243755cff1d7fc5f6ca887f0",
+    "packets/item-06.json": "e38702adf8740ac9149d3edda53b76d63514a3cfe18ac608d08a69c8ff3a1800",
+    "independent-review.json": "fb7fe65a6bc663cd842d0267592777d23e2c1733c92b753d4f760e2c78437f11",
+    "independent-review.txt": "04f20dcec451a4784dbf6530df47312620ce36d05736711ebf9ea408b427b325"
+  },
+  "reviewer": "timing_live_review",
+  "packet_manifest_verified": true
+}

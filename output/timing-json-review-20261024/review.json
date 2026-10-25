@@ -1,0 +1,605 @@
+{
+  "scope": "Independent source-based review of only the three later packets; no parent summaries/conclusions read. Known subsequent version and visible temporal contract make this nonblind/partially blinded, not a fresh fully blinded comparison.",
+  "rubric": {
+    "2": "supported or sound scoped inference",
+    "1": "partially supported, overstrong or mismatched scope/type",
+    "0": "unsupported or incorrect",
+    "note": "Claims sometimes overlap; separate primary, temporal, non-temporal, and JSON axes; no arithmetic mean."
+  },
+  "items": [
+    {
+      "id": "item-01",
+      "json_transport": "Packet contains a parsed output object; required fields and temporal_claims present. Raw API transport not supplied here and not independently re-parsed.",
+      "primary_diagnosis_score": 2,
+      "cadence_threshold_error": false,
+      "abstention": false,
+      "source_bank": {
+        "identity": {
+          "source_id": "observation-8",
+          "exact_quote": "name: adservice"
+        },
+        "live": {
+          "source_id": "observation-8",
+          "exact_quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+        },
+        "ready_config": {
+          "source_id": "observation-8",
+          "exact_quote": "readinessProbe:\n          initialDelaySeconds: 5\n          grpc:\n            port: 9555"
+        },
+        "ready": {
+          "source_id": "observation-7",
+          "exact_quote": "Ready:          True"
+        },
+        "config": {
+          "source_id": "observation-7",
+          "exact_quote": "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3"
+        },
+        "restart": {
+          "source_id": "observation-7",
+          "exact_quote": "Restart Count:  2"
+        },
+        "exit": {
+          "source_id": "observation-7",
+          "exact_quote": "Exit Code:    143"
+        },
+        "failure": {
+          "source_id": "observation-7",
+          "exact_quote": "net/http: HTTP/1.x transport connection broken: malformed HTTP status code"
+        },
+        "kill": {
+          "source_id": "observation-7",
+          "exact_quote": "Container server failed liveness probe, will be restarted"
+        },
+        "events_fail": {
+          "source_id": "observation-7",
+          "exact_quote": "Warning  Unhealthy  1s (x9 over 81s)"
+        },
+        "events_kill": {
+          "source_id": "observation-7",
+          "exact_quote": "Normal   Killing    1s (x3 over 61s)"
+        },
+        "last_lifetime": {
+          "source_id": "observation-7",
+          "exact_quote": "Started:      Fri, 21 Nov 2025 19:49:49 +0800\n      Finished:     Fri, 21 Nov 2025 19:50:19 +0800"
+        }
+      },
+      "source_hashes_verified": true,
+      "claims": [
+        {
+          "output_quote": "app/adservice",
+          "score": 2,
+          "category": "primary",
+          "assessment": "Correct affected application.",
+          "evidence_refs": [
+            "identity"
+          ]
+        },
+        {
+          "output_quote": "liveness_probe_incorrect_protocol",
+          "score": 2,
+          "category": "primary",
+          "assessment": "Correct supported cause: HTTP liveness fails on a port with gRPC readiness, and the event explicitly links probe failure to restart action.",
+          "evidence_refs": [
+            "live",
+            "ready_config",
+            "failure",
+            "kill"
+          ]
+        },
+        {
+          "output_quote": "httpGet",
+          "score": 2,
+          "category": "extraction",
+          "assessment": "Correct liveness protocol.",
+          "evidence_refs": [
+            "live"
+          ]
+        },
+        {
+          "output_quote": "The adservice container serves only gRPC on port 9555 (readinessProbe correctly uses grpc on 9555 and passes, pod Ready)",
+          "score": 1,
+          "category": "non_temporal",
+          "assessment": "Port and configured readiness are supported; gRPC-only/HTTP2-only is compatible with evidence and summaries but raw records do not exhaustively establish all protocol capability. Passing readiness is a snapshot.",
+          "evidence_refs": [
+            "live",
+            "ready_config",
+            "ready"
+          ]
+        },
+        {
+          "output_quote": "The livenessProbe is configured as httpGet against the same gRPC-only port; the gRPC server responds with a binary HTTP/2 preface that the HTTP/1.x probe cannot parse, so the probe fails repeatedly (9 Unhealthy events) and kubelet kills and restarts the container (exit code 143, Restart Count 2)",
+          "score": 1,
+          "category": "non_temporal",
+          "assessment": "Protocol incompatibility and kubelet causal link supported; exact HTTP/2 preface identification is more specific than independently decoded raw evidence. Numeric and temporal clauses separately assessed.",
+          "evidence_refs": [
+            "failure",
+            "kill"
+          ]
+        },
+        {
+          "output_quote": "The livenessProbe is configured as httpGet against the same gRPC-only port; the gRPC server responds with a binary HTTP/2 preface that the HTTP/1.x probe cannot parse, so the probe fails repeatedly (9 Unhealthy events) and kubelet kills and restarts the container (exit code 143, Restart Count 2)",
+          "score": 2,
+          "category": "observed_state",
+          "assessment": "Exit Code 143 and Restart Count 2 are directly supported; this score applies to those subclaims only.",
+          "evidence_refs": [
+            "exit",
+            "restart"
+          ]
+        },
+        {
+          "output_quote": "9 Unhealthy events",
+          "score": 2,
+          "category": "event_count",
+          "assessment": "Nine reported Unhealthy events supported.",
+          "evidence_refs": [
+            "events_fail"
+          ]
+        },
+        {
+          "output_quote": "The app itself is healthy per the gRPC readiness probe",
+          "score": 1,
+          "category": "health_overclaim",
+          "assessment": "Ready is limited health-check evidence, not complete application health.",
+          "evidence_refs": [
+            "ready",
+            "ready_config"
+          ]
+        },
+        {
+          "output_quote": "the restart loop is caused solely by the liveness probe protocol mismatch.",
+          "score": 0,
+          "category": "exclusive_cause",
+          "assessment": "Causal link is supported; exclusivity is not established.",
+          "evidence_refs": [
+            "kill"
+          ]
+        },
+        {
+          "output_quote": "Liveness probe failed 9 times over an 81-second window, triggering 3 restarts over 61 seconds",
+          "score": 1,
+          "category": "temporal",
+          "assessment": "Nine failure events and their reported 81s window are supported, but Killing x3 is not proof of three completed restarts. Snapshot restart count is 2. One value 81 seconds loses the 61-second window and event counts; pod lifetime is broader than either aggregate window.",
+          "evidence_refs": [
+            "events_fail",
+            "events_kill",
+            "restart"
+          ]
+        },
+        {
+          "output_quote": "Container restart cycle: previous container started 19:49:49 and finished 19:50:19",
+          "score": 1,
+          "category": "temporal",
+          "assessment": "Exact start/finish timestamps support a 30-second single container lifetime by subtraction. Numeric value is derived, despite observed_event kind and null assumptions. It is not a general restart cycle or probe-to-restart latency. Scope single container lifetime mitigates the misleading cycle label.",
+          "evidence_refs": [
+            "last_lifetime"
+          ]
+        }
+      ],
+      "omissions": [
+        "No explicit qualification of server capability or byte-level preface inference; summaries are not raw proof.",
+        "No reconciliation of Killing x3 with Restart Count 2; event counts promoted to completed restart counts."
+      ],
+      "citation_integrity": [
+        {
+          "observation_id": "observation-8",
+          "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555",
+          "exact_substring": true
+        },
+        {
+          "observation_id": "observation-7",
+          "quote": "Liveness probe failed: Get \"http://172.20.2.163:9555/\": net/http: HTTP/1.x transport connection broken: malformed HTTP status code",
+          "exact_substring": true
+        },
+        {
+          "observation_id": "observation-7",
+          "quote": "Container server failed liveness probe, will be restarted",
+          "exact_substring": true
+        }
+      ],
+      "reasoning_exact": "The adservice container serves only gRPC on port 9555 (readinessProbe correctly uses grpc on 9555 and passes, pod Ready). The livenessProbe is configured as httpGet against the same gRPC-only port; the gRPC server responds with a binary HTTP/2 preface that the HTTP/1.x probe cannot parse, so the probe fails repeatedly (9 Unhealthy events) and kubelet kills and restarts the container (exit code 143, Restart Count 2). The app itself is healthy per the gRPC readiness probe; the restart loop is caused solely by the liveness probe protocol mismatch.",
+      "temporal_contract_full_pass": false
+    },
+    {
+      "id": "item-02",
+      "json_transport": "Packet contains a parsed output object; required fields and temporal_claims present. Raw API transport not supplied here and not independently re-parsed.",
+      "primary_diagnosis_score": 2,
+      "cadence_threshold_error": false,
+      "abstention": false,
+      "source_bank": {
+        "identity": {
+          "source_id": "observation-3",
+          "exact_quote": "name: adservice"
+        },
+        "live": {
+          "source_id": "observation-3",
+          "exact_quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+        },
+        "ready_config": {
+          "source_id": "observation-3",
+          "exact_quote": "readinessProbe:\n          initialDelaySeconds: 5\n          grpc:\n            port: 9555"
+        },
+        "ready": {
+          "source_id": "observation-4",
+          "exact_quote": "Ready:          True"
+        },
+        "config": {
+          "source_id": "observation-4",
+          "exact_quote": "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3"
+        },
+        "restart": {
+          "source_id": "observation-4",
+          "exact_quote": "Restart Count:  2"
+        },
+        "exit": {
+          "source_id": "observation-4",
+          "exact_quote": "Exit Code:    143"
+        },
+        "failure": {
+          "source_id": "observation-4",
+          "exact_quote": "net/http: HTTP/1.x transport connection broken: malformed HTTP status code"
+        },
+        "kill": {
+          "source_id": "observation-4",
+          "exact_quote": "Container server failed liveness probe, will be restarted"
+        },
+        "events_fail": {
+          "source_id": "observation-4",
+          "exact_quote": "Warning  Unhealthy  1s (x9 over 81s)"
+        },
+        "events_kill": {
+          "source_id": "observation-4",
+          "exact_quote": "Normal   Killing    1s (x3 over 61s)"
+        },
+        "last_lifetime": {
+          "source_id": "observation-4",
+          "exact_quote": "Started:      Fri, 21 Nov 2025 19:49:49 +0800\n      Finished:     Fri, 21 Nov 2025 19:50:19 +0800"
+        }
+      },
+      "source_hashes_verified": true,
+      "claims": [
+        {
+          "output_quote": "app/adservice",
+          "score": 2,
+          "category": "primary",
+          "assessment": "Correct affected application.",
+          "evidence_refs": [
+            "identity"
+          ]
+        },
+        {
+          "output_quote": "liveness_probe_incorrect_protocol",
+          "score": 2,
+          "category": "primary",
+          "assessment": "Correct supported cause: HTTP liveness fails on a port with gRPC readiness, and the event explicitly links probe failure to restart action.",
+          "evidence_refs": [
+            "live",
+            "ready_config",
+            "failure",
+            "kill"
+          ]
+        },
+        {
+          "output_quote": "httpGet",
+          "score": 2,
+          "category": "extraction",
+          "assessment": "Correct liveness protocol.",
+          "evidence_refs": [
+            "live"
+          ]
+        },
+        {
+          "output_quote": "The adservice container serves only gRPC/HTTP2 on port 9555 (readinessProbe correctly uses grpc on 9555), but the livenessProbe is configured as httpGet on the same port",
+          "score": 1,
+          "category": "non_temporal",
+          "assessment": "Port and configured readiness are supported; gRPC-only/HTTP2-only is compatible with evidence and summaries but raw records do not exhaustively establish all protocol capability. Passing readiness is a snapshot.",
+          "evidence_refs": [
+            "live",
+            "ready_config",
+            "ready"
+          ]
+        },
+        {
+          "output_quote": "The kubelet's HTTP/1.x probe requests fail against the HTTP/2-only server (malformed HTTP status code with HTTP/2 preface bytes), so the liveness probe repeatedly fails and kubelet kills and restarts the container (Restart Count: 2, Exit Code 143, Killing x3), producing the abnormal restarts",
+          "score": 1,
+          "category": "non_temporal",
+          "assessment": "Protocol incompatibility and kubelet causal link supported; exact HTTP/2 preface identification is more specific than independently decoded raw evidence. Numeric and temporal clauses separately assessed.",
+          "evidence_refs": [
+            "failure",
+            "kill"
+          ]
+        },
+        {
+          "output_quote": "The kubelet's HTTP/1.x probe requests fail against the HTTP/2-only server (malformed HTTP status code with HTTP/2 preface bytes), so the liveness probe repeatedly fails and kubelet kills and restarts the container (Restart Count: 2, Exit Code 143, Killing x3), producing the abnormal restarts",
+          "score": 2,
+          "category": "observed_state",
+          "assessment": "Exit Code 143 and Restart Count 2 are directly supported; this score applies to those subclaims only.",
+          "evidence_refs": [
+            "exit",
+            "restart"
+          ]
+        },
+        {
+          "output_quote": "Killing x3",
+          "score": 2,
+          "category": "event_count",
+          "assessment": "Correct count when explicitly named Killing.",
+          "evidence_refs": [
+            "events_kill"
+          ]
+        },
+        {
+          "output_quote": "Fix: change the livenessProbe to use grpc on port 9555.",
+          "score": 2,
+          "category": "remediation",
+          "assessment": "Reasonable remedy for identified protocol mismatch, not phrased as verified successful outcome.",
+          "evidence_refs": [
+            "live",
+            "ready_config"
+          ]
+        },
+        {
+          "output_quote": "Liveness probe failures occurred repeatedly over an ~81s window before the describe snapshot",
+          "score": 2,
+          "category": "temporal",
+          "assessment": "Approximate event window before snapshot matches Unhealthy aggregate without false endpoint precision. Structured value bundles count and duration with seconds-only unit; representation caveat, not incorrect prose.",
+          "evidence_refs": [
+            "events_fail"
+          ]
+        },
+        {
+          "output_quote": "Container restarts occurred 3 times over a ~61s window before the describe snapshot",
+          "score": 1,
+          "category": "temporal",
+          "assessment": "Killing events do not establish three completed restarts; the snapshot separately reports two restarts. Approximate 61s event window itself is supported.",
+          "evidence_refs": [
+            "events_kill",
+            "restart"
+          ]
+        },
+        {
+          "output_quote": "Liveness probe timing configuration (delay=5s timeout=1s period=10s #failure=3) is a configuration, not an observed restart interval",
+          "score": 2,
+          "category": "temporal",
+          "assessment": "Correctly treats configured parameters separately from observed restart intervals. Value includes count and seconds but unit only seconds, a schema-semantic unit mismatch.",
+          "evidence_refs": [
+            "config"
+          ]
+        }
+      ],
+      "omissions": [
+        "No explicit qualification of server capability or byte-level preface inference; summaries are not raw proof.",
+        "No reconciliation of Killing x3 with Restart Count 2; event counts promoted to completed restart counts."
+      ],
+      "citation_integrity": [
+        {
+          "observation_id": "observation-3",
+          "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555",
+          "exact_substring": true
+        },
+        {
+          "observation_id": "observation-3",
+          "quote": "readinessProbe:\n          initialDelaySeconds: 5\n          grpc:\n            port: 9555",
+          "exact_substring": true
+        },
+        {
+          "observation_id": "observation-4",
+          "quote": "Liveness probe failed: Get \"http://172.20.2.163:9555/\": net/http: HTTP/1.x transport connection broken: malformed HTTP status code",
+          "exact_substring": true
+        },
+        {
+          "observation_id": "observation-4",
+          "quote": "Container server failed liveness probe, will be restarted",
+          "exact_substring": true
+        }
+      ],
+      "reasoning_exact": "The adservice container serves only gRPC/HTTP2 on port 9555 (readinessProbe correctly uses grpc on 9555), but the livenessProbe is configured as httpGet on the same port. The kubelet's HTTP/1.x probe requests fail against the HTTP/2-only server (malformed HTTP status code with HTTP/2 preface bytes), so the liveness probe repeatedly fails and kubelet kills and restarts the container (Restart Count: 2, Exit Code 143, Killing x3), producing the abnormal restarts. Fix: change the livenessProbe to use grpc on port 9555.",
+      "temporal_contract_full_pass": false
+    },
+    {
+      "id": "item-03",
+      "json_transport": "Packet contains a parsed output object; required fields and temporal_claims present. Raw API transport not supplied here and not independently re-parsed.",
+      "primary_diagnosis_score": 2,
+      "cadence_threshold_error": false,
+      "abstention": false,
+      "source_bank": {
+        "identity": {
+          "source_id": "observation-3",
+          "exact_quote": "name: adservice"
+        },
+        "live": {
+          "source_id": "observation-3",
+          "exact_quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+        },
+        "ready_config": {
+          "source_id": "observation-3",
+          "exact_quote": "readinessProbe:\n          initialDelaySeconds: 5\n          grpc:\n            port: 9555"
+        },
+        "ready": {
+          "source_id": "observation-4",
+          "exact_quote": "Ready:          True"
+        },
+        "config": {
+          "source_id": "observation-4",
+          "exact_quote": "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3"
+        },
+        "restart": {
+          "source_id": "observation-4",
+          "exact_quote": "Restart Count:  2"
+        },
+        "exit": {
+          "source_id": "observation-4",
+          "exact_quote": "Exit Code:    143"
+        },
+        "failure": {
+          "source_id": "observation-4",
+          "exact_quote": "net/http: HTTP/1.x transport connection broken: malformed HTTP status code"
+        },
+        "kill": {
+          "source_id": "observation-4",
+          "exact_quote": "Container server failed liveness probe, will be restarted"
+        },
+        "events_fail": {
+          "source_id": "observation-4",
+          "exact_quote": "Warning  Unhealthy  1s (x9 over 81s)"
+        },
+        "events_kill": {
+          "source_id": "observation-4",
+          "exact_quote": "Normal   Killing    1s (x3 over 61s)"
+        },
+        "last_lifetime": {
+          "source_id": "observation-4",
+          "exact_quote": "Started:      Fri, 21 Nov 2025 19:49:49 +0800\n      Finished:     Fri, 21 Nov 2025 19:50:19 +0800"
+        }
+      },
+      "source_hashes_verified": true,
+      "claims": [
+        {
+          "output_quote": "app/adservice",
+          "score": 2,
+          "category": "primary",
+          "assessment": "Correct affected application.",
+          "evidence_refs": [
+            "identity"
+          ]
+        },
+        {
+          "output_quote": "liveness_probe_incorrect_protocol",
+          "score": 2,
+          "category": "primary",
+          "assessment": "Correct supported cause: HTTP liveness fails on a port with gRPC readiness, and the event explicitly links probe failure to restart action.",
+          "evidence_refs": [
+            "live",
+            "ready_config",
+            "failure",
+            "kill"
+          ]
+        },
+        {
+          "output_quote": "httpGet",
+          "score": 2,
+          "category": "extraction",
+          "assessment": "Correct liveness protocol.",
+          "evidence_refs": [
+            "live"
+          ]
+        },
+        {
+          "output_quote": "The adservice container serves only gRPC/HTTP2 on port 9555 (readinessProbe correctly uses grpc on 9555), but the livenessProbe is configured as httpGet on the same port",
+          "score": 1,
+          "category": "non_temporal",
+          "assessment": "Port and configured readiness are supported; gRPC-only/HTTP2-only is compatible with evidence and summaries but raw records do not exhaustively establish all protocol capability. Passing readiness is a snapshot.",
+          "evidence_refs": [
+            "live",
+            "ready_config",
+            "ready"
+          ]
+        },
+        {
+          "output_quote": "The kubelet's HTTP/1.x probe receives an HTTP/2 binary preface instead of a valid HTTP status line, so the probe fails repeatedly; after 3 consecutive failures kubelet kills the container (Exit Code 143) and restarts it, producing the abnormal restarts (Restart Count 2)",
+          "score": 1,
+          "category": "non_temporal",
+          "assessment": "Protocol incompatibility and kubelet causal link supported; exact HTTP/2 preface identification is more specific than independently decoded raw evidence. Numeric and temporal clauses separately assessed.",
+          "evidence_refs": [
+            "failure",
+            "kill"
+          ]
+        },
+        {
+          "output_quote": "The kubelet's HTTP/1.x probe receives an HTTP/2 binary preface instead of a valid HTTP status line, so the probe fails repeatedly; after 3 consecutive failures kubelet kills the container (Exit Code 143) and restarts it, producing the abnormal restarts (Restart Count 2)",
+          "score": 2,
+          "category": "observed_state",
+          "assessment": "Exit Code 143 and Restart Count 2 are directly supported; this score applies to those subclaims only.",
+          "evidence_refs": [
+            "exit",
+            "restart"
+          ]
+        },
+        {
+          "output_quote": "after 3 consecutive failures",
+          "score": 2,
+          "category": "temporal",
+          "assessment": "Correct configured threshold semantics, not a timestamp trace.",
+          "evidence_refs": [
+            "config",
+            "kill"
+          ]
+        },
+        {
+          "output_quote": "The port and timing are correct; the protocol is the mismatch.",
+          "score": 1,
+          "category": "timing_overclaim",
+          "assessment": "Same port as passing grpc readiness supports port choice. Correct timing is unsupported: configuration values do not establish operational suitability. Protocol mismatch remains supported.",
+          "evidence_refs": [
+            "ready_config",
+            "ready",
+            "config",
+            "failure"
+          ]
+        },
+        {
+          "output_quote": "Liveness probe failures occurred repeatedly and kubelet restarted the container after consecutive failures",
+          "score": 1,
+          "category": "temporal",
+          "assessment": "Repeated failures and restart linkage are observed; consecutive-threshold sequence is inferred from configuration, not directly traced per attempt. Entire compound assertion is labeled observed_event with null assumptions. Null numeric value avoids invented duration.",
+          "evidence_refs": [
+            "events_fail",
+            "events_kill",
+            "restart",
+            "config"
+          ]
+        },
+        {
+          "output_quote": "Probe failure threshold is 3 consecutive failures with 10s period",
+          "score": 2,
+          "category": "temporal",
+          "assessment": "Correct distinction of three consecutive failures and ten-second cadence; explicit caveat avoids converting configuration to observed restart latency. Value 3/count omits separate 10-second representation, a coverage limitation.",
+          "evidence_refs": [
+            "config"
+          ]
+        }
+      ],
+      "omissions": [
+        "No explicit qualification of server capability or byte-level preface inference; summaries are not raw proof.",
+        "Unsupported timing-correct assertion lacks its own qualified temporal entry; configured sequence and observed linkage not cleanly separated."
+      ],
+      "citation_integrity": [
+        {
+          "observation_id": "observation-3",
+          "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555",
+          "exact_substring": true
+        },
+        {
+          "observation_id": "observation-3",
+          "quote": "readinessProbe:\n          initialDelaySeconds: 5\n          grpc:\n            port: 9555",
+          "exact_substring": true
+        },
+        {
+          "observation_id": "observation-4",
+          "quote": "Liveness probe failed: Get \"http://172.20.2.163:9555/\": net/http: HTTP/1.x transport connection broken: malformed HTTP status code",
+          "exact_substring": true
+        },
+        {
+          "observation_id": "observation-4",
+          "quote": "Container server failed liveness probe, will be restarted",
+          "exact_substring": true
+        }
+      ],
+      "reasoning_exact": "The adservice container serves only gRPC/HTTP2 on port 9555 (readinessProbe correctly uses grpc on 9555), but the livenessProbe is configured as httpGet on the same port. The kubelet's HTTP/1.x probe receives an HTTP/2 binary preface instead of a valid HTTP status line, so the probe fails repeatedly; after 3 consecutive failures kubelet kills the container (Exit Code 143) and restarts it, producing the abnormal restarts (Restart Count 2). The port and timing are correct; the protocol is the mismatch.",
+      "temporal_contract_full_pass": false
+    }
+  ],
+  "aggregate": {
+    "packets": 3,
+    "parsed_nonempty_outputs": 3,
+    "raw_api_json_independently_verified": false,
+    "supported_primary_diagnoses": 3,
+    "cadence_threshold_conflation": 0,
+    "event_count_promoted_to_completed_restarts": 2,
+    "broad_health_overclaim": 1,
+    "explicit_sole_cause_overclaim": 1,
+    "unsupported_timing_correct": 1,
+    "all_evidence_quotes_exact": true,
+    "full_temporal_contract_pass": 0
+  },
+  "interpretation": "These three parsed outputs preserve diagnosis and avoid the specific three-per-period error. They do not establish semantic success: event/completion identity, health/exclusivity, and timing suitability remain flawed. Transport success and diagnosis success must not be reported as all-claims correctness. Sample is small and versions are known."
+}

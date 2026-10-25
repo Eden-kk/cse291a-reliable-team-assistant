@@ -1,0 +1,553 @@
+{
+  "instruction": "You are an incident coordinator receiving specialist handoffs.\nUse supplied summaries and available sources to investigate; specialist claims are not proof.\nIf raw evidence is needed, return {\"retrieve_source_ids\":[\"ID\", ...]} (at most three IDs).\nOnly one retrieval round is available. Otherwise return a final JSON object with\n\"status\":\"diagnosed\" or \"uncertain\", \"fault_object\":\"app/NAME or node/NAME or namespace/NAME\",\n\"root_cause\":\"exact allowed label\", \"evidence\":[{\"observation_id\":\"ID\",\"quote\":\"literal raw substring\"}],\n\"reasoning\":\"causal explanation\", \"adservice_liveness_protocol\":\"httpGet|grpc|tcpSocket|unknown\".\nDo not invent raw quotations from summaries. If evidence is insufficient, return uncertain.\nThe source catalog lists retrievable original observations. Cite only raw records actually inspected.\n\nTemporal evidence contract for this final answer:\nAvoid unnecessary timing assertions in reasoning. For every material temporal assertion,\nadd a temporal_claims entry with claim, kind (observed_event/configuration/derived_inference),\nsource_id, source_field, value, unit, temporal_scope, and assumptions. Use null for unknown\nvalues rather than guessing. An empty temporal_claims list is allowed if no such claim is made.\nDistinguish an interval between checks from a count of consecutive failures and from an\nobserved event time. Preserve the identity and units of each field. A configured threshold\nor interval alone does not establish actual restart timing. Derived timing requires explicit\nassumptions and must not be presented as an observed duration. Use only actually inspected\nraw evidence; do not cite specialist summaries as primary evidence. If support is absent,\nomit optional detail or explicitly state uncertainty. Preserve supported diagnosis and required\nevidence; do not replace them with blanket uncertainty. These rules supply no case answer.\nRetrieval exhausted. Return final diagnosis or uncertain; do not request more.\nMaterial-claim evidence contract (development v5):\nPreserve the distinction between event occurrence counts, attempted actions, and completed\noutcomes. Repeated event records do not alone prove how many restarts or recoveries completed;\nrequire direct outcome evidence before stating a completed-action count.\nA Ready condition describes that condition at its recorded scope/time, not whole-system health.\nDo not infer global health or absence of other faults from a limited status field.\nA supported cause is not necessarily the sole cause. Claim exclusivity only with evidence\nruling out relevant alternatives; otherwise identify the supported cause without exclusivity.\nDo not declare other configuration fields, ports, or timing settings correct merely because\na different fault is supported. Such correctness claims require their own evidence.\nEvent Age, relative ages, and aggregation windows do not prove exact coverage endpoints,\ncontinuous duration, or a complete event history. Preserve uncertainty in chronology.\nOmit optional assertions that lack evidence. Retain the supported main diagnosis, its source\nquotes, and useful conclusions; do not hide missing support behind blanket uncertainty.\nApply these rules to every narrative sentence, structured claim, and action recommendation.\nThese generic rules supply no incident-specific values or correct diagnosis.",
+  "request": {
+    "question": "Partial Service Unreachability.",
+    "tools": {
+      "GetResources": {
+        "description": "Simulates `kubectl get` to retrieve resource lists or current status details. IMPORTANT: `show_labels` and `output_wide` are mutually exclusive. `label_selector` may be combined with either of them. `show_labels` and `output_wide` are mutually exclusive.",
+        "parameters": {
+          "properties": {
+            "resource_type": {
+              "description": "**REQUIRED**. The type of resource to list. (e.g., 'pods', 'services', 'deployments', 'nodes').",
+              "title": "Resource Type",
+              "type": "string"
+            },
+            "namespace": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "The Kubernetes namespace to query. **CRITICAL**: If the `resource_type` is a namespaced resource (e.g., 'pods', 'deployments', 'services'), you MUST provide the namespace (default is 'boutique'). However, if the `resource_type` is a cluster-scoped resource (e.g., 'nodes', 'persistentvolumes'), you may omit the `namespace` parameter; the tool will automatically handle historical cache formats.",
+              "title": "Namespace"
+            },
+            "name": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Optional. The specific name of the resource to retrieve a single item. If omitted, returns a list.",
+              "title": "Name"
+            },
+            "show_labels": {
+              "default": false,
+              "description": "If True, adds `--show-labels`. MUTUALLY EXCLUSIVE with `output_wide`.",
+              "title": "Show Labels",
+              "type": "boolean"
+            },
+            "output_wide": {
+              "default": false,
+              "description": "If True, adds `-o wide`. MUTUALLY EXCLUSIVE with `show_labels`.",
+              "title": "Output Wide",
+              "type": "boolean"
+            },
+            "label_selector": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Filter by label (e.g., 'app=frontend'). Can be combined with `show_labels` or `output_wide`. Only simple selectors in the form `key=value` are supported. SUPPORTED ONLY FOR: pods, services, deployments, PVCs.",
+              "title": "Label Selector"
+            }
+          },
+          "required": [
+            "resource_type"
+          ],
+          "title": "GetResourcesInput",
+          "type": "object"
+        }
+      },
+      "DescribeResource": {
+        "description": "Simulates `kubectl describe`. Retrieves detailed state, events, and conditions for a specific Kubernetes resource.",
+        "parameters": {
+          "properties": {
+            "resource_type": {
+              "description": "**REQUIRED**. The type of resource to describe (e.g., 'pod', 'node', 'service', 'pvc').",
+              "title": "Resource Type",
+              "type": "string"
+            },
+            "name": {
+              "description": "**REQUIRED**. The EXACT name of the specific resource to inspect.",
+              "title": "Name",
+              "type": "string"
+            },
+            "namespace": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "The Kubernetes namespace to query. If resource is namespaced, provide namespace. If cluster-scoped, you may omit namespace; the tool will automatically handle historical cache formats.",
+              "title": "Namespace"
+            }
+          },
+          "required": [
+            "resource_type",
+            "name"
+          ],
+          "title": "DescribeResourceInput",
+          "type": "object"
+        }
+      },
+      "GetAppYAML": {
+        "description": "Retrieves the raw YAML configuration file for a specific service. Returns static configuration details including resource limits, probes, env vars, and image tags.",
+        "parameters": {
+          "properties": {
+            "app_name": {
+              "description": "**REQUIRED**. The name of the microservice to inspect. Allowed for boutique: adservice, cartservice, checkoutservice, currencyservice, emailservice, frontend, paymentservice, productcatalogservice, recommendationservice, redis-cart, shippingservice.",
+              "title": "App Name",
+              "type": "string"
+            }
+          },
+          "required": [
+            "app_name"
+          ],
+          "title": "GetAppYAMLInput",
+          "type": "object"
+        }
+      },
+      "GetRecentLogs": {
+        "description": "Retrieves raw recent container logs for a specified Kubernetes service.",
+        "parameters": {
+          "properties": {
+            "namespace": {
+              "description": "**REQUIRED**. The Kubernetes namespace.",
+              "title": "Namespace",
+              "type": "string"
+            },
+            "service_name": {
+              "description": "**REQUIRED**. The microservice name, not the full pod name. Allowed for boutique: adservice, cartservice, checkoutservice, currencyservice, emailservice, frontend, paymentservice, productcatalogservice, recommendationservice, redis-cart, shippingservice.",
+              "title": "Service Name",
+              "type": "string"
+            }
+          },
+          "required": [
+            "namespace",
+            "service_name"
+          ],
+          "title": "GetRecentLogsInput",
+          "type": "object"
+        }
+      },
+      "GetErrorLogs": {
+        "description": "Retrieves a statistical summary of application error logs grouped by error patterns for a specified Kubernetes service.",
+        "parameters": {
+          "properties": {
+            "namespace": {
+              "description": "**REQUIRED**. The Kubernetes namespace.",
+              "title": "Namespace",
+              "type": "string"
+            },
+            "service_name": {
+              "description": "**REQUIRED**. The microservice name. Allowed for boutique: adservice, cartservice, checkoutservice, currencyservice, emailservice, frontend, paymentservice, productcatalogservice, recommendationservice, redis-cart, shippingservice.",
+              "title": "Service Name",
+              "type": "string"
+            }
+          },
+          "required": [
+            "namespace",
+            "service_name"
+          ],
+          "title": "GetErrorLogsInput",
+          "type": "object"
+        }
+      },
+      "CheckServiceConnectivity": {
+        "description": "Performs an active TCP connectivity check to the target service port from within the cluster. This tool can ONLY check internal cluster connectivity between the predefined microservices. It CANNOT check external DNS or external image registry connectivity.",
+        "parameters": {
+          "properties": {
+            "service_name": {
+              "description": "**REQUIRED**. The target Service DNS name. Allowed for boutique: adservice, cartservice, checkoutservice, currencyservice, emailservice, frontend, paymentservice, productcatalogservice, recommendationservice, redis-cart, shippingservice.",
+              "title": "Service Name",
+              "type": "string"
+            },
+            "port": {
+              "description": "**REQUIRED**. The target TCP port number.",
+              "title": "Port",
+              "type": "integer"
+            },
+            "namespace": {
+              "description": "**REQUIRED**. The Kubernetes namespace.",
+              "title": "Namespace",
+              "type": "string"
+            }
+          },
+          "required": [
+            "service_name",
+            "port",
+            "namespace"
+          ],
+          "title": "CheckServiceConnectivityInput",
+          "type": "object"
+        }
+      },
+      "GetServiceDependencies": {
+        "description": "Retrieves the service network topology, showing upstream and downstream communication relationships for a given service.",
+        "parameters": {
+          "properties": {
+            "service_name": {
+              "description": "**REQUIRED**. The name of the service. Allowed for boutique: adservice, cartservice, checkoutservice, currencyservice, emailservice, frontend, paymentservice, productcatalogservice, recommendationservice, redis-cart, shippingservice.",
+              "title": "Service Name",
+              "type": "string"
+            }
+          },
+          "required": [
+            "service_name"
+          ],
+          "title": "GetServiceDependenciesInput",
+          "type": "object"
+        }
+      },
+      "GetClusterConfiguration": {
+        "description": "Retrieves a holistic health and configuration summary of all nodes in the cluster, including taints, conditions, allocatable resources, and labels.",
+        "parameters": {
+          "type": "object",
+          "properties": {}
+        }
+      },
+      "GetAlerts": {
+        "description": "Retrieves active system alerts triggered by metric anomalies such as high latency, error rate spikes, or CPU/Memory saturation.",
+        "parameters": {
+          "type": "object",
+          "properties": {}
+        }
+      },
+      "CheckNodeServiceStatus": {
+        "description": "Checks the operating status of critical Kubernetes infrastructure components on a specific node, such as kubelet, kube-proxy, and containerd.",
+        "parameters": {
+          "properties": {
+            "node_name": {
+              "description": "**REQUIRED**. The target Node Name.",
+              "enum": [
+                "master",
+                "worker-01",
+                "worker-02",
+                "worker-03"
+              ],
+              "title": "Node Name",
+              "type": "string"
+            },
+            "service_name": {
+              "description": "**REQUIRED**. The system component name to inspect.",
+              "enum": [
+                "kube-scheduler",
+                "kubelet",
+                "kube-proxy",
+                "containerd"
+              ],
+              "title": "Service Name",
+              "type": "string"
+            }
+          },
+          "required": [
+            "node_name",
+            "service_name"
+          ],
+          "title": "CheckNodeServiceStatusInput",
+          "type": "object"
+        }
+      }
+    },
+    "namespace": "boutique",
+    "allowed_causes": {
+      "namespace_cpu_quota_exceeded": "namespace",
+      "namespace_memory_quota_exceeded": "namespace",
+      "namespace_pod_quota_exceeded": "namespace",
+      "namespace_service_quota_exceeded": "namespace",
+      "namespace_storage_quota_exceeded": "namespace",
+      "missing_service_account": "app",
+      "node_cordon_mismatch": "app",
+      "node_affinity_mismatch": "app",
+      "node_selector_mismatch": "app",
+      "pod_anti_affinity_conflict": "app",
+      "taint_toleration_mismatch": "app",
+      "cpu_capacity_mismatch": "app",
+      "memory_capacity_mismatch": "app",
+      "node_network_delay": "node",
+      "node_network_packet_loss": "node",
+      "containerd_unavailable": "node",
+      "kubelet_unavailable": "node",
+      "kube_proxy_unavailable": "node",
+      "kube_scheduler_unavailable": "node",
+      "image_registry_dns_failure": "app",
+      "incorrect_image_reference": "app",
+      "missing_image_pull_secret": "app",
+      "pvc_selector_mismatch": "app",
+      "pvc_storage_class_mismatch": "app",
+      "pvc_access_mode_mismatch": "app",
+      "pvc_capacity_mismatch": "app",
+      "pv_binding_occupied": "app",
+      "volume_mount_permission_denied": "app",
+      "container_memory_limit_too_low": "app",
+      "liveness_probe_incorrect_protocol": "app",
+      "liveness_probe_incorrect_port": "app",
+      "liveness_probe_incorrect_timing": "app",
+      "readiness_probe_incorrect_protocol": "app",
+      "readiness_probe_incorrect_port": "app",
+      "service_selector_mismatch": "app",
+      "service_port_mapping_mismatch": "app",
+      "service_protocol_mismatch": "app",
+      "service_env_var_address_mismatch": "app",
+      "pod_cpu_overload": "app",
+      "pod_network_delay": "app",
+      "service_sidecar_port_conflict": "app",
+      "service_dns_resolution_failure": "app",
+      "mysql_invalid_credentials": "app",
+      "mysql_invalid_port": "app",
+      "missing_secret_binding": "app",
+      "db_connection_exhaustion": "app",
+      "db_readonly_mode": "app",
+      "gateway_misrouted": "app",
+      "deployment_zero_replicas": "app",
+      "code_busy_loop": "app",
+      "code_memory_leak": "app",
+      "code_artificial_delay": "app",
+      "code_excessive_file_reads": "app",
+      "code_excessive_file_writes": "app",
+      "code_wrong_return": "app",
+      "code_missing_parameter": "app",
+      "code_wrong_argument_order": "app"
+    },
+    "incident": "incident-1",
+    "step": "incident_brief",
+    "inputs": {
+      "configuration_summary": {
+        "service": "adservice",
+        "liveness_protocol": "grpc",
+        "readiness_protocol": "grpc",
+        "summary": "The adservice Deployment YAML (observation-9) defines both livenessProbe and readinessProbe as gRPC probes on port 9555, each with initialDelaySeconds: 5 and periodSeconds: 5. The container exposes containerPort 9555 and the Service maps port 9555 to targetPort 9555, matching the probe ports.",
+        "source_ids": [
+          "observation-9"
+        ],
+        "temporal_claims": [
+          {
+            "claim": "Both liveness and readiness probes are configured with initialDelaySeconds of 5 and periodSeconds of 5",
+            "kind": "configuration",
+            "source_id": "observation-9",
+            "source_field": "readinessProbe.initialDelaySeconds / readinessProbe.periodSeconds / livenessProbe.initialDelaySeconds / livenessProbe.periodSeconds",
+            "value": 5,
+            "unit": "seconds",
+            "temporal_scope": "static configuration",
+            "assumptions": null
+          }
+        ]
+      },
+      "telemetry_summary": {
+        "summary": "Observed: all 11 boutique pods are 1/1 Running with 0 restarts (ages ~60-62s); no active metric alerts. Frontend error logs show 85 errors out of 710 log lines (ratio 0.1197), dominated by 82 occurrences of 'failed to complete the order: rpc error: code = Unavailable ... dial tcp: lookup checkoutservice on 169.254.20.10:53: no such host' on POST /cart/checkout, plus one 'context canceled' error and two benign GCE metadata errors. Recent frontend logs also show many successful checkout requests (HTTP 200, ~10-12ms), indicating the failure is intermittent/partial rather than total. The dominant error is a DNS resolution failure for checkoutservice from frontend, suggesting a service DNS resolution issue (hypothesis: service_dns_resolution_failure or related service/DNS misconfiguration); this is not yet confirmed, as no Service object, endpoint, or DNS configuration evidence has been inspected. Uncertainty: error log aggregation window and exact failure interval are unknown; the 'no such host' errors and successful requests coexist in overlapping timestamps (e.g., errors at 14:47:01 and successes at 14:47:15-16), so the failure pattern's chronology and current persistence are unclear. Pod ages (~60s) suggest recent pod (re)creation, but the cause of that recency is not established.",
+        "source_ids": [
+          "observation-1",
+          "observation-2",
+          "observation-6",
+          "observation-7",
+          "observation-8"
+        ],
+        "temporal_claims": [
+          {
+            "claim": "All boutique pods show AGE of approximately 60-62 seconds with 0 restarts at time of observation",
+            "kind": "observed_event",
+            "source_id": "observation-1",
+            "source_field": "AGE",
+            "value": "60-62",
+            "unit": "seconds",
+            "temporal_scope": "single point-in-time pod listing",
+            "assumptions": [
+              "AGE reflects time since pod start as reported by kubectl get"
+            ]
+          },
+          {
+            "claim": "Frontend DNS failure errors for checkoutservice were logged at 2025-11-11T14:47:01Z",
+            "kind": "observed_event",
+            "source_id": "observation-7",
+            "source_field": "patterns[0].sample.timestamp",
+            "value": "2025-11-11T14:47:01.302375941Z",
+            "unit": "RFC3339 timestamp",
+            "temporal_scope": "single sample log line within error aggregation window",
+            "assumptions": [
+              "Sample timestamp is representative of the 82-error pattern; full distribution unknown"
+            ]
+          },
+          {
+            "claim": "Successful checkout requests (HTTP 200) were logged at 2025-11-11T14:47:15-16Z",
+            "kind": "observed_event",
+            "source_id": "observation-8",
+            "source_field": "timestamp",
+            "value": "2025-11-11T14:47:15-16Z",
+            "unit": "RFC3339 timestamp interval",
+            "temporal_scope": "recent log window (truncated)",
+            "assumptions": [
+              "Recent-logs window overlaps the error aggregation window; exact window boundaries unknown"
+            ]
+          }
+        ]
+      },
+      "source_catalog": {
+        "sources": [
+          {
+            "id": "observation-1",
+            "tool": "GetResources",
+            "arguments": {
+              "resource_type": "pods",
+              "namespace": "boutique",
+              "name": null,
+              "show_labels": false,
+              "output_wide": false,
+              "label_selector": null
+            }
+          },
+          {
+            "id": "observation-2",
+            "tool": "GetAlerts",
+            "arguments": {}
+          },
+          {
+            "id": "observation-3",
+            "tool": "GetResources",
+            "arguments": {
+              "resource_type": "services",
+              "namespace": "boutique",
+              "name": null,
+              "show_labels": false,
+              "output_wide": false,
+              "label_selector": null
+            }
+          },
+          {
+            "id": "observation-4",
+            "tool": "CheckServiceConnectivity",
+            "arguments": {
+              "service_name": "frontend",
+              "port": 8080,
+              "namespace": "boutique"
+            }
+          },
+          {
+            "id": "observation-5",
+            "tool": "GetAppYAML",
+            "arguments": {
+              "app_name": "frontend"
+            }
+          },
+          {
+            "id": "observation-6",
+            "tool": "GetServiceDependencies",
+            "arguments": {
+              "service_name": "frontend"
+            }
+          },
+          {
+            "id": "observation-7",
+            "tool": "GetErrorLogs",
+            "arguments": {
+              "namespace": "boutique",
+              "service_name": "frontend"
+            }
+          },
+          {
+            "id": "observation-8",
+            "tool": "GetRecentLogs",
+            "arguments": {
+              "namespace": "boutique",
+              "service_name": "frontend"
+            }
+          },
+          {
+            "id": "observation-9",
+            "tool": "GetAppYAML",
+            "arguments": {
+              "app_name": "adservice"
+            }
+          }
+        ]
+      },
+      "coordinator_decision": {
+        "retrieve_source_ids": [
+          "observation-3",
+          "observation-7",
+          "observation-8"
+        ]
+      },
+      "retrieved_sources": {
+        "observations": [
+          {
+            "id": "observation-3",
+            "tool": "GetResources",
+            "arguments": {
+              "resource_type": "services",
+              "namespace": "boutique",
+              "name": null,
+              "show_labels": false,
+              "output_wide": false,
+              "label_selector": null
+            },
+            "availability": "returned",
+            "text": "NAME                    TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE\nadservice               ClusterIP   10.68.241.107   <none>        9555/TCP       65s\ncartservice             ClusterIP   10.68.167.178   <none>        7070/TCP       65s\ncheckoutservice         ClusterIP   10.68.113.121   <none>        5050/TCP       63s\ncurrencyservice         ClusterIP   10.68.116.205   <none>        7000/TCP       65s\nemailservice            ClusterIP   10.68.48.42     <none>        5000/TCP       65s\nfrontend                ClusterIP   10.68.209.94    <none>        80/TCP         64s\nfrontend-external       NodePort    10.68.40.206    <none>        80:30080/TCP   64s\npaymentservice          ClusterIP   10.68.191.185   <none>        50051/TCP      64s\nproductcatalogservice   ClusterIP   10.68.129.156   <none>        3550/TCP       64s\nrecommendationservice   ClusterIP   10.68.2.241     <none>        8080/TCP       64s\nredis-cart              ClusterIP   10.68.101.246   <none>        6379/TCP       64s\nshippingservice         ClusterIP   10.68.158.93    <none>        50051/TCP      63s\n",
+            "truncated": false,
+            "sha256": "2bdc4a0dfe3d0560ab5d09bdd71e01b4c2fe1125dd93e48df912fc8bc7fe2821"
+          },
+          {
+            "id": "observation-7",
+            "tool": "GetErrorLogs",
+            "arguments": {
+              "namespace": "boutique",
+              "service_name": "frontend"
+            },
+            "availability": "returned",
+            "text": "{\n  \"total_log_count\": 710,\n  \"total_errors\": 85,\n  \"total_error_ratio\": 0.1197,\n  \"patterns\": [\n    {\n      \"count\": 82,\n      \"ratio\": 0.1155,\n      \"sample\": \"{\\\"error\\\":\\\"failed to complete the order: rpc error: code = Unavailable desc = connection error: desc = \\\\\\\"transport: Error while dialing: dial tcp: lookup checkoutservice on 169.254.20.10:53: no such host\\\\\\\"\\\",\\\"http.req.id\\\":\\\"39bce647-7c93-4ced-8115-7d2bf6b4c98a\\\",\\\"http.req.method\\\":\\\"POST\\\",\\\"http.req.path\\\":\\\"/cart/checkout\\\",\\\"message\\\":\\\"request error\\\",\\\"session\\\":\\\"307a6484-be73-4180-b503-a5b6d836bd59\\\",\\\"severity\\\":\\\"error\\\",\\\"timestamp\\\":\\\"2025-11-11T14:47:01.302375941Z\\\"}\"\n    },\n    {\n      \"count\": 1,\n      \"ratio\": 0.0014,\n      \"sample\": \"{\\\"message\\\":\\\"Failed to fetch the name of the cluster in which the pod is runningmetadata: GCE metadata \\\\\\\"instance/attributes/cluster-name\\\\\\\" not defined\\\",\\\"severity\\\":\\\"error\\\",\\\"timestamp\\\":\\\"2025-11-11T14:46:16.812101437Z\\\"}\"\n    },\n    {\n      \"count\": 1,\n      \"ratio\": 0.0014,\n      \"sample\": \"{\\\"message\\\":\\\"Failed to fetch the Zone of the node where the pod is scheduledmetadata: GCE metadata \\\\\\\"instance/zone\\\\\\\" not defined\\\",\\\"severity\\\":\\\"error\\\",\\\"timestamp\\\":\\\"2025-11-11T14:46:16.824521238Z\\\"}\"\n    },\n    {\n      \"count\": 1,\n      \"ratio\": 0.0014,\n      \"sample\": \"{\\\"error\\\":\\\"failed to complete the order: rpc error: code = Canceled desc = context canceled\\\",\\\"http.req.id\\\":\\\"42d02946-80b9-44c3-abcd-dc0d1b5ce726\\\",\\\"http.req.method\\\":\\\"POST\\\",\\\"http.req.path\\\":\\\"/cart/checkout\\\",\\\"message\\\":\\\"request error\\\",\\\"session\\\":\\\"81497a9b-36f9-47e4-8976-f4dde5633771\\\",\\\"severity\\\":\\\"error\\\",\\\"timestamp\\\":\\\"2025-11-11T14:47:17.553835883Z\\\"}\"\n    }\n  ]\n}",
+            "truncated": false,
+            "sha256": "87262faf41dd89aff6de718182d1b07e29338be31f43d2ed5b36421bd894c872"
+          },
+          {
+            "id": "observation-8",
+            "tool": "GetRecentLogs",
+            "arguments": {
+              "namespace": "boutique",
+              "service_name": "frontend"
+            },
+            "availability": "returned",
+            "text": "[\"From frontend logs:\", \"{\\\"http.req.id\\\":\\\"2fbb9c9c-7e46-4c87-bc48-8759c35b8221\\\",\\\"http.req.method\\\":\\\"POST\\\",\\\"http.req.path\\\":\\\"/cart/checkout\\\",\\\"message\\\":\\\"order placed\\\",\\\"order\\\":\\\"508aadc4-bf0d-11f0-910b-3a2c297c4124\\\",\\\"session\\\":\\\"651d0447-aec1-4660-8810-291cbc3949c8\\\",\\\"severity\\\":\\\"info\\\",\\\"timestamp\\\":\\\"2025-11-11T14:47:15.528727835Z\\\"}\", \"{\\\"http.req.id\\\":\\\"2fbb9c9c-7e46-4c87-bc48-8759c35b8221\\\",\\\"http.req.method\\\":\\\"POST\\\",\\\"http.req.path\\\":\\\"/cart/checkout\\\",\\\"http.resp.bytes\\\":6795,\\\"http.resp.status\\\":200,\\\"http.resp.took_ms\\\":10,\\\"message\\\":\\\"request complete\\\",\\\"session\\\":\\\"651d0447-aec1-4660-8810-291cbc3949c8\\\",\\\"severity\\\":\\\"debug\\\",\\\"timestamp\\\":\\\"2025-11-11T14:47:15.533618027Z\\\"}\", \"{\\\"http.req.id\\\":\\\"12c7e0ea-5bcf-4584-af83-c7ae071485e6\\\",\\\"http.req.method\\\":\\\"POST\\\",\\\"http.req.path\\\":\\\"/cart/checkout\\\",\\\"message\\\":\\\"request started\\\",\\\"session\\\":\\\"e710bf6b-143b-4ffa-9ce4-7a9058b257f5\\\",\\\"severity\\\":\\\"debug\\\",\\\"timestamp\\\":\\\"2025-11-11T14:47:15.634269738Z\\\"}\", \"{\\\"http.req.id\\\":\\\"12c7e0ea-5bcf-4584-af83-c7ae071485e6\\\",\\\"http.req.method\\\":\\\"POST\\\",\\\"http.req.path\\\":\\\"/cart/checkout\\\",\\\"message\\\":\\\"placing order\\\",\\\"session\\\":\\\"e710bf6b-143b-4ffa-9ce4-7a9058b257f5\\\",\\\"severity\\\":\\\"debug\\\",\\\"timestamp\\\":\\\"2025-11-11T14:47:15.634310846Z\\\"}\", \"{\\\"http.req.id\\\":\\\"12c7e0ea-5bcf-4584-af83-c7ae071485e6\\\",\\\"http.req.method\\\":\\\"POST\\\",\\\"http.req.path\\\":\\\"/cart/checkout\\\",\\\"message\\\":\\\"order placed\\\",\\\"order\\\":\\\"509bb45e-bf0d-11f0-910b-3a2c297c4124\\\",\\\"session\\\":\\\"e710bf6b-143b-4ffa-9ce4-7a9058b257f5\\\",\\\"severity\\\":\\\"info\\\",\\\"timestamp\\\":\\\"2025-11-11T14:47:15.641415174Z\\\"}\", \"{\\\"http.req.id\\\":\\\"12c7e0ea-5bcf-4584-af83-c7ae071485e6\\\",\\\"http.req.method\\\":\\\"POST\\\",\\\"http.req.path\\\":\\\"/cart/checkout\\\",\\\"http.resp.bytes\\\":6767,\\\"http.resp.status\\\":200,\\\"http.resp.took_ms\\\":12,\\\"message\\\":\\\"request complete\\\",\\\"session\\\":\\\"e710bf6b-143b-4ffa-9ce4-7a9058b257f5\\\",\\\"severity\\\":\\\"debug\\\",\\\"timestamp\\\":\\\"2025-11-11T14:47:15.646918111Z\\\"}\", \"{\\\"http.req.id\\\":\\\"c1b90be5-aa9a-4446-93e4-c48246be492b\\\",\\\"http.req.method\\\":\\\"POST\\\",\\\"http.req.path\\\":\\\"/cart/checkout\\\",\\\"message\\\":\\\"request started\\\",\\\"session\\\":\\\"0eda166d-2559-4acc-9b0a-bfdb26d5ff7a\\\",\\\"severity\\\":\\\"debug\\\",\\\"timestamp\\\":\\\"2025-11-11T14:47:15.751655979Z\\\"}\", \"{\\\"http.req.id\\\":\\\"c1b90be5-aa9a-4446-93e4-c48246be492b\\\",\\\"http.req.method\\\":\\\"POST\\\",\\\"http.req.path\\\":\\\"/cart/checkout\\\",\\\"message\\\":\\\"placing order\\\",\\\"session\\\":\\\"0eda166d-2559-4acc-9b0a-bfdb26d5ff7a\\\",\\\"severity\\\":\\\"debug\\\",\\\"timestamp\\\":\\\"2025-11-11T14:47:15.751696982Z\\\"}\", \"{\\\"http.req.id\\\":\\\"c1b90be5-aa9a-4446-93e4-c48246be492b\\\",\\\"http.req.method\\\":\\\"POST\\\",\\\"http.req.path\\\":\\\"/cart/checkout\\\",\\\"message\\\":\\\"order placed\\\",\\\"order\\\":\\\"50ad9d85-bf0d-11f0-910b-3a2c297c4124\\\",\\\"session\\\":\\\"0eda166d-2559-4acc-9b0a-bfdb26d5ff7a\\\",\\\"severity\\\":\\\"info\\\",\\\"timestamp\\\":\\\"2025-11-11T14:47:15.758278801Z\\\"}\", \"{\\\"http.req.id\\\":\\\"c1b90be5-aa9a-4446-93e4-c48246be492b\\\",\\\"http.req.method\\\":\\\"POST\\\",\\\"http.req.path\\\":\\\"/cart/checkout\\\",\\\"http.resp.bytes\\\":6797,\\\"http.resp.status\\\":200,\\\"http.resp.took_ms\\\":11,\\\"message\\\":\\\"request complete\\\",\\\"session\\\":\\\"0eda166d-2559-4acc-9b0a-bfdb26d5ff7a\\\",\\\"severity\\\":\\\"debug\\\",\\\"timestamp\\\":\\\"2025-11-11T14:47:15.763549815Z\\\"}\", \"{\\\"http.req.id\\\":\\\"8c1b10a0-332f-4aae-89cf-c36dc021c1b8\\\",\\\"http.req.method\\\":\\\"POST\\\",\\\"http.req.path\\\":\\\"/cart/checkout\\\",\\\"message\\\":\\\"request started\\\",\\\"session\\\":\\\"aef78d04-9bc9-4a10-94ad-4aef1e763fc7\\\",\\\"severity\\\":\\\"debug\\\",\\\"timestamp\\\":\\\"2025-11-11T14:47:15.790150256Z\\\"}\", \"{\\\"http.req.id\\\":\\\"8c1b10a0-332f-4aae-89cf-c36dc021c1b8\\\",\\\"http.req.method\\\":\\\"POST\\\",\\\"http.req.path\\\":\\\"/cart/checkout\\\",\\\"message\\\":\\\"placing order\\\",\\\"session\\\":\\\"aef78d04-9bc9-4a10-94ad-4aef1e763fc7\\\",\\\"severity\\\":\\\"debug\\\",\\\"timestamp\\\":\\\"2025-11-11T14:47:15.790182823Z\\\"}\", \"{\\\"http.req.id\\\":\\\"8c1b10a0-332f-4aae-89cf-c36dc021c1b8\\\",\\\"http.req.method\\\":\\\"POST\\\",\\\"http.req.path\\\":\\\"/cart/checkout\\\",\\\"message\\\":\\\"order placed\\\",\\\"order\\\":\\\"50b37980-bf0d-11f0-910b-3a2c297c4124\\\",\\\"session\\\":\\\"aef78d04-9bc9-4a10-94ad-4aef1e763fc7\\\",\\\"severity\\\":\\\"info\\\",\\\"timestamp\\\":\\\"2025-11-11T14:47:15.796245428Z\\\"}\", \"{\\\"http.req.id\\\":\\\"8c1b10a0-332f-4aae-89cf-c36dc021c1b8\\\",\\\"http.req.method\\\":\\\"POST\\\",\\\"http.req.path\\\":\\\"/cart/checkout\\\",\\\"http.resp.bytes\\\":6777,\\\"http.resp.status\\\":200,\\\"http.resp.took_ms\\\":11,\\\"message\\\":\\\"request complete\\\",\\\"session\\\":\\\"aef78d04-9bc9-4a10-94ad-4aef1e763fc7\\\",\\\"severity\\\":\\\"debug\\\",\\\"timestamp\\\":\\\"2025-11-11T14:47:15.802083514Z\\\"}\", \"{\\\"http.req.id\\\":\\\"95e23ebf-e5f2-449a-8eb1-ba60e8d2ab90\\\",\\\"http.req.method\\\":\\\"POST\\\",\\\"http.req.path\\\":\\\"/cart/checkout\\\",\\\"message\\\":\\\"request started\\\",\\\"session\\\":\\\"307a6484-be73-4180-b503-a5b6d836bd59\\\",\\\"severity\\\":\\\"debug\\\",\\\"timestamp\\\":\\\"2025-11-11T14:47:15.93780208Z\\\"}\", \"{\\\"http.req.id\\\":\\\"95e23ebf-e5f2-449a-8eb1-ba60e8d2ab90\\\",\\\"http.req.method\\\":\\\"POST\\\",\\\"http.req.path\\\":\\\"/cart/checkout\\\",\\\"message\\\":\\\"placing order\\\",\\\"session\\\":\\\"307a6484-be73-4180-b503-a5b6d836bd59\\\",\\\"severity\\\":\\\"debug\\\",\\\"timestamp\\\":\\\"2025-11-11T14:47:15.937869888Z\\\"}\", \"{\\\"http.req.id\\\":\\\"95e23ebf-e5f2-449a-8eb1-ba60e8d2ab90\\\",\\\"http.req.method\\\":\\\"POST\\\",\\\"http.req.path\\\":\\\"/cart/checkout\\\",\\\"message\\\":\\\"order placed\\\",\\\"order\\\":\\\"50ca061b-bf0d-11f0-910b-3a2c297c4124\\\",\\\"session\\\":\\\"307a6484-be73-4180-b503-a5b6d836bd59\\\",\\\"severity\\\":\\\"info\\\",\\\"timestamp\\\":\\\"2025-11-11T14:47:15.944466454Z\\\"}\", \"{\\\"http.req.id\\\":\\\"95e23ebf-e5f2-449a-8eb1-ba60e8d2ab90\\\",\\\"http.req.method\\\":\\\"POST\\\",\\\"http.req.path\\\":\\\"/cart/checkout\\\",\\\"http.resp.bytes\\\":6811,\\\"http.resp.status\\\":200,\\\"http.resp.took_ms\\\":11,\\\"message\\\":\\\"request complete\\\",\\\"session\\\":\\\"307a6484-be73-4180-b503-a5b6d836bd59\\\",\\\"severity\\\":\\\"debug\\\",\\\"timestamp\\\":\\\"2025-11-11T14:47:15.94964876Z\\\"}\", \"{\\\"http.req.id\\\":\\\"d671d0d1-fe49-42d0-a133-8cecf5417960\\\",\\\"http.req.method\\\":\\\"POST\\\",\\\"http.req.path\\\":\\\"/cart/checkout\\\",\\\"message\\\":\\\"request started\\\",\\\"session\\\":\\\"5452b5c4-bc29-4c68-840a-6b26ca1bb5bf\\\",\\\"severity\\\":\\\"debug\\\",\\\"timestamp\\\":\\\"2025-11-11T14:47:16.222044009Z\\\"}\", \"{\\\"http.req.id\\\":\\\"d671d0d1-fe49-42d0-a133-8cecf5417960\\\",\\\"http.req.method\\\":\\\"POST\\\",\\\"http.req.path\\\":\\\"/cart/checkout\\\",\\\"message\\\":\\\"placing order\\\",\\\"session\\\":\\\"5452b5c4-bc29-4c68-840a-6b26ca1bb5bf\\\",\\\"severity\\\":\\\"debug\\\",\\\"timestamp\\\":\\\"2025-11-11T14:47:16.222084671Z\\\"}\", \"{\\\"http.req.id\\\":\\\"d671d0d1-fe49-42d0-a133-8cecf5417960\\\",\\\"http.req.method\\\":\\\"POST\\\",\\\"http.req.path\\\":\\\"/cart/checkout\\\",\\\"message\\\":\\\"order placed\\\",\\\"order\\\":\\\"50f563f9-bf0d-11f0-910b-3a2c297c4124\\\",\\\"session\\\":\\\"5452b5c4-bc29-4c68-840a-6b26ca1bb5bf\\\",\\\"severity\\\":\\\"info\\\",\\\"timestamp\\\":\\\"2025-11-11T14:47:16.22884128Z\\\"}\", \"{\\\"http.req.id\\\":\\\"d671d0d1-fe49-42d0-a133-8cecf5417960\\\",\\\"http.req.method\\\":\\\"POST\\\",\\\"http.req.path\\\":\\\"/cart/checkout\\\",\\\"http.resp.bytes\\\":6767,\\\"http.resp.status\\\":200,\\\"http.resp.took_ms\\\":11,\\\"message\\\":\\\"request complete\\\",\\\"session\\\":\\\"5452b5c4-bc29-4c68-840a-6b26ca1bb5bf\\\",\\\"severity\\\":\\\"debug\\\",\\\"timestamp\\\":\\\"2025-11-11T14:47:16.233933197Z\\\"}\", \"{\\\"http.req.id\\\":\\\"ee872da0-a8f3-43f4-8121-68ed00f81b3f\\\",\\\"http.req.method\\\":\\\"POST\\\",\\\"http.req.path\\\":\\\"/cart/checkout\\\",\\\"message\\\":\\\"request started\\\",\\\"session\\\":\\\"d8844065-88fd-4a50-a845-5905c9f1eeef\\\",\\\"severity\\\":\\\"debug\\\",\\\"timestamp\\\":\\\"2025-11-11T14:47:16.298842124Z\\\"}\", \"{\\\"http.req.id\\\":\\\"ee872da0-a8f3-43f4-8121-68ed00f81b3f\\\",\\\"http.req.method\\\":\\\"POST\\\",\\\"http.req.path\\\":\\\"/cart/checkout\\\",\\\"message\\\":\\\"placing order\\\",\\\"session\\\":\\\"d8844065-88fd-4a50-a845-5905c9f1eeef\\\",\\\"severity\\\":\\\"debug\\\",\\\"timestamp\\\":\\\"2025-11-11T14:47:16.298881329Z\\\"}\", \"{\\\"http.req.id\\\":\\\"ee872da0-a8f3-43f4-8121-68ed00f81b3f\\\",\\\"http.req.method\\\":\\\"POST\\\",\\\"http.req.path\\\":\\\"/cart/checkout\\\",\\\"message\\\":\\\"order placed\\\",\\\"order\\\":\\\"51011b72-bf0d-11f0-910b-3a2c297c4124\\\",\\\"session\\\":\\\"d8844065-88fd-4a50-a845-5905c9f1eeef\\\",\\\"severity\\\":\\\"info\\\",\\\"timestamp\\\":\\\"2025-11-11T14:47:16.305764953Z\\\"}\", \"{\\\"http.req.id\\\":\\\"ee872da0-a8f3-43f4-8121-68ed00f81b3f\\\",\\\"http.req.method\\\":\\\"POST\\\",\\\"http.req.path\\\":\\\"/cart/checkout\\\",\\\"http.resp.bytes\\\":6801,\\\"http.resp.status\\\":200,\\\"http.resp.took_ms\\\":11,\\\"message\\\":\\\"request complete\\\",\\\"session\\\":\\\"d8844065-88fd-4a50-a845-5905c9f1eeef\\\",\\\"severity\\\":\\\"debug\\\",\\\"timestamp\\\":\\\"2025-11-11T14:47:16.31082078Z\\\"}\", \"{\\\"http.req.id\\\":\\\"79e49b11-5e8d-46e1-af0e-ddd8439aa0a9\\\",\\\"http.req.method\\\":\\\"POST\\\",\\\"http.req.path\\\":\\\"/cart/checkout\\\",\\\"message\\\":\\\"request started\\\",\\\"session\\\":\\\"bea07c85-9745-489e-8329-7700df04b348\\\",\\\"severity\\\":\\\"debug\\\",\\\"timestamp\\\":\\\"2025-11-11T14:47:16.77222895Z\\\"}\", \"{\\\"http.req.id\\\":\\\"79e49b11-5e8d-46e1-af0e-ddd8439aa0a9\\\",\\\"http.req.method\\\":\\\"POST\\\",\\\"http.req.path\\\":\\\"/cart/checkout\\\",\\\"message\\\":\\\"placing order\\\",\\\"session\\\":\\\"bea07c85-9745-489e-8329-7700df04b348\\\",\\\"severity\\\":\\\"debug\\\",\\\"timestamp\\\":\\\"2025-11-11T14:47:16.772270939Z\\\"}\", \"{\\\"http.req.id\\\":\\\"79e49b11-5e8d-46e1-af0e-ddd8439aa0a9\\\",\\\"http.req.method\\\":\\\"POST\\\",\\\"http.req.path\\\":\\\"/cart/checkout\\\",\\\"message\\\":\\\"order placed\\\",\\\"order\\\":\\\"51495870-bf0d-11f0-910b-3a2c297c4124\\\",\\\"session\\\":\\\"bea07c85-9745-489e-8329-7700df04b348\\\",\\\"severity\\\":\\\"info\\\",\\\"timestamp\\\":\\\"2025-11-11T14:47:16.778962698Z\\\"}\", \"{\\\"http.req.id\\\":\\\"79e49b11-5e8d-46e1-af0e-ddd8439aa0a9\\\",\\\"http.req.method\\\":\\\"POST\\\",\\\"http.req.path\\\":\\\"/cart/checkout\\\",\\\"http.resp.bytes\\\":6765,\\\"http.resp.status\\\":200,\\\"http.resp.took_ms\\\":12,\\\"message\\\":\\\"request complete\\\",\\\"session\\\":\\\"bea07c85-9745-489e-8329-7700df04b348\\\",\\\"severity\\\":\\\"debug\\\",\\\"timestamp\\\":\\\"2025-11-11T14:47:16.784225614Z\\\"}\", \"{\\\"http.req.id\\\":\\\"d51641ef-f988-420b-a528-cf76f15c7758\\\",\\\"http.req.method\\\":\\\"POST\\\",\\\"http.req.path\\\":\\\"/cart/checkout\\\",\\\"message\\\":\\\"request started\\\",\\\"session\\\":\\\"ccd9e25c-4765-4a34-8eef-79e735fdb264\\\",\\\"severity\\\":\\\"debug\\\",\\\"timestamp\\\":\\\"2025-11-11T14:47:16.881087913Z\\\"}\", \"{\\\"http.req.id\\\":\\\"d51641ef-f988-420b-a528-cf76f15c7758\\\",\\\"http.req.method\\\":\\\"POST\\\",\\\"http.req.path\\\":\\\"/cart/checkout\\\",\\\"message\\\":\\\"placing order\\\",\\\"session\\\":\\\"ccd9e25",
+            "truncated": true,
+            "sha256": "dc22248e608edcc6a7d19c829166b8ae248c81d88e1d33225655df6ee056968a"
+          }
+        ]
+      }
+    }
+  },
+  "body": {
+    "model": "api-glm-5.3",
+    "messages": [
+      {
+        "role": "system",
+        "content": "No tools or files. Use supplied evidence only. Return one JSON object.\nYou are an incident coordinator receiving specialist handoffs.\nUse supplied summaries and available sources to investigate; specialist claims are not proof.\nIf raw evidence is needed, return {\"retrieve_source_ids\":[\"ID\", ...]} (at most three IDs).\nOnly one retrieval round is available. Otherwise return a final JSON object with\n\"status\":\"diagnosed\" or \"uncertain\", \"fault_object\":\"app/NAME or node/NAME or namespace/NAME\",\n\"root_cause\":\"exact allowed label\", \"evidence\":[{\"observation_id\":\"ID\",\"quote\":\"literal raw substring\"}],\n\"reasoning\":\"causal explanation\", \"adservice_liveness_protocol\":\"httpGet|grpc|tcpSocket|unknown\".\nDo not invent raw quotations from summaries. If evidence is insufficient, return uncertain.\nThe source catalog lists retrievable original observations. Cite only raw records actually inspected.\n\nTemporal evidence contract for this final answer:\nAvoid unnecessary timing assertions in reasoning. For every material temporal assertion,\nadd a temporal_claims entry with claim, kind (observed_event/configuration/derived_inference),\nsource_id, source_field, value, unit, temporal_scope, and assumptions. Use null for unknown\nvalues rather than guessing. An empty temporal_claims list is allowed if no such claim is made.\nDistinguish an interval between checks from a count of consecutive failures and from an\nobserved event time. Preserve the identity and units of each field. A configured threshold\nor interval alone does not establish actual restart timing. Derived timing requires explicit\nassumptions and must not be presented as an observed duration. Use only actually inspected\nraw evidence; do not cite specialist summaries as primary evidence. If support is absent,\nomit optional detail or explicitly state uncertainty. Preserve supported diagnosis and required\nevidence; do not replace them with blanket uncertainty. These rules supply no case answer.\nRetrieval exhausted. Return final diagnosis or uncertain; do not request more.\nMaterial-claim evidence contract (development v5):\nPreserve the distinction between event occurrence counts, attempted actions, and completed\noutcomes. Repeated event records do not alone prove how many restarts or recoveries completed;\nrequire direct outcome evidence before stating a completed-action count.\nA Ready condition describes that condition at its recorded scope/time, not whole-system health.\nDo not infer global health or absence of other faults from a limited status field.\nA supported cause is not necessarily the sole cause. Claim exclusivity only with evidence\nruling out relevant alternatives; otherwise identify the supported cause without exclusivity.\nDo not declare other configuration fields, ports, or timing settings correct merely because\na different fault is supported. Such correctness claims require their own evidence.\nEvent Age, relative ages, and aggregation windows do not prove exact coverage endpoints,\ncontinuous duration, or a complete event history. Preserve uncertainty in chronology.\nOmit optional assertions that lack evidence. Retain the supported main diagnosis, its source\nquotes, and useful conclusions; do not hide missing support behind blanket uncertainty.\nApply these rules to every narrative sentence, structured claim, and action recommendation.\nThese generic rules supply no incident-specific values or correct diagnosis."
+      },
+      {
+        "role": "user",
+        "content": "{\"question\": \"Partial Service Unreachability.\", \"tools\": {\"GetResources\": {\"description\": \"Simulates `kubectl get` to retrieve resource lists or current status details. IMPORTANT: `show_labels` and `output_wide` are mutually exclusive. `label_selector` may be combined with either of them. `show_labels` and `output_wide` are mutually exclusive.\", \"parameters\": {\"properties\": {\"resource_type\": {\"description\": \"**REQUIRED**. The type of resource to list. (e.g., 'pods', 'services', 'deployments', 'nodes').\", \"title\": \"Resource Type\", \"type\": \"string\"}, \"namespace\": {\"anyOf\": [{\"type\": \"string\"}, {\"type\": \"null\"}], \"default\": null, \"description\": \"The Kubernetes namespace to query. **CRITICAL**: If the `resource_type` is a namespaced resource (e.g., 'pods', 'deployments', 'services'), you MUST provide the namespace (default is 'boutique'). However, if the `resource_type` is a cluster-scoped resource (e.g., 'nodes', 'persistentvolumes'), you may omit the `namespace` parameter; the tool will automatically handle historical cache formats.\", \"title\": \"Namespace\"}, \"name\": {\"anyOf\": [{\"type\": \"string\"}, {\"type\": \"null\"}], \"default\": null, \"description\": \"Optional. The specific name of the resource to retrieve a single item. If omitted, returns a list.\", \"title\": \"Name\"}, \"show_labels\": {\"default\": false, \"description\": \"If True, adds `--show-labels`. MUTUALLY EXCLUSIVE with `output_wide`.\", \"title\": \"Show Labels\", \"type\": \"boolean\"}, \"output_wide\": {\"default\": false, \"description\": \"If True, adds `-o wide`. MUTUALLY EXCLUSIVE with `show_labels`.\", \"title\": \"Output Wide\", \"type\": \"boolean\"}, \"label_selector\": {\"anyOf\": [{\"type\": \"string\"}, {\"type\": \"null\"}], \"default\": null, \"description\": \"Filter by label (e.g., 'app=frontend'). Can be combined with `show_labels` or `output_wide`. Only simple selectors in the form `key=value` are supported. SUPPORTED ONLY FOR: pods, services, deployments, PVCs.\", \"title\": \"Label Selector\"}}, \"required\": [\"resource_type\"], \"title\": \"GetResourcesInput\", \"type\": \"object\"}}, \"DescribeResource\": {\"description\": \"Simulates `kubectl describe`. Retrieves detailed state, events, and conditions for a specific Kubernetes resource.\", \"parameters\": {\"properties\": {\"resource_type\": {\"description\": \"**REQUIRED**. The type of resource to describe (e.g., 'pod', 'node', 'service', 'pvc').\", \"title\": \"Resource Type\", \"type\": \"string\"}, \"name\": {\"description\": \"**REQUIRED**. The EXACT name of the specific resource to inspect.\", \"title\": \"Name\", \"type\": \"string\"}, \"namespace\": {\"anyOf\": [{\"type\": \"string\"}, {\"type\": \"null\"}], \"default\": null, \"description\": \"The Kubernetes namespace to query. If resource is namespaced, provide namespace. If cluster-scoped, you may omit namespace; the tool will automatically handle historical cache formats.\", \"title\": \"Namespace\"}}, \"required\": [\"resource_type\", \"name\"], \"title\": \"DescribeResourceInput\", \"type\": \"object\"}}, \"GetAppYAML\": {\"description\": \"Retrieves the raw YAML configuration file for a specific service. Returns static configuration details including resource limits, probes, env vars, and image tags.\", \"parameters\": {\"properties\": {\"app_name\": {\"description\": \"**REQUIRED**. The name of the microservice to inspect. Allowed for boutique: adservice, cartservice, checkoutservice, currencyservice, emailservice, frontend, paymentservice, productcatalogservice, recommendationservice, redis-cart, shippingservice.\", \"title\": \"App Name\", \"type\": \"string\"}}, \"required\": [\"app_name\"], \"title\": \"GetAppYAMLInput\", \"type\": \"object\"}}, \"GetRecentLogs\": {\"description\": \"Retrieves raw recent container logs for a specified Kubernetes service.\", \"parameters\": {\"properties\": {\"namespace\": {\"description\": \"**REQUIRED**. The Kubernetes namespace.\", \"title\": \"Namespace\", \"type\": \"string\"}, \"service_name\": {\"description\": \"**REQUIRED**. The microservice name, not the full pod name. Allowed for boutique: adservice, cartservice, checkoutservice, currencyservice, emailservice, frontend, paymentservice, productcatalogservice, recommendationservice, redis-cart, shippingservice.\", \"title\": \"Service Name\", \"type\": \"string\"}}, \"required\": [\"namespace\", \"service_name\"], \"title\": \"GetRecentLogsInput\", \"type\": \"object\"}}, \"GetErrorLogs\": {\"description\": \"Retrieves a statistical summary of application error logs grouped by error patterns for a specified Kubernetes service.\", \"parameters\": {\"properties\": {\"namespace\": {\"description\": \"**REQUIRED**. The Kubernetes namespace.\", \"title\": \"Namespace\", \"type\": \"string\"}, \"service_name\": {\"description\": \"**REQUIRED**. The microservice name. Allowed for boutique: adservice, cartservice, checkoutservice, currencyservice, emailservice, frontend, paymentservice, productcatalogservice, recommendationservice, redis-cart, shippingservice.\", \"title\": \"Service Name\", \"type\": \"string\"}}, \"required\": [\"namespace\", \"service_name\"], \"title\": \"GetErrorLogsInput\", \"type\": \"object\"}}, \"CheckServiceConnectivity\": {\"description\": \"Performs an active TCP connectivity check to the target service port from within the cluster. This tool can ONLY check internal cluster connectivity between the predefined microservices. It CANNOT check external DNS or external image registry connectivity.\", \"parameters\": {\"properties\": {\"service_name\": {\"description\": \"**REQUIRED**. The target Service DNS name. Allowed for boutique: adservice, cartservice, checkoutservice, currencyservice, emailservice, frontend, paymentservice, productcatalogservice, recommendationservice, redis-cart, shippingservice.\", \"title\": \"Service Name\", \"type\": \"string\"}, \"port\": {\"description\": \"**REQUIRED**. The target TCP port number.\", \"title\": \"Port\", \"type\": \"integer\"}, \"namespace\": {\"description\": \"**REQUIRED**. The Kubernetes namespace.\", \"title\": \"Namespace\", \"type\": \"string\"}}, \"required\": [\"service_name\", \"port\", \"namespace\"], \"title\": \"CheckServiceConnectivityInput\", \"type\": \"object\"}}, \"GetServiceDependencies\": {\"description\": \"Retrieves the service network topology, showing upstream and downstream communication relationships for a given service.\", \"parameters\": {\"properties\": {\"service_name\": {\"description\": \"**REQUIRED**. The name of the service. Allowed for boutique: adservice, cartservice, checkoutservice, currencyservice, emailservice, frontend, paymentservice, productcatalogservice, recommendationservice, redis-cart, shippingservice.\", \"title\": \"Service Name\", \"type\": \"string\"}}, \"required\": [\"service_name\"], \"title\": \"GetServiceDependenciesInput\", \"type\": \"object\"}}, \"GetClusterConfiguration\": {\"description\": \"Retrieves a holistic health and configuration summary of all nodes in the cluster, including taints, conditions, allocatable resources, and labels.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}, \"GetAlerts\": {\"description\": \"Retrieves active system alerts triggered by metric anomalies such as high latency, error rate spikes, or CPU/Memory saturation.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}, \"CheckNodeServiceStatus\": {\"description\": \"Checks the operating status of critical Kubernetes infrastructure components on a specific node, such as kubelet, kube-proxy, and containerd.\", \"parameters\": {\"properties\": {\"node_name\": {\"description\": \"**REQUIRED**. The target Node Name.\", \"enum\": [\"master\", \"worker-01\", \"worker-02\", \"worker-03\"], \"title\": \"Node Name\", \"type\": \"string\"}, \"service_name\": {\"description\": \"**REQUIRED**. The system component name to inspect.\", \"enum\": [\"kube-scheduler\", \"kubelet\", \"kube-proxy\", \"containerd\"], \"title\": \"Service Name\", \"type\": \"string\"}}, \"required\": [\"node_name\", \"service_name\"], \"title\": \"CheckNodeServiceStatusInput\", \"type\": \"object\"}}}, \"namespace\": \"boutique\", \"allowed_causes\": {\"namespace_cpu_quota_exceeded\": \"namespace\", \"namespace_memory_quota_exceeded\": \"namespace\", \"namespace_pod_quota_exceeded\": \"namespace\", \"namespace_service_quota_exceeded\": \"namespace\", \"namespace_storage_quota_exceeded\": \"namespace\", \"missing_service_account\": \"app\", \"node_cordon_mismatch\": \"app\", \"node_affinity_mismatch\": \"app\", \"node_selector_mismatch\": \"app\", \"pod_anti_affinity_conflict\": \"app\", \"taint_toleration_mismatch\": \"app\", \"cpu_capacity_mismatch\": \"app\", \"memory_capacity_mismatch\": \"app\", \"node_network_delay\": \"node\", \"node_network_packet_loss\": \"node\", \"containerd_unavailable\": \"node\", \"kubelet_unavailable\": \"node\", \"kube_proxy_unavailable\": \"node\", \"kube_scheduler_unavailable\": \"node\", \"image_registry_dns_failure\": \"app\", \"incorrect_image_reference\": \"app\", \"missing_image_pull_secret\": \"app\", \"pvc_selector_mismatch\": \"app\", \"pvc_storage_class_mismatch\": \"app\", \"pvc_access_mode_mismatch\": \"app\", \"pvc_capacity_mismatch\": \"app\", \"pv_binding_occupied\": \"app\", \"volume_mount_permission_denied\": \"app\", \"container_memory_limit_too_low\": \"app\", \"liveness_probe_incorrect_protocol\": \"app\", \"liveness_probe_incorrect_port\": \"app\", \"liveness_probe_incorrect_timing\": \"app\", \"readiness_probe_incorrect_protocol\": \"app\", \"readiness_probe_incorrect_port\": \"app\", \"service_selector_mismatch\": \"app\", \"service_port_mapping_mismatch\": \"app\", \"service_protocol_mismatch\": \"app\", \"service_env_var_address_mismatch\": \"app\", \"pod_cpu_overload\": \"app\", \"pod_network_delay\": \"app\", \"service_sidecar_port_conflict\": \"app\", \"service_dns_resolution_failure\": \"app\", \"mysql_invalid_credentials\": \"app\", \"mysql_invalid_port\": \"app\", \"missing_secret_binding\": \"app\", \"db_connection_exhaustion\": \"app\", \"db_readonly_mode\": \"app\", \"gateway_misrouted\": \"app\", \"deployment_zero_replicas\": \"app\", \"code_busy_loop\": \"app\", \"code_memory_leak\": \"app\", \"code_artificial_delay\": \"app\", \"code_excessive_file_reads\": \"app\", \"code_excessive_file_writes\": \"app\", \"code_wrong_return\": \"app\", \"code_missing_parameter\": \"app\", \"code_wrong_argument_order\": \"app\"}, \"incident\": \"incident-1\", \"step\": \"incident_brief\", \"inputs\": {\"configuration_summary\": {\"service\": \"adservice\", \"liveness_protocol\": \"grpc\", \"readiness_protocol\": \"grpc\", \"summary\": \"The adservice Deployment YAML (observation-9) defines both livenessProbe and readinessProbe as gRPC probes on port 9555, each with initialDelaySeconds: 5 and periodSeconds: 5. The container exposes containerPort 9555 and the Service maps port 9555 to targetPort 9555, matching the probe ports.\", \"source_ids\": [\"observation-9\"], \"temporal_claims\": [{\"claim\": \"Both liveness and readiness probes are configured with initialDelaySeconds of 5 and periodSeconds of 5\", \"kind\": \"configuration\", \"source_id\": \"observation-9\", \"source_field\": \"readinessProbe.initialDelaySeconds / readinessProbe.periodSeconds / livenessProbe.initialDelaySeconds / livenessProbe.periodSeconds\", \"value\": 5, \"unit\": \"seconds\", \"temporal_scope\": \"static configuration\", \"assumptions\": null}]}, \"telemetry_summary\": {\"summary\": \"Observed: all 11 boutique pods are 1/1 Running with 0 restarts (ages ~60-62s); no active metric alerts. Frontend error logs show 85 errors out of 710 log lines (ratio 0.1197), dominated by 82 occurrences of 'failed to complete the order: rpc error: code = Unavailable ... dial tcp: lookup checkoutservice on 169.254.20.10:53: no such host' on POST /cart/checkout, plus one 'context canceled' error and two benign GCE metadata errors. Recent frontend logs also show many successful checkout requests (HTTP 200, ~10-12ms), indicating the failure is intermittent/partial rather than total. The dominant error is a DNS resolution failure for checkoutservice from frontend, suggesting a service DNS resolution issue (hypothesis: service_dns_resolution_failure or related service/DNS misconfiguration); this is not yet confirmed, as no Service object, endpoint, or DNS configuration evidence has been inspected. Uncertainty: error log aggregation window and exact failure interval are unknown; the 'no such host' errors and successful requests coexist in overlapping timestamps (e.g., errors at 14:47:01 and successes at 14:47:15-16), so the failure pattern's chronology and current persistence are unclear. Pod ages (~60s) suggest recent pod (re)creation, but the cause of that recency is not established.\", \"source_ids\": [\"observation-1\", \"observation-2\", \"observation-6\", \"observation-7\", \"observation-8\"], \"temporal_claims\": [{\"claim\": \"All boutique pods show AGE of approximately 60-62 seconds with 0 restarts at time of observation\", \"kind\": \"observed_event\", \"source_id\": \"observation-1\", \"source_field\": \"AGE\", \"value\": \"60-62\", \"unit\": \"seconds\", \"temporal_scope\": \"single point-in-time pod listing\", \"assumptions\": [\"AGE reflects time since pod start as reported by kubectl get\"]}, {\"claim\": \"Frontend DNS failure errors for checkoutservice were logged at 2025-11-11T14:47:01Z\", \"kind\": \"observed_event\", \"source_id\": \"observation-7\", \"source_field\": \"patterns[0].sample.timestamp\", \"value\": \"2025-11-11T14:47:01.302375941Z\", \"unit\": \"RFC3339 timestamp\", \"temporal_scope\": \"single sample log line within error aggregation window\", \"assumptions\": [\"Sample timestamp is representative of the 82-error pattern; full distribution unknown\"]}, {\"claim\": \"Successful checkout requests (HTTP 200) were logged at 2025-11-11T14:47:15-16Z\", \"kind\": \"observed_event\", \"source_id\": \"observation-8\", \"source_field\": \"timestamp\", \"value\": \"2025-11-11T14:47:15-16Z\", \"unit\": \"RFC3339 timestamp interval\", \"temporal_scope\": \"recent log window (truncated)\", \"assumptions\": [\"Recent-logs window overlaps the error aggregation window; exact window boundaries unknown\"]}]}, \"source_catalog\": {\"sources\": [{\"id\": \"observation-1\", \"tool\": \"GetResources\", \"arguments\": {\"resource_type\": \"pods\", \"namespace\": \"boutique\", \"name\": null, \"show_labels\": false, \"output_wide\": false, \"label_selector\": null}}, {\"id\": \"observation-2\", \"tool\": \"GetAlerts\", \"arguments\": {}}, {\"id\": \"observation-3\", \"tool\": \"GetResources\", \"arguments\": {\"resource_type\": \"services\", \"namespace\": \"boutique\", \"name\": null, \"show_labels\": false, \"output_wide\": false, \"label_selector\": null}}, {\"id\": \"observation-4\", \"tool\": \"CheckServiceConnectivity\", \"arguments\": {\"service_name\": \"frontend\", \"port\": 8080, \"namespace\": \"boutique\"}}, {\"id\": \"observation-5\", \"tool\": \"GetAppYAML\", \"arguments\": {\"app_name\": \"frontend\"}}, {\"id\": \"observation-6\", \"tool\": \"GetServiceDependencies\", \"arguments\": {\"service_name\": \"frontend\"}}, {\"id\": \"observation-7\", \"tool\": \"GetErrorLogs\", \"arguments\": {\"namespace\": \"boutique\", \"service_name\": \"frontend\"}}, {\"id\": \"observation-8\", \"tool\": \"GetRecentLogs\", \"arguments\": {\"namespace\": \"boutique\", \"service_name\": \"frontend\"}}, {\"id\": \"observation-9\", \"tool\": \"GetAppYAML\", \"arguments\": {\"app_name\": \"adservice\"}}]}, \"coordinator_decision\": {\"retrieve_source_ids\": [\"observation-3\", \"observation-7\", \"observation-8\"]}, \"retrieved_sources\": {\"observations\": [{\"id\": \"observation-3\", \"tool\": \"GetResources\", \"arguments\": {\"resource_type\": \"services\", \"namespace\": \"boutique\", \"name\": null, \"show_labels\": false, \"output_wide\": false, \"label_selector\": null}, \"availability\": \"returned\", \"text\": \"NAME                    TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE\\nadservice               ClusterIP   10.68.241.107   <none>        9555/TCP       65s\\ncartservice             ClusterIP   10.68.167.178   <none>        7070/TCP       65s\\ncheckoutservice         ClusterIP   10.68.113.121   <none>        5050/TCP       63s\\ncurrencyservice         ClusterIP   10.68.116.205   <none>        7000/TCP       65s\\nemailservice            ClusterIP   10.68.48.42     <none>        5000/TCP       65s\\nfrontend                ClusterIP   10.68.209.94    <none>        80/TCP         64s\\nfrontend-external       NodePort    10.68.40.206    <none>        80:30080/TCP   64s\\npaymentservice          ClusterIP   10.68.191.185   <none>        50051/TCP      64s\\nproductcatalogservice   ClusterIP   10.68.129.156   <none>        3550/TCP       64s\\nrecommendationservice   ClusterIP   10.68.2.241     <none>        8080/TCP       64s\\nredis-cart              ClusterIP   10.68.101.246   <none>        6379/TCP       64s\\nshippingservice         ClusterIP   10.68.158.93    <none>        50051/TCP      63s\\n\", \"truncated\": false, \"sha256\": \"2bdc4a0dfe3d0560ab5d09bdd71e01b4c2fe1125dd93e48df912fc8bc7fe2821\"}, {\"id\": \"observation-7\", \"tool\": \"GetErrorLogs\", \"arguments\": {\"namespace\": \"boutique\", \"service_name\": \"frontend\"}, \"availability\": \"returned\", \"text\": \"{\\n  \\\"total_log_count\\\": 710,\\n  \\\"total_errors\\\": 85,\\n  \\\"total_error_ratio\\\": 0.1197,\\n  \\\"patterns\\\": [\\n    {\\n      \\\"count\\\": 82,\\n      \\\"ratio\\\": 0.1155,\\n      \\\"sample\\\": \\\"{\\\\\\\"error\\\\\\\":\\\\\\\"failed to complete the order: rpc error: code = Unavailable desc = connection error: desc = \\\\\\\\\\\\\\\"transport: Error while dialing: dial tcp: lookup checkoutservice on 169.254.20.10:53: no such host\\\\\\\\\\\\\\\"\\\\\\\",\\\\\\\"http.req.id\\\\\\\":\\\\\\\"39bce647-7c93-4ced-8115-7d2bf6b4c98a\\\\\\\",\\\\\\\"http.req.method\\\\\\\":\\\\\\\"POST\\\\\\\",\\\\\\\"http.req.path\\\\\\\":\\\\\\\"/cart/checkout\\\\\\\",\\\\\\\"message\\\\\\\":\\\\\\\"request error\\\\\\\",\\\\\\\"session\\\\\\\":\\\\\\\"307a6484-be73-4180-b503-a5b6d836bd59\\\\\\\",\\\\\\\"severity\\\\\\\":\\\\\\\"error\\\\\\\",\\\\\\\"timestamp\\\\\\\":\\\\\\\"2025-11-11T14:47:01.302375941Z\\\\\\\"}\\\"\\n    },\\n    {\\n      \\\"count\\\": 1,\\n      \\\"ratio\\\": 0.0014,\\n      \\\"sample\\\": \\\"{\\\\\\\"message\\\\\\\":\\\\\\\"Failed to fetch the name of the cluster in which the pod is runningmetadata: GCE metadata \\\\\\\\\\\\\\\"instance/attributes/cluster-name\\\\\\\\\\\\\\\" not defined\\\\\\\",\\\\\\\"severity\\\\\\\":\\\\\\\"error\\\\\\\",\\\\\\\"timestamp\\\\\\\":\\\\\\\"2025-11-11T14:46:16.812101437Z\\\\\\\"}\\\"\\n    },\\n    {\\n      \\\"count\\\": 1,\\n      \\\"ratio\\\": 0.0014,\\n      \\\"sample\\\": \\\"{\\\\\\\"message\\\\\\\":\\\\\\\"Failed to fetch the Zone of the node where the pod is scheduledmetadata: GCE metadata \\\\\\\\\\\\\\\"instance/zone\\\\\\\\\\\\\\\" not defined\\\\\\\",\\\\\\\"severity\\\\\\\":\\\\\\\"error\\\\\\\",\\\\\\\"timestamp\\\\\\\":\\\\\\\"2025-11-11T14:46:16.824521238Z\\\\\\\"}\\\"\\n    },\\n    {\\n      \\\"count\\\": 1,\\n      \\\"ratio\\\": 0.0014,\\n      \\\"sample\\\": \\\"{\\\\\\\"error\\\\\\\":\\\\\\\"failed to complete the order: rpc error: code = Canceled desc = context canceled\\\\\\\",\\\\\\\"http.req.id\\\\\\\":\\\\\\\"42d02946-80b9-44c3-abcd-dc0d1b5ce726\\\\\\\",\\\\\\\"http.req.method\\\\\\\":\\\\\\\"POST\\\\\\\",\\\\\\\"http.req.path\\\\\\\":\\\\\\\"/cart/checkout\\\\\\\",\\\\\\\"message\\\\\\\":\\\\\\\"request error\\\\\\\",\\\\\\\"session\\\\\\\":\\\\\\\"81497a9b-36f9-47e4-8976-f4dde5633771\\\\\\\",\\\\\\\"severity\\\\\\\":\\\\\\\"error\\\\\\\",\\\\\\\"timestamp\\\\\\\":\\\\\\\"2025-11-11T14:47:17.553835883Z\\\\\\\"}\\\"\\n    }\\n  ]\\n}\", \"truncated\": false, \"sha256\": \"87262faf41dd89aff6de718182d1b07e29338be31f43d2ed5b36421bd894c872\"}, {\"id\": \"observation-8\", \"tool\": \"GetRecentLogs\", \"arguments\": {\"namespace\": \"boutique\", \"service_name\": \"frontend\"}, \"availability\": \"returned\", \"text\": \"[\\\"From frontend logs:\\\", \\\"{\\\\\\\"http.req.id\\\\\\\":\\\\\\\"2fbb9c9c-7e46-4c87-bc48-8759c35b8221\\\\\\\",\\\\\\\"http.req.method\\\\\\\":\\\\\\\"POST\\\\\\\",\\\\\\\"http.req.path\\\\\\\":\\\\\\\"/cart/checkout\\\\\\\",\\\\\\\"message\\\\\\\":\\\\\\\"order placed\\\\\\\",\\\\\\\"order\\\\\\\":\\\\\\\"508aadc4-bf0d-11f0-910b-3a2c297c4124\\\\\\\",\\\\\\\"session\\\\\\\":\\\\\\\"651d0447-aec1-4660-8810-291cbc3949c8\\\\\\\",\\\\\\\"severity\\\\\\\":\\\\\\\"info\\\\\\\",\\\\\\\"timestamp\\\\\\\":\\\\\\\"2025-11-11T14:47:15.528727835Z\\\\\\\"}\\\", \\\"{\\\\\\\"http.req.id\\\\\\\":\\\\\\\"2fbb9c9c-7e46-4c87-bc48-8759c35b8221\\\\\\\",\\\\\\\"http.req.method\\\\\\\":\\\\\\\"POST\\\\\\\",\\\\\\\"http.req.path\\\\\\\":\\\\\\\"/cart/checkout\\\\\\\",\\\\\\\"http.resp.bytes\\\\\\\":6795,\\\\\\\"http.resp.status\\\\\\\":200,\\\\\\\"http.resp.took_ms\\\\\\\":10,\\\\\\\"message\\\\\\\":\\\\\\\"request complete\\\\\\\",\\\\\\\"session\\\\\\\":\\\\\\\"651d0447-aec1-4660-8810-291cbc3949c8\\\\\\\",\\\\\\\"severity\\\\\\\":\\\\\\\"debug\\\\\\\",\\\\\\\"timestamp\\\\\\\":\\\\\\\"2025-11-11T14:47:15.533618027Z\\\\\\\"}\\\", \\\"{\\\\\\\"http.req.id\\\\\\\":\\\\\\\"12c7e0ea-5bcf-4584-af83-c7ae071485e6\\\\\\\",\\\\\\\"http.req.method\\\\\\\":\\\\\\\"POST\\\\\\\",\\\\\\\"http.req.path\\\\\\\":\\\\\\\"/cart/checkout\\\\\\\",\\\\\\\"message\\\\\\\":\\\\\\\"request started\\\\\\\",\\\\\\\"session\\\\\\\":\\\\\\\"e710bf6b-143b-4ffa-9ce4-7a9058b257f5\\\\\\\",\\\\\\\"severity\\\\\\\":\\\\\\\"debug\\\\\\\",\\\\\\\"timestamp\\\\\\\":\\\\\\\"2025-11-11T14:47:15.634269738Z\\\\\\\"}\\\", \\\"{\\\\\\\"http.req.id\\\\\\\":\\\\\\\"12c7e0ea-5bcf-4584-af83-c7ae071485e6\\\\\\\",\\\\\\\"http.req.method\\\\\\\":\\\\\\\"POST\\\\\\\",\\\\\\\"http.req.path\\\\\\\":\\\\\\\"/cart/checkout\\\\\\\",\\\\\\\"message\\\\\\\":\\\\\\\"placing order\\\\\\\",\\\\\\\"session\\\\\\\":\\\\\\\"e710bf6b-143b-4ffa-9ce4-7a9058b257f5\\\\\\\",\\\\\\\"severity\\\\\\\":\\\\\\\"debug\\\\\\\",\\\\\\\"timestamp\\\\\\\":\\\\\\\"2025-11-11T14:47:15.634310846Z\\\\\\\"}\\\", \\\"{\\\\\\\"http.req.id\\\\\\\":\\\\\\\"12c7e0ea-5bcf-4584-af83-c7ae071485e6\\\\\\\",\\\\\\\"http.req.method\\\\\\\":\\\\\\\"POST\\\\\\\",\\\\\\\"http.req.path\\\\\\\":\\\\\\\"/cart/checkout\\\\\\\",\\\\\\\"message\\\\\\\":\\\\\\\"order placed\\\\\\\",\\\\\\\"order\\\\\\\":\\\\\\\"509bb45e-bf0d-11f0-910b-3a2c297c4124\\\\\\\",\\\\\\\"session\\\\\\\":\\\\\\\"e710bf6b-143b-4ffa-9ce4-7a9058b257f5\\\\\\\",\\\\\\\"severity\\\\\\\":\\\\\\\"info\\\\\\\",\\\\\\\"timestamp\\\\\\\":\\\\\\\"2025-11-11T14:47:15.641415174Z\\\\\\\"}\\\", \\\"{\\\\\\\"http.req.id\\\\\\\":\\\\\\\"12c7e0ea-5bcf-4584-af83-c7ae071485e6\\\\\\\",\\\\\\\"http.req.method\\\\\\\":\\\\\\\"POST\\\\\\\",\\\\\\\"http.req.path\\\\\\\":\\\\\\\"/cart/checkout\\\\\\\",\\\\\\\"http.resp.bytes\\\\\\\":6767,\\\\\\\"http.resp.status\\\\\\\":200,\\\\\\\"http.resp.took_ms\\\\\\\":12,\\\\\\\"message\\\\\\\":\\\\\\\"request complete\\\\\\\",\\\\\\\"session\\\\\\\":\\\\\\\"e710bf6b-143b-4ffa-9ce4-7a9058b257f5\\\\\\\",\\\\\\\"severity\\\\\\\":\\\\\\\"debug\\\\\\\",\\\\\\\"timestamp\\\\\\\":\\\\\\\"2025-11-11T14:47:15.646918111Z\\\\\\\"}\\\", \\\"{\\\\\\\"http.req.id\\\\\\\":\\\\\\\"c1b90be5-aa9a-4446-93e4-c48246be492b\\\\\\\",\\\\\\\"http.req.method\\\\\\\":\\\\\\\"POST\\\\\\\",\\\\\\\"http.req.path\\\\\\\":\\\\\\\"/cart/checkout\\\\\\\",\\\\\\\"message\\\\\\\":\\\\\\\"request started\\\\\\\",\\\\\\\"session\\\\\\\":\\\\\\\"0eda166d-2559-4acc-9b0a-bfdb26d5ff7a\\\\\\\",\\\\\\\"severity\\\\\\\":\\\\\\\"debug\\\\\\\",\\\\\\\"timestamp\\\\\\\":\\\\\\\"2025-11-11T14:47:15.751655979Z\\\\\\\"}\\\", \\\"{\\\\\\\"http.req.id\\\\\\\":\\\\\\\"c1b90be5-aa9a-4446-93e4-c48246be492b\\\\\\\",\\\\\\\"http.req.method\\\\\\\":\\\\\\\"POST\\\\\\\",\\\\\\\"http.req.path\\\\\\\":\\\\\\\"/cart/checkout\\\\\\\",\\\\\\\"message\\\\\\\":\\\\\\\"placing order\\\\\\\",\\\\\\\"session\\\\\\\":\\\\\\\"0eda166d-2559-4acc-9b0a-bfdb26d5ff7a\\\\\\\",\\\\\\\"severity\\\\\\\":\\\\\\\"debug\\\\\\\",\\\\\\\"timestamp\\\\\\\":\\\\\\\"2025-11-11T14:47:15.751696982Z\\\\\\\"}\\\", \\\"{\\\\\\\"http.req.id\\\\\\\":\\\\\\\"c1b90be5-aa9a-4446-93e4-c48246be492b\\\\\\\",\\\\\\\"http.req.method\\\\\\\":\\\\\\\"POST\\\\\\\",\\\\\\\"http.req.path\\\\\\\":\\\\\\\"/cart/checkout\\\\\\\",\\\\\\\"message\\\\\\\":\\\\\\\"order placed\\\\\\\",\\\\\\\"order\\\\\\\":\\\\\\\"50ad9d85-bf0d-11f0-910b-3a2c297c4124\\\\\\\",\\\\\\\"session\\\\\\\":\\\\\\\"0eda166d-2559-4acc-9b0a-bfdb26d5ff7a\\\\\\\",\\\\\\\"severity\\\\\\\":\\\\\\\"info\\\\\\\",\\\\\\\"timestamp\\\\\\\":\\\\\\\"2025-11-11T14:47:15.758278801Z\\\\\\\"}\\\", \\\"{\\\\\\\"http.req.id\\\\\\\":\\\\\\\"c1b90be5-aa9a-4446-93e4-c48246be492b\\\\\\\",\\\\\\\"http.req.method\\\\\\\":\\\\\\\"POST\\\\\\\",\\\\\\\"http.req.path\\\\\\\":\\\\\\\"/cart/checkout\\\\\\\",\\\\\\\"http.resp.bytes\\\\\\\":6797,\\\\\\\"http.resp.status\\\\\\\":200,\\\\\\\"http.resp.took_ms\\\\\\\":11,\\\\\\\"message\\\\\\\":\\\\\\\"request complete\\\\\\\",\\\\\\\"session\\\\\\\":\\\\\\\"0eda166d-2559-4acc-9b0a-bfdb26d5ff7a\\\\\\\",\\\\\\\"severity\\\\\\\":\\\\\\\"debug\\\\\\\",\\\\\\\"timestamp\\\\\\\":\\\\\\\"2025-11-11T14:47:15.763549815Z\\\\\\\"}\\\", \\\"{\\\\\\\"http.req.id\\\\\\\":\\\\\\\"8c1b10a0-332f-4aae-89cf-c36dc021c1b8\\\\\\\",\\\\\\\"http.req.method\\\\\\\":\\\\\\\"POST\\\\\\\",\\\\\\\"http.req.path\\\\\\\":\\\\\\\"/cart/checkout\\\\\\\",\\\\\\\"message\\\\\\\":\\\\\\\"request started\\\\\\\",\\\\\\\"session\\\\\\\":\\\\\\\"aef78d04-9bc9-4a10-94ad-4aef1e763fc7\\\\\\\",\\\\\\\"severity\\\\\\\":\\\\\\\"debug\\\\\\\",\\\\\\\"timestamp\\\\\\\":\\\\\\\"2025-11-11T14:47:15.790150256Z\\\\\\\"}\\\", \\\"{\\\\\\\"http.req.id\\\\\\\":\\\\\\\"8c1b10a0-332f-4aae-89cf-c36dc021c1b8\\\\\\\",\\\\\\\"http.req.method\\\\\\\":\\\\\\\"POST\\\\\\\",\\\\\\\"http.req.path\\\\\\\":\\\\\\\"/cart/checkout\\\\\\\",\\\\\\\"message\\\\\\\":\\\\\\\"placing order\\\\\\\",\\\\\\\"session\\\\\\\":\\\\\\\"aef78d04-9bc9-4a10-94ad-4aef1e763fc7\\\\\\\",\\\\\\\"severity\\\\\\\":\\\\\\\"debug\\\\\\\",\\\\\\\"timestamp\\\\\\\":\\\\\\\"2025-11-11T14:47:15.790182823Z\\\\\\\"}\\\", \\\"{\\\\\\\"http.req.id\\\\\\\":\\\\\\\"8c1b10a0-332f-4aae-89cf-c36dc021c1b8\\\\\\\",\\\\\\\"http.req.method\\\\\\\":\\\\\\\"POST\\\\\\\",\\\\\\\"http.req.path\\\\\\\":\\\\\\\"/cart/checkout\\\\\\\",\\\\\\\"message\\\\\\\":\\\\\\\"order placed\\\\\\\",\\\\\\\"order\\\\\\\":\\\\\\\"50b37980-bf0d-11f0-910b-3a2c297c4124\\\\\\\",\\\\\\\"session\\\\\\\":\\\\\\\"aef78d04-9bc9-4a10-94ad-4aef1e763fc7\\\\\\\",\\\\\\\"severity\\\\\\\":\\\\\\\"info\\\\\\\",\\\\\\\"timestamp\\\\\\\":\\\\\\\"2025-11-11T14:47:15.796245428Z\\\\\\\"}\\\", \\\"{\\\\\\\"http.req.id\\\\\\\":\\\\\\\"8c1b10a0-332f-4aae-89cf-c36dc021c1b8\\\\\\\",\\\\\\\"http.req.method\\\\\\\":\\\\\\\"POST\\\\\\\",\\\\\\\"http.req.path\\\\\\\":\\\\\\\"/cart/checkout\\\\\\\",\\\\\\\"http.resp.bytes\\\\\\\":6777,\\\\\\\"http.resp.status\\\\\\\":200,\\\\\\\"http.resp.took_ms\\\\\\\":11,\\\\\\\"message\\\\\\\":\\\\\\\"request complete\\\\\\\",\\\\\\\"session\\\\\\\":\\\\\\\"aef78d04-9bc9-4a10-94ad-4aef1e763fc7\\\\\\\",\\\\\\\"severity\\\\\\\":\\\\\\\"debug\\\\\\\",\\\\\\\"timestamp\\\\\\\":\\\\\\\"2025-11-11T14:47:15.802083514Z\\\\\\\"}\\\", \\\"{\\\\\\\"http.req.id\\\\\\\":\\\\\\\"95e23ebf-e5f2-449a-8eb1-ba60e8d2ab90\\\\\\\",\\\\\\\"http.req.method\\\\\\\":\\\\\\\"POST\\\\\\\",\\\\\\\"http.req.path\\\\\\\":\\\\\\\"/cart/checkout\\\\\\\",\\\\\\\"message\\\\\\\":\\\\\\\"request started\\\\\\\",\\\\\\\"session\\\\\\\":\\\\\\\"307a6484-be73-4180-b503-a5b6d836bd59\\\\\\\",\\\\\\\"severity\\\\\\\":\\\\\\\"debug\\\\\\\",\\\\\\\"timestamp\\\\\\\":\\\\\\\"2025-11-11T14:47:15.93780208Z\\\\\\\"}\\\", \\\"{\\\\\\\"http.req.id\\\\\\\":\\\\\\\"95e23ebf-e5f2-449a-8eb1-ba60e8d2ab90\\\\\\\",\\\\\\\"http.req.method\\\\\\\":\\\\\\\"POST\\\\\\\",\\\\\\\"http.req.path\\\\\\\":\\\\\\\"/cart/checkout\\\\\\\",\\\\\\\"message\\\\\\\":\\\\\\\"placing order\\\\\\\",\\\\\\\"session\\\\\\\":\\\\\\\"307a6484-be73-4180-b503-a5b6d836bd59\\\\\\\",\\\\\\\"severity\\\\\\\":\\\\\\\"debug\\\\\\\",\\\\\\\"timestamp\\\\\\\":\\\\\\\"2025-11-11T14:47:15.937869888Z\\\\\\\"}\\\", \\\"{\\\\\\\"http.req.id\\\\\\\":\\\\\\\"95e23ebf-e5f2-449a-8eb1-ba60e8d2ab90\\\\\\\",\\\\\\\"http.req.method\\\\\\\":\\\\\\\"POST\\\\\\\",\\\\\\\"http.req.path\\\\\\\":\\\\\\\"/cart/checkout\\\\\\\",\\\\\\\"message\\\\\\\":\\\\\\\"order placed\\\\\\\",\\\\\\\"order\\\\\\\":\\\\\\\"50ca061b-bf0d-11f0-910b-3a2c297c4124\\\\\\\",\\\\\\\"session\\\\\\\":\\\\\\\"307a6484-be73-4180-b503-a5b6d836bd59\\\\\\\",\\\\\\\"severity\\\\\\\":\\\\\\\"info\\\\\\\",\\\\\\\"timestamp\\\\\\\":\\\\\\\"2025-11-11T14:47:15.944466454Z\\\\\\\"}\\\", \\\"{\\\\\\\"http.req.id\\\\\\\":\\\\\\\"95e23ebf-e5f2-449a-8eb1-ba60e8d2ab90\\\\\\\",\\\\\\\"http.req.method\\\\\\\":\\\\\\\"POST\\\\\\\",\\\\\\\"http.req.path\\\\\\\":\\\\\\\"/cart/checkout\\\\\\\",\\\\\\\"http.resp.bytes\\\\\\\":6811,\\\\\\\"http.resp.status\\\\\\\":200,\\\\\\\"http.resp.took_ms\\\\\\\":11,\\\\\\\"message\\\\\\\":\\\\\\\"request complete\\\\\\\",\\\\\\\"session\\\\\\\":\\\\\\\"307a6484-be73-4180-b503-a5b6d836bd59\\\\\\\",\\\\\\\"severity\\\\\\\":\\\\\\\"debug\\\\\\\",\\\\\\\"timestamp\\\\\\\":\\\\\\\"2025-11-11T14:47:15.94964876Z\\\\\\\"}\\\", \\\"{\\\\\\\"http.req.id\\\\\\\":\\\\\\\"d671d0d1-fe49-42d0-a133-8cecf5417960\\\\\\\",\\\\\\\"http.req.method\\\\\\\":\\\\\\\"POST\\\\\\\",\\\\\\\"http.req.path\\\\\\\":\\\\\\\"/cart/checkout\\\\\\\",\\\\\\\"message\\\\\\\":\\\\\\\"request started\\\\\\\",\\\\\\\"session\\\\\\\":\\\\\\\"5452b5c4-bc29-4c68-840a-6b26ca1bb5bf\\\\\\\",\\\\\\\"severity\\\\\\\":\\\\\\\"debug\\\\\\\",\\\\\\\"timestamp\\\\\\\":\\\\\\\"2025-11-11T14:47:16.222044009Z\\\\\\\"}\\\", \\\"{\\\\\\\"http.req.id\\\\\\\":\\\\\\\"d671d0d1-fe49-42d0-a133-8cecf5417960\\\\\\\",\\\\\\\"http.req.method\\\\\\\":\\\\\\\"POST\\\\\\\",\\\\\\\"http.req.path\\\\\\\":\\\\\\\"/cart/checkout\\\\\\\",\\\\\\\"message\\\\\\\":\\\\\\\"placing order\\\\\\\",\\\\\\\"session\\\\\\\":\\\\\\\"5452b5c4-bc29-4c68-840a-6b26ca1bb5bf\\\\\\\",\\\\\\\"severity\\\\\\\":\\\\\\\"debug\\\\\\\",\\\\\\\"timestamp\\\\\\\":\\\\\\\"2025-11-11T14:47:16.222084671Z\\\\\\\"}\\\", \\\"{\\\\\\\"http.req.id\\\\\\\":\\\\\\\"d671d0d1-fe49-42d0-a133-8cecf5417960\\\\\\\",\\\\\\\"http.req.method\\\\\\\":\\\\\\\"POST\\\\\\\",\\\\\\\"http.req.path\\\\\\\":\\\\\\\"/cart/checkout\\\\\\\",\\\\\\\"message\\\\\\\":\\\\\\\"order placed\\\\\\\",\\\\\\\"order\\\\\\\":\\\\\\\"50f563f9-bf0d-11f0-910b-3a2c297c4124\\\\\\\",\\\\\\\"session\\\\\\\":\\\\\\\"5452b5c4-bc29-4c68-840a-6b26ca1bb5bf\\\\\\\",\\\\\\\"severity\\\\\\\":\\\\\\\"info\\\\\\\",\\\\\\\"timestamp\\\\\\\":\\\\\\\"2025-11-11T14:47:16.22884128Z\\\\\\\"}\\\", \\\"{\\\\\\\"http.req.id\\\\\\\":\\\\\\\"d671d0d1-fe49-42d0-a133-8cecf5417960\\\\\\\",\\\\\\\"http.req.method\\\\\\\":\\\\\\\"POST\\\\\\\",\\\\\\\"http.req.path\\\\\\\":\\\\\\\"/cart/checkout\\\\\\\",\\\\\\\"http.resp.bytes\\\\\\\":6767,\\\\\\\"http.resp.status\\\\\\\":200,\\\\\\\"http.resp.took_ms\\\\\\\":11,\\\\\\\"message\\\\\\\":\\\\\\\"request complete\\\\\\\",\\\\\\\"session\\\\\\\":\\\\\\\"5452b5c4-bc29-4c68-840a-6b26ca1bb5bf\\\\\\\",\\\\\\\"severity\\\\\\\":\\\\\\\"debug\\\\\\\",\\\\\\\"timestamp\\\\\\\":\\\\\\\"2025-11-11T14:47:16.233933197Z\\\\\\\"}\\\", \\\"{\\\\\\\"http.req.id\\\\\\\":\\\\\\\"ee872da0-a8f3-43f4-8121-68ed00f81b3f\\\\\\\",\\\\\\\"http.req.method\\\\\\\":\\\\\\\"POST\\\\\\\",\\\\\\\"http.req.path\\\\\\\":\\\\\\\"/cart/checkout\\\\\\\",\\\\\\\"message\\\\\\\":\\\\\\\"request started\\\\\\\",\\\\\\\"session\\\\\\\":\\\\\\\"d8844065-88fd-4a50-a845-5905c9f1eeef\\\\\\\",\\\\\\\"severity\\\\\\\":\\\\\\\"debug\\\\\\\",\\\\\\\"timestamp\\\\\\\":\\\\\\\"2025-11-11T14:47:16.298842124Z\\\\\\\"}\\\", \\\"{\\\\\\\"http.req.id\\\\\\\":\\\\\\\"ee872da0-a8f3-43f4-8121-68ed00f81b3f\\\\\\\",\\\\\\\"http.req.method\\\\\\\":\\\\\\\"POST\\\\\\\",\\\\\\\"http.req.path\\\\\\\":\\\\\\\"/cart/checkout\\\\\\\",\\\\\\\"message\\\\\\\":\\\\\\\"placing order\\\\\\\",\\\\\\\"session\\\\\\\":\\\\\\\"d8844065-88fd-4a50-a845-5905c9f1eeef\\\\\\\",\\\\\\\"severity\\\\\\\":\\\\\\\"debug\\\\\\\",\\\\\\\"timestamp\\\\\\\":\\\\\\\"2025-11-11T14:47:16.298881329Z\\\\\\\"}\\\", \\\"{\\\\\\\"http.req.id\\\\\\\":\\\\\\\"ee872da0-a8f3-43f4-8121-68ed00f81b3f\\\\\\\",\\\\\\\"http.req.method\\\\\\\":\\\\\\\"POST\\\\\\\",\\\\\\\"http.req.path\\\\\\\":\\\\\\\"/cart/checkout\\\\\\\",\\\\\\\"message\\\\\\\":\\\\\\\"order placed\\\\\\\",\\\\\\\"order\\\\\\\":\\\\\\\"51011b72-bf0d-11f0-910b-3a2c297c4124\\\\\\\",\\\\\\\"session\\\\\\\":\\\\\\\"d8844065-88fd-4a50-a845-5905c9f1eeef\\\\\\\",\\\\\\\"severity\\\\\\\":\\\\\\\"info\\\\\\\",\\\\\\\"timestamp\\\\\\\":\\\\\\\"2025-11-11T14:47:16.305764953Z\\\\\\\"}\\\", \\\"{\\\\\\\"http.req.id\\\\\\\":\\\\\\\"ee872da0-a8f3-43f4-8121-68ed00f81b3f\\\\\\\",\\\\\\\"http.req.method\\\\\\\":\\\\\\\"POST\\\\\\\",\\\\\\\"http.req.path\\\\\\\":\\\\\\\"/cart/checkout\\\\\\\",\\\\\\\"http.resp.bytes\\\\\\\":6801,\\\\\\\"http.resp.status\\\\\\\":200,\\\\\\\"http.resp.took_ms\\\\\\\":11,\\\\\\\"message\\\\\\\":\\\\\\\"request complete\\\\\\\",\\\\\\\"session\\\\\\\":\\\\\\\"d8844065-88fd-4a50-a845-5905c9f1eeef\\\\\\\",\\\\\\\"severity\\\\\\\":\\\\\\\"debug\\\\\\\",\\\\\\\"timestamp\\\\\\\":\\\\\\\"2025-11-11T14:47:16.31082078Z\\\\\\\"}\\\", \\\"{\\\\\\\"http.req.id\\\\\\\":\\\\\\\"79e49b11-5e8d-46e1-af0e-ddd8439aa0a9\\\\\\\",\\\\\\\"http.req.method\\\\\\\":\\\\\\\"POST\\\\\\\",\\\\\\\"http.req.path\\\\\\\":\\\\\\\"/cart/checkout\\\\\\\",\\\\\\\"message\\\\\\\":\\\\\\\"request started\\\\\\\",\\\\\\\"session\\\\\\\":\\\\\\\"bea07c85-9745-489e-8329-7700df04b348\\\\\\\",\\\\\\\"severity\\\\\\\":\\\\\\\"debug\\\\\\\",\\\\\\\"timestamp\\\\\\\":\\\\\\\"2025-11-11T14:47:16.77222895Z\\\\\\\"}\\\", \\\"{\\\\\\\"http.req.id\\\\\\\":\\\\\\\"79e49b11-5e8d-46e1-af0e-ddd8439aa0a9\\\\\\\",\\\\\\\"http.req.method\\\\\\\":\\\\\\\"POST\\\\\\\",\\\\\\\"http.req.path\\\\\\\":\\\\\\\"/cart/checkout\\\\\\\",\\\\\\\"message\\\\\\\":\\\\\\\"placing order\\\\\\\",\\\\\\\"session\\\\\\\":\\\\\\\"bea07c85-9745-489e-8329-7700df04b348\\\\\\\",\\\\\\\"severity\\\\\\\":\\\\\\\"debug\\\\\\\",\\\\\\\"timestamp\\\\\\\":\\\\\\\"2025-11-11T14:47:16.772270939Z\\\\\\\"}\\\", \\\"{\\\\\\\"http.req.id\\\\\\\":\\\\\\\"79e49b11-5e8d-46e1-af0e-ddd8439aa0a9\\\\\\\",\\\\\\\"http.req.method\\\\\\\":\\\\\\\"POST\\\\\\\",\\\\\\\"http.req.path\\\\\\\":\\\\\\\"/cart/checkout\\\\\\\",\\\\\\\"message\\\\\\\":\\\\\\\"order placed\\\\\\\",\\\\\\\"order\\\\\\\":\\\\\\\"51495870-bf0d-11f0-910b-3a2c297c4124\\\\\\\",\\\\\\\"session\\\\\\\":\\\\\\\"bea07c85-9745-489e-8329-7700df04b348\\\\\\\",\\\\\\\"severity\\\\\\\":\\\\\\\"info\\\\\\\",\\\\\\\"timestamp\\\\\\\":\\\\\\\"2025-11-11T14:47:16.778962698Z\\\\\\\"}\\\", \\\"{\\\\\\\"http.req.id\\\\\\\":\\\\\\\"79e49b11-5e8d-46e1-af0e-ddd8439aa0a9\\\\\\\",\\\\\\\"http.req.method\\\\\\\":\\\\\\\"POST\\\\\\\",\\\\\\\"http.req.path\\\\\\\":\\\\\\\"/cart/checkout\\\\\\\",\\\\\\\"http.resp.bytes\\\\\\\":6765,\\\\\\\"http.resp.status\\\\\\\":200,\\\\\\\"http.resp.took_ms\\\\\\\":12,\\\\\\\"message\\\\\\\":\\\\\\\"request complete\\\\\\\",\\\\\\\"session\\\\\\\":\\\\\\\"bea07c85-9745-489e-8329-7700df04b348\\\\\\\",\\\\\\\"severity\\\\\\\":\\\\\\\"debug\\\\\\\",\\\\\\\"timestamp\\\\\\\":\\\\\\\"2025-11-11T14:47:16.784225614Z\\\\\\\"}\\\", \\\"{\\\\\\\"http.req.id\\\\\\\":\\\\\\\"d51641ef-f988-420b-a528-cf76f15c7758\\\\\\\",\\\\\\\"http.req.method\\\\\\\":\\\\\\\"POST\\\\\\\",\\\\\\\"http.req.path\\\\\\\":\\\\\\\"/cart/checkout\\\\\\\",\\\\\\\"message\\\\\\\":\\\\\\\"request started\\\\\\\",\\\\\\\"session\\\\\\\":\\\\\\\"ccd9e25c-4765-4a34-8eef-79e735fdb264\\\\\\\",\\\\\\\"severity\\\\\\\":\\\\\\\"debug\\\\\\\",\\\\\\\"timestamp\\\\\\\":\\\\\\\"2025-11-11T14:47:16.881087913Z\\\\\\\"}\\\", \\\"{\\\\\\\"http.req.id\\\\\\\":\\\\\\\"d51641ef-f988-420b-a528-cf76f15c7758\\\\\\\",\\\\\\\"http.req.method\\\\\\\":\\\\\\\"POST\\\\\\\",\\\\\\\"http.req.path\\\\\\\":\\\\\\\"/cart/checkout\\\\\\\",\\\\\\\"message\\\\\\\":\\\\\\\"placing order\\\\\\\",\\\\\\\"session\\\\\\\":\\\\\\\"ccd9e25\", \"truncated\": true, \"sha256\": \"dc22248e608edcc6a7d19c829166b8ae248c81d88e1d33225655df6ee056968a\"}]}}}"
+      }
+    ],
+    "max_tokens": 8192,
+    "temperature": 0,
+    "reasoning_effort": "low",
+    "stream": false,
+    "response_format": {
+      "type": "json_object"
+    }
+  }
+}

@@ -1,0 +1,116 @@
+Source-only review of two completed answers. No arm mapping or runs read. Experiment is known to start from an artificially seeded erroneous state, so findings concern final answer correctness in seeded-state recovery, not naturally occurring error propagation or independent generalization.
+Both outputs support the main cause, protocol field and repair recommendation using raw config, pod events and actual HTTP/2 error logs. Neither asserts global health or sole cause. Item01 still says was killed 3 times in a claim whose own scope correctly says kill attempts; SIGTERM and working-readiness provenance need precision. Item02 has minor capability overstatement and typed temporal-coverage gaps. Positive final-answer results are seeded recovery evidence, not proof of natural error propagation or successful live remediation.
+
+item-01
+OUTPUT app/adservice
+SCORE 2 [primary] Correct affected application.
+SOURCE observation-18: "name: adservice"
+OUTPUT liveness_probe_incorrect_protocol
+SCORE 2 [primary] Direct configuration, runtime probe failures, HTTP/2 rejection logs and explicit kubelet restart action jointly substantiate diagnosis.
+SOURCE observation-18: "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+SOURCE observation-17: "net/http: HTTP/1.x transport connection broken: malformed HTTP status code"
+SOURCE observation-17: "Container server failed liveness probe, will be restarted"
+SOURCE observation-15: "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+OUTPUT httpGet
+SCORE 2 [extraction] Correct current liveness protocol.
+SOURCE observation-18: "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+OUTPUT The adservice container on port 9555 is a gRPC (HTTP/2) server, as confirmed by the readinessProbe using grpc on port 9555 and by application logs showing the Netty HTTP/2 handler rejecting HTTP/1.x requests ('Unexpected HTTP/1.x request: GET /')
+SCORE 2 [server_protocol] Raw logs now directly establish HTTP/2 handler rejection of HTTP/1.x; grpc readiness supports gRPC on this port. Avoids inferring complete application health.
+SOURCE observation-15: "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+SOURCE observation-18: "readinessProbe:\n          initialDelaySeconds: 5\n          grpc:\n            port: 9555"
+OUTPUT The livenessProbe is configured as httpGet against the same port 9555, so kubelet's HTTP/1.x GET is rejected by the server, producing repeated 'Unhealthy' liveness probe failures (9 events over an 81s aggregation window) and kubelet Killing the container for failed liveness probes (3 kill events over a 61s window)
+SCORE 2 [mechanism_events] Probe protocol, same port, rejected GET, nine Unhealthy and three Killing events are directly supported and named as event counts.
+SOURCE observation-18: "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+SOURCE observation-15: "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+SOURCE observation-17: "net/http: HTTP/1.x transport connection broken: malformed HTTP status code"
+SOURCE observation-17: "Warning  Unhealthy  1s (x9 over 81s)"
+SOURCE observation-17: "Normal   Killing    1s (x3 over 61s)"
+SOURCE observation-17: "Container server failed liveness probe, will be restarted"
+OUTPUT The pod's recorded Restart Count is 2, and the last terminated container exited with code 143 (SIGTERM, consistent with a liveness-kill).
+SCORE 1 [exit_interpretation] Restart Count 2 and code143 directly supported. SIGTERM is conventional interpretation of 128+15 and consistent with the killing event, but raw termination signal is not explicitly recorded; parenthetical should retain inference qualification.
+SOURCE observation-17: "Restart Count:  2"
+SOURCE observation-17: "Last State:     Terminated\n      Reason:       Error\n      Exit Code:    143"
+SOURCE observation-17: "Container server failed liveness probe, will be restarted"
+OUTPUT This is a supported cause of the abnormal restarts; exclusivity of other latent misconfigurations is not established, and the kill-event count reflects kill attempts rather than a verified completed-restart count.
+SCORE 2 [causal_scope] Explicitly avoids exclusive cause and distinguishes kill events/attempts from verified completed restart count.
+SOURCE observation-17: "Container server failed liveness probe, will be restarted"
+SOURCE observation-17: "Normal   Killing    1s (x3 over 61s)"
+SOURCE observation-17: "Restart Count:  2"
+OUTPUT Liveness probe configured with initialDelaySeconds 5, timeout 1s, period 10s, failureThreshold 3
+SCORE 2 [temporal] Configuration fields correct, units preserved, and no actual latency inferred.
+SOURCE observation-17: "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3"
+OUTPUT Liveness probe failed 9 times over an 81s event aggregation window
+SCORE 2 [temporal] Reported aggregate count/window preserved with explicit no-continuous-coverage/endpoints caveat.
+SOURCE observation-17: "Warning  Unhealthy  1s (x9 over 81s)"
+OUTPUT Container was killed 3 times over a 61s event window for failed liveness probes
+SCORE 1 [temporal] Value and temporal_scope correctly call these kill events/attempts; however claim text says was killed 3 times, a stronger completed-action formulation than the event alone establishes. Internal wording inconsistency, not completed-restart count inflation.
+SOURCE observation-17: "Normal   Killing    1s (x3 over 61s)"
+SOURCE observation-17: "Restart Count:  2"
+SOURCE observation-17: "Container server failed liveness probe, will be restarted"
+OUTPUT Last container instance ran from 19:49:49 to 19:50:19 and exited with code 143
+SCORE 2 [temporal] Exact prior-instance timestamps and exit code supported, date/timezone and instance scope given.
+SOURCE observation-17: "Started:      Fri, 21 Nov 2025 19:49:49 +0800\n      Finished:     Fri, 21 Nov 2025 19:50:19 +0800"
+SOURCE observation-17: "Last State:     Terminated\n      Reason:       Error\n      Exit Code:    143"
+OUTPUT Change the adservice livenessProbe from httpGet to grpc on port 9555 (matching the working readinessProbe configuration in observation-18), then roll out the updated Deployment. This is directly supported by the evidence: the gRPC readiness probe on the same port succeeds while the HTTP/1.x liveness probe fails against the HTTP/2-only server.
+SCORE 2 [action] Changing HTTP liveness to grpc on the same port and rolling out is a reasonable repair of this evidenced mismatch. Passing readiness is evidenced in DescribeResource, not YAML alone, so the observation-18 attribution for working readiness is incomplete. HTTP/2-only in rationale is stronger than necessary but logs corroborate rejection of this request. No execution or validated recovery is asserted.
+SOURCE observation-18: "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+SOURCE observation-18: "readinessProbe:\n          initialDelaySeconds: 5\n          grpc:\n            port: 9555"
+SOURCE observation-17: "Ready:          True"
+SOURCE observation-15: "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+LIMITATIONS ['Temporal claim was killed 3 times conflicts with its own accurate kill-attempt scope; use recorded Killing events consistently.', '143-to-SIGTERM is an inference, not a raw signal field.', 'Recommendation attributes working readiness to YAML; actual passing evidence is in describe snapshot.', 'HTTP/2-only in recommendation is broader than the demonstrated rejection of these HTTP/1.x requests.']
+
+item-02
+OUTPUT app/adservice
+SCORE 2 [primary] Correct affected application.
+SOURCE observation-9: "name: adservice"
+OUTPUT liveness_probe_incorrect_protocol
+SCORE 2 [primary] Direct configuration, runtime probe failures, HTTP/2 rejection logs and explicit kubelet restart action jointly substantiate diagnosis.
+SOURCE observation-9: "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+SOURCE observation-4: "net/http: HTTP/1.x transport connection broken: malformed HTTP status code"
+SOURCE observation-4: "Container server failed liveness probe, will be restarted"
+SOURCE observation-6: "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+OUTPUT httpGet
+SCORE 2 [extraction] Correct current liveness protocol.
+SOURCE observation-9: "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+OUTPUT The adservice container serves gRPC/HTTP2 only on port 9555 (readiness probe uses grpc on 9555; Service port named grpc)
+SCORE 1 [server_protocol] grpc readiness, Service port name, and HTTP/2 logs support the protocol. Only is unnecessarily exhaustive; evidence demonstrates this request incompatibility, not every possible supported protocol path.
+SOURCE observation-9: "readinessProbe:\n          initialDelaySeconds: 5\n          grpc:\n            port: 9555"
+SOURCE observation-9: "- name: grpc\n    port: 9555\n    targetPort: 9555"
+SOURCE observation-6: "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+OUTPUT The livenessProbe is configured as httpGet on port 9555, sending HTTP/1.x requests to an HTTP/2-only server
+SCORE 1 [mechanism] HTTP request against gRPC port is directly supported; HTTP/2-only remains overbroad capability wording.
+SOURCE observation-9: "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+SOURCE observation-6: "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+OUTPUT The server rejects these with a Netty Http2Exception ('Unexpected HTTP/1.x request: GET /'), kubelet's HTTP/1.x transport fails with a malformed status code, the liveness probe repeatedly fails (Unhealthy x9), and kubelet kills and restarts the container (Killing x3, Restart Count 2, Last State Terminated Exit Code 143)
+SCORE 2 [mechanism_events] Logs, probe error, Unhealthy x9, Killing x3, Restart Count 2 and Exit Code143 all supported. Events and restarts retained as distinct named fields.
+SOURCE observation-6: "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+SOURCE observation-4: "net/http: HTTP/1.x transport connection broken: malformed HTTP status code"
+SOURCE observation-4: "Warning  Unhealthy  1s (x9 over 81s)"
+SOURCE observation-4: "Normal   Killing    1s (x3 over 61s)"
+SOURCE observation-4: "Restart Count:  2"
+SOURCE observation-4: "Last State:     Terminated\n      Reason:       Error\n      Exit Code:    143"
+SOURCE observation-4: "Container server failed liveness probe, will be restarted"
+OUTPUT The protocol mismatch between the liveness probe and the gRPC server is the supported cause of the abnormal restarts; this does not rule out other latent configuration issues, but no other fault is evidenced.
+SCORE 2 [causal_scope] Explicitly allows latent issues and says no other fault is evidenced, a statement scoped to evidence rather than absence of all faults.
+SOURCE observation-4: "Container server failed liveness probe, will be restarted"
+SOURCE observation-4: "net/http: HTTP/1.x transport connection broken: malformed HTTP status code"
+OUTPUT livenessProbe initialDelaySeconds is 5
+SCORE 2 [temporal] Delay5 is direct config.
+SOURCE observation-9: "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+OUTPUT liveness probe period is 10s with failureThreshold 3
+SCORE 2 [temporal] Period10 and threshold3 are correctly stated without conflation. Value10/seconds encodes only cadence; threshold count is carried in claim/assumptions rather than separate typed quantity.
+SOURCE observation-4: "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3"
+OUTPUT container restart count is 2
+SCORE 2 [temporal] Snapshot restart count correctly scoped.
+SOURCE observation-4: "Restart Count:  2"
+OUTPUT liveness probe unhealthy events occurred 9 times over an 81s event window
+SCORE 2 [temporal] Nine Unhealthy events over reported81s window with appropriate endpoint and coverage caveats.
+SOURCE observation-4: "Warning  Unhealthy  1s (x9 over 81s)"
+OUTPUT Change the adservice livenessProbe from httpGet to grpc on port 9555 (matching the readinessProbe and the gRPC server), then roll out the updated Deployment so kubelet stops killing the container on protocol-mismatched probe failures.
+SCORE 2 [action] Supported targeted repair and normal deployment rollout recommendation. Purpose clause concerns protocol-mismatched kills, not guarantee of total application health or all restarts stopping. No actual repair execution/verification asserted.
+SOURCE observation-9: "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+SOURCE observation-9: "readinessProbe:\n          initialDelaySeconds: 5\n          grpc:\n            port: 9555"
+SOURCE observation-4: "Ready:          True"
+SOURCE observation-6: "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+SOURCE observation-4: "Container server failed liveness probe, will be restarted"
+LIMITATIONS ['Only server capability wording remains unnecessarily absolute.', 'Narrative Killing x3 lacks its own temporal entry; threshold count and aggregate duration lack separate typed values, though prose preserves their meaning.']

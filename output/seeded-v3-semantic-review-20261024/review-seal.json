@@ -1,0 +1,10 @@
+{
+  "sealed_at_utc": "2026-10-25T00:48:22.119396+00:00",
+  "arm_mapping_read": false,
+  "files_sha256": {
+    "packets/item-01.json": "40cf34f7df592536b4049a34b6a78c20fda311fa04895d87d19128bb457f29ae",
+    "packets/item-02.json": "6a7e1ede9ea1d3b680b20fce1075d8d2934d1abc3588a6e0dfdb1c418abb5fad",
+    "review.json": "76c867d738f446cdd582d4c85f8dc4ca98b8e53a32a9c42795ccf2486dcd3bf1",
+    "review.txt": "971db281edebe90c2d10b6a72da031e5d5e13ce8acaa47d123f291dc38f36c91"
+  }
+}

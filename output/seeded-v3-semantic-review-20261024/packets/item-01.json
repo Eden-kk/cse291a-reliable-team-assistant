@@ -1,0 +1,117 @@
+{
+  "id": "item-01",
+  "inputs": [
+    {
+      "id": "observation-17",
+      "tool": "DescribeResource",
+      "arguments": {
+        "resource_type": "pod",
+        "name": "adservice-d6c9fcc6b-d4nlb",
+        "namespace": "boutique"
+      },
+      "availability": "returned",
+      "text": "Name:             adservice-d6c9fcc6b-d4nlb\nNamespace:        boutique\nPriority:         0\nService Account:  adservice\nNode:             worker-02/192.168.0.53\nStart Time:       Fri, 21 Nov 2025 19:49:19 +0800\nLabels:           app=adservice\n                  pod-template-hash=d6c9fcc6b\nAnnotations:      <none>\nStatus:           Running\nIP:               172.20.2.163\nIPs:\n  IP:           172.20.2.163\nControlled By:  ReplicaSet/adservice-d6c9fcc6b\nContainers:\n  server:\n    Container ID:   containerd://ba3c8e4a77bc83a544e2c83c231d548d3d19f10e73fa1bfbe9c507dc660ef004\n    Image:          us-central1-docker.pkg.dev/google-samples/microservices-demo/adservice:v0.10.3\n    Image ID:       us-central1-docker.pkg.dev/google-samples/microservices-demo/adservice@sha256:ff1a059bb8f1226b77b42a9102344cfc4b669a04696eb44aeed3db8ae2b04e9e\n    Port:           9555/TCP\n    Host Port:      0/TCP\n    State:          Running\n      Started:      Fri, 21 Nov 2025 19:50:19 +0800\n    Last State:     Terminated\n      Reason:       Error\n      Exit Code:    143\n      Started:      Fri, 21 Nov 2025 19:49:49 +0800\n      Finished:     Fri, 21 Nov 2025 19:50:19 +0800\n    Ready:          True\n    Restart Count:  2\n    Limits:\n      cpu:     300m\n      memory:  300Mi\n    Requests:\n      cpu:      200m\n      memory:   180Mi\n    Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3\n    Readiness:  grpc <pod>:9555  delay=5s timeout=1s period=10s #success=1 #failure=3\n    Environment:\n      PORT:  9555\n    Mounts:\n      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-rbzfn (ro)\nConditions:\n  Type                        Status\n  PodReadyToStartContainers   True \n  Initialized                 True \n  Ready                       True \n  ContainersReady             True \n  PodScheduled                True \nVolumes:\n  kube-api-access-rbzfn:\n    Type:                    Projected (a volume that contains injected data from multiple sources)\n    TokenExpirationSeconds:  3607\n    ConfigMapName:           kube-root-ca.crt\n    ConfigMapOptional:       <nil>\n    DownwardAPI:             true\nQoS Class:                   Burstable\nNode-Selectors:              <none>\nTolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s\n                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s\nEvents:\n  Type     Reason     Age               From               Message\n  ----     ------     ----              ----               -------\n  Normal   Scheduled  91s               default-scheduler  Successfully assigned boutique/adservice-d6c9fcc6b-d4nlb to worker-02\n  Normal   Pulled     1s (x4 over 91s)  kubelet            Container image \"us-central1-docker.pkg.dev/google-samples/microservices-demo/adservice:v0.10.3\" already present on machine\n  Normal   Created    1s (x4 over 91s)  kubelet            Created container server\n  Normal   Started    1s (x4 over 91s)  kubelet            Started container server\n  Warning  Unhealthy  1s (x9 over 81s)  kubelet            Liveness probe failed: Get \"http://172.20.2.163:9555/\": net/http: HTTP/1.x transport connection broken: malformed HTTP status code \"\\x00\\x00\\x00\\x04\\b\\x00\\x00\\x00\\x00\\x00\\x00\\x0f\\x00\\x01\\x00\\x00+\\a\\x00\\x00\\x00\\x00\\x00\\x7f\\xff\\xff\\xff\\x00\\x00\\x00\\x01Unexpected\"\n  Normal   Killing    1s (x3 over 61s)  kubelet            Container server failed liveness probe, will be restarted\n",
+      "truncated": false,
+      "sha256": "ba6935b3c9db5c6135aafabcf8db424d496f24c4f99e54eb44f5e83677674a66"
+    },
+    {
+      "id": "observation-18",
+      "tool": "GetAppYAML",
+      "arguments": {
+        "app_name": "adservice"
+      },
+      "availability": "returned",
+      "text": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: adservice\n  namespace: boutique \n  labels:\n    app: adservice\nspec:\n  selector:\n    matchLabels:\n      app: adservice\n  template:\n    metadata:\n      labels:\n        app: adservice\n    spec:\n      serviceAccountName: adservice\n      terminationGracePeriodSeconds: 5\n      securityContext:\n        fsGroup: 1000\n        runAsGroup: 1000\n        runAsNonRoot: true\n        runAsUser: 1000\n      containers:\n      - name: server\n        securityContext:\n          allowPrivilegeEscalation: false\n          capabilities:\n            drop:\n              - ALL\n          privileged: false\n          readOnlyRootFilesystem: true\n        image: us-central1-docker.pkg.dev/google-samples/microservices-demo/adservice:v0.10.3\n        ports:\n        - containerPort: 9555\n        env:\n        - name: PORT\n          value: \"9555\"\n        resources:\n          requests:\n            cpu: 200m\n            memory: 180Mi\n          limits:\n            cpu: 300m\n            memory: 300Mi\n        readinessProbe:\n          initialDelaySeconds: 5\n          grpc:\n            port: 9555\n        livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555\n---\napiVersion: v1\nkind: Service\nmetadata:\n  name: adservice\n  namespace: boutique\n  labels:\n    app: adservice\nspec:\n  type: ClusterIP\n  selector:\n    app: adservice\n  ports:\n  - name: grpc\n    port: 9555\n    targetPort: 9555\n\n---\napiVersion: v1\nkind: ServiceAccount\nmetadata:\n  name: adservice\n  namespace: boutique",
+      "truncated": false,
+      "sha256": "f381b00ac5585a8b0536c33467e3962ef3fb72ce6ed562f1fe021958942d580e"
+    },
+    {
+      "id": "observation-15",
+      "tool": "GetRecentLogs",
+      "arguments": {
+        "namespace": "boutique",
+        "service_name": "adservice"
+      },
+      "availability": "returned",
+      "text": "[\"From adservice logs:\", \"io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /\", \"at io.netty.handler.codec.http2.Http2Exception.connectionError(Http2Exception.java:107)\", \"at io.netty.handler.codec.http2.Http2ConnectionHandler$PrefaceDecoder.readClientPrefaceString(Http2ConnectionHandler.java:315)\", \"at io.netty.handler.codec.http2.Http2ConnectionHandler$PrefaceDecoder.decode(Http2ConnectionHandler.java:245)\", \"at io.netty.handler.codec.http2.Http2ConnectionHandler.decode(Http2ConnectionHandler.java:451)\", \"at io.netty.handler.codec.ByteToMessageDecoder.decodeRemovalReentryProtection(ByteToMessageDecoder.java:530)\", \"at io.netty.handler.codec.ByteToMessageDecoder.callDecode(ByteToMessageDecoder.java:469)\", \"at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:290)\", \"at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)\", \"at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)\", \"at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)\", \"at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1407)\", \"at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:440)\", \"at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)\", \"at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:918)\", \"at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:166)\", \"at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)\", \"at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)\", \"at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)\", \"at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)\", \"at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:994)\", \"at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)\", \"at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)\", \"at java.base/java.lang.Thread.run(Unknown Source)\", \"Nov 21, 2025 11:51:09 AM io.grpc.netty.NettyServerTransport notifyTerminated\", \"INFO: Transport failed\", \"io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /\", \"at io.netty.handler.codec.http2.Http2Exception.connectionError(Http2Exception.java:107)\", \"at io.netty.handler.codec.http2.Http2ConnectionHandler$PrefaceDecoder.readClientPrefaceString(Http2ConnectionHandler.java:315)\", \"at io.netty.handler.codec.http2.Http2ConnectionHandler$PrefaceDecoder.decode(Http2ConnectionHandler.java:245)\", \"at io.netty.handler.codec.http2.Http2ConnectionHandler.decode(Http2ConnectionHandler.java:451)\", \"at io.netty.handler.codec.ByteToMessageDecoder.decodeRemovalReentryProtection(ByteToMessageDecoder.java:530)\", \"at io.netty.handler.codec.ByteToMessageDecoder.callDecode(ByteToMessageDecoder.java:469)\", \"at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:290)\", \"at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)\", \"at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)\", \"at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)\", \"at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1407)\", \"at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:440)\", \"at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)\", \"at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:918)\", \"at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:166)\", \"at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)\", \"at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)\", \"at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)\", \"at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)\", \"at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:994)\", \"at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)\", \"at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)\", \"at java.base/java.lang.Thread.run(Unknown Source)\"]",
+      "truncated": false,
+      "sha256": "bd091d579d6f14c061838938a2ffe2946746af66cf16d3e851bc43646c4479c7"
+    }
+  ],
+  "output": {
+    "status": "diagnosed",
+    "fault_object": "app/adservice",
+    "root_cause": "liveness_probe_incorrect_protocol",
+    "evidence": [
+      {
+        "observation_id": "observation-18",
+        "quote": "livenessProbe:\n          initialDelaySeconds: 5\n          httpGet:\n            path: /\n            port: 9555"
+      },
+      {
+        "observation_id": "observation-18",
+        "quote": "readinessProbe:\n          initialDelaySeconds: 5\n          grpc:\n            port: 9555"
+      },
+      {
+        "observation_id": "observation-17",
+        "quote": "Liveness:   http-get http://:9555/ delay=5s timeout=1s period=10s #success=1 #failure=3"
+      },
+      {
+        "observation_id": "observation-17",
+        "quote": "Liveness probe failed: Get \"http://172.20.2.163:9555/\": net/http: HTTP/1.x transport connection broken: malformed HTTP status code"
+      },
+      {
+        "observation_id": "observation-17",
+        "quote": "Killing    1s (x3 over 61s)  kubelet            Container server failed liveness probe, will be restarted"
+      },
+      {
+        "observation_id": "observation-15",
+        "quote": "io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET /"
+      }
+    ],
+    "reasoning": "The adservice container on port 9555 is a gRPC (HTTP/2) server, as confirmed by the readinessProbe using grpc on port 9555 and by application logs showing the Netty HTTP/2 handler rejecting HTTP/1.x requests ('Unexpected HTTP/1.x request: GET /'). The livenessProbe is configured as httpGet against the same port 9555, so kubelet's HTTP/1.x GET is rejected by the server, producing repeated 'Unhealthy' liveness probe failures (9 events over an 81s aggregation window) and kubelet Killing the container for failed liveness probes (3 kill events over a 61s window). The pod's recorded Restart Count is 2, and the last terminated container exited with code 143 (SIGTERM, consistent with a liveness-kill). This is a supported cause of the abnormal restarts; exclusivity of other latent misconfigurations is not established, and the kill-event count reflects kill attempts rather than a verified completed-restart count.",
+    "adservice_liveness_protocol": "httpGet",
+    "temporal_claims": [
+      {
+        "claim": "Liveness probe configured with initialDelaySeconds 5, timeout 1s, period 10s, failureThreshold 3",
+        "kind": "configuration",
+        "source_id": "observation-17",
+        "source_field": "Liveness",
+        "value": "delay=5s timeout=1s period=10s #failure=3",
+        "unit": "seconds / count",
+        "temporal_scope": "current pod spec",
+        "assumptions": "Configuration alone does not establish actual restart timing"
+      },
+      {
+        "claim": "Liveness probe failed 9 times over an 81s event aggregation window",
+        "kind": "observed_event",
+        "source_id": "observation-17",
+        "source_field": "Events: Unhealthy 1s (x9 over 81s)",
+        "value": "9 failures over 81s",
+        "unit": "count / seconds",
+        "temporal_scope": "event aggregation window; does not prove continuous coverage or exact endpoints",
+        "assumptions": null
+      },
+      {
+        "claim": "Container was killed 3 times over a 61s event window for failed liveness probes",
+        "kind": "observed_event",
+        "source_id": "observation-17",
+        "source_field": "Events: Killing 1s (x3 over 61s)",
+        "value": "3 kill events over 61s",
+        "unit": "count / seconds",
+        "temporal_scope": "event aggregation window; kill attempts, not verified completed restarts",
+        "assumptions": "Restart Count 2 in container status is the recorded completed restart count"
+      },
+      {
+        "claim": "Last container instance ran from 19:49:49 to 19:50:19 and exited with code 143",
+        "kind": "observed_event",
+        "source_id": "observation-17",
+        "source_field": "Last State: Terminated Started/Finished",
+        "value": "19:49:49\u201319:50:19",
+        "unit": "timestamp (Fri, 21 Nov 2025 +0800)",
+        "temporal_scope": "previous container instance of adservice-d6c9fcc6b-d4nlb",
+        "assumptions": null
+      }
+    ],
+    "recommendation": "Change the adservice livenessProbe from httpGet to grpc on port 9555 (matching the working readinessProbe configuration in observation-18), then roll out the updated Deployment. This is directly supported by the evidence: the gRPC readiness probe on the same port succeeds while the HTTP/1.x liveness probe fails against the HTTP/2-only server."
+  }
+}

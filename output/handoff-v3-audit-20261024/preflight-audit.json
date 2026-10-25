@@ -1,0 +1,73 @@
+{
+  "failure": "repeat-2/clean final incident_brief preflight input byte cap",
+  "reconstructed_body_bytes": 40068,
+  "framing_reserve_bytes": 512,
+  "required_bytes": 40580,
+  "input_byte_cap": 40000,
+  "excess_bytes": 580,
+  "body_sha256": "912aeecf2916aab9820b651053256573e2e3834376b4a9578cc435548e199cfc",
+  "request_sha256": "56afe721cdc9d5bfdedddbbf047a68b523caca4518761620171cb06ad4fa192b",
+  "historical_actual_calls": 11,
+  "hypothetical_next_call_id": 12,
+  "call_gate_passes": true,
+  "provider_spent_before_attempt_usd": "0.07550590",
+  "next_reservation_usd": "0.074624",
+  "reserved_total_usd": "0.15012990",
+  "cap_usd": "2.70",
+  "logical_spent_tokens": 25895,
+  "logical_reservation_tokens": 48192,
+  "logical_limit_tokens": 793728,
+  "logical_budget_gate_passes": true,
+  "retrieved_sources": [
+    {
+      "id": "observation-3",
+      "tool": "GetResources",
+      "arguments": {
+        "resource_type": "services",
+        "namespace": "boutique",
+        "name": null,
+        "show_labels": false,
+        "output_wide": false,
+        "label_selector": null
+      },
+      "raw_text_utf8_bytes": 1105,
+      "record_json_bytes": 1454
+    },
+    {
+      "id": "observation-7",
+      "tool": "GetErrorLogs",
+      "arguments": {
+        "namespace": "boutique",
+        "service_name": "frontend"
+      },
+      "raw_text_utf8_bytes": 1701,
+      "record_json_bytes": 2220
+    },
+    {
+      "id": "observation-8",
+      "tool": "GetRecentLogs",
+      "arguments": {
+        "namespace": "boutique",
+        "service_name": "frontend"
+      },
+      "raw_text_utf8_bytes": 10000,
+      "record_json_bytes": 12252
+    }
+  ],
+  "local_reproduction": {
+    "outcome_error": "Input byte cap exceeded",
+    "outcome_tokens": 0,
+    "network_calls": 0,
+    "new_provider_records": 0,
+    "provider_halted": false
+  },
+  "no_rerun_or_repair": true,
+  "historical_batch_unchanged": true,
+  "source_file_sha256": {
+    "runs/handoff-v3-20261024/handoff-v3-dataready-results/calls/011.json": "bf02a239074e4937106df11b8e4ce0207e961b2d7c3261122907a9dc168a1fea",
+    "runs/handoff-v3-20261024/handoff-v3-dataready-results/repeat-2/clean/trace.json": "293144f6f73b00f5683165ec04d4454be4625397b5cdd8c76981b7ae0c1fc26b",
+    "scripts/run_handoff_v3.py": "e780dfab3bff94538f5f2f67e0165494825682de4ea41966205882c5102ea1f3",
+    "scripts/semantic_claim_contract.py": "def26a47033d2ed856f7d477a9428cc51553c4332d9affc61abdb4a871b007ce",
+    "src/team_assistant/triton_provider.py": "2820cd40c04dde0ae3b3ef207da6688dd680a38f9e23619da5304aa383c30eb1"
+  }
+}

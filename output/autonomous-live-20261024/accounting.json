@@ -1,0 +1,87 @@
+{
+  "stages": [
+    {
+      "path": "runs/timing-live-v3-20261024/timing-v3-results",
+      "calls": 6,
+      "tokens": 34152,
+      "header_cost_usd": "0.0296103999999999986",
+      "http_statuses": [
+        200,
+        200,
+        200,
+        200,
+        200,
+        200
+      ]
+    },
+    {
+      "path": "runs/timing-json-v4-20261024/timing-json-v4-results",
+      "calls": 3,
+      "tokens": 17675,
+      "header_cost_usd": "0.01176550",
+      "http_statuses": [
+        200,
+        200,
+        200
+      ]
+    },
+    {
+      "path": "runs/semantic-v5-20261024/semantic-v5-results",
+      "calls": 3,
+      "tokens": 18745,
+      "header_cost_usd": "0.02158830",
+      "http_statuses": [
+        200,
+        200,
+        200
+      ]
+    },
+    {
+      "path": "runs/handoff-v3-20261024/handoff-v3-dataready-results",
+      "calls": 11,
+      "tokens": 57841,
+      "header_cost_usd": "0.0639858999999999978",
+      "http_statuses": [
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200
+      ]
+    },
+    {
+      "path": "runs/seeded-v3-20261024/seeded-handoff-v3-results",
+      "calls": 9,
+      "tokens": 46780,
+      "header_cost_usd": "0.0571652499999999979",
+      "http_statuses": [
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200
+      ]
+    }
+  ],
+  "calls": 32,
+  "tokens": 175193,
+  "actual_usd": "0.1841153499999999943",
+  "account_delta_usd": "0.18411535",
+  "account_reconciled": true,
+  "cumulative_development_usd": "0.6634444999999999943",
+  "formal_separate_usd": "0.40225095",
+  "remaining_course_credit_usd": "48.9278974",
+  "development_ceiling_usd": "5",
+  "datahub": "Stopped; UI Start My Server observed",
+  "no_submission": true
+}

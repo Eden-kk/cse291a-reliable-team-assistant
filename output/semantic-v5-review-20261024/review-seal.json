@@ -1,0 +1,11 @@
+{
+  "sealed_at_utc": "2026-10-25T00:40:29.420490+00:00",
+  "blinding": "nonblind development evaluation",
+  "files_sha256": {
+    "packets/item-01.json": "0ca91c1f34ad1d4f6ab474dcc3dc4bcf55fe0e021e9d3a68eb876501e714b83a",
+    "packets/item-02.json": "f89678805732b33cb4dd10691a8a819915a0bd8ad7f93ba9ce2ff38446afa5a8",
+    "packets/item-03.json": "cda5a5089fe5746527051e897df985bc41e3816e6592e01ff9cbc31a1f1ffc48",
+    "review.json": "28928dff0235f8c7816f4331473a47ef06b800208ca713ab7ab9b6b77c4dafad",
+    "review.txt": "4cd678c64052767426056fd66b9b8857591e605535f48c2cba75308977fb7cf5"
+  }
+}

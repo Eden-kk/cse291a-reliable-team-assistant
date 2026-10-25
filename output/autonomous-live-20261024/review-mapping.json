@@ -1,0 +1,9 @@
+{
+  "seeded-v3": {
+    "item-01": "restart",
+    "item-02": "selective"
+  },
+  "mapping_disclosed_after_seal": true,
+  "seeded_review_seal_sha256": "1606f00e599beaa0d3d658538179ade2c44accc3fb6f3f2945a8234493f261df",
+  "reviewer": "independent AI context; not human; repeated case context known"
+}

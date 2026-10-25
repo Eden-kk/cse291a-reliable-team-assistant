@@ -1,63 +1,36 @@
-Phase 1 autonomous-development reproduction checklist — content checkpoint
+Phase 1 autonomous-development saved-output verification
 
-Status: new report content only; not a rendered PDF, completed ZIP, submission or claim that
-these checks were run. Two body sections plus one appendix are preserved. Body page1 is
-identical to docs/phase1-timing-content-20261024.json, including all formal numbers.
-Do not replace PENDING entries with estimates. Parent integration supplies stage2/3 results.
+Release: output/phase1-2026-10-24-autonomous/Phase1-Evidence.zip
+Report: 2 body pages + 1 timeline appendix; visually reviewed after rendering.
+No submission/email. DataHub stopped after all evidence downloads.
 
-Immutable baseline
-- Preserve the existing formal evidence, execution commit1380c6b, review seal, native labels,
-  all36 scored answers and54 assigned slots. Do not rerun or relabel formal cases.
-- Prior portable release: output/phase1-2026-10-24-timing; reuse its formal evidence unchanged.
-- Prior handoff:54calls/241475tokens/$0.21365440; reproduce hash/budget/closure checks with
-  scripts/summarize_handoff_saved.py and retain the original independent-review seal.
+Extract into a new directory. Python >=3.11; install requirements.lock if needed.
+Do not run inference scripts. Saved-output checks require no credentials or model calls.
 
-New development sources in the project checkout
-1. runs/timing-live-v3-20261024/timing-v3-results/
-   configs/timing-calibration-v3.json, configs/timing-calibration-inputs/
-   output/timing-live-review-20261024/
-   Expected6assigned calls: original/revised for08,10,11. Five valid JSON and one malformed
-   revised response. Receipt cost$0.02961040. Keep original invalid response, never repair it.
-2. runs/timing-json-v4-20261024/timing-json-v4-results/
-   configs/timing-json-calibration-v4.json
-   output/timing-json-review-20261024/
-   Expected3revised calls, valid JSON3/3; receipt cost$0.01176550. Prompt/evidence unchanged
-   from revised v3, response_format json_object added. Semantic issues remain.
-3. runs/semantic-v5-20261024/semantic-v5-results/
-   configs/semantic-calibration-v5.json, scripts/semantic_claim_contract.py
-   output/semantic-v5-review-20261024/
-   Expected3calls; receipt cost$0.02158830. New generic semantic contract; known-error
-   development inputs retained. All core diagnoses supported but not every ancillary claim.
-4. Stage2 organic handoff: PENDING; do not infer outcome from configured maximum36calls.
-5. Stage3 conditional seeded recovery: PENDING; do not infer outcome from maximum9calls.
+python scripts/verify_formal_release.py
+python scripts/summarize_handoff_v3_saved.py runs/handoff-v3-20261024/handoff-v3-dataready-results
+python scripts/summarize_handoff_v3_saved.py runs/seeded-v3-20261024/seeded-handoff-v3-results
+PYTHONPATH=src python -m unittest discover -s tests
 
-New release acceptance checks (to execute after integration)
-- Copy complete requests/responses, usage, summary, execution/protocol and account receipts;
-  original source fixtures; all assigned slots; sealed review and mapping provenance.
-- Recompute SHA256 of every input against protocol, contract text against config/execution,
-  and review files against seals. Keep the method-unblinding order evident.
-- Match each original/revised pair's request exactly; only the declared instruction or
-  response_format may differ. Assert api-glm-5.3/temp0/low/output8192 and40000byte cap.
-- Validate valid/failed/not_run separately; no failed output silently excluded from denominators.
-- Sum x-litellm-response-cost receipts separately from modeled/conservative spend. Reconcile
-  settled account delta; lagging immediate account reads are not final accounting evidence.
-- Current12calls total$0.06296420; prior known development$0.47932915 yields$0.54229335.
-  Formal$0.40225095 is separate. Update with actual pending-stage receipts, not allocations.
-- New total allocated stage caps$4.40 remain within pre-stage development envelope$4.52067085;
-  this is a cap statement, not actual spend or fresh account balance.
-- Report partial/nonblind development review limitations, omitted required facts and ancillary
-  overclaims separately from supported primary diagnosis. Do not claim significance or generalization.
-- In an empty extraction directory create a Python>=3.11 venv, install requirements.lock, run
-  formal/hash/previous saved-output verifiers and the relevant offline tests below. No API key.
-- Verify the manifest covers all included files, then render the2body+1appendix PDF and inspect
-  each page for clipping/overflow. Record these checks only once actually performed.
+Formal results: 517 files byte-identical to prior release, 36 scored answers and 54 slots.
+Nested output/phase1-2026-10-24-repro/Phase1-Evidence.zip preserves old execution source.
+Current opt-in provider deliberately differs from historical freeze: do not update that freeze.
+Formal saved-output scorer does not execute historical inference.
 
-Relevant offline tests (project checkout; PYTHONPATH=src)
-python -m unittest discover -s tests -p 'test_*calibration.py'
-python -m unittest discover -s tests -p 'test_semantic_optin.py'
-python -m unittest discover -s tests -p 'test_*handoff_v3.py'
-python -m unittest discover -s tests -p 'test_triton_provider.py'
+New batches: timing-v3 6 calls, JSON-v4 3, semantic-v5 3, organic-v3 11,
+seeded-v3 9. Total32calls/175193tokens/$0.18411535 in headers, settled delta matches.
+Cumulative development$0.66344450/$5; formal$0.40225095 separate.
+Keep malformed JSON, both startup attempts, failed/untreated slots, and all review seals.
+No eligible organic recovery pairs: do not convert missing arms to success or zero error rate.
+Seeded R/S6/3calls, both primary diagnosis/action supported, residual ancillary issues.
+Mechanism checks do not establish whole-answer semantics or natural error propagation.
 
-Do not launch any run_* inference script as a reproduction check. Historical outputs cannot
-be deterministically regenerated by these saved-output checks, and none substitutes for
-independent human semantic review. No submission/email is authorized by this checklist.
+Project tests:257 run,12 skipped, no failures. Portable extraction may skip additional
+vendor-dependent tests because only selected snapshots are included; record exact counts.
+Final hash/native-score checks and independent-development checks are recorded alongside
+this release. Reproducing saved judgments is not independent human adjudication or a new
+model run. Model outputs cannot be assumed deterministically regenerable.
+
+Next development plan: docs/handoff-v4-plan-20261024.txt. First implement offline
+byte-aware admission and independent probe facts, then separately freeze a bounded pilot.
+Unused earlier caps are not an additional budget. No automatic assignment submission.

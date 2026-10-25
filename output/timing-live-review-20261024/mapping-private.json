@@ -1,0 +1,26 @@
+{
+  "item-01": {
+    "call": 1,
+    "variant": "original"
+  },
+  "item-02": {
+    "call": 5,
+    "variant": "original"
+  },
+  "item-03": {
+    "call": 4,
+    "variant": "original"
+  },
+  "item-04": {
+    "call": 2,
+    "variant": "revised"
+  },
+  "item-05": {
+    "call": 6,
+    "variant": "revised"
+  },
+  "item-06": {
+    "call": 3,
+    "variant": "revised"
+  }
+}

@@ -1,0 +1,11 @@
+Offline extended verification: PASS
+273 checks; 0 failures. No API calls.
+32 model calls; provider header total $0.1841153499999999943; settled account delta $0.1841153499999997.
+
+Verified frozen calibration inputs, paired requests, explicit transport/prompt changes, saved provider records, response preservation, stage2/3 semantic/JSON flags, five review seals and mechanism summary integrity. Initial preflight attempt retained with zero model calls.
+
+Review hash validity proves files match their seal, not independence, correctness, or timestamp authenticity.
+Semantic outcome judgments were not repeated; existing independent AI reviews retain disclosed limits.
+No current API model, balance, or server state was checked; only saved receipts were read.
+Provider response costs carry decimal serialization noise; reconciliation tolerance is 1e-9 USD.
+Mechanism summaries checked for declared integrity findings and completed-arm invalid lists; full causal correctness is outside this supplemental audit.

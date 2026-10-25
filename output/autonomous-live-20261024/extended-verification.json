@@ -1,0 +1,1719 @@
+{
+  "checked_at_utc": "2026-10-25T00:54:03.051011+00:00",
+  "scope": "Offline saved-evidence consistency, not new semantic adjudication or model rerun",
+  "passed": true,
+  "checks": [
+    {
+      "check": "0:1:saved_request_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:1:saved_record_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:1:provider_input_bound",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:1:fixed_model_controls",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:1:response_outcome_retained",
+      "passed": true,
+      "detail": {
+        "error": null
+      }
+    },
+    {
+      "check": "0:2:saved_request_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:2:saved_record_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:2:provider_input_bound",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:2:fixed_model_controls",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:2:response_outcome_retained",
+      "passed": true,
+      "detail": {
+        "error": null
+      }
+    },
+    {
+      "check": "0:3:saved_request_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:3:saved_record_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:3:provider_input_bound",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:3:fixed_model_controls",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:3:response_outcome_retained",
+      "passed": true,
+      "detail": {
+        "error": null
+      }
+    },
+    {
+      "check": "0:4:saved_request_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:4:saved_record_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:4:provider_input_bound",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:4:fixed_model_controls",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:4:response_outcome_retained",
+      "passed": true,
+      "detail": {
+        "error": null
+      }
+    },
+    {
+      "check": "0:5:saved_request_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:5:saved_record_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:5:provider_input_bound",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:5:fixed_model_controls",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:5:response_outcome_retained",
+      "passed": true,
+      "detail": {
+        "error": null
+      }
+    },
+    {
+      "check": "0:6:saved_request_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:6:saved_record_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:6:provider_input_bound",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:6:fixed_model_controls",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:6:response_outcome_retained",
+      "passed": true,
+      "detail": {
+        "error": "JSONDecodeError"
+      }
+    },
+    {
+      "check": "0:protocol_identical",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:item-08:original:input_hash",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:item-08:original:frozen_hash",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:item-08:original:request_unchanged",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:item-08:original:exact_instruction",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:item-08:original:arm_to_request",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:item-08:revised:input_hash",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:item-08:revised:frozen_hash",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:item-08:revised:request_unchanged",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:item-08:revised:exact_instruction",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:item-08:revised:arm_to_request",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:item-10:revised:input_hash",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:item-10:revised:frozen_hash",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:item-10:revised:request_unchanged",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:item-10:revised:exact_instruction",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:item-10:revised:arm_to_request",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:item-10:original:input_hash",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:item-10:original:frozen_hash",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:item-10:original:request_unchanged",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:item-10:original:exact_instruction",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:item-10:original:arm_to_request",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:item-11:original:input_hash",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:item-11:original:frozen_hash",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:item-11:original:request_unchanged",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:item-11:original:exact_instruction",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:item-11:original:arm_to_request",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:item-11:revised:input_hash",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:item-11:revised:frozen_hash",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:item-11:revised:request_unchanged",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:item-11:revised:exact_instruction",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "0:item-11:revised:arm_to_request",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "1:1:saved_request_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "1:1:saved_record_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "1:1:provider_input_bound",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "1:1:fixed_model_controls",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "1:1:response_outcome_retained",
+      "passed": true,
+      "detail": {
+        "error": null
+      }
+    },
+    {
+      "check": "1:2:saved_request_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "1:2:saved_record_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "1:2:provider_input_bound",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "1:2:fixed_model_controls",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "1:2:response_outcome_retained",
+      "passed": true,
+      "detail": {
+        "error": null
+      }
+    },
+    {
+      "check": "1:3:saved_request_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "1:3:saved_record_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "1:3:provider_input_bound",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "1:3:fixed_model_controls",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "1:3:response_outcome_retained",
+      "passed": true,
+      "detail": {
+        "error": null
+      }
+    },
+    {
+      "check": "1:protocol_identical",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "1:item-08:revised:input_hash",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "1:item-08:revised:frozen_hash",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "1:item-08:revised:request_unchanged",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "1:item-08:revised:exact_instruction",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "1:item-08:revised:arm_to_request",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "1:item-10:revised:input_hash",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "1:item-10:revised:frozen_hash",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "1:item-10:revised:request_unchanged",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "1:item-10:revised:exact_instruction",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "1:item-10:revised:arm_to_request",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "1:item-11:revised:input_hash",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "1:item-11:revised:frozen_hash",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "1:item-11:revised:request_unchanged",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "1:item-11:revised:exact_instruction",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "1:item-11:revised:arm_to_request",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "2:1:saved_request_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "2:1:saved_record_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "2:1:provider_input_bound",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "2:1:fixed_model_controls",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "2:1:response_outcome_retained",
+      "passed": true,
+      "detail": {
+        "error": null
+      }
+    },
+    {
+      "check": "2:2:saved_request_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "2:2:saved_record_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "2:2:provider_input_bound",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "2:2:fixed_model_controls",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "2:2:response_outcome_retained",
+      "passed": true,
+      "detail": {
+        "error": null
+      }
+    },
+    {
+      "check": "2:3:saved_request_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "2:3:saved_record_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "2:3:provider_input_bound",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "2:3:fixed_model_controls",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "2:3:response_outcome_retained",
+      "passed": true,
+      "detail": {
+        "error": null
+      }
+    },
+    {
+      "check": "2:protocol_identical",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "2:item-08:revised:input_hash",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "2:item-08:revised:frozen_hash",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "2:item-08:revised:request_unchanged",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "2:item-08:revised:exact_instruction",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "2:item-08:revised:arm_to_request",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "2:item-10:revised:input_hash",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "2:item-10:revised:frozen_hash",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "2:item-10:revised:request_unchanged",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "2:item-10:revised:exact_instruction",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "2:item-10:revised:arm_to_request",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "2:item-11:revised:input_hash",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "2:item-11:revised:frozen_hash",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "2:item-11:revised:request_unchanged",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "2:item-11:revised:exact_instruction",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "2:item-11:revised:arm_to_request",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:1:saved_request_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:1:saved_record_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:1:provider_input_bound",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:1:fixed_model_controls",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:1:response_outcome_retained",
+      "passed": true,
+      "detail": {
+        "error": null
+      }
+    },
+    {
+      "check": "3:2:saved_request_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:2:saved_record_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:2:provider_input_bound",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:2:fixed_model_controls",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:2:response_outcome_retained",
+      "passed": true,
+      "detail": {
+        "error": null
+      }
+    },
+    {
+      "check": "3:3:saved_request_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:3:saved_record_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:3:provider_input_bound",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:3:fixed_model_controls",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:3:response_outcome_retained",
+      "passed": true,
+      "detail": {
+        "error": null
+      }
+    },
+    {
+      "check": "3:4:saved_request_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:4:saved_record_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:4:provider_input_bound",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:4:fixed_model_controls",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:4:response_outcome_retained",
+      "passed": true,
+      "detail": {
+        "error": null
+      }
+    },
+    {
+      "check": "3:5:saved_request_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:5:saved_record_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:5:provider_input_bound",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:5:fixed_model_controls",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:5:response_outcome_retained",
+      "passed": true,
+      "detail": {
+        "error": null
+      }
+    },
+    {
+      "check": "3:6:saved_request_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:6:saved_record_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:6:provider_input_bound",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:6:fixed_model_controls",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:6:response_outcome_retained",
+      "passed": true,
+      "detail": {
+        "error": null
+      }
+    },
+    {
+      "check": "3:7:saved_request_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:7:saved_record_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:7:provider_input_bound",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:7:fixed_model_controls",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:7:response_outcome_retained",
+      "passed": true,
+      "detail": {
+        "error": null
+      }
+    },
+    {
+      "check": "3:8:saved_request_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:8:saved_record_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:8:provider_input_bound",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:8:fixed_model_controls",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:8:response_outcome_retained",
+      "passed": true,
+      "detail": {
+        "error": null
+      }
+    },
+    {
+      "check": "3:9:saved_request_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:9:saved_record_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:9:provider_input_bound",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:9:fixed_model_controls",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:9:response_outcome_retained",
+      "passed": true,
+      "detail": {
+        "error": null
+      }
+    },
+    {
+      "check": "3:10:saved_request_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:10:saved_record_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:10:provider_input_bound",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:10:fixed_model_controls",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:10:response_outcome_retained",
+      "passed": true,
+      "detail": {
+        "error": null
+      }
+    },
+    {
+      "check": "3:11:saved_request_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:11:saved_record_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:11:provider_input_bound",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:11:fixed_model_controls",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:11:response_outcome_retained",
+      "passed": true,
+      "detail": {
+        "error": null
+      }
+    },
+    {
+      "check": "3:execution_optins",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "3:allcalls_contract_and_transport",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "4:1:saved_request_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "4:1:saved_record_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "4:1:provider_input_bound",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "4:1:fixed_model_controls",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "4:1:response_outcome_retained",
+      "passed": true,
+      "detail": {
+        "error": null
+      }
+    },
+    {
+      "check": "4:2:saved_request_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "4:2:saved_record_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "4:2:provider_input_bound",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "4:2:fixed_model_controls",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "4:2:response_outcome_retained",
+      "passed": true,
+      "detail": {
+        "error": null
+      }
+    },
+    {
+      "check": "4:3:saved_request_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "4:3:saved_record_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "4:3:provider_input_bound",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "4:3:fixed_model_controls",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "4:3:response_outcome_retained",
+      "passed": true,
+      "detail": {
+        "error": null
+      }
+    },
+    {
+      "check": "4:4:saved_request_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "4:4:saved_record_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "4:4:provider_input_bound",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "4:4:fixed_model_controls",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "4:4:response_outcome_retained",
+      "passed": true,
+      "detail": {
+        "error": null
+      }
+    },
+    {
+      "check": "4:5:saved_request_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "4:5:saved_record_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "4:5:provider_input_bound",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "4:5:fixed_model_controls",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "4:5:response_outcome_retained",
+      "passed": true,
+      "detail": {
+        "error": null
+      }
+    },
+    {
+      "check": "4:6:saved_request_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "4:6:saved_record_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "4:6:provider_input_bound",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "4:6:fixed_model_controls",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "4:6:response_outcome_retained",
+      "passed": true,
+      "detail": {
+        "error": null
+      }
+    },
+    {
+      "check": "4:7:saved_request_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "4:7:saved_record_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "4:7:provider_input_bound",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "4:7:fixed_model_controls",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "4:7:response_outcome_retained",
+      "passed": true,
+      "detail": {
+        "error": null
+      }
+    },
+    {
+      "check": "4:8:saved_request_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "4:8:saved_record_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "4:8:provider_input_bound",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "4:8:fixed_model_controls",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "4:8:response_outcome_retained",
+      "passed": true,
+      "detail": {
+        "error": null
+      }
+    },
+    {
+      "check": "4:9:saved_request_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "4:9:saved_record_matches_usage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "4:9:provider_input_bound",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "4:9:fixed_model_controls",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "4:9:response_outcome_retained",
+      "passed": true,
+      "detail": {
+        "error": null
+      }
+    },
+    {
+      "check": "4:execution_optins",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "4:allcalls_contract_and_transport",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "item-08:v3paired_request",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "item-08:v4only_transport",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "item-08:v5request_and_transport_preserved",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "item-10:v3paired_request",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "item-10:v4only_transport",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "item-10:v5request_and_transport_preserved",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "item-11:v3paired_request",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "item-11:v4only_transport",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "item-11:v5request_and_transport_preserved",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "timing-live-review-20261024:packets/MANIFEST.json",
+      "passed": true,
+      "detail": {
+        "path_basis": "seal_relative"
+      }
+    },
+    {
+      "check": "timing-live-review-20261024:packets/item-01.json",
+      "passed": true,
+      "detail": {
+        "path_basis": "seal_relative"
+      }
+    },
+    {
+      "check": "timing-live-review-20261024:packets/item-02.json",
+      "passed": true,
+      "detail": {
+        "path_basis": "seal_relative"
+      }
+    },
+    {
+      "check": "timing-live-review-20261024:packets/item-03.json",
+      "passed": true,
+      "detail": {
+        "path_basis": "seal_relative"
+      }
+    },
+    {
+      "check": "timing-live-review-20261024:packets/item-04.json",
+      "passed": true,
+      "detail": {
+        "path_basis": "seal_relative"
+      }
+    },
+    {
+      "check": "timing-live-review-20261024:packets/item-05.json",
+      "passed": true,
+      "detail": {
+        "path_basis": "seal_relative"
+      }
+    },
+    {
+      "check": "timing-live-review-20261024:packets/item-06.json",
+      "passed": true,
+      "detail": {
+        "path_basis": "seal_relative"
+      }
+    },
+    {
+      "check": "timing-live-review-20261024:independent-review.json",
+      "passed": true,
+      "detail": {
+        "path_basis": "seal_relative"
+      }
+    },
+    {
+      "check": "timing-live-review-20261024:independent-review.txt",
+      "passed": true,
+      "detail": {
+        "path_basis": "seal_relative"
+      }
+    },
+    {
+      "check": "timing-json-review-20261024:output/timing-json-review-20261024/packets/item-01.json",
+      "passed": true,
+      "detail": {
+        "path_basis": "repository_relative"
+      }
+    },
+    {
+      "check": "timing-json-review-20261024:output/timing-json-review-20261024/packets/item-02.json",
+      "passed": true,
+      "detail": {
+        "path_basis": "repository_relative"
+      }
+    },
+    {
+      "check": "timing-json-review-20261024:output/timing-json-review-20261024/packets/item-03.json",
+      "passed": true,
+      "detail": {
+        "path_basis": "repository_relative"
+      }
+    },
+    {
+      "check": "timing-json-review-20261024:output/timing-json-review-20261024/review.json",
+      "passed": true,
+      "detail": {
+        "path_basis": "repository_relative"
+      }
+    },
+    {
+      "check": "timing-json-review-20261024:output/timing-json-review-20261024/review.txt",
+      "passed": true,
+      "detail": {
+        "path_basis": "repository_relative"
+      }
+    },
+    {
+      "check": "semantic-v5-review-20261024:packets/item-01.json",
+      "passed": true,
+      "detail": {
+        "path_basis": "seal_relative"
+      }
+    },
+    {
+      "check": "semantic-v5-review-20261024:packets/item-02.json",
+      "passed": true,
+      "detail": {
+        "path_basis": "seal_relative"
+      }
+    },
+    {
+      "check": "semantic-v5-review-20261024:packets/item-03.json",
+      "passed": true,
+      "detail": {
+        "path_basis": "seal_relative"
+      }
+    },
+    {
+      "check": "semantic-v5-review-20261024:review.json",
+      "passed": true,
+      "detail": {
+        "path_basis": "seal_relative"
+      }
+    },
+    {
+      "check": "semantic-v5-review-20261024:review.txt",
+      "passed": true,
+      "detail": {
+        "path_basis": "seal_relative"
+      }
+    },
+    {
+      "check": "handoff-v3-semantic-review-20261024:packets/item-01.json",
+      "passed": true,
+      "detail": {
+        "path_basis": "seal_relative"
+      }
+    },
+    {
+      "check": "handoff-v3-semantic-review-20261024:review.json",
+      "passed": true,
+      "detail": {
+        "path_basis": "seal_relative"
+      }
+    },
+    {
+      "check": "handoff-v3-semantic-review-20261024:review.txt",
+      "passed": true,
+      "detail": {
+        "path_basis": "seal_relative"
+      }
+    },
+    {
+      "check": "seeded-v3-semantic-review-20261024:packets/item-01.json",
+      "passed": true,
+      "detail": {
+        "path_basis": "seal_relative"
+      }
+    },
+    {
+      "check": "seeded-v3-semantic-review-20261024:packets/item-02.json",
+      "passed": true,
+      "detail": {
+        "path_basis": "seal_relative"
+      }
+    },
+    {
+      "check": "seeded-v3-semantic-review-20261024:review.json",
+      "passed": true,
+      "detail": {
+        "path_basis": "seal_relative"
+      }
+    },
+    {
+      "check": "seeded-v3-semantic-review-20261024:review.txt",
+      "passed": true,
+      "detail": {
+        "path_basis": "seal_relative"
+      }
+    },
+    {
+      "check": "32_actual_calls",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "receipt_total_matches_requested_total",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "settled_account_delta_matches_receipts",
+      "passed": true,
+      "detail": {
+        "account_delta_usd": "0.1841153499999997",
+        "header_sum_usd": "0.1841153499999999943",
+        "tolerance_usd": "0.000000001"
+      }
+    },
+    {
+      "check": "initial_data_preflight_attempt_zero_calls",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "handoff-mechanism.json:no_integrity_findings",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "handoff-mechanism.json:assigned_rows",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "seeded-mechanism.json:no_integrity_findings",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "seeded-mechanism.json:assigned_rows",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "seeded-mechanism.json:restart:no_invalid_remaining",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "seeded-mechanism.json:selective:no_invalid_remaining",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "reported_accounting_matches",
+      "passed": true,
+      "detail": null
+    }
+  ],
+  "stages": [
+    {
+      "path": "runs/timing-live-v3-20261024/timing-v3-results",
+      "calls": 6,
+      "tokens": 34152,
+      "actual_header_cost_usd": "0.0296103999999999986",
+      "states": {
+        "completed": 5,
+        "failed": 1
+      }
+    },
+    {
+      "path": "runs/timing-json-v4-20261024/timing-json-v4-results",
+      "calls": 3,
+      "tokens": 17675,
+      "actual_header_cost_usd": "0.01176550",
+      "states": {
+        "completed": 3
+      }
+    },
+    {
+      "path": "runs/semantic-v5-20261024/semantic-v5-results",
+      "calls": 3,
+      "tokens": 18745,
+      "actual_header_cost_usd": "0.02158830",
+      "states": {
+        "completed": 3
+      }
+    },
+    {
+      "path": "runs/handoff-v3-20261024/handoff-v3-dataready-results",
+      "calls": 11,
+      "tokens": 57841,
+      "actual_header_cost_usd": "0.0639858999999999978",
+      "states": {}
+    },
+    {
+      "path": "runs/seeded-v3-20261024/seeded-handoff-v3-results",
+      "calls": 9,
+      "tokens": 46780,
+      "actual_header_cost_usd": "0.0571652499999999979",
+      "states": {}
+    }
+  ],
+  "review_seals": [
+    {
+      "directory": "timing-live-review-20261024",
+      "files_checked": 9,
+      "seal_sha256": "26874d1945b151004a2ff9d99e94863da941f121f481740bc42af754c19747bd"
+    },
+    {
+      "directory": "timing-json-review-20261024",
+      "files_checked": 5,
+      "seal_sha256": "189067a6fe099666e838aff96b9db0f99a11a8434cf8f1ea7b0425ab9b02dafb"
+    },
+    {
+      "directory": "semantic-v5-review-20261024",
+      "files_checked": 5,
+      "seal_sha256": "293ec34b18e7cbb80b00ead54ff672241c4e00ad0cdf98b038c107571d2bc3ac"
+    },
+    {
+      "directory": "handoff-v3-semantic-review-20261024",
+      "files_checked": 3,
+      "seal_sha256": "e91fbeebc5d9ec4233f8df151d690ce6c8ed5cace4f2cb35fc3e29888423e6cb"
+    },
+    {
+      "directory": "seeded-v3-semantic-review-20261024",
+      "files_checked": 4,
+      "seal_sha256": "1606f00e599beaa0d3d658538179ade2c44accc3fb6f3f2945a8234493f261df"
+    }
+  ],
+  "source_files_sha256": {
+    "runs/timing-live-v3-20261024/timing-v3-results/usage.json": "6231dfa9b0accf777011518ef8c2bd4a6cf02b30d482b998896f8de5279e2551",
+    "runs/timing-live-v3-20261024/timing-v3-results/summary.json": "4c158cd01f0298d833d8bac00c2ba56c3137b16122439cd2099764f5476bb756",
+    "runs/timing-live-v3-20261024/timing-v3-results/execution.json": "e6fc64bd615d7fd52df7ff084a6881a014793205ec9242fae113a01e154dd31e",
+    "runs/timing-live-v3-20261024/timing-v3-results/protocol.json": "dfd8b5bb46d5193ea6fed09df060b563909779af1fa1d148452e435b6f61394a",
+    "runs/timing-live-v3-20261024/timing-v3-results/calls/001.request.json": "216ca728bb7c289404ffd566ebf4fca8c5ad8f460b57dcf7d95e135722e1b42e",
+    "runs/timing-live-v3-20261024/timing-v3-results/calls/001.json": "00146d4a58cecc18446fc79bd719e3c3c0c39f63a8c25455745839125c852608",
+    "runs/timing-live-v3-20261024/timing-v3-results/calls/001.response.json": "e2880b6b49687fdca97e34c9351b7c3aa34832a6c6cfef780d335bf9cca1bb58",
+    "runs/timing-live-v3-20261024/timing-v3-results/calls/002.request.json": "28f64dc3f72be810d1a06892404fbd39a84039cc8b8f19b8e3f05494a2ceb644",
+    "runs/timing-live-v3-20261024/timing-v3-results/calls/002.json": "d303d60f950282ef322e98a083591a0907fc6c5f28b97525aebf2e5ef52f417f",
+    "runs/timing-live-v3-20261024/timing-v3-results/calls/002.response.json": "1e615035a78a4cd98b5b0445229d8b52cea92dc9bc937bf342657fba56f34841",
+    "runs/timing-live-v3-20261024/timing-v3-results/calls/003.request.json": "3cedb5e59611795ae91e2ee224341ca5a41c72aa8c49f1c4cc6f43941258f718",
+    "runs/timing-live-v3-20261024/timing-v3-results/calls/003.json": "96e135aa4123a6e9662818446af51ecdf703a6cab474ee7981bc1ed69081319b",
+    "runs/timing-live-v3-20261024/timing-v3-results/calls/003.response.json": "4cc02636808cd70558acfc25f17199b55c2e502c2cc7b43c296035c213752d8f",
+    "runs/timing-live-v3-20261024/timing-v3-results/calls/004.request.json": "ea6b6d58117be9e46019468458f9424d1770c3c1ef635de0b446280d81baf7a2",
+    "runs/timing-live-v3-20261024/timing-v3-results/calls/004.json": "9481ff9ea54106e5140f3ee63f11fd60600f02d930ffb98f4df1c1fd0a4a9b0d",
+    "runs/timing-live-v3-20261024/timing-v3-results/calls/004.response.json": "d9e767a8f9e4acfa3df15d6c9ac4557a7efedabe252aba81d8dab86be5e8356c",
+    "runs/timing-live-v3-20261024/timing-v3-results/calls/005.request.json": "364abb56a21bce0d23697986cd647a95bd5335cd0894a1e17d134f166d3bf40f",
+    "runs/timing-live-v3-20261024/timing-v3-results/calls/005.json": "0a4a1ee8cc7f816937597c74aa30939f9dd89e9a4f874d99f581612a0f03451e",
+    "runs/timing-live-v3-20261024/timing-v3-results/calls/005.response.json": "e65240e5acdb8f246f204c5fa6a13c70d295cd8c8067a17526e50366456b63cd",
+    "runs/timing-live-v3-20261024/timing-v3-results/calls/006.request.json": "8e5e4e39ae70f84b4ead2b63fdb901b8266f6dd5c8fdfa72413063a338a89d7a",
+    "runs/timing-live-v3-20261024/timing-v3-results/calls/006.json": "75ae204e9875ec9066bf0fdf08801c8bc0b533a6f52bf651b5842bc282705ae5",
+    "runs/timing-live-v3-20261024/timing-v3-results/calls/006.response.json": "face1114ac7c88365fc5d96e6608a6bb8eff5826008278628e5c3b963ec20527",
+    "configs/timing-calibration-v3.json": "dfd8b5bb46d5193ea6fed09df060b563909779af1fa1d148452e435b6f61394a",
+    "configs/timing-calibration-inputs/item-08.json": "cb07eee34122a05c75783a223a68d25955921f23c36baa234b0bec35e10f91ad",
+    "runs/timing-live-v3-20261024/timing-v3-results/arms/item-08-original/input.json": "cb07eee34122a05c75783a223a68d25955921f23c36baa234b0bec35e10f91ad",
+    "runs/timing-live-v3-20261024/timing-v3-results/arms/item-08-revised/input.json": "f2a64517413fa3759524c1d4465718ae7727f0a2f4939097241cd922d9df20be",
+    "configs/timing-calibration-inputs/item-10.json": "11877598c033ea11a6b4e0f51131aceb0830882def70b93c6739851a71d6eb3f",
+    "runs/timing-live-v3-20261024/timing-v3-results/arms/item-10-revised/input.json": "358c8a9f4b9022a8e0f1689cfee430747c97ba7caf4409c0c4f254e595fd44c5",
+    "runs/timing-live-v3-20261024/timing-v3-results/arms/item-10-original/input.json": "11877598c033ea11a6b4e0f51131aceb0830882def70b93c6739851a71d6eb3f",
+    "configs/timing-calibration-inputs/item-11.json": "f923703e5483120aa1c2158c6cdea3e8088e89e20a046d2e4f6b3a59287157f6",
+    "runs/timing-live-v3-20261024/timing-v3-results/arms/item-11-original/input.json": "f923703e5483120aa1c2158c6cdea3e8088e89e20a046d2e4f6b3a59287157f6",
+    "runs/timing-live-v3-20261024/timing-v3-results/arms/item-11-revised/input.json": "0599db533c823aa3078a35ff4f6fd62d8c2fd082a86ab3747ecc9ba75d6aff7d",
+    "runs/timing-json-v4-20261024/timing-json-v4-results/usage.json": "a8f955312830b64d17da7434d6db7acdab5717b8aa5014dc871349fdb8b480ef",
+    "runs/timing-json-v4-20261024/timing-json-v4-results/summary.json": "a534fda14a45d04484c4073400b28b576135e7682615097dd33abf3dc2e2efc4",
+    "runs/timing-json-v4-20261024/timing-json-v4-results/execution.json": "57ab5541825359618a876cdebd569b339ea095e776af6385c9cf1682529f37bf",
+    "runs/timing-json-v4-20261024/timing-json-v4-results/protocol.json": "aca797fb10c261a483e037cb652e5b62345606d761cb2206e06fdf7ecff0037c",
+    "runs/timing-json-v4-20261024/timing-json-v4-results/calls/001.request.json": "e5c735c51d354885df70ea41270955755a86cdca851a674abb676879113cfa8d",
+    "runs/timing-json-v4-20261024/timing-json-v4-results/calls/001.json": "c8d02edf27224ffc31cf3bfb959f6d9b464005023fd6a1edda4df4c92c19c8bf",
+    "runs/timing-json-v4-20261024/timing-json-v4-results/calls/001.response.json": "6db4bc2a0f27301e7bbb3c3502a1fa8acdae7ae569a3985f8ddc39cc1f4d96df",
+    "runs/timing-json-v4-20261024/timing-json-v4-results/calls/002.request.json": "e6e6b6ad0709a57bdacd24a75f4bf8cb97322452a9ae14d14a0caa3b0112bd4a",
+    "runs/timing-json-v4-20261024/timing-json-v4-results/calls/002.json": "8fe4a058ec1aa261b6425ad397ee2bcb65d56c187eee79fa85215341410c7013",
+    "runs/timing-json-v4-20261024/timing-json-v4-results/calls/002.response.json": "9106577c5d6db11e1b96e0754402c056d58e4c672e1ebb51aa11443d5ab96dca",
+    "runs/timing-json-v4-20261024/timing-json-v4-results/calls/003.request.json": "a9f21e8fbeb46d8882aa7c0edb3855d2c1dd9c6a9f83ac04dadf6a14572401b3",
+    "runs/timing-json-v4-20261024/timing-json-v4-results/calls/003.json": "112116c5103984de8123f6cb0824381664e9cec082a5a9b98096dfcffdeb0ddc",
+    "runs/timing-json-v4-20261024/timing-json-v4-results/calls/003.response.json": "c3a6a7e56eec30c58c39cf423fe8692fdb5469e4d55673720ed7caa429832cb5",
+    "configs/timing-json-calibration-v4.json": "aca797fb10c261a483e037cb652e5b62345606d761cb2206e06fdf7ecff0037c",
+    "runs/timing-json-v4-20261024/timing-json-v4-results/arms/item-08-revised/input.json": "f2a64517413fa3759524c1d4465718ae7727f0a2f4939097241cd922d9df20be",
+    "runs/timing-json-v4-20261024/timing-json-v4-results/arms/item-10-revised/input.json": "358c8a9f4b9022a8e0f1689cfee430747c97ba7caf4409c0c4f254e595fd44c5",
+    "runs/timing-json-v4-20261024/timing-json-v4-results/arms/item-11-revised/input.json": "0599db533c823aa3078a35ff4f6fd62d8c2fd082a86ab3747ecc9ba75d6aff7d",
+    "runs/semantic-v5-20261024/semantic-v5-results/usage.json": "26cf9b244bfc27b6f76e6b1dda1683859694af6c8f749d3cf38dc903643a6ca1",
+    "runs/semantic-v5-20261024/semantic-v5-results/summary.json": "c02d65f0970c02582c9ac66fe44d0bc0257ef29e03a7ce360238f3581e589660",
+    "runs/semantic-v5-20261024/semantic-v5-results/execution.json": "ce90fddca3c9d9b68d85033be0ba5a1ccb411a52fef86725ed8fecf39b0db86a",
+    "runs/semantic-v5-20261024/semantic-v5-results/protocol.json": "a7725ef9873332770db73592c0d207f24c22b2477d77169b54148f5ece0192b3",
+    "runs/semantic-v5-20261024/semantic-v5-results/calls/001.request.json": "f7ce9e41adfcf6f80bfc6cb5c425e999ed9b960c624701e092fee97fd9010b8c",
+    "runs/semantic-v5-20261024/semantic-v5-results/calls/001.json": "04afa9931e113ca1a1488dc89d8b09f57fc914b0f6010bbc0725282111ca499a",
+    "runs/semantic-v5-20261024/semantic-v5-results/calls/001.response.json": "47d60f185236c44de464435f9ca1ed66c9e6ca4e0f73356a4aafa3e002582b94",
+    "runs/semantic-v5-20261024/semantic-v5-results/calls/002.request.json": "796c8f13749c9707a3dd70824e5646449cb1b94485787d61cedc6ae63304e639",
+    "runs/semantic-v5-20261024/semantic-v5-results/calls/002.json": "a7b85cb18e21f9d1bb3f36a478941c1cdb73ee6891704469e98cd19671c09e60",
+    "runs/semantic-v5-20261024/semantic-v5-results/calls/002.response.json": "5dddb0d4002a173607e6847d7b6ca84f1431433a71011059c4c170be730c9dda",
+    "runs/semantic-v5-20261024/semantic-v5-results/calls/003.request.json": "a77ae497133a7bd403105bcb48188fdae4b5ec2a3c351dd35a898ebd1c7b827d",
+    "runs/semantic-v5-20261024/semantic-v5-results/calls/003.json": "b3c62e6d3f4cada592c35fe2b2adab2245dbcaf8242c500e78f955a50bc3b87d",
+    "runs/semantic-v5-20261024/semantic-v5-results/calls/003.response.json": "36f244d4205405e6cd9a04f74b2cc1c94da3272de5a0b8208424514049fc158d",
+    "configs/semantic-calibration-v5.json": "a7725ef9873332770db73592c0d207f24c22b2477d77169b54148f5ece0192b3",
+    "runs/semantic-v5-20261024/semantic-v5-results/arms/item-08-revised/input.json": "ba1f8823f356863231261675d3bf17a8dfa988bb37096ae98a90b49a479b6879",
+    "runs/semantic-v5-20261024/semantic-v5-results/arms/item-10-revised/input.json": "4682c0ee0a7295ad170ef5d770a28dcb5e95e6298aff071a1866b42950f56ed6",
+    "runs/semantic-v5-20261024/semantic-v5-results/arms/item-11-revised/input.json": "1033ffc1a411eca23399c74bb75d45bd7f190522edd2bc04f09e5b63021e5389",
+    "runs/handoff-v3-20261024/handoff-v3-dataready-results/usage.json": "57d5f6e8ce1bb320a2f8c050d7a6e93864d4ff83feb520fd5566df46ad56c033",
+    "runs/handoff-v3-20261024/handoff-v3-dataready-results/summary.json": "519ccae13c19471c60220848337a3a46b16ddd61c2337028187cbad9897743b8",
+    "runs/handoff-v3-20261024/handoff-v3-dataready-results/execution.json": "48d2a1680dbe409a3885a0bae0073d2f9eb7690eafabd3936fd6de9123845727",
+    "runs/handoff-v3-20261024/handoff-v3-dataready-results/protocol.json": "7c7343ca84f570e39262958049252d311d05b56db6eb2d24a33167ab06ee3bc4",
+    "runs/handoff-v3-20261024/handoff-v3-dataready-results/calls/001.request.json": "003eeefcd76a933921175c5f4668d91c9f8eccf2dc28a7b5aed5c239e382335a",
+    "runs/handoff-v3-20261024/handoff-v3-dataready-results/calls/001.json": "2ba0607c8a88000330747b8e129a12b1638fd86d92ad7972f82c532e7af126b1",
+    "runs/handoff-v3-20261024/handoff-v3-dataready-results/calls/001.response.json": "64c78f466eafc4ffce6b52dd8d506d408bece20f414c7b1562c1edb174d99174",
+    "runs/handoff-v3-20261024/handoff-v3-dataready-results/calls/002.request.json": "019bfc9cd17d4b07b18b048b578f10e67b8212448a56d74ff1f3d4db3bf4076a",
+    "runs/handoff-v3-20261024/handoff-v3-dataready-results/calls/002.json": "a6ee10658c16586838f18cc4c2f8b231a1a56118dd5c0061a48a026ea8aeef24",
+    "runs/handoff-v3-20261024/handoff-v3-dataready-results/calls/002.response.json": "fa66fa50d7ef4f2070c535abb47d352f68ecda6e8db651400eba9f89731d5e23",
+    "runs/handoff-v3-20261024/handoff-v3-dataready-results/calls/003.request.json": "488d1ec0a191d32d4f4939aa9c6ba3642eb2363f44585e0b381dbbac845fb766",
+    "runs/handoff-v3-20261024/handoff-v3-dataready-results/calls/003.json": "c7bad3cab6178db05a83d0549e49a097ab884407157775896beb0911b7305582",
+    "runs/handoff-v3-20261024/handoff-v3-dataready-results/calls/003.response.json": "a45a4ee7a1775a48e4a34f6706fe75db2de64ed33c0eec07bcd1142b7b1e206b",
+    "runs/handoff-v3-20261024/handoff-v3-dataready-results/calls/004.request.json": "4ff21c5b3d0da3ddae8ca72166d5eb62b617148c2f23818f5e61d0e229fdd7b6",
+    "runs/handoff-v3-20261024/handoff-v3-dataready-results/calls/004.json": "6ef825e62669f14f25adfd8c92d8b0f83f7e93584a4e536df4be8ed15672e6bd",
+    "runs/handoff-v3-20261024/handoff-v3-dataready-results/calls/004.response.json": "c203635ca52fbd0acd59ca903daa471731a16a3a0a5a6e4f9c2b5cc0b7fae5a1",
+    "runs/handoff-v3-20261024/handoff-v3-dataready-results/calls/005.request.json": "99fd1a312b70910a8b1aad0c49d5a5602c87d0357a54adeab84fe9646c11d87f",
+    "runs/handoff-v3-20261024/handoff-v3-dataready-results/calls/005.json": "7af12a1612d58796f23a3963e18c7e641114e136cbc6fc82a3a36824df54fbce",
+    "runs/handoff-v3-20261024/handoff-v3-dataready-results/calls/005.response.json": "7fd2b4b52400b3e86f09abe550bc2e82d7c8f38440cd3f7643b2b42c8b2bcc73",
+    "runs/handoff-v3-20261024/handoff-v3-dataready-results/calls/006.request.json": "96977f1af353e81335431bd670d235cc51529c5fe27aaf87bf8c116740d5d292",
+    "runs/handoff-v3-20261024/handoff-v3-dataready-results/calls/006.json": "214d15ffb332965eb93645c52ec527d378e15c33aa9d22897445da7cf7784db9",
+    "runs/handoff-v3-20261024/handoff-v3-dataready-results/calls/006.response.json": "0c553aa447794dee594a9347c9ed3b7b1077a3575a6dad35317869b7db0f6a5c",
+    "runs/handoff-v3-20261024/handoff-v3-dataready-results/calls/007.request.json": "74bdaa38159feba2805ad0d35f2c44cd97e2b3b87158f4d8d0db87ec6fa49f7e",
+    "runs/handoff-v3-20261024/handoff-v3-dataready-results/calls/007.json": "e909fa8c491537a6013dffca66aa76250051718ce9b9d6ed8c2c98bfe1d39821",
+    "runs/handoff-v3-20261024/handoff-v3-dataready-results/calls/007.response.json": "d648ad610daac2d7ea40383665cf178bc669258d2ec850382d9a08d8cb28e8e2",
+    "runs/handoff-v3-20261024/handoff-v3-dataready-results/calls/008.request.json": "ad4dead2e96744aac5c66e5bebd6070c922d526c53f5306c842b6acf1cf50b77",
+    "runs/handoff-v3-20261024/handoff-v3-dataready-results/calls/008.json": "888012db7640058db65d873b0f615b1c682b37e32135a22614b224702a53a901",
+    "runs/handoff-v3-20261024/handoff-v3-dataready-results/calls/008.response.json": "d4f83007d927efabc7a0a8e160ae04b8614861cda47eae7d0c53a21c61d4d7b0",
+    "runs/handoff-v3-20261024/handoff-v3-dataready-results/calls/009.request.json": "60bf9f327f2f63e7491292705ed1efaa7385c39cde2fb9568af9f731e57d31b4",
+    "runs/handoff-v3-20261024/handoff-v3-dataready-results/calls/009.json": "6bef4905ef8fb2a75ea3633b68e8f8d1829532299bb6f6538b76ad602a38409a",
+    "runs/handoff-v3-20261024/handoff-v3-dataready-results/calls/009.response.json": "e48aece3eb1913762f08b9edf97dee87272488dc69c2bb18aff5a7df8bb5d0af",
+    "runs/handoff-v3-20261024/handoff-v3-dataready-results/calls/010.request.json": "989bbfbb8b83c788af8fc1fcbb38766d714fc9d74d10ebb7b07633dd5d438f63",
+    "runs/handoff-v3-20261024/handoff-v3-dataready-results/calls/010.json": "9d319e638607ec61329af0da0cb3b11132147f0cc244890a33d092bba21e7879",
+    "runs/handoff-v3-20261024/handoff-v3-dataready-results/calls/010.response.json": "5788b0bdf91f423657e5fa9eebc75471a67404d6655bf4cc4f8e09ceb9cb46a1",
+    "runs/handoff-v3-20261024/handoff-v3-dataready-results/calls/011.request.json": "b144e37f2ed99dee2050925842ac3a6e513a5723e0bfdebf2120b527f2f58b9e",
+    "runs/handoff-v3-20261024/handoff-v3-dataready-results/calls/011.json": "bf02a239074e4937106df11b8e4ce0207e961b2d7c3261122907a9dc168a1fea",
+    "runs/handoff-v3-20261024/handoff-v3-dataready-results/calls/011.response.json": "26a472c076bb63051bead6736ae99ce88d4f3f6eb731d1b1d6264d0e18ccd317",
+    "runs/seeded-v3-20261024/seeded-handoff-v3-results/usage.json": "7af0c8f1432375f5852d927a58e4a5a3d34e2f1320c755c813cdb4fd8fda9794",
+    "runs/seeded-v3-20261024/seeded-handoff-v3-results/summary.json": "07caa9bd182f4d5d5f1a7ebf8c9319bd4209d28306306a7f826e0091bc1bcbd1",
+    "runs/seeded-v3-20261024/seeded-handoff-v3-results/execution.json": "0b931cfb72041aaccaa58b9a2c03e519e4a4051a8d9bad3c5c401d412e45b649",
+    "runs/seeded-v3-20261024/seeded-handoff-v3-results/protocol.json": "9e0bd021e4ba76f7cee11e5e553096b62b55e7178688705e5039f1b27f292a58",
+    "runs/seeded-v3-20261024/seeded-handoff-v3-results/calls/001.request.json": "feffeffdc216f493800261a56d7065375e7ae7372a96ae0c37bc8b10ec09cacb",
+    "runs/seeded-v3-20261024/seeded-handoff-v3-results/calls/001.json": "dd321040579adc8aa9d82a73f52b66684c835a5839b05ebe10c2f4f44ae2d62a",
+    "runs/seeded-v3-20261024/seeded-handoff-v3-results/calls/001.response.json": "ed843f523e6a8bacbb5bb2c53a7b309afba86f68efb28af050ce73bcc27661e4",
+    "runs/seeded-v3-20261024/seeded-handoff-v3-results/calls/002.request.json": "c84a99b0b1ad6b81d90153ed04823a7c877ef53c6a951eab5a0ee030de97bd16",
+    "runs/seeded-v3-20261024/seeded-handoff-v3-results/calls/002.json": "52b7468915e0033b0113edad679383b851361d75220358ec9de60123938b5135",
+    "runs/seeded-v3-20261024/seeded-handoff-v3-results/calls/002.response.json": "c9668d2ffb205147d4fb0b9c4429875c07e91f9c044e10518b2d3fc6dea62010",
+    "runs/seeded-v3-20261024/seeded-handoff-v3-results/calls/003.request.json": "619542e019ec7db3cf3aaa7b892977a3f2fe01e96072fcd0f028d43c052bbfc4",
+    "runs/seeded-v3-20261024/seeded-handoff-v3-results/calls/003.json": "5a792d198b7aacbad747cccd445109cdd519d55b2abcd49c3ab7d21a5505b150",
+    "runs/seeded-v3-20261024/seeded-handoff-v3-results/calls/003.response.json": "9ccda7b1d84e64980a3e8edf4ed317601861b4d4c1d2ea20efaffa432c7e5f43",
+    "runs/seeded-v3-20261024/seeded-handoff-v3-results/calls/004.request.json": "3846d5dc5516034cb8344639fac5c598324e221528660e78de45d37a998fe70a",
+    "runs/seeded-v3-20261024/seeded-handoff-v3-results/calls/004.json": "69416abbcd85c15605c52c5f2659dca5020e63f0d127f303ffe215983b0b80fa",
+    "runs/seeded-v3-20261024/seeded-handoff-v3-results/calls/004.response.json": "144e87e89475d4e0f4efb6774f477362bc53706f4cbbe09b564fd4f3ca6d701b",
+    "runs/seeded-v3-20261024/seeded-handoff-v3-results/calls/005.request.json": "56b28005810ddf755539766fa5d4462d1957a1028d4beb048feb29bde52ed6c4",
+    "runs/seeded-v3-20261024/seeded-handoff-v3-results/calls/005.json": "0224a11d1799925cd48a93106dd2924c932907cdeaa63e9ce0bd5885906fed84",
+    "runs/seeded-v3-20261024/seeded-handoff-v3-results/calls/005.response.json": "65125f8a97b20e378e66a4e0dbe054cd1e4b346ffa7dc9a2ac26f5c08f9f9b09",
+    "runs/seeded-v3-20261024/seeded-handoff-v3-results/calls/006.request.json": "ef7823ccfcd052a97c5cc06cc066d28a15e675f608a60f50f7ef0b015bc3df79",
+    "runs/seeded-v3-20261024/seeded-handoff-v3-results/calls/006.json": "e08da3c3d2b9cc61a83254a3496a78667150ecc0f80806fc437c28676456c3bf",
+    "runs/seeded-v3-20261024/seeded-handoff-v3-results/calls/006.response.json": "08cb810931ed4245efb752fa3d96ba5bfc98f47f8b0d25c1c0e4d46661879784",
+    "runs/seeded-v3-20261024/seeded-handoff-v3-results/calls/007.request.json": "8adfd7886cd0d4db67a088af18154f7935c67004dfc19dcbd5f46bc7f82c22b3",
+    "runs/seeded-v3-20261024/seeded-handoff-v3-results/calls/007.json": "508cbc20624473b17f3555415fa9b4cedc0cb1448b815fb56c69842ded0f3ced",
+    "runs/seeded-v3-20261024/seeded-handoff-v3-results/calls/007.response.json": "e1a35502ec56c93709e64bc9066f706371f6139a8e9bf9dd28ff3f6272c7832f",
+    "runs/seeded-v3-20261024/seeded-handoff-v3-results/calls/008.request.json": "357b0a3acd4f30a3cb86239f1b873858e5b741eb235b80d9f1ef1f9dceaed08b",
+    "runs/seeded-v3-20261024/seeded-handoff-v3-results/calls/008.json": "5ca88d739645336cd23af5135fe681cbdf412d072d1fc38fc8ed0282fbf0fe67",
+    "runs/seeded-v3-20261024/seeded-handoff-v3-results/calls/008.response.json": "1b2e68daae21f080767c2aeeea174907c95a31cf3c8ae00a72d79301e7922133",
+    "runs/seeded-v3-20261024/seeded-handoff-v3-results/calls/009.request.json": "71fb026ad43794ff0bfbe806878fc37d1a2eaa0392773d2402f54c5d34a19d0d",
+    "runs/seeded-v3-20261024/seeded-handoff-v3-results/calls/009.json": "d31ddf5960b1fa6182b5b0645c90934961230dcf4889b898540d505a6a36cb98",
+    "runs/seeded-v3-20261024/seeded-handoff-v3-results/calls/009.response.json": "dd3a6a25a3f4a0bac6c41c32f59ed39b40283afa694fb91756a2a03b61672190",
+    "output/timing-live-review-20261024/review-seal.json": "26874d1945b151004a2ff9d99e94863da941f121f481740bc42af754c19747bd",
+    "output/timing-json-review-20261024/review-seal.json": "189067a6fe099666e838aff96b9db0f99a11a8434cf8f1ea7b0425ab9b02dafb",
+    "output/semantic-v5-review-20261024/review-seal.json": "293ec34b18e7cbb80b00ead54ff672241c4e00ad0cdf98b038c107571d2bc3ac",
+    "output/handoff-v3-semantic-review-20261024/review-seal.json": "e91fbeebc5d9ec4233f8df151d690ce6c8ed5cace4f2cb35fc3e29888423e6cb",
+    "output/seeded-v3-semantic-review-20261024/review-seal.json": "1606f00e599beaa0d3d658538179ade2c44accc3fb6f3f2945a8234493f261df",
+    "runs/timing-live-v3-20261024/timing-v3-results/account-before.json": "dfd4550ba50bdd0ca891542bbdf1cacc6a7359ba703596de718565e20ed7f9e9",
+    "runs/seeded-v3-20261024/seeded-handoff-v3-results/account-settled.json": "9424c7547cd3350d8d35781e098c17d44bb0de58a1fc83b43c4cd5dea085d1d2",
+    "runs/handoff-v3-20261024/handoff-v3-results/usage.json": "89b1a821e11b1aef2eb354b8f080f9f66f3986d449cb183ef24f9050db577ab3",
+    "output/autonomous-live-20261024/handoff-mechanism.json": "12b43085ec3acd3a6e40b45abac3fb2562f57f0fec4133141f6c4195a1e37343",
+    "output/autonomous-live-20261024/seeded-mechanism.json": "ffaa78cba48aa27f56012ed772d54f89a8fc06daa3df733e0879c2860395b436",
+    "output/autonomous-live-20261024/accounting.json": "278584cc9f3a9d76b34ca182c241b384f1e8e3899f94db7224d1a806294a1686"
+  },
+  "actual_header_total_usd": "0.1841153499999999943",
+  "settled_account_delta_usd": "0.1841153499999997",
+  "limitations": [
+    "Review hash validity proves files match their seal, not independence, correctness, or timestamp authenticity.",
+    "Semantic outcome judgments were not repeated; existing independent AI reviews retain disclosed limits.",
+    "No current API model, balance, or server state was checked; only saved receipts were read.",
+    "Provider response costs carry decimal serialization noise; reconciliation tolerance is 1e-9 USD.",
+    "Mechanism summaries checked for declared integrity findings and completed-arm invalid lists; full causal correctness is outside this supplemental audit."
+  ]
+}
