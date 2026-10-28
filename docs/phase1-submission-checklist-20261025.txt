@@ -16,8 +16,18 @@ Verified contents
 
 Submission gate
 - Technical package: ready. Do not rebuild or replace these frozen files.
-- Deadline: course evidence says 2026-11-04; exact time is not yet verified.
-- Upload location and whether PDF/ZIP use separate slots: not yet published or verified.
+- Canvas report slot: Project Phase 1 Report, https://canvas.ucsd.edu/courses/78326/assignments/1215336
+  Due 2026-11-04 11:59 PM America/Los_Angeles; available until 2026-11-10 11:59 PM.
+  Submit one PDF. Canvas states a 20% late penalty per day.
+- Canvas repository slot: Project Phase 1 Repo Link, https://canvas.ucsd.edu/courses/78326/assignments/1215338
+  Due 2026-11-04 11:59 PM America/Los_Angeles; available until 2026-11-10 11:59 PM.
+  Submit a website URL to a GitHub repository containing code, data, and a clear comprehensive README.md.
+  Canvas states that commits after the deadline are not considered and applies a 20% late penalty per day.
+- Course project page still displays the superseded October 28 date. Piazza @45 and both Canvas slots establish the November 4 extension; Canvas supplies the exact time.
+- Local repository preparation: README.md and phase1/ copies of the two frozen artifacts are ready for a GitHub repository, without modifying the canonical frozen files.
+- External blocker: this local Git repository has no remote. A GitHub repository URL must be created or selected, then the prepared commit must be pushed before the repository-link slot can be submitted.
 - Cloud-OpsBench acceptance: still needs explicit course approval or preserved evidence that the accepted survey counts as approval.
 
-The last three items are external course-administration checks. They do not require more experiments.
+No Phase 2 Canvas submission entry is visible as of 2026-10-28. The project page lists Phase 2 and the final report as due 2026-12-10, but does not provide an exact time or submission slot.
+
+The remaining blockers are external course-administration or publication steps. They do not require more experiments.

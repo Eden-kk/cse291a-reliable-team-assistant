@@ -1,0 +1,24 @@
+Main-path heartbeat receipt — 2026-10-28
+
+Frozen artifact integrity
+- Phase1-Report.pdf SHA-256 still matches b53e451038e120ae1a0bb202f2f34af7de8c0872be2973652de064f13b3c7cfd.
+- Phase1-Evidence.zip SHA-256 still matches 6580af4ee063d077a73d718f1b1a7138552aef12708fa467457a0f0b94c2e8a6.
+- Canonical frozen files were not rebuilt or modified.
+
+New course evidence
+- Canvas now has two Phase 1 submission entries, both due 2026-11-04 11:59 PM America/Los_Angeles and available through 2026-11-10 11:59 PM.
+- Project Phase 1 Report accepts one PDF and is worth 10 points.
+- Project Phase 1 Repo Link accepts a website URL and is worth 15 points. The repository must contain code, data, and a clear comprehensive README.md; commits after the deadline are not graded.
+- Both Canvas entries state a 20% late penalty per day.
+- Piazza @50 now points students to the public project page. The public page still shows the superseded October 28 date and requires a 1–2 page Phase 1 writeup plus a timeline/milestones appendix.
+- No Phase 2 Canvas submission entry is visible. The public page lists Phase 2 and the final report as due 2026-12-10 without an exact time.
+- No explicit Cloud-OpsBench approval evidence was found.
+
+Repository preparation
+- Added a reviewer-facing README.md grounded in the frozen Phase 1 result and bounded claims.
+- Prepared phase1/ copies of the two canonical frozen artifacts for eventual publication without modifying the originals.
+- The local Git repository has no remote. Creating/selecting a GitHub repository and pushing the prepared commit remains necessary before the repo-link submission.
+
+Resource state
+- DataHub showed Start My Server, confirming that the server remains stopped.
+- No model calls or new experiments were run.
